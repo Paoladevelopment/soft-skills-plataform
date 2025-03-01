@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
-from database import get_session
-from errors import Duplicate, Missing
+from utils.db import get_session
+from utils.errors import Duplicate, Missing
 from model.course import CourseCreate, CourseRead, CourseUpdate
 from service.course import (create_course, delete_course, read_course,
                             read_courses, update_course)

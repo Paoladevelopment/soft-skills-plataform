@@ -3,8 +3,8 @@ from typing import Sequence
 from fastapi import Depends
 from sqlmodel import Session, select
 
-from database import get_session
-from errors import Duplicate, Missing
+from utils.db import get_session
+from utils.errors import Duplicate, Missing
 from model.activity import Activity, ActivityCreate, ActivityUpdate
 
 

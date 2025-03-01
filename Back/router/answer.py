@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
-from database import get_session
-from errors import Duplicate, Missing
+from utils.db import get_session
+from utils.errors import Duplicate, Missing
 from model.answer import AnswerCreate, AnswerRead, AnswerUpdate
 from service.answer import (create_answer, delete_answer, read_answers,
                             update_answer, read_answer_by_id, read_answers_by_activity_user_question, read_answers_by_activity_user)
