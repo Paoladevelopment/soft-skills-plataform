@@ -6,3 +6,7 @@ class Missing(Exception):
 class Duplicate(Exception):
     def __init__(self, msg: str):
         self.msg = msg
+
+class InternalError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg

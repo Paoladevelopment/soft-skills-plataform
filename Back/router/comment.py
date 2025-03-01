@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
-from database import get_session
-from errors import Duplicate, Missing
+from utils.db import get_session
+from utils.errors import Duplicate, Missing
 from model.comment import CommentCreate, CommentRead, CommentUpdate
 from service.comment import (create_comment, delete_comment, read_comment,
                              read_comments, update_comment, read_comment_by_course_id)

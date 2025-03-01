@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from config import settings
+from utils.config import settings
 from utils.logger import logger_config
-from web import api as api_routes
+from router import api as api_routes
 import os
 from dotenv import load_dotenv
 load_dotenv()
