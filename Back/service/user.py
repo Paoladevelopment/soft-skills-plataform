@@ -1,22 +1,38 @@
 from fastapi import Depends
 from sqlmodel import Session, select, or_
-
 from utils.db import get_session
-from utils.errors import Duplicate, InternalError
-from schema.user_schema import UserCreate, UserUpdate
+from utils.errors import Duplicate, handle_db_error
+from schema.user import UserCreate, UserUpdate
 from model.user import User
-from auth_service import get_password_hash
+from service.auth_service import get_password_hash
+
+def validate_email_or_username_uniqueness(existing_user: User, new_username: str, new_email: str):
+    if existing_user:
+            if existing_user.username == new_username:
+                raise Duplicate("This username is already taken. Please choose another one.")
+
+            if existing_user.email == new_email:
+                raise Duplicate("An account with this email already exists. Please use a different email.")
 
 def create_user(user: UserCreate, db: Session = Depends(get_session)) -> User:
     try:
-        statement = select(User).where(User.email == user.email)
-        user_in_db = db.exec(statement).first()
+        statement = select(User).where(
+            or_(User.username == user.username, User.email == user.email)
+        )
+        existing_user = db.exec(statement).first()
 
-        if user_in_db:
-            raise Duplicate("Email already registered")
-        
+        validate_email_or_username_uniqueness(existing_user, user.name, user.email)
+    
+    except Duplicate:
+        raise
+    
+    except Exception as exc:
+        handle_db_error(exc, "create_user", error_type="query")
+    
+    try:
         user_to_db = User(
             name=user.name,
+            username=user.username,
             email=user.email,
             password=get_password_hash(user.password),
             profile_picture=user.profile_picture,
@@ -29,9 +45,9 @@ def create_user(user: UserCreate, db: Session = Depends(get_session)) -> User:
 
     except Exception as exc:
         db.rollback()
-        raise InternalError(f"An error occurred while creating the user: {str(exc)}")
+        handle_db_error(exc, "create_user", error_type="commit")
 
-def update_user(current_user: User, user: UserUpdate, db: Session = Depends(get_session)):
+def update_user(current_user: User, user: UserUpdate, db: Session = Depends(get_session)) -> User:
     try:
         statement = select(User).where(
             or_(User.username == user.username, User.email == user.email),
@@ -40,13 +56,15 @@ def update_user(current_user: User, user: UserUpdate, db: Session = Depends(get_
 
         existing_user = db.exec(statement).first()
 
-        if existing_user:
-            if existing_user.username == user.username:
-                raise Duplicate("The username is already in use")
-        
-            if existing_user.email == user.email:
-             raise Duplicate("The email is already in use.")
-
+        validate_email_or_username_uniqueness(existing_user, user.username, user.email)
+    
+    except Duplicate:
+        raise
+    
+    except Exception as exc:
+        handle_db_error(exc, "update_user", error_type="query")
+    
+    try:
         user_data = user.model_dump(exclude_unset=True)
         for key, value in user_data.items():
             setattr(current_user, key, value)
@@ -59,19 +77,20 @@ def update_user(current_user: User, user: UserUpdate, db: Session = Depends(get_
     
     except Exception as exc:
         db.rollback()
-        raise InternalError(f"An error occurred while updating the user: {str(exc)}")
+        handle_db_error(exc, "update_user", error_type="commit")
 
 def deactivate_user(current_user: User, db: Session = Depends(get_session)):
-    try:
+    if current_user.disabled:
+        return {"message": "User is already deactivated"}
 
-        if not current_user.disabled:
-            current_user.disabled = True
-            
-            db.commit()
-            db.refresh(current_user)
+    try:    
+        current_user.disabled = True
+        db.add(current_user)
+        db.commit()
+        db.refresh(current_user)
 
-            return {"message": "User deactivated successfully"}
+        return {"message": "User deactivated successfully"}
     
     except Exception as exc:
         db.rollback()
-        raise InternalError(f"An error occurred while deactivating the user: {str(exc)}")
+        handle_db_error(exc, "deactivate_user", error_type="commit")

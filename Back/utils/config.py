@@ -1,8 +1,9 @@
 import os
-
 from pathlib import Path
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
+from functools import lru_cache
+import logging
 
 #Load environment variables from a .env file, if available
 load_dotenv()
@@ -34,7 +35,7 @@ class Settings(BaseSettings):
 
   def __is_valid_db_uri(self) -> bool:
     if self.DB_URI:
-      return self.DB_URI.startswith(("postgresql://", "mysql://"))
+      return self.DB_URI.startswith(("postgresql://", "mysql://", "postgresql+psycopg2://"))
 
   @property
   def DATABASE_URI(self) -> str:
@@ -50,8 +51,14 @@ class Settings(BaseSettings):
   class Config:
     case_sensitive: True
 
+logger = logging.getLogger(__name__)
 
-settings = Settings()
+@lru_cache
+def get_settings():
+    logger.info("Loading application settings...")
+    return Settings()
+
+settings = get_settings()
 
 class TestSettings(Settings):
     class Config:

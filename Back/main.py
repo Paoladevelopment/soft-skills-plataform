@@ -1,16 +1,21 @@
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from utils.config import settings
 from utils.logger import logger_config
 from router import api as api_routes
 import os
 from dotenv import load_dotenv
-load_dotenv()
-logger = logger_config(__name__)
+import logging
 
+load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,  
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",  
+)
+
+logger = logger_config(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

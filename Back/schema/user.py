@@ -1,7 +1,7 @@
 from model.user import UserBase
-from schema.base import CreateResponse
+from schema.base import BaseResponse
 from utils.security import validate_password
-from utils.sample_payloads import USER_CREATE_EXAMPLE, USER_READ_EXAMPLE, USER_UPDATE_EXAMPLE, PASSWORD_UPDATE_EXAMPLE
+from utils.payloads import USER_CREATE_EXAMPLE, USER_READ_EXAMPLE, USER_UPDATE_EXAMPLE, PASSWORD_UPDATE_EXAMPLE
 from sqlmodel import Field, SQLModel
 from pydantic import field_validator, EmailStr, UUID4
 from datetime import datetime
@@ -41,5 +41,5 @@ class PasswordUpdate(SQLModel):
     model_config = {"json_schema_extra": {"example": PASSWORD_UPDATE_EXAMPLE}}
 
 
-class UserResponse(CreateResponse[UserRead]):
+class UserResponse(BaseResponse[UserRead]):
     data: UserRead
