@@ -1,13 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import Duplicate, InternalError, raise_http_exception
+from utils.errors import APIException, raise_http_exception
 from model.user import User
 from schema.user import UserCreate, UserResponse, UserUpdate, UserRead
-from service.user import (create_user, deactivate_user, update_user)
+from service.user import UserService
 from service.auth_service import get_current_user
 
 router = APIRouter()
+user_service = UserService()
 
 @router.post(
     "",
@@ -15,9 +16,9 @@ router = APIRouter()
     response_model=UserResponse,
     summary="Creates a new user account",
 )
-def create_an_user(user: UserCreate, db: Session = Depends(get_session)):
+def create_user(user: UserCreate, session: Session = Depends(get_session)):
     try:
-        new_user = create_user(user=user, db=db)
+        new_user = user_service.create_user(user, session)
         user_data = UserRead.model_validate(new_user)
 
         return UserResponse(
@@ -25,10 +26,7 @@ def create_an_user(user: UserCreate, db: Session = Depends(get_session)):
             data=user_data
         )
     
-    except Duplicate as exc:
-        raise_http_exception(exc)
-    
-    except InternalError as exc:
+    except APIException as exc:
         raise_http_exception(exc)
 
 @router.patch(
@@ -39,19 +37,16 @@ def create_an_user(user: UserCreate, db: Session = Depends(get_session)):
 def update_an_user(
     user: UserUpdate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_session)
+    session: Session = Depends(get_session)
     ):
     try:
-        updated_user = update_user(current_user, user, db)
+        updated_user = user_service.update_user(current_user, user, session)
         return UserResponse(
             message="User updated successfully",
             data=updated_user
         )
     
-    except Duplicate as exc:
-        raise_http_exception(exc)
-    
-    except InternalError as exc:
+    except APIException as exc:
         raise_http_exception(exc)
 
 
@@ -61,10 +56,10 @@ def update_an_user(
     )
 def delete_an_user(
     current_user: User = Depends(get_current_user), 
-    db: Session = Depends(get_session)
+    session: Session = Depends(get_session)
     ):
     try:
-        return deactivate_user(current_user, db)
+        return user_service.deactivate_user(current_user, session)
     
-    except InternalError as exc:
+    except APIException as exc:
         raise_http_exception(exc)
