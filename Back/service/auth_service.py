@@ -7,7 +7,7 @@ from sqlmodel import Session, select
 from utils.db import get_session
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from model.user import User as UserModel
+from model.user import User as User
 from schema.token import TokenData
 from utils.config import settings
 from enums.user import UserRoles
@@ -39,7 +39,7 @@ def get_password_hash(password: str):
 
 def get_user(email: str, session: Session):
     try:
-        return session.exec(select(UserModel).where(UserModel.email == email)).first()
+        return session.exec(select(User).where(User.email == email)).first()
     except Exception as e:
         session.rollback()
         logger.error(f"❌ Error fetching user {email}: {e}", exc_info=True)
@@ -47,7 +47,7 @@ def get_user(email: str, session: Session):
 
 
 def authenticate_user(email: str, password: str, session: Session):
-    user: UserModel = get_user(email, session)
+    user: User = get_user(email, session)
     if not user:
         return None
     if not verify_password(password, user.password):
@@ -67,7 +67,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 
 def generate_token(email: str, password: str, session: Session):
-    user: UserModel = authenticate_user(email, password, session)
+    user: User = authenticate_user(email, password, session)
 
     if not user:
         raise HTTPException(
@@ -99,7 +99,7 @@ def decode_jwt_token(token: str) -> TokenData:
         )
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)):
+def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)) -> User:
     token_data = decode_jwt_token(token)
 
     user = get_user(token_data.email, session)

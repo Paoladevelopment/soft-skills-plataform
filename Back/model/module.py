@@ -15,6 +15,7 @@ class ModuleBase(SQLModel):
 
 
 class Module(ModuleBase, table=True):
+    __tablename__ = "modules"
     id: int | None = Field(default=None, primary_key=True)
     created_at: datetime | None = Field(
         default_factory=lambda: datetime.now(timezone.utc),

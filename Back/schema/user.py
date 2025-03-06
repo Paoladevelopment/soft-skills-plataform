@@ -1,10 +1,10 @@
+from sqlmodel import Field, SQLModel
+from pydantic import field_validator, EmailStr, UUID4
+from datetime import datetime
 from model.user import UserBase
 from schema.base import BaseResponse
 from utils.security import validate_password
 from utils.payloads import USER_CREATE_EXAMPLE, USER_READ_EXAMPLE, USER_UPDATE_EXAMPLE, PASSWORD_UPDATE_EXAMPLE
-from sqlmodel import Field, SQLModel
-from pydantic import field_validator, EmailStr, UUID4
-from datetime import datetime
 
 class UserCreate(UserBase):
     password: str = Field(min_length=8, description="User's password with at least one letter and one number.")

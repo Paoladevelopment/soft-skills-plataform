@@ -7,7 +7,7 @@ from utils import settings
 
 from alembic import context
 
-from model import User, Module
+from model import User, Module, LearningGoal
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

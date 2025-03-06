@@ -1,96 +1,87 @@
-from fastapi import Depends
 from sqlmodel import Session, select, or_
-from utils.db import get_session
-from utils.errors import Duplicate, handle_db_error
+from utils.errors import Duplicate, APIException, handle_db_error
 from schema.user import UserCreate, UserUpdate
 from model.user import User
 from service.auth_service import get_password_hash
 
-def validate_email_or_username_uniqueness(existing_user: User, new_username: str, new_email: str):
-    if existing_user:
-            if existing_user.username == new_username:
-                raise Duplicate("This username is already taken. Please choose another one.")
+class UserService:
+    def check_duplicate_user(self, session: Session, username: str, email: str, exclude_user_id: str = None):
+        try:
+            query = select(User).where(
+                or_(User.username == username, User.email == email)
+            )
 
-            if existing_user.email == new_email:
-                raise Duplicate("An account with this email already exists. Please use a different email.")
+            if exclude_user_id:
+                query = query.where(User.user_id != exclude_user_id)
 
-def create_user(user: UserCreate, db: Session = Depends(get_session)) -> User:
-    try:
-        statement = select(User).where(
-            or_(User.username == user.username, User.email == user.email)
-        )
-        existing_user = db.exec(statement).first()
+            existing_user = session.exec(query).first()
 
-        validate_email_or_username_uniqueness(existing_user, user.name, user.email)
-    
-    except Duplicate:
-        raise
-    
-    except Exception as exc:
-        handle_db_error(exc, "create_user", error_type="query")
-    
-    try:
-        user_to_db = User(
-            name=user.name,
-            username=user.username,
-            email=user.email,
-            password=get_password_hash(user.password),
-            profile_picture=user.profile_picture,
-        )
+            if existing_user:
+                if existing_user.username == username:
+                    raise Duplicate("This username is already taken. Please choose another one.")
+                if existing_user.email == email:
+                    raise Duplicate("An account with this email already exists. Please use a different email.")
+        
+        except APIException:
+            raise
 
-        db.add(user_to_db)
-        db.commit()
-        db.refresh(user_to_db)
-        return user_to_db
+        except Exception as exc:
+            handle_db_error(exc, "check_duplicate_user", error_type="query")
 
-    except Exception as exc:
-        db.rollback()
-        handle_db_error(exc, "create_user", error_type="commit")
+    def create_user(self, user: UserCreate, session: Session) -> User:
+        try:
+            self.check_duplicate_user(session, user.username, user.email)
+        
+        except APIException:
+            raise
+        
+        try:
+            user_dict = user.model_dump()
+            new_user = User(**user_dict)
+            new_user.password = get_password_hash(user.password)
 
-def update_user(current_user: User, user: UserUpdate, db: Session = Depends(get_session)) -> User:
-    try:
-        statement = select(User).where(
-            or_(User.username == user.username, User.email == user.email),
-            User.user_id != current_user.user_id
-        )
+            session.add(new_user)
+            session.commit()
+            session.refresh(new_user)
 
-        existing_user = db.exec(statement).first()
+            return new_user
 
-        validate_email_or_username_uniqueness(existing_user, user.username, user.email)
-    
-    except Duplicate:
-        raise
-    
-    except Exception as exc:
-        handle_db_error(exc, "update_user", error_type="query")
-    
-    try:
-        user_data = user.model_dump(exclude_unset=True)
-        for key, value in user_data.items():
-            setattr(current_user, key, value)
+        except Exception as exc:
+            session.rollback()
+            handle_db_error(exc, "create_user", error_type="commit")
 
-        db.add(current_user)
-        db.commit()
-        db.refresh(current_user)
+    def update_user(self, current_user: User, user: UserUpdate, session: Session) -> User:
+        try:
+            self.check_duplicate_user(session, user.username, user.email, current_user.user_id)
+        
+        except APIException:
+            raise
+        
+        try:
+            user_data = user.model_dump(exclude_unset=True)
+            for key, value in user_data.items():
+                setattr(current_user, key, value)
 
-        return current_user
-    
-    except Exception as exc:
-        db.rollback()
-        handle_db_error(exc, "update_user", error_type="commit")
+            session.commit()
+            session.refresh(current_user)
 
-def deactivate_user(current_user: User, db: Session = Depends(get_session)):
-    if current_user.disabled:
-        return {"message": "User is already deactivated"}
+            return current_user
+        
+        except Exception as exc:
+            session.rollback()
+            handle_db_error(exc, "update_user", error_type="commit")
 
-    try:    
-        current_user.disabled = True
-        db.add(current_user)
-        db.commit()
-        db.refresh(current_user)
+    def deactivate_user(self, current_user: User, session: Session):
+        if current_user.disabled:
+            return {"message": "User is already deactivated"}
 
-        return {"message": "User deactivated successfully"}
-    
-    except Exception as exc:
-        db.rollback()
-        handle_db_error(exc, "deactivate_user", error_type="commit")
+        try:    
+            current_user.disabled = True
+            session.commit()
+            session.refresh(current_user)
+
+            return {"message": "User deactivated successfully"}
+        
+        except Exception as exc:
+            session.rollback()
+            handle_db_error(exc, "deactivate_user", error_type="commit")

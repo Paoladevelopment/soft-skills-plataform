@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import Duplicate, Missing, InternalError, raise_http_exception
+from utils.errors import APIException, raise_http_exception
 from schema.module import ModuleCreate, ModuleRead, ModuleUpdate, ModulePaginatedResponse, ModuleResponse
-from service.module import (create_module_in_db, delete_module_in_db, read_module,
-                            read_modules, update_module_in_db)
+from service.module import ModuleService
 from service.auth_service import get_current_admin_user
 
 router = APIRouter()
+module_service = ModuleService()
 
 @router.post(
     "",
@@ -17,11 +17,11 @@ router = APIRouter()
 )
 def create_module(
     module: ModuleCreate, 
-    token_data = Depends(get_current_admin_user),
-    db: Session = Depends(get_session)
+    current_user = Depends(get_current_admin_user),
+    session: Session = Depends(get_session)
     ):
     try:
-        created_module =  create_module_in_db(module=module, db=db)
+        created_module =  module_service.create_module(module, session)
         module_data = ModuleRead.model_validate(created_module)
 
         return ModuleResponse(
@@ -29,22 +29,19 @@ def create_module(
             data=module_data
         )
     
-    except Duplicate as exc:
-        raise_http_exception(exc)
-    
-    except InternalError as exc:
-        raise_http_exception(exc)
-    
+    except APIException as exc:
+        raise_http_exception(exc) 
+
 
 @router.get("", summary="Retrieve all modules", response_model=ModulePaginatedResponse)
 def get_all_modules(
         offset: int = Query(0, ge=0, description="Number of items to skip"),
         limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
-        db: Session = Depends(get_session),
+        session: Session = Depends(get_session),
     ):
 
     try:
-        modules, total_count = read_modules(offset, limit, db)
+        modules, total_count = module_service.get_all_modules(offset, limit, session)
         return ModulePaginatedResponse(
             message="Modules retrieved successfully",
             data=modules,
@@ -53,14 +50,14 @@ def get_all_modules(
             limit=limit
         )
     
-    except InternalError as exc:
+    except APIException as exc:
         raise_http_exception(exc)
 
 
 @router.get("/{id}", summary="Retrieve a module by ID", response_model=ModuleResponse)
-def get_module(id: int, db: Session = Depends(get_session)):
+def get_module(id: int, session: Session = Depends(get_session)):
     try:
-        module = read_module(id, db)
+        module = module_service.get_module(id, session)
         module_data = ModuleRead.model_validate(module)
 
         return ModuleResponse(
@@ -68,12 +65,8 @@ def get_module(id: int, db: Session = Depends(get_session)):
             data=module_data
         )
     
-    except Missing as exc:
+    except APIException as exc:
         raise_http_exception(exc)
-    
-    except InternalError as exc:
-        raise_http_exception(exc)
-
 
 @router.patch(
     "/{id}", summary="Update module details by ID", response_model=ModuleResponse
@@ -81,11 +74,11 @@ def get_module(id: int, db: Session = Depends(get_session)):
 def update_module(
     id: int, 
     module: ModuleUpdate, 
-    token_data = Depends(get_current_admin_user),
-    db: Session = Depends(get_session)
+    current_user = Depends(get_current_admin_user),
+    session: Session = Depends(get_session)
     ):
     try:
-        updated_module = update_module_in_db(id, module, db)
+        updated_module = module_service.update_module(id, module, session)
         module_data = ModuleRead.model_validate(updated_module)
 
         return ModuleResponse(
@@ -93,27 +86,18 @@ def update_module(
             data=module_data
         )
 
-    except Missing as exc:
-        raise_http_exception(exc)
-
-    except Duplicate as exc:
-        raise_http_exception(exc)
-
-    except InternalError as exc:
+    except APIException as exc:
         raise_http_exception(exc)
 
 
-@router.delete("/{id}", summary="elimina un modulo por ID")
+@router.delete("/{id}", summary="Delete a module by ID")
 def delete_module(
     id: int, 
-    token_data = Depends(get_current_admin_user),
-    db: Session = Depends(get_session)
+    current_user = Depends(get_current_admin_user),
+    session: Session = Depends(get_session)
     ):
     try:
-        return delete_module_in_db(id, db)
+        return module_service.delete_module(id, session)
     
-    except Missing as exc:
-        raise_http_exception(exc)
-
-    except InternalError as exc:
+    except APIException as exc:
         raise_http_exception(exc)

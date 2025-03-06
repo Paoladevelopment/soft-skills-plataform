@@ -11,6 +11,7 @@ class UserBase(SQLModel):
 
 
 class User(UserBase, table=True):
+    __tablename__ = "users"
     user_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     username: str = Field(unique=True, index=True)
     email: str = Field(unique=True, index=True)
