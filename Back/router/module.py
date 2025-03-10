@@ -1,12 +1,15 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlmodel import Session
+
+from schema.module import (ModuleCreate, ModulePaginatedResponse, ModuleRead,
+                           ModuleResponse, ModuleUpdate)
+from service.auth_service import get_current_admin_user
+from service.module import ModuleService
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
-from schema.module import ModuleCreate, ModuleRead, ModuleUpdate, ModulePaginatedResponse, ModuleResponse
-from service.module import ModuleService
-from service.auth_service import get_current_admin_user
 
 router = APIRouter()
+
 module_service = ModuleService()
 
 @router.post(
@@ -74,7 +77,7 @@ def get_module(id: int, session: Session = Depends(get_session)):
 def update_module(
     id: int, 
     module: ModuleUpdate, 
-    current_user = Depends(get_current_admin_user),
+    _ = Depends(get_current_admin_user),
     session: Session = Depends(get_session)
     ):
     try:
@@ -93,7 +96,7 @@ def update_module(
 @router.delete("/{id}", summary="Delete a module by ID")
 def delete_module(
     id: int, 
-    current_user = Depends(get_current_admin_user),
+    _ = Depends(get_current_admin_user),
     session: Session = Depends(get_session)
     ):
     try:

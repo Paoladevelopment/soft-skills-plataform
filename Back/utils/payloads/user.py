@@ -20,8 +20,7 @@ USER_UPDATE_EXAMPLE = {
     "name": "Super Man Updated",
     "username": "tusupermanfav",
     "email": "updated@email.com",
-    "profile_picture": "https://example.com/updated-pic.jpg",
-    "is_active": False
+    "profile_picture": "https://example.com/updated-pic.jpg"
 }
 
 PASSWORD_UPDATE_EXAMPLE = {

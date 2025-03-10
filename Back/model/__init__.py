@@ -1,3 +1,4 @@
-from .user import User
-from .module import Module
 from .learning_goal import LearningGoal
+from .module import Module
+from .objective import Objective
+from .user import User
