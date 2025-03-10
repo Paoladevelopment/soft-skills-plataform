@@ -1,11 +1,16 @@
-from sqlmodel import Session, select, or_
-from utils.errors import Duplicate, APIException, handle_db_error
-from schema.user import UserCreate, UserUpdate
+from typing import Union
+from uuid import UUID
+
+from sqlmodel import Session, or_, select
+
 from model.user import User
-from service.auth_service import get_password_hash
+from schema.user import UserCreate, UserUpdate
+from utils.errors import APIException, Duplicate, Missing, handle_db_error
+from utils.security import get_password_hash
+
 
 class UserService:
-    def check_duplicate_user(self, session: Session, username: str, email: str, exclude_user_id: str = None):
+    def check_duplicate_user(self, session: Session, username: str, email: str, exclude_user_id: UUID = None):
         try:
             query = select(User).where(
                 or_(User.username == username, User.email == email)
@@ -42,17 +47,36 @@ class UserService:
 
             session.add(new_user)
             session.commit()
-            session.refresh(new_user)
 
             return new_user
 
         except Exception as exc:
             session.rollback()
             handle_db_error(exc, "create_user", error_type="commit")
-
-    def update_user(self, current_user: User, user: UserUpdate, session: Session) -> User:
+    
+    def get_user(self, identifier: Union[UUID, str], session: Session) -> User:
         try:
-            self.check_duplicate_user(session, user.username, user.email, current_user.user_id)
+            if isinstance(identifier, UUID):
+                query = select(User).where(User.user_id == identifier)
+            else:
+                query = select(User).where(User.email == identifier)
+            
+            user = session.exec(query).first()
+
+            if not user:
+                raise Missing("Objective not found")
+            return user
+        
+        except APIException:
+            raise
+
+        except Exception as exc:
+            handle_db_error(exc, "get_user", error_type="query")
+
+    def update_user(self, user_id: UUID, user: UserUpdate, session: Session) -> User:
+        try:
+            existing_user = self.get_user(user_id, session)
+            self.check_duplicate_user(session, user.username, user.email, user_id)
         
         except APIException:
             raise
@@ -60,25 +84,25 @@ class UserService:
         try:
             user_data = user.model_dump(exclude_unset=True)
             for key, value in user_data.items():
-                setattr(current_user, key, value)
+                setattr(existing_user, key, value)
 
             session.commit()
-            session.refresh(current_user)
 
-            return current_user
+            return existing_user
         
         except Exception as exc:
             session.rollback()
             handle_db_error(exc, "update_user", error_type="commit")
 
-    def deactivate_user(self, current_user: User, session: Session):
-        if current_user.disabled:
-            return {"message": "User is already deactivated"}
-
+    def deactivate_user(self, user_id: UUID, session: Session):
         try:    
-            current_user.disabled = True
+            existing_user = self.get_user(user_id, session)
+
+            if existing_user.disabled:
+                return {"message": "User is already deactivated"}
+            
+            existing_user.disabled = True
             session.commit()
-            session.refresh(current_user)
 
             return {"message": "User deactivated successfully"}
         

@@ -1,8 +1,12 @@
 import uuid
-from sqlmodel import Field, SQLModel, TIMESTAMP
-from pydantic import EmailStr
 from datetime import datetime, timezone
+
+from pydantic import EmailStr
+from sqlmodel import TIMESTAMP, Field, SQLModel
+
 from enums.user import UserRoles
+
+
 class UserBase(SQLModel):
     name: str = Field(min_length=2, max_length=100)
     username: str

@@ -1,11 +1,14 @@
-from uuid import UUID
 from typing import Sequence
+from uuid import UUID
+
 from fastapi import Depends
-from sqlmodel import Session, select, func
-from utils.db import get_session
-from utils.errors import Missing, Forbidden, APIException, handle_db_error
+from sqlmodel import Session, func, select
+
 from model.learning_goal import LearningGoal
 from schema.learning_goal import LearningGoalCreate, LearningGoalUpdate
+from utils.db import get_session
+from utils.errors import APIException, Forbidden, Missing, handle_db_error
+
 
 class LearningGoalService:
     def verify_user_ownership(self, learning_goal: LearningGoal, user_id: UUID):
@@ -32,7 +35,7 @@ class LearningGoalService:
 
     def get_all_user_learning_goals(
             self,
-            user_id: str,
+            user_id: UUID,
             offset: int,
             limit: int, 
             session: Session = Depends(get_session),
@@ -55,12 +58,15 @@ class LearningGoalService:
         except Exception as exc:
             handle_db_error(exc, "get_all_user_learning_goals", error_type="query")
 
-    def get_learning_goal(self, learning_goal_id: str, session: Session) -> LearningGoal:
+    def get_learning_goal(self, learning_goal_id: UUID, session: Session) -> LearningGoal:
         try:
             learning_goal = session.get(LearningGoal, learning_goal_id)
 
             if not learning_goal:
                 raise Missing("Learning goal not found")
+            
+            _ = learning_goal.objectives
+            
             return learning_goal
         
         except APIException:
@@ -71,7 +77,7 @@ class LearningGoalService:
 
     def update_learning_goal(self, learning_goal_id: str, learning_goal: LearningGoalUpdate, user_id: UUID, session: Session) -> LearningGoal:
         try:
-            learning_goal_to_update = self.get_learning_goal(learning_goal_id, session)
+            learning_goal_to_update = self.get_learning_goal(UUID(learning_goal_id), session)
             self.verify_user_ownership(learning_goal_to_update, user_id)
 
         except APIException:
@@ -97,7 +103,7 @@ class LearningGoalService:
 
     def delete_learning_goal(self, learning_goal_id: str, user_id: UUID, session: Session):
         try:
-            learning_goal = self.get_learning_goal(learning_goal_id, session)
+            learning_goal = self.get_learning_goal(UUID(learning_goal_id), session)
             self.verify_user_ownership(learning_goal, user_id)
             
         except APIException:

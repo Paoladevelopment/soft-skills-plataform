@@ -1,10 +1,13 @@
 from typing import Sequence
+
 from fastapi import Depends
-from sqlmodel import Session, select, func
-from utils.db import get_session
-from utils.errors import Duplicate, Missing, APIException, handle_db_error
+from sqlmodel import Session, func, select
+
 from model.module import Module
 from schema.module import ModuleCreate, ModuleUpdate
+from utils.db import get_session
+from utils.errors import APIException, Duplicate, Missing, handle_db_error
+
 
 class ModuleService:
     def create_module(self, module: ModuleCreate, session: Session) -> Module:

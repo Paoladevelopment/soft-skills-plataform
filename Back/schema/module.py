@@ -1,8 +1,12 @@
-from sqlmodel import SQLModel, Field
 from typing import List
+
+from sqlmodel import Field, SQLModel
+
 from model.module import ModuleBase
 from schema.base import BaseResponse, PaginatedResponse
-from utils.payloads import MODULE_CREATE_EXAMPLE, MODULE_READ_EXAMPLE, MODULE_UPDATE_EXAMPLE
+from utils.payloads import (MODULE_CREATE_EXAMPLE, MODULE_READ_EXAMPLE,
+                            MODULE_UPDATE_EXAMPLE)
+
 
 class ModuleCreate(ModuleBase):
   model_config = {"json_schema_extra": {"example": MODULE_CREATE_EXAMPLE}}

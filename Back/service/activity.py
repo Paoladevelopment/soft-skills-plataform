@@ -3,9 +3,9 @@ from typing import Sequence
 from fastapi import Depends
 from sqlmodel import Session, select
 
+from model.activity import Activity, ActivityCreate, ActivityUpdate
 from utils.db import get_session
 from utils.errors import Duplicate, Missing
-from model.activity import Activity, ActivityCreate, ActivityUpdate
 
 
 def read_activities(db: Session = Depends(get_session)) -> Sequence[Activity]:

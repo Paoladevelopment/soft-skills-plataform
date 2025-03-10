@@ -1,12 +1,14 @@
+import logging
+import os
 from contextlib import asynccontextmanager
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from router import api as api_routes
 from utils.config import settings
 from utils.logger import logger_config
-from router import api as api_routes
-import os
-from dotenv import load_dotenv
-import logging
 
 load_dotenv()
 
