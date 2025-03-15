@@ -1,7 +1,9 @@
+from typing import List, Optional
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, Query, status
 from sqlmodel import Session
 
-from model.user import User
 from schema.learning_goal import (LearningGoalCreate, LearningGoalDetail,
                                   LearningGoalRead, LearningGoalResponse,
                                   LearningGoalUpdate)
@@ -21,7 +23,7 @@ objective_service = ObjectiveService()
 @router.post(
     "",
     response_model=LearningGoalResponse,
-    summary="Create a learning goal",
+    summary="Create learning goal",
     status_code=status.HTTP_201_CREATED,
 )
 def create_learning_goal(
@@ -38,13 +40,13 @@ def create_learning_goal(
             data=learning_goal_data
         )
     
-    except APIException as exc:
-        raise_http_exception(exc)
+    except APIException as err:
+        raise_http_exception(err)
     
 
 @router.get(
     "/{id}", 
-    summary="Retrieve a learning goal by ID", 
+    summary="Retrieve learning goal by ID", 
     response_model=LearningGoalResponse
 )
 def get_learning_goal(
@@ -53,7 +55,7 @@ def get_learning_goal(
     session: Session = Depends(get_session)
 ):
     try:
-        learning_goal = learning_goal_service.get_learning_goal(id, session)
+        learning_goal = learning_goal_service.get_learning_goal(UUID(id), session)
         learning_goal_data = LearningGoalDetail.model_validate(learning_goal)
 
         return LearningGoalResponse(
@@ -61,23 +63,27 @@ def get_learning_goal(
             data=learning_goal_data
         )
     
-    except APIException as exc:
-        raise_http_exception(exc)
+    except APIException as err:
+        raise_http_exception(err)
 
 
 @router.get(
     "/{id}/objectives",
-    summary="Get the objectives of a learning goal with optional filters"
+    summary="Get the objectives of a learning goal with optional filters",
+    response_model=ObjectivePaginatedResponse
 )
 def get_objectives_by_learning_goal(
     id: str,
     offset: int = Query(0, ge=0, description="Number of items to skip"),
     limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
+    status: Optional[str] = Query(None, description="Filter by status ('completed', 'in_progress', etc.)"),
+    priority: Optional[str] = Query(None, description="Filter by priority ('high', 'medium', 'low')"),
+    order_by: List[str] = Query(None, description="Sorting criteria"),
     _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
     try:
-        objectives, total_count = objective_service.get_objectives_by_learning_goal(id, offset, limit, session)
+        objectives, total_count = objective_service.get_objectives_by_learning_goal(id, offset, limit, status, priority, order_by, session)
 
         return ObjectivePaginatedResponse(
             message="Objectives retrieved successfully",
@@ -87,8 +93,8 @@ def get_objectives_by_learning_goal(
             limit=limit
         )
     
-    except APIException as exc:
-        return raise_http_exception(exc)
+    except APIException as err:
+        return raise_http_exception(err)
 
 @router.patch(
     "/{id}", 
@@ -102,7 +108,7 @@ def update_learning_goal(
     session: Session = Depends(get_session)
 ):
     try:
-        updated_learning_goal = learning_goal_service.update_learning_goal(id, learning_goal, token_data.user_id, session)
+        updated_learning_goal = learning_goal_service.update_learning_goal(UUID(id), learning_goal, token_data.user_id, session)
         learning_goal_data = LearningGoalRead.model_validate(updated_learning_goal)
 
         return LearningGoalResponse(
@@ -110,13 +116,13 @@ def update_learning_goal(
             data=learning_goal_data
         )
 
-    except APIException as exc:
-        raise_http_exception(exc)
+    except APIException as err:
+        raise_http_exception(err)
 
 
 @router.delete(
     "/{id}", 
-    summary="Delete a learning goal by ID"
+    summary="Delete learning goal by ID"
 )
 def delete_module(
     id: str, 
@@ -124,7 +130,7 @@ def delete_module(
     session: Session = Depends(get_session)
 ):
     try:
-        return learning_goal_service.delete_learning_goal(id, token_data.user_id, session)
+        return learning_goal_service.delete_learning_goal(UUID(id), token_data.user_id, session)
     
-    except APIException as exc:
-        raise_http_exception(exc)
+    except APIException as err:
+        raise_http_exception(err)

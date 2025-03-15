@@ -2,9 +2,9 @@ from enum import Enum
 
 
 class SkillCategory(str, Enum):
-    learn_to_learn = "learn_to_learn"
-    active_listening = "active_listening"
-    fitness = "fitness"
-    mindset = "mindset"
-    finance = "finance"
-    productivity = "productivity"
+    LEARN_TO_LEARN = "learn_to_learn"
+    ACTIVE_LISTENING = "active_listening"
+    FITNESS = "fitness"
+    MINDSET = "mindset"
+    FINANCE = "finance"
+    PRODUCTIVITY = "productivity"

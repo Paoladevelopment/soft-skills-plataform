@@ -16,11 +16,11 @@ class ModuleService:
             if existing_module:
                 raise Duplicate(f"Module with title '{module.title}' already exists.")
         
-        except APIException:
-            raise
+        except APIException as api_error:
+            raise api_error
         
-        except Exception as exc:
-            handle_db_error(exc, "create_module", error_type="query")
+        except Exception as err:
+            handle_db_error(err, "create_module", error_type="query")
 
         try:
             module_dict = module.model_dump()
@@ -31,9 +31,9 @@ class ModuleService:
             session.refresh(new_module)
             return new_module
         
-        except Exception as exc:
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "create_module", error_type="commit")
+            handle_db_error(err, "create_module", error_type="commit")
         
 
     def get_all_modules(
@@ -49,8 +49,8 @@ class ModuleService:
 
             return modules, total_count
         
-        except Exception as exc:
-            handle_db_error(exc, "read_modules", error_type="query")
+        except Exception as err:
+            handle_db_error(err, "read_modules", error_type="query")
 
     def get_module(self, id: int, session: Session) -> Module:
         try:
@@ -60,11 +60,11 @@ class ModuleService:
                 raise Missing("Module not found")
             return module
         
-        except APIException:
-            raise
+        except APIException as api_error:
+            raise api_error
 
-        except Exception as exc:
-            handle_db_error(exc, "read_module", error_type="query")
+        except Exception as err:
+            handle_db_error(err, "read_module", error_type="query")
 
     def update_module(self, id: int, module: ModuleUpdate, session: Session):
         try:
@@ -81,43 +81,34 @@ class ModuleService:
                 if module_with_new_name:
                     raise Duplicate(f"Module title '{module_with_new_name.title}' is already in use.")
         
-        except APIException:
-            raise
-                
-        except Exception as exc:
-            handle_db_error(exc, "update_module", error_type="query") 
-
-        try:
             module_data = module.model_dump(exclude_unset=True)
             for key, value in module_data.items():
                 setattr(module_to_update, key, value)
 
             session.commit()
-            session.refresh(module_to_update)
 
             return module_to_update
         
-        except Exception as exc:
+        except APIException as api_error: 
+            raise api_error
+        
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "update_module", error_type="commit")
+            handle_db_error(err, "update_module", error_type="commit")
 
 
     def delete_module(self, id: int, session: Session):
         try:
             module = self.get_module(id, session)
 
-        except APIException:
-            raise
-            
-        except Exception as exc:
-            handle_db_error(exc, "delete_module", error_type="query")
-
-        try:
             session.delete(module)
             session.commit()
 
             return {"message": "Module deleted successfully", "id": id}
         
-        except Exception as exc:
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "delete_module", error_type="commit")
+            handle_db_error(err, "delete_module", error_type="commit")

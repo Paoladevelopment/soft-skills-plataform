@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from router import auth, learning_goal, module, objective, user
+from router import auth, learning_goal, module, objective, task, user
 
 api = APIRouter(
   prefix="/api/v1"
@@ -34,4 +34,10 @@ api.include_router(
   objective.router,
   prefix="/objectives",
   tags=["Learning goal objectives"]
+)
+
+api.include_router(
+  task.router,
+  prefix="/tasks",
+  tags=["Tasks"]
 )

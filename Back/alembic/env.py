@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
 from alembic import context
-from model import LearningGoal, Module, Objective, User
+from model import LearningGoal, Module, Objective, Task, User
 from utils import settings
 
 # this is the Alembic Config object, which provides

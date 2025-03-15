@@ -88,7 +88,7 @@ def decode_jwt_token(token: str = Depends(oauth2_scheme)) -> TokenData:
 def get_current_admin_user(token: str = Depends(oauth2_scheme)) -> TokenData:
     token_data = decode_jwt_token(token)
 
-    if token_data.role != UserRoles.admin:
+    if token_data.role != UserRoles.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to access this resource"

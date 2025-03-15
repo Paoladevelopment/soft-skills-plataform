@@ -42,7 +42,7 @@ def create_user(
     summary="Updates user data by ID", 
     response_model=UserResponse
 )
-def update_an_user(
+def update_user(
     user: UserUpdate,
     token_data: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session)
@@ -62,7 +62,7 @@ def update_an_user(
     "/me", 
     summary="Deletes the authenticated user"
 )
-def delete_an_user(
+def delete_user(
     token_data: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session)
 ):

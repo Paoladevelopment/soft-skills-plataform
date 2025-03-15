@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timezone
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import UUID4
 from sqlalchemy import Text
@@ -13,10 +13,10 @@ class ObjectiveBase(SQLModel):
   learning_goal_id: UUID4
   title: str
   description: str
-  status: Status
+  status: Status = Field(default=Status.NOT_STARTED)
   priority: Priority
   due_date: datetime | None = Field(default=None)
-  order_index: int = Field(default=1)
+  order_index: int
 
 
 class Objective(ObjectiveBase, table=True):
@@ -38,3 +38,6 @@ class Objective(ObjectiveBase, table=True):
   started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)
   learning_goal: Optional["LearningGoal"] = Relationship(back_populates="objectives")
+  tasks: List["Task"] = Relationship(
+    back_populates="objective", sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"}
+  )

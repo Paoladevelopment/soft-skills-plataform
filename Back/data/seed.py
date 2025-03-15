@@ -5,9 +5,11 @@ from passlib.context import CryptContext
 from sqlmodel import Session
 
 from enums.common import Priority, Status
+from enums.task import TaskType
 from enums.user import UserRoles
 from model.learning_goal import LearningGoal
 from model.objective import Objective
+from model.task import Task
 from model.user import User
 from utils.db import get_session
 
@@ -23,7 +25,7 @@ def create_seed_data(session: Session):
             username="alicej",
             email="alice@example.com",
             password=pwd_context.hash("securepassword1"),
-            role=UserRoles.admin
+            role=UserRoles.ADMIN
         ),
         User(
             user_id=uuid.uuid4(),
@@ -31,7 +33,7 @@ def create_seed_data(session: Session):
             username="bobsmith",
             email="bob@example.com",
             password=pwd_context.hash("securepassword2"),
-            role=UserRoles.user
+            role=UserRoles.USER
         ),
         User(
             user_id=uuid.uuid4(),
@@ -39,7 +41,7 @@ def create_seed_data(session: Session):
             username="charlieb",
             email="charlie@example.com",
             password=pwd_context.hash("securepassword3"),
-            role=UserRoles.user
+            role=UserRoles.USER
         ),
         User(
             user_id=uuid.uuid4(),
@@ -47,7 +49,7 @@ def create_seed_data(session: Session):
             username="dianap",
             email="diana@example.com",
             password=pwd_context.hash("securepassword4"),
-            role=UserRoles.user
+            role=UserRoles.USER
         ),
     ]
 
@@ -67,7 +69,7 @@ def create_seed_data(session: Session):
             user_id=user_map["Alice Johnson"],
             title=f"Learning Goal {i+1}",
             description=f"Description for Learning Goal {i+1}",
-            status=Status.IN_PROGRESS if i % 2 == 0 else Status.NOT_STARTED,
+            status=Status.NOT_STARTED,
             priority=Priority.HIGH if i % 3 == 0 else Priority.MEDIUM,
             estimated_completion_time=90,
             impact="Boosting skills in various domains"
@@ -125,7 +127,7 @@ def create_seed_data(session: Session):
                         learning_goal_id=learning_goal_map[f"{user.split()[0]}'s Learning Goal {j+1}"],
                         title=f"Objective {obj_id} for {user.split()[0]}'s Learning Goal {j+1}",
                         description=f"Description for Objective {obj_id}",
-                        status=Status.IN_PROGRESS if obj_id % 2 == 0 else Status.NOT_STARTED,
+                        status=Status.NOT_STARTED,
                         priority=Priority.LOW if obj_id % 2 == 0 else Priority.HIGH,
                         order_index=obj_id,
                         due_date=datetime.now(timezone.utc) + timedelta(days=15 * obj_id)
@@ -133,6 +135,34 @@ def create_seed_data(session: Session):
                 )
 
     session.add_all(objectives)
+    session.commit()
+
+    tasks = []
+    
+    # Mapping objectives for tasks
+    objective_map = {obj.title: obj.objective_id for obj in objectives}
+
+    # Assigning tasks to objectives
+    for obj in objectives:
+        for task_id in range(1, 4):  # Each objective gets 3 tasks
+            tasks.append(
+                Task(
+                    task_id=uuid.uuid4(),
+                    objective_id=obj.objective_id,
+                    title=f"Task {task_id} for {obj.title}",
+                    description=f"Detailed task description {task_id} for {obj.title}",
+                    task_type=TaskType.READING if task_id % 3 == 0 else TaskType.WRITING,
+                    status=Status.NOT_STARTED,
+                    priority=Priority.MEDIUM if task_id % 2 == 0 else Priority.HIGH,
+                    estimated_time=30 + (task_id * 10),
+                    actual_time=None,
+                    due_date=obj.due_date - timedelta(days=task_id * 5),
+                    order_index=task_id,
+                    is_optional=True if task_id == 3 else False
+                )
+            )
+
+    session.add_all(tasks)
     session.commit()
 
     print("✅ Seed data inserted successfully!")
