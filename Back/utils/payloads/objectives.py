@@ -1,7 +1,6 @@
 OBJECTIVE_CREATE_EXAMPLE = {
     "title": "Complete SQL Course",
     "description": "Learn advanced SQL queries and database optimization techniques.",
-    "status": "not_started",
     "priority": "high",
     "due_date": "2025-04-15T23:59:59Z",
     "order_index": 1
@@ -22,7 +21,6 @@ OBJECTIVE_READ_EXAMPLE = {
 
 OBJECTIVE_UPDATE_EXAMPLE = {
     "title": "Master SQL Optimization",
-    "order_index": 3
 }
 
 

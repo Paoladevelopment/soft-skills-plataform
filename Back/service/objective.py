@@ -1,30 +1,42 @@
-from typing import Sequence
+from typing import List, Sequence
 from uuid import UUID
 
 from fastapi import Depends
-from sqlalchemy import asc, desc
+from sqlalchemy.sql import case
 from sqlmodel import Session, func, select
 
+from enums.common import Status
 from model.learning_goal import LearningGoal
 from model.objective import Objective
+from model.task import Task
 from schema.objective import ObjectiveCreate, ObjectiveUpdate
+from service.query import QueryService
 from utils.db import get_session
 from utils.errors import APIException, Forbidden, Missing, handle_db_error
 
 
 class ObjectiveService:
-    def verify_user_ownership(self, objective_id: UUID, user_id: UUID, session: Session):
-        statement = (
-            select(LearningGoal.user_id)
-            .join(Objective, Objective.learning_goal_id == LearningGoal.learning_goal_id)
-            .where(Objective.objective_id == objective_id)
-        )
-        
-        result = session.exec(statement).first()
-        learning_goal_owner_id = result[0] if result else None
+    def __init__(self):
+        self.query_service = QueryService()
 
-        if learning_goal_owner_id != user_id:
-            raise Forbidden("You are not allowed to modify this objective")
+    def verify_user_ownership(self, objective_id: UUID, user_id: UUID, session: Session):
+        try:
+            statement = (
+                select(LearningGoal.user_id)
+                .join(Objective, Objective.learning_goal_id == LearningGoal.learning_goal_id)
+                .where(Objective.objective_id == objective_id)
+            )
+            
+            objective_owner_id = session.exec(statement).first()
+
+            if objective_owner_id != user_id:
+                raise Forbidden("You are not allowed to modify this objective")
+        
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "verify_user_ownership", error_type="query")
   
         
     def create_objective(self, objective: ObjectiveCreate, session: Session) -> Objective:
@@ -35,12 +47,12 @@ class ObjectiveService:
             
             session.add(new_objective)
             session.commit()
-            session.refresh(new_objective)
+
             return new_objective
         
-        except Exception as exc:
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "create_objective", error_type="commit")
+            handle_db_error(err, "create_objective", error_type="commit")
         
 
     def get_objectives_by_learning_goal(
@@ -50,39 +62,26 @@ class ObjectiveService:
             limit: int, 
             status: str = None,
             priority: str = None,
+            order_by: list[str] = None,
             session: Session = Depends(get_session),
         ) -> tuple[Sequence[Objective], int]:
 
         try:
-
-            statement = (
-                select(Objective).
-                where(Objective.learning_goal_id == learning_goal_id)
-                .order_by(desc(Objective.priority), asc(Objective.status))
+            return self.query_service._get_paginated_entities(
+                entity=Objective,
+                filter_field="learning_goal_id",
+                filter_value=learning_goal_id,
+                offset=offset,
+                limit=limit,
+                status=status,
+                priority=priority,
+                order_by=order_by,
+                default_order_field="order_index",
+                session=session
             )
-
-            count_statement = select(func.count()).where(Objective.learning_goal_id == learning_goal_id)
-
-            if status:
-                statement = statement.where(Objective.status == status)
-                count_statement = count_statement.where(Objective.status == status)
-            
-            if priority:
-                statement = statement.where(Objective.priority == priority)
-                count_statement = count_statement.where(Objective.priority == priority)
-
-            total_count = session.scalar(count_statement)
-
-            objectives = session.exec(
-                statement.
-                offset(offset).
-                limit(limit)
-            ).all()
-
-            return objectives, total_count
         
-        except Exception as exc:
-            handle_db_error(exc, "get_objectives_by_learning_goal", error_type="query")
+        except Exception as err:
+            handle_db_error(err, "get_objectives_by_learning_goal", error_type="query")
 
     def get_objective(self, objective_id: UUID, session: Session) -> Objective:
         try:
@@ -92,55 +91,111 @@ class ObjectiveService:
                 raise Missing("Objective not found")
             return objective
         
-        except APIException:
-            raise
+        except APIException as api_error:
+            raise api_error
 
-        except Exception as exc:
-            handle_db_error(exc, "get_objective", error_type="query")
-
-    def update_objective(self, objective_id: str, objective: ObjectiveUpdate, user_id: UUID, session: Session) -> Objective:
+        except Exception as err:
+            handle_db_error(err, "get_objective", error_type="query")
+    
+    def _tasks_by_status(self, objective_id: UUID, session: Session):
         try:
-            existing_objective = self.get_objective(UUID(objective_id), session)
-            self.verify_user_ownership(UUID(objective_id), user_id, session)
+            completed_case = case((Task.status == Status.COMPLETED, 1), else_=0)
+            in_progress_case = case((Task.status == Status.IN_PROGRESS, 1), else_=0)
+            paused_case = case((Task.status == Status.PAUSED, 1), else_=0)
 
-        except APIException:
-            raise
-                
-        except Exception as exc:
-            handle_db_error(exc, "update_objective", error_type="query") 
 
+            result = session.exec(
+                select(
+                    func.count().label("total"),
+                    func.sum(completed_case).label("completed"),
+                    func.sum(in_progress_case).label("in_progress"),
+                    func.sum(paused_case).label("paused")
+                )
+                .where(Task.objective_id == objective_id)
+            ).first()
+
+            if not result:
+                raise Missing(f"No tasks found for Objective ID {objective_id}")
+
+            total, completed, in_progress, paused = (result[0] or 0), (result[1] or 0), (result[2] or 0), (result[3] or 0)
+            return {
+                "total": total,
+                "completed": completed,
+                "in_progress": in_progress,
+                "paused": paused,
+            }
+
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "_tasks_by_status", error_type="query")
+
+    def update_objective(self, objective_id: UUID, objective: ObjectiveUpdate, user_id: UUID, session: Session) -> Objective:
         try:
+            existing_objective = self.get_objective(objective_id, session)
+            self.verify_user_ownership(objective_id, user_id, session)
+
             objective_data = objective.model_dump(exclude_unset=True)
             for key, value in objective_data.items():
                 setattr(existing_objective, key, value)
 
             session.commit()
-            session.refresh(existing_objective)
 
             return existing_objective
         
-        except Exception as exc:
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "uupdate_objective", error_type="commit")
+            handle_db_error(err, "update_objective", error_type="commit")
+
+    def update_status(self, objective_id: UUID, session: Session):
+        try:
+            task_counts = self._tasks_by_status(objective_id, session)
+
+            total = task_counts["total"]
+            completed = task_counts["completed"]
+            in_progress = task_counts["in_progress"]
+            paused = task_counts["paused"]
+
+            if completed == total:
+                new_status = Status.COMPLETED
+            elif in_progress > 0:
+                new_status = Status.IN_PROGRESS
+            elif paused == total:
+                new_status = Status.PAUSED
+            else:
+                new_status = Status.NOT_STARTED
+        
+            objective = self.get_objective(objective_id, session)
+
+            if objective.status != new_status:
+                objective.status = new_status
+                session.commit()
+
+        except APIException as api_error:
+            raise api_error
+
+        except Exception as err:
+            session.rollback()
+            handle_db_error(err, "update_status", error_type="commit")
 
 
-    def delete_objective(self, objective_id: str, user_id: UUID, session: Session):
+    def delete_objective(self, objective_id: UUID, user_id: UUID, session: Session):
         try:
             objective = self.get_objective(UUID(objective_id), session)
             self.verify_user_ownership(UUID(objective_id), user_id, session)
             
-        except APIException:
-            raise
-            
-        except Exception as exc:
-            handle_db_error(exc, "delete_objective", error_type="query")
-
-        try:
             session.delete(objective)
             session.commit()
 
             return {"message": "Objective deleted successfully", "objective_id": objective_id}
         
-        except Exception as exc:
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "delete_objective", error_type="commit")
+            handle_db_error(err, "delete_objective", error_type="commit")

@@ -20,7 +20,7 @@ class User(UserBase, table=True):
     username: str = Field(unique=True, index=True)
     email: str = Field(unique=True, index=True)
     password: str = Field(min_length=8, description="Hashed password")
-    role: UserRoles = Field(default=UserRoles.user)
+    role: UserRoles = Field(default=UserRoles.USER)
     created_at: datetime | None = Field(
         default_factory=lambda: datetime.now(timezone.utc),
         sa_type=TIMESTAMP(timezone = True)
