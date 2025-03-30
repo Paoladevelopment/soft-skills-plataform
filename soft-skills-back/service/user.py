@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import Union
 from uuid import UUID
 
@@ -27,11 +28,11 @@ class UserService:
                 if existing_user.email == email:
                     raise Duplicate("An account with this email already exists. Please use a different email.")
         
-        except APIException:
-            raise
+        except APIException as api_error:
+            raise api_error
 
-        except Exception as exc:
-            handle_db_error(exc, "check_duplicate_user", error_type="query")
+        except Exception as err:
+            handle_db_error(err, "check_duplicate_user", error_type="query")
 
     def create_user(self, user: UserCreate, session: Session) -> User:
         try:
@@ -50,9 +51,9 @@ class UserService:
 
             return new_user
 
-        except Exception as exc:
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "create_user", error_type="commit")
+            handle_db_error(err, "create_user", error_type="commit")
     
     def get_user(self, identifier: Union[UUID, str], session: Session) -> User:
         try:
@@ -64,22 +65,22 @@ class UserService:
             user = session.exec(query).first()
 
             if not user:
-                raise Missing("Objective not found")
+                raise Missing("User not found")
             return user
         
-        except APIException:
-            raise
+        except APIException as api_error:
+            raise api_error
 
-        except Exception as exc:
-            handle_db_error(exc, "get_user", error_type="query")
+        except Exception as err:
+            handle_db_error(err, "get_user", error_type="query")
 
     def update_user(self, user_id: UUID, user: UserUpdate, session: Session) -> User:
         try:
             existing_user = self.get_user(user_id, session)
             self.check_duplicate_user(session, user.username, user.email, user_id)
         
-        except APIException:
-            raise
+        except APIException as api_error:
+            raise api_error
         
         try:
             user_data = user.model_dump(exclude_unset=True)
@@ -90,9 +91,19 @@ class UserService:
 
             return existing_user
         
-        except Exception as exc:
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "update_user", error_type="commit")
+            handle_db_error(err, "update_user", error_type="commit")
+    
+    def update_last_login_from_user(self, user: User, session: Session):
+        try:
+            user.last_login = datetime.now(timezone.utc)
+            session.add(user)
+            session.commit()
+            
+        except Exception as err:
+            session.rollback()
+            handle_db_error(err, "update_last_login_from_user", error_type="commit")
 
     def deactivate_user(self, user_id: UUID, session: Session):
         try:    
@@ -106,6 +117,6 @@ class UserService:
 
             return {"message": "User deactivated successfully"}
         
-        except Exception as exc:
+        except Exception as err:
             session.rollback()
-            handle_db_error(exc, "deactivate_user", error_type="commit")
+            handle_db_error(err, "deactivate_user", error_type="commit")

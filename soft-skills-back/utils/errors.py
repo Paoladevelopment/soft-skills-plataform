@@ -62,3 +62,13 @@ def raise_http_exception(exc: Exception):
             "message": "An unexpected error occurred."
         }
     )
+
+def raise_unauthorized_exception():
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail= {
+            "error": "Unauthorized",
+            "message": "Incorrect credentials"
+        },
+        headers={"WWW-Authenticate": "Bearer"},
+    )

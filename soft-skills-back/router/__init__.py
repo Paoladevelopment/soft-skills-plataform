@@ -8,7 +8,7 @@ api = APIRouter(
 
 api.include_router(
   auth.router,
-  prefix="",
+  prefix="/auth",
   tags=["auth"]
 )
 
