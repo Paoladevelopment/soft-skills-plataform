@@ -13,6 +13,7 @@ from model.user import User
 from schema.token import TokenData
 from service.user import UserService
 from utils.config import settings
+from utils.errors import APIException, raise_unauthorized_exception
 from utils.security import verify_password
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.TOKEN_EXPIRE or 15)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
 
 user_service = UserService()
 
@@ -34,12 +35,16 @@ def get_credentials_exception():
 
 
 def authenticate_user(email: str, password: str, session: Session):
-    user: User = user_service.get_user(email, session)
-    if not user:
-        return None
-    if not verify_password(password, user.password):
-        return None
-    return user
+    try:
+        user: User = user_service.get_user(email, session)
+        if not user:
+            return None
+        if not verify_password(password, user.password):
+            return None
+        return user
+    
+    except APIException as api_error:
+        raise api_error
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -53,15 +58,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def generate_token(email: str, password: str, session: Session):
-    user: User = authenticate_user(email, password, session)
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+def generate_token(user: User):
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     return create_access_token(
         data={"sub": str(user.user_id), "role": user.role}, 

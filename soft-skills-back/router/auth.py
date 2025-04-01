@@ -2,15 +2,21 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 
-from schema.token import Token
-from service.auth_service import generate_token
+from model.user import User
+from schema.auth import AuthResponse
+from schema.user import UserRead
+from service.auth_service import authenticate_user, generate_token
+from service.user import UserService
 from utils.db import get_session
+from utils.errors import APIException, raise_unauthorized_exception, raise_http_exception, Missing
 
 router = APIRouter()
 
+user_service = UserService()
+
 @router.post(
     "/login",
-    response_model=Token
+    response_model=AuthResponse
 )
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), 
@@ -28,5 +34,24 @@ def login_for_access_token(
     - **`access_token` (str)**: A JWT token to authenticate future requests.
     - **`token_type` (str)**: `"bearer"` (OAuth2-compatible).
     """
-    access_token = generate_token(form_data.username, form_data.password, session)
-    return Token(access_token=access_token, token_type="bearer")
+    try:
+        user: User = authenticate_user(form_data.username, form_data.password, session)
+
+        if not user:
+            raise_unauthorized_exception()
+        
+        user_service.update_last_login_from_user(user, session)
+        
+        access_token = generate_token(user)
+        return AuthResponse(
+            access_token=access_token, 
+            token_type="bearer", 
+            user=UserRead.model_validate(user)
+        )
+    
+    except APIException as err:
+        if isinstance(err, Missing):
+            raise_unauthorized_exception()
+        
+        raise_http_exception(err)
+        
