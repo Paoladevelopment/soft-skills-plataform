@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session
 
 from schema.learning_goal import LearningGoalPaginatedResponse
 from schema.token import TokenData
-from schema.user import UserCreate, UserRead, UserResponse, UserUpdate
+from schema.user import UserResponse, UserUpdate
 from service.auth_service import decode_jwt_token
 from service.learning_goal import LearningGoalService
 from service.user import UserService
@@ -14,28 +14,6 @@ router = APIRouter()
 
 user_service = UserService()
 learning_goal_service = LearningGoalService()
-
-@router.post(
-    "",
-    status_code=status.HTTP_201_CREATED,
-    response_model=UserResponse,
-    summary="Creates a new user account",
-)
-def create_user(
-    user: UserCreate, 
-    session: Session = Depends(get_session)
-):
-    try:
-        new_user = user_service.create_user(user, session)
-        user_data = UserRead.model_validate(new_user)
-
-        return UserResponse(
-            message="User successfully created",
-            data=user_data
-        )
-    
-    except APIException as exc:
-        raise_http_exception(exc)
 
 @router.patch(
     "/me", 

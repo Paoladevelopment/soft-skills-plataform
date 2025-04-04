@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Header from '../components/Header'
 
-const ProtectedLayout = () => {
+const MainLayout = () => {
   return (
     <>
       <Header />
@@ -12,4 +12,4 @@ const ProtectedLayout = () => {
   )
 }
 
-export default ProtectedLayout
+export default MainLayout

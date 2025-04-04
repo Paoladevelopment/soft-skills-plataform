@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 
 from model.user import User
 from schema.auth import AuthResponse
-from schema.user import UserRead
+from schema.user import UserCreate, UserRead
 from service.auth_service import authenticate_user, generate_token
 from service.user import UserService
 from utils.db import get_session
@@ -54,4 +54,22 @@ def login_for_access_token(
             raise_unauthorized_exception()
         
         raise_http_exception(err)
-        
+
+@router.post(
+    "/register",
+    status_code=status.HTTP_201_CREATED,
+    summary="Creates a new user account",
+)
+def create_user(
+    user: UserCreate, 
+    session: Session = Depends(get_session)
+):
+    try:
+        _ = user_service.create_user(user, session)
+
+        return {
+            "message": "User successfully created",
+        }
+    
+    except APIException as exc:
+        raise_http_exception(exc)      

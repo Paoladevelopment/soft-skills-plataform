@@ -2,8 +2,7 @@ USER_CREATE_EXAMPLE = {
     "name": "Super Man",
     "username": "tusupermanfav",
     "email": "fake@email.com",
-    "password": "password123",
-    "profile_picture": "https://example.com/pic.jpg"
+    "password": "password123"
 }
 
 USER_READ_EXAMPLE = {

@@ -24,9 +24,9 @@ class UserService:
 
             if existing_user:
                 if existing_user.username == username:
-                    raise Duplicate("This username is already taken. Please choose another one.")
+                    raise Duplicate("Username already exists")
                 if existing_user.email == email:
-                    raise Duplicate("An account with this email already exists. Please use a different email.")
+                    raise Duplicate("Email already exists.")
         
         except APIException as api_error:
             raise api_error

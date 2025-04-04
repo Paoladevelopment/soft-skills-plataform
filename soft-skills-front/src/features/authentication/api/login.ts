@@ -1,5 +1,6 @@
 import { api } from "../../../config/api"
-import { LoginResponse } from "../types/auth";
+import { LoginResponse } from "../types/login.api";
+import camelcaseKeys from 'camelcase-keys';
 
 export async function loginUser(username: string, password: string): Promise<LoginResponse> {
     const formData = new URLSearchParams()
@@ -20,5 +21,10 @@ export async function loginUser(username: string, password: string): Promise<Log
         throw new Error(message)
     }
 
-    return await response.json()
+    const rawData = await response.json()
+    const camelData = camelcaseKeys(rawData, {deep: true})
+
+    camelData.user.lastLogin = new Date(camelData.user.lastLogin)
+
+    return camelData as LoginResponse
 }
