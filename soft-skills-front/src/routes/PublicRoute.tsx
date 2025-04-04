@@ -1,12 +1,7 @@
-import { Navigate } from 'react-router-dom'
-import { ReactNode } from 'react'
+import { Navigate, Outlet } from 'react-router-dom'
 import useAuthStore from '../features/authentication/store/useAuthStore'
 
-interface Props {
-  children: ReactNode
-}
-
-export const PublicRoute = ({ children }: Props) => {
+export const PublicRoutes = () => {
   const isLoggedIn = useAuthStore(state => state.isLoggedIn())
-  return isLoggedIn ? <Navigate to="/" replace /> : children
+  return isLoggedIn ? <Navigate to="/" replace /> : <Outlet />
 }

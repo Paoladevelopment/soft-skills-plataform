@@ -1,16 +1,9 @@
-import { User } from "./user";
+import { RegisterPayload } from "./register.api";
+import { User } from "./user.store";
 
 export interface AuthProps {
   defaultMode?: "login" | "register";
 }
-
-export interface LoginResponse {
-  user: User
-  accessToken: string
-  tokenType: string
-  refreshToken?: string
-}
-
 
 export interface IAuth {
   user: User | null
@@ -18,7 +11,9 @@ export interface IAuth {
   accessToken: string | null
   tokenType: string | null
   error: string | null
+  successMessage: string | null
   login: (username: string, password: string) => Promise<void>
+  signUp: (userData: RegisterPayload) => Promise<void>
   logout: () => void
   isLoggedIn: () => boolean
 }

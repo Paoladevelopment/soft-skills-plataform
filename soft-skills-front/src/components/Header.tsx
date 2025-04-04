@@ -6,24 +6,24 @@ import {
 	Menu,
 	MenuItem,
 	Toolbar,
-	Tooltip,
 	Typography
-} from '@mui/material';
-import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined';
-import Logout from '@mui/icons-material/Logout';
-import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../features/authentication/store/useAuthStore';
-import React from 'react';
+} from '@mui/material'
+import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined'
+import Logout from '@mui/icons-material/Logout'
+import { useNavigate } from 'react-router-dom'
+import useAuthStore from '../features/authentication/store/useAuthStore'
+import React from 'react'
   
 const Header = () => {
-    const navigate = useNavigate();
-    const logout = useAuthStore(state => state.logout);
-    const user = useAuthStore(state => state.user);
+    const navigate = useNavigate()
+    const logout = useAuthStore(state => state.logout)
+    const user = useAuthStore(state => state.user)
   
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+	const open = Boolean(anchorElUser)
   
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorElUser(event.currentTarget);
+		setAnchorElUser(event.currentTarget)
     };
   
     const handleCloseUserMenu = () => {
@@ -61,14 +61,12 @@ const Header = () => {
 				</Box>
 
 				<Box>
-					<Tooltip title="Open settings">
-						<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-							<Avatar 
-								alt={user?.name || 'user'} 
-								src={user?.profilePicture} 
-							/>
-						</IconButton>
-					</Tooltip>
+					<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+						<Avatar 
+							alt={user?.name || 'user'} 
+							src={user?.profilePicture} 
+						/>
+					</IconButton>
 					<Menu
 						sx={{ mt: '45px' }}
 						anchorEl={anchorElUser}
@@ -80,7 +78,7 @@ const Header = () => {
 							vertical: 'top',
 							horizontal: 'right',
 						}}
-						open={Boolean(anchorElUser)}
+						open={open}
 						onClose={handleCloseUserMenu}
 						slotProps={{
 							paper: {

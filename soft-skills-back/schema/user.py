@@ -7,15 +7,22 @@ from model.user import UserBase
 from schema.base import BaseResponse
 from utils.payloads import (PASSWORD_UPDATE_EXAMPLE, USER_CREATE_EXAMPLE,
                             USER_READ_EXAMPLE, USER_UPDATE_EXAMPLE)
-from utils.security import validate_password
+from utils.validators import validate_password, validate_username
 
 
-class UserCreate(UserBase):
+class UserCreate(SQLModel):
+    name: str = Field(description="Name of the user.")
+    username: str = Field(description="Unique username (3–20 characters). Must start with a letter and contain only letters, numbers, or underscores.")
+    email: EmailStr = Field(description="Updated email address.")
     password: str = Field(min_length=8, description="User's password with at least one letter and one number.")
 
     @field_validator("password")
     def check_password(cls, value: str) -> str:
         return validate_password(value)
+    
+    @field_validator("username")
+    def validate_username_field(cls, value: str) -> str:
+        return validate_username(value)
     
     model_config = {"json_schema_extra": {"example": USER_CREATE_EXAMPLE}}
 
