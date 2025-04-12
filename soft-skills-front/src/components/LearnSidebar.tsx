@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip } from '@mui/material'
+import { Box } from '@mui/material'
 import {
   CheckCircle,
   CalendarMonth,
@@ -8,11 +8,10 @@ import {
   Home,
   Help
 } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
 import UserMenu from './UserMenu'
+import SidebarIcon from './SideBarIcon'
 
 const LearnSidebar = () => {
-  const navigate = useNavigate()
   return (
   <Box
     sx={{
@@ -29,49 +28,16 @@ const LearnSidebar = () => {
   >
     <UserMenu />
 
-    <Tooltip title="Dashboard">
-      <IconButton>
-        <Dashboard />
-      </IconButton>
-    </Tooltip>
-
-    <Tooltip title="Planner">
-      <IconButton color="secondary">
-        <CheckCircle />
-      </IconButton>
-    </Tooltip>
-
-    <Tooltip title="Explore">
-      <IconButton>
-        <Explore />
-      </IconButton>
-    </Tooltip>
-
-    <Tooltip title="Learning Report">
-      <IconButton>
-        <BarChart />
-      </IconButton>
-    </Tooltip>
-
-    <Tooltip title="Calendar">
-      <IconButton>
-        <CalendarMonth />
-      </IconButton>
-    </Tooltip>
+    <SidebarIcon icon={<Dashboard />} label="Dashboard" to="/learn/dashboard" />
+    <SidebarIcon icon={<CheckCircle />} label="Planner" to="/learn/planner" />
+    <SidebarIcon icon={<Explore />} label="Explore" to="/learn/explore" />
+    <SidebarIcon icon={<BarChart />} label="Learning Reports" to="/learn/reports" />
+    <SidebarIcon icon={<CalendarMonth />} label="Calendar" to="/learn/calendar" />
 
     <Box sx={{ flexGrow: 1 }} />
 
-    <Tooltip title="App Home">
-      <IconButton onClick={() => navigate("/")}>
-        <Home />
-      </IconButton>
-    </Tooltip>
-
-    <Tooltip title="Help">
-      <IconButton>
-        <Help />
-      </IconButton>
-    </Tooltip>
+    <SidebarIcon icon={<Home />} label="App Home" to="/" />
+    <SidebarIcon icon={<Help />} label="Help" to="/learn/help" />
   </Box>
   )
 }
