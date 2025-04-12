@@ -27,7 +27,7 @@ const signInSchema = z.object({
 type sigInFields = z.infer<typeof signInSchema>
 
 function Login() {
-  const theme = useTheme();
+  const theme = useTheme()
 
   const login = useAuthStore(state => state.login)
   const isLoading = useAuthStore(state => state.isLoading)
