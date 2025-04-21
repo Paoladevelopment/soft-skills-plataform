@@ -5,15 +5,10 @@ from typing import List
 from sqlalchemy import Text
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
 
-from enums.common import Priority, Status
-
 
 class LearningGoalBase(SQLModel):
   title: str
   description: str
-  status: Status
-  priority: Priority
-  estimated_completion_time: int
   impact: str | None = Field(default=None)
 
 

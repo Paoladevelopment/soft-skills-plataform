@@ -41,7 +41,9 @@ function Register() {
   const signUp = useAuthStore(state => state.signUp)
   const isLoading = useAuthStore(state => state.isLoading)
   const error = useAuthStore(state => state.error)
-  const successMessage = useAuthStore((state) => state.successMessage)
+  const successMessage = useAuthStore(state => state.successMessage)
+  const clearError = useAuthStore(state => state.clearError)
+  const clearSuccessMessage = useAuthStore(state => state.clearSuccessMessage)
 
   const {
     register, 
@@ -59,8 +61,15 @@ function Register() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
   const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show)
+  const handleCloseSnackbar = () => {
+    setOpenError(false)
+    clearError()
+  }
 
   const onSubmit: SubmitHandler<sigUpFields> = async (data) => {
+    clearError()
+    clearSuccessMessage()
+    
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirm_password: _, ...userData } = data
 
@@ -77,10 +86,10 @@ function Register() {
       <Snackbar
         open={openError}
         autoHideDuration={5000}
-        onClose={() => setOpenError(false)}
+        onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="error" variant="filled" onClose={() => setOpenError(false)}>
+        <Alert severity="error" variant="filled" onClose={handleCloseSnackbar}>
           {error}
         </Alert>
       </Snackbar>
@@ -88,7 +97,7 @@ function Register() {
       <Snackbar
         open={!!successMessage}
         autoHideDuration={5000}
-        onClose={() => {}}
+        onClose={clearSuccessMessage}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert severity="success" variant="filled">

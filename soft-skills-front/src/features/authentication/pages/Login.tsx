@@ -32,6 +32,7 @@ function Login() {
   const login = useAuthStore(state => state.login)
   const isLoading = useAuthStore(state => state.isLoading)
   const error = useAuthStore(state => state.error)
+  const clearError = useAuthStore(state => state.clearError)
 
   const {
     register, 
@@ -47,9 +48,18 @@ function Login() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
 
+  const handleCloseSnackbar = () => {
+    setOpenError(false)
+    clearError()
+  }
+
   const onSubmit: SubmitHandler<sigInFields> = async (data) => {
+    clearError()
+    
     await login(data.email, data.password)
-    if (useAuthStore.getState().error) {
+
+    const { error } = useAuthStore.getState()
+    if (error) {
       return setOpenError(true)
     }
 
@@ -61,10 +71,10 @@ function Login() {
       <Snackbar
         open={openError}
         autoHideDuration={5000}
-        onClose={() => setOpenError(false)}
+        onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="error" variant="filled" onClose={() => setOpenError(false)}>
+        <Alert severity="error" variant="filled" onClose={handleCloseSnackbar}>
           {error}
         </Alert>
       </Snackbar>

@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlmodel import Session
-
 from model.user import User
 from schema.auth import AuthResponse
 from schema.user import UserCreate, UserRead
 from service.auth_service import authenticate_user, generate_token
 from service.user import UserService
+from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import APIException, raise_unauthorized_exception, raise_http_exception, Missing
+from utils.errors import (APIException, Missing, raise_http_exception,
+                          raise_unauthorized_exception)
 
 router = APIRouter()
 

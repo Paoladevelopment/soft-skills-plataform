@@ -1,11 +1,10 @@
 from datetime import datetime
 
-from pydantic import UUID4
-from sqlmodel import Field, SQLModel
-
 from enums.common import Priority, Status
 from model.objective import ObjectiveBase
+from pydantic import UUID4
 from schema.base import BaseResponse, PaginatedResponse
+from sqlmodel import Field, SQLModel
 from utils.payloads import (OBJECTIVE_CREATE_EXAMPLE, OBJECTIVE_READ_EXAMPLE,
                             OBJECTIVE_UPDATE_EXAMPLE)
 
@@ -26,6 +25,7 @@ class ObjectiveSummary(SQLModel):
   status: Status
   priority: Priority
   due_date: datetime | None
+  order_index: int
 
 class ObjectiveUpdate(SQLModel):
   title: str | None = Field(default=None, description="Updated title of the objective")

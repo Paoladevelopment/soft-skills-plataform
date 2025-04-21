@@ -2,12 +2,11 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
+from enums.common import Priority, Status
+from enums.task import TaskType
 from pydantic import UUID4
 from sqlalchemy import Text
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
-
-from enums.common import Priority, Status
-from enums.task import TaskType
 
 
 class TaskBase(SQLModel):

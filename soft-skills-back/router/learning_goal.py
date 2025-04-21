@@ -2,16 +2,14 @@ from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
-from sqlmodel import Session
-
-from schema.learning_goal import (LearningGoalCreate, LearningGoalDetail,
-                                  LearningGoalRead, LearningGoalResponse,
-                                  LearningGoalUpdate)
+from schema.learning_goal import (LearningGoalCreate, LearningGoalRead, 
+                                  LearningGoalResponse, LearningGoalUpdate)
 from schema.objective import ObjectivePaginatedResponse
 from schema.token import TokenData
 from service.auth_service import decode_jwt_token
 from service.learning_goal import LearningGoalService
 from service.objective import ObjectiveService
+from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
 
@@ -56,7 +54,7 @@ def get_learning_goal(
 ):
     try:
         learning_goal = learning_goal_service.get_learning_goal(UUID(id), session)
-        learning_goal_data = LearningGoalDetail.model_validate(learning_goal)
+        learning_goal_data = LearningGoalRead.model_validate(learning_goal)
 
         return LearningGoalResponse(
             message="Learning goal retrieved successfully",
@@ -124,7 +122,7 @@ def update_learning_goal(
     "/{id}", 
     summary="Delete learning goal by ID"
 )
-def delete_module(
+def delete_learning_goal(
     id: str, 
     token_data: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session)

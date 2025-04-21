@@ -1,13 +1,12 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
-from sqlmodel import Session
-
 from enums.common import Status
+from fastapi import APIRouter, Depends, status
 from schema.task import TaskCreate, TaskRead, TaskResponse, TaskUpdate
 from schema.token import TokenData
 from service.auth_service import decode_jwt_token
 from service.task import TaskService
+from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
 

@@ -1,10 +1,9 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool
-from sqlmodel import SQLModel
-
 from alembic import context
 from model import LearningGoal, Module, Objective, Task, User
+from sqlalchemy import engine_from_config, pool
+from sqlmodel import SQLModel
 from utils import settings
 
 # this is the Alembic Config object, which provides

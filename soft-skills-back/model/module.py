@@ -1,10 +1,9 @@
 from datetime import datetime, timezone
 from typing import List
 
+from enums.module import ModuleStatus, SkillCategory
 from sqlalchemy import JSON, Column
 from sqlmodel import TIMESTAMP, Field, SQLModel
-
-from enums.module import ModuleStatus, SkillCategory
 
 
 class ModuleBase(SQLModel):

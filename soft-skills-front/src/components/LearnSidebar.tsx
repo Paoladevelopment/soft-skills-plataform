@@ -18,6 +18,7 @@ const LearnSidebar = () => {
       width: '64px',
       height: '100vh',
       display: 'flex',
+      position: 'fixed',
       flexDirection: 'column',
       alignItems: 'center',
       gap: 0.5,

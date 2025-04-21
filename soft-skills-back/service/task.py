@@ -1,19 +1,21 @@
 from typing import List, Sequence
+from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import Depends
-from sqlmodel import Session, select
-
 from enums.common import Status
+from fastapi import Depends
 from model.learning_goal import LearningGoal
 from model.objective import Objective
 from model.task import Task
+from mongo_service.task import TaskMongoService
 from schema.task import TaskCreate, TaskUpdate
 from service.learning_goal import LearningGoalService
 from service.objective import ObjectiveService
 from service.query import QueryService
+from sqlmodel import Session, select
 from utils.db import get_session
 from utils.errors import APIException, Forbidden, Missing, handle_db_error
+from utils.mongo_serializers import build_task_document
 
 
 class TaskService:
@@ -21,6 +23,7 @@ class TaskService:
         self.query_service = QueryService()
         self.objective_service = ObjectiveService()
         self.learning_goal_service = LearningGoalService()
+        self.mongo_service = TaskMongoService()
     
     def verify_user_ownership(self, objective_id: UUID, user_id: UUID, session: Session):
         try: 
@@ -47,6 +50,13 @@ class TaskService:
             task_dict = task.model_dump()
 
             new_task = Task(**task_dict)
+            new_task.created_at = datetime.now(timezone.utc)
+            new_task.updated_at = new_task.created_at
+
+            objective = self.objective_service.get_objective(new_task.objective_id, session)
+
+            mongo_data = build_task_document(new_task)
+            self.mongo_service.add_task(objective.learning_goal_id, new_task.objective_id, mongo_data)
             
             session.add(new_task)
             session.commit()
@@ -109,6 +119,18 @@ class TaskService:
             for key, value in task_data.items():
                 setattr(existing_task, key, value)
 
+            existing_task.updated_at = datetime.now(timezone.utc)
+
+            objective = self.objective_service.get_objective(existing_task.objective_id, session)
+
+            mongo_data = build_task_document(existing_task)
+            self.mongo_service.update_task(
+                objective.learning_goal_id,
+                existing_task.objective_id,
+                task_id,
+                mongo_data
+            )
+
             session.commit()
 
             return existing_task
@@ -126,12 +148,20 @@ class TaskService:
             self.verify_user_ownership(existing_task.objective_id, user_id, session)
 
             existing_task.status = new_status
-
-            self.objective_service.update_status(existing_task.objective_id, session)
+            existing_task.updated_at = datetime.now(timezone.utc)
 
             objective = self.objective_service.get_objective(existing_task.objective_id, session)
-            self.learning_goal_service.update_status(objective.learning_goal_id, session)
 
+            mongo_data = build_task_document(existing_task)
+            self.mongo_service.update_task(
+                objective.learning_goal_id,
+                existing_task.objective_id,
+                task_id,
+                mongo_data
+            )
+
+            self.objective_service.update_status(existing_task.objective_id, session)
+            
             session.commit()
 
             return existing_task
@@ -147,6 +177,10 @@ class TaskService:
         try:
             task = self.get_task(task_id, session)
             self.verify_user_ownership(task.objective_id, user_id, session)
+
+            objective = self.objective_service.get_objective(task.objective_id, session)
+
+            self.mongo_service.delete_task(objective.learning_goal_id, task.objective_id, task_id)
             
             session.delete(task)
             session.commit()

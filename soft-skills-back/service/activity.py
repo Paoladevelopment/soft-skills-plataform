@@ -1,9 +1,8 @@
 from typing import Sequence
 
 from fastapi import Depends
-from sqlmodel import Session, select
-
 from model.activity import Activity, ActivityCreate, ActivityUpdate
+from sqlmodel import Session, select
 from utils.db import get_session
 from utils.errors import Duplicate, Missing
 

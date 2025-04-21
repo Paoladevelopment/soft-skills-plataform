@@ -3,15 +3,14 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 from uuid import UUID
 
+from enums.user import UserRoles
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from sqlmodel import Session
-
-from enums.user import UserRoles
 from model.user import User
 from schema.token import TokenData
 from service.user import UserService
+from sqlmodel import Session
 from utils.config import settings
 from utils.errors import APIException, raise_unauthorized_exception
 from utils.security import verify_password

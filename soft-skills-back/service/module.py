@@ -1,10 +1,9 @@
 from typing import Sequence
 
 from fastapi import Depends
-from sqlmodel import Session, func, select
-
 from model.module import Module
 from schema.module import ModuleCreate, ModuleUpdate
+from sqlmodel import Session, func, select
 from utils.db import get_session
 from utils.errors import APIException, Duplicate, Missing, handle_db_error
 
