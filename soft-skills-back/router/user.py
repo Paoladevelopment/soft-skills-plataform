@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, Query
-from sqlmodel import Session
-
 from schema.learning_goal import LearningGoalPaginatedResponse
 from schema.token import TokenData
 from schema.user import UserResponse, UserUpdate
 from service.auth_service import decode_jwt_token
 from service.learning_goal import LearningGoalService
 from service.user import UserService
+from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
 

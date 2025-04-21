@@ -16,15 +16,28 @@ const useAuthStore = create<IAuth>()(
         error: null,
         successMessage: null,
 
+        clearError: () => {
+          set({
+             error: null 
+            }, false, 'AUTH/CLEAR_ERROR')
+        },
+
+        clearSuccessMessage: () => {
+          set({
+             successMessage: null 
+            }, false, 'AUTH/CLEAR_SUCCESS_MESSAGE')
+        },
+
         login: async (username, password) => {
-          set({ isLoading: true, error: null, successMessage: null }, false, 'AUTH/LOGIN_REQUEST')
+          set({
+            isLoading: true, error: null, successMessage: null 
+          }, false, 'AUTH/LOGIN_REQUEST')
 
           try {
             const data = await loginUser(username, password)
             set({
               user: data.user,
               accessToken: data.accessToken,
-              isLoading: false,
             }, false, 'AUTH/LOGIN_SUCCESS')
 
           } catch (err: unknown) {
@@ -34,17 +47,22 @@ const useAuthStore = create<IAuth>()(
                 isLoading: false
               }, false, 'AUTH/LOGIN_FAILURE')
             }
+          } finally {
+            set({
+              isLoading: false,
+            }, false, 'AUTH/LOGIN_COMPLETE') 
           }
         },
 
         signUp: async (userData: RegisterPayload) => {
-          set({ isLoading: true, error: null, successMessage: null }, false, 'AUTH/SIGNUP_REQUEST')
+          set({
+             isLoading: true, error: null, successMessage: null 
+            }, false, 'AUTH/SIGNUP_REQUEST')
           try {
             const data = await registerUser(userData) 
 
             set({
-              successMessage: data.message, 
-              isLoading: false 
+              successMessage: data.message,
             }, false, 'AUTH/SIGNUP_SUCCESS')
 
           } catch (err: unknown) {
@@ -54,6 +72,10 @@ const useAuthStore = create<IAuth>()(
                 isLoading: false
               }, false, 'AUTH/SIGNUP_FAILURE')
             }
+          } finally {
+            set({
+              isLoading: false,
+            }, false, 'AUTH/SIGNUP_COMPLETE')
           }
         },
 

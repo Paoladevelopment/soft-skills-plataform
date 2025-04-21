@@ -12,6 +12,8 @@ export interface IAuth {
   tokenType: string | null
   error: string | null
   successMessage: string | null
+  clearError: () => void
+  clearSuccessMessage: () => void
   login: (username: string, password: string) => Promise<void>
   signUp: (userData: RegisterPayload) => Promise<void>
   logout: () => void

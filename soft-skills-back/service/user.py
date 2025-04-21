@@ -2,10 +2,9 @@ from datetime import datetime, timezone
 from typing import Union
 from uuid import UUID
 
-from sqlmodel import Session, or_, select
-
 from model.user import User
 from schema.user import UserCreate, UserUpdate
+from sqlmodel import Session, or_, select
 from utils.errors import APIException, Duplicate, Missing, handle_db_error
 from utils.security import get_password_hash
 

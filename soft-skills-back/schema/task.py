@@ -1,12 +1,11 @@
 from datetime import datetime
 
-from pydantic import UUID4
-from sqlmodel import Field, SQLModel
-
 from enums.common import Priority, Status
 from enums.task import TaskType
 from model.task import TaskBase
+from pydantic import UUID4
 from schema.base import BaseResponse, PaginatedResponse
+from sqlmodel import Field, SQLModel
 from utils.payloads import (TASK_CREATE_EXAMPLE, TASK_READ_EXAMPLE,
                             TASK_UPDATE_EXAMPLE)
 

@@ -7,19 +7,18 @@ function Planner() {
       sx={{
         maxWidth: '900px',
         mx: 'auto',
-        pt: 4,
         px: 2,
+        py: 4,
+        gap: 4,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '100%',
       }}
     >
       <Box
         sx={{
-          display: "flex",
+          display: 'flex',
           flexDirection: 'column',
           gap: 0.5,
-          mb: 6,
         }}
       >
           <Typography variant="h4" component="h1" fontWeight="bold">
@@ -29,8 +28,10 @@ function Planner() {
             Organize your learning goals, objectives, and tasks as part of your self-regulated learning journey.
           </Typography>
       </Box>
-
-      <GoalsSection/>
+    
+      <Box sx={{ flex: 1, minHeight: 0 }}>
+        <GoalsSection />
+      </Box>
     </Box>
   )
 }

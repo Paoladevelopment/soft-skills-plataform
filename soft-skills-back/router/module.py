@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, Query, status
-from sqlmodel import Session
-
 from schema.module import (ModuleCreate, ModulePaginatedResponse, ModuleRead,
                            ModuleResponse, ModuleUpdate)
 from service.auth_service import get_current_admin_user
 from service.module import ModuleService
+from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
 

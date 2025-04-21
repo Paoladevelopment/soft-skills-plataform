@@ -1,4 +1,5 @@
 OBJECTIVE_CREATE_EXAMPLE = {
+    "learning_goal_id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
     "title": "Complete SQL Course",
     "description": "Learn advanced SQL queries and database optimization techniques.",
     "priority": "high",

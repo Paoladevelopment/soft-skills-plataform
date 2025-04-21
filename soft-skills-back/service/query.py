@@ -4,7 +4,6 @@ from sqlalchemy import asc, desc
 from sqlalchemy.engine import ScalarResult
 from sqlalchemy.sql import Select
 from sqlmodel import Session, func, select
-
 from utils.errors import handle_db_error
 
 

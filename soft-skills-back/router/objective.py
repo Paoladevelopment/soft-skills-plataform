@@ -2,8 +2,6 @@ from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
-from sqlmodel import Session
-
 from schema.objective import (ObjectiveCreate, ObjectiveRead,
                               ObjectiveResponse, ObjectiveUpdate)
 from schema.task import TaskPaginatedResponse
@@ -11,6 +9,7 @@ from schema.token import TokenData
 from service.auth_service import decode_jwt_token
 from service.objective import ObjectiveService
 from service.task import TaskService
+from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
 

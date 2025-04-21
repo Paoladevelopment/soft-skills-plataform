@@ -1,8 +1,8 @@
 from uuid import UUID
 
+from enums.user import UserRoles
 from sqlmodel import Field, SQLModel
 
-from enums.user import UserRoles
 
 class TokenData(SQLModel):
   user_id: UUID | None = Field(default=None)

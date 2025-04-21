@@ -1,5 +1,7 @@
 from .learning_goal import (LEARNING_GOAL_CREATE_EXAMPLE,
                             LEARNING_GOAL_READ_EXAMPLE,
+                            LEARNING_GOAL_DETAIL_READ_EXAMPLE,
+                            LEARNING_GOAL_WITH_PROGRESS_READ_EXAMPLE,
                             LEARNING_GOAL_UPDATE_EXAMPLE)
 from .module import (MODULE_CREATE_EXAMPLE, MODULE_READ_EXAMPLE,
                      MODULE_UPDATE_EXAMPLE)

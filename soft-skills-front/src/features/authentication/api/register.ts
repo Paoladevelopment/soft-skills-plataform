@@ -10,11 +10,12 @@ export async function registerUser(payload: RegisterPayload): Promise<RegisterRe
         body: JSON.stringify(payload)
     })
 
+    const data = await response.json()
+
     if (!response.ok) {
-        const errBody = await response.json()
-        const message = errBody.detail.message
+        const message = data?.detail?.message || "Oops! Something went wrong while signing you up"
         throw new Error(message)
     }
 
-    return await response.json()
+    return data
 }

@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from pydantic import UUID4, EmailStr, field_validator
-from sqlmodel import Field, SQLModel
-
 from model.user import UserBase
+from pydantic import UUID4, EmailStr, field_validator
 from schema.base import BaseResponse
+from sqlmodel import Field, SQLModel
 from utils.payloads import (PASSWORD_UPDATE_EXAMPLE, USER_CREATE_EXAMPLE,
                             USER_READ_EXAMPLE, USER_UPDATE_EXAMPLE)
 from utils.validators import validate_password, validate_username

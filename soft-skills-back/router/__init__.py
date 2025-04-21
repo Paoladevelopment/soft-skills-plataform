@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-
 from router import auth, learning_goal, module, objective, task, user
 
 api = APIRouter(

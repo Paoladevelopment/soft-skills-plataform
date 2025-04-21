@@ -1,19 +1,24 @@
 from typing import Sequence
+from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import Depends
-from sqlalchemy.sql import case
-from sqlmodel import Session, func, select
-
 from enums.common import Status
+from fastapi import Depends
 from model.learning_goal import LearningGoal
 from model.objective import Objective
-from schema.learning_goal import LearningGoalCreate, LearningGoalUpdate
+from mongo_service.learning_goal import LearningGoalMongoService
+from schema.learning_goal import LearningGoalCreate, LearningGoalUpdate, LearningGoalReadWithProgress
+from sqlmodel import desc, Session, func, select
+from sqlalchemy.sql import case
 from utils.db import get_session
 from utils.errors import APIException, Forbidden, Missing, handle_db_error
+from utils.mongo_serializers import build_learning_goal_document
 
 
 class LearningGoalService:
+    def __init__(self):
+        self.mongo_service = LearningGoalMongoService()
+
     def verify_user_ownership(self, learning_goal: LearningGoal, user_id: UUID):
         if learning_goal.user_id != user_id:
                 raise Forbidden("You are not allowed to perform this action")
@@ -23,18 +28,35 @@ class LearningGoalService:
             learning_goal_dict = learning_goal.model_dump()
 
             new_learning_goal = LearningGoal(**learning_goal_dict)
-
             new_learning_goal.user_id = user_id
+            new_learning_goal.created_at = datetime.now(timezone.utc)
+            new_learning_goal.updated_at = new_learning_goal.created_at
+
+            mongo_data = build_learning_goal_document(new_learning_goal)
+            self.mongo_service.create_learning_goal(mongo_data)
             
             session.add(new_learning_goal)
             session.commit()
-            session.refresh(new_learning_goal)
+
             return new_learning_goal
         
         except Exception as err:
             session.rollback()
             handle_db_error(err, "create_learning_goal", error_type="commit")
+
+    def __attach_objective_progress(
+        self,
+        goal: LearningGoal,
+        session: Session
+    ) -> LearningGoalReadWithProgress:
         
+        summary = self._objectives_by_status(goal.learning_goal_id, session)
+
+        return LearningGoalReadWithProgress(
+            **goal.model_dump(),
+            total_objectives=summary["total"],
+            completed_objectives=summary["completed"]
+        )
 
     def get_all_user_learning_goals(
             self,
@@ -42,7 +64,7 @@ class LearningGoalService:
             offset: int,
             limit: int, 
             session: Session = Depends(get_session),
-        ) -> tuple[Sequence[LearningGoal], int]:
+        ) -> tuple[Sequence[LearningGoalReadWithProgress], int]:
 
         try:
             total_count = session.scalar(
@@ -50,13 +72,19 @@ class LearningGoalService:
             )
 
             user_learning_goals = session.exec(
-                select(LearningGoal).
-                where(LearningGoal.user_id == user_id).
-                offset(offset).
-                limit(limit)
+                select(LearningGoal)
+                .where(LearningGoal.user_id == user_id)
+                .order_by(desc(LearningGoal.created_at))
+                .offset(offset)
+                .limit(limit)
             ).all()
 
-            return user_learning_goals, total_count
+            learning_goals = []
+            for goal in user_learning_goals:
+                learning_goal = self.__attach_objective_progress(goal, session)
+                learning_goals.append(learning_goal)
+
+            return learning_goals, total_count
         
         except Exception as err:
             handle_db_error(err, "get_all_user_learning_goals", error_type="query")
@@ -68,8 +96,6 @@ class LearningGoalService:
             if not learning_goal:
                 raise Missing("Learning goal not found")
             
-            _ = learning_goal.objectives
-            
             return learning_goal
         
         except APIException as api_error:
@@ -77,53 +103,52 @@ class LearningGoalService:
 
         except Exception as err:
             handle_db_error(err, "get_learning_goal", error_type="query")
-
+    
     def _objectives_by_status(self, learning_goal_id: UUID, session: Session):
         try:
             completed_case = case((Objective.status == Status.COMPLETED, 1), else_=0)
-            in_progress_case = case((Objective.status == Status.IN_PROGRESS, 1), else_=0)
-            paused_case = case((Objective.status == Status.PAUSED, 1), else_=0)
+
 
             result = session.exec(
                 select(
                     func.count().label("total"),
                     func.sum(completed_case).label("completed"),
-                    func.sum(in_progress_case).label("in_progress"),
-                    func.sum(paused_case).label("paused")
                 )
                 .where(Objective.learning_goal_id == learning_goal_id)
             ).first()
 
             if result is None:
-                raise Missing(f"No objectives found for learning goal ID {learning_goal_id}")
+                return {
+                    "total": 0,
+                    "completed": 0,
+                }
 
-            total, completed, in_progress, paused = (result[0] or 0), (result[1] or 0), (result[2] or 0), (result[3] or 0)
+            total, completed = (result[0] or 0), (result[1] or 0)
             return {
                 "total": total,
                 "completed": completed,
-                "in_progress": in_progress,
-                "paused": paused,
             }
-
-        except APIException as api_error:
-            raise api_error
         
         except Exception as err:
-            handle_db_error(err, "_objectives_by_status", error_type="query")
+            handle_db_error(err, "_tasks_by_status", error_type="query")
 
     def update_learning_goal(self, learning_goal_id: UUID, learning_goal: LearningGoalUpdate, user_id: UUID, session: Session) -> LearningGoal:
         try:
-            learning_goal_to_update = self.get_learning_goal(learning_goal_id, session)
-            self.verify_user_ownership(learning_goal_to_update, user_id)
+            existing_learning_goal = self.get_learning_goal(learning_goal_id, session)
+            self.verify_user_ownership(existing_learning_goal, user_id)
 
             learning_goal_data = learning_goal.model_dump(exclude_unset=True)
             for key, value in learning_goal_data.items():
-                setattr(learning_goal_to_update, key, value)
+                setattr(existing_learning_goal, key, value)
+
+            existing_learning_goal.updated_at = datetime.now(timezone.utc)
+
+            mongo_data = build_learning_goal_document(existing_learning_goal)
+            self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
 
             session.commit()
-            session.refresh(learning_goal_to_update)
 
-            return learning_goal_to_update
+            return existing_learning_goal
         
         except APIException as api_error:
             raise api_error
@@ -131,37 +156,6 @@ class LearningGoalService:
         except Exception as err:
             session.rollback()
             handle_db_error(err, "update_learning_goal", error_type="commit")
-    
-    def update_status(self, learning_goal_id: UUID, session: Session):
-        try:
-            task_counts = self._objectives_by_status(learning_goal_id, session)
-
-            total = task_counts["total"]
-            completed = task_counts["completed"]
-            in_progress = task_counts["in_progress"]
-            paused = task_counts["paused"]
-
-            if completed == total:
-                new_status = Status.COMPLETED
-            elif in_progress > 0:
-                new_status = Status.IN_PROGRESS
-            elif paused == total:
-                new_status = Status.PAUSED
-            else:
-                new_status = Status.NOT_STARTED
-        
-            learning_goal = self.get_learning_goal(learning_goal_id, session)
-
-            if learning_goal.status != new_status:
-                learning_goal.status = new_status
-                session.commit()
-
-        except APIException as api_error:
-            raise api_error
-
-        except Exception as err:
-            session.rollback()
-            handle_db_error(err, "update_status", error_type="commit")
 
     def delete_learning_goal(self, learning_goal_id: UUID, user_id: UUID, session: Session):
         try:
@@ -169,6 +163,8 @@ class LearningGoalService:
             self.verify_user_ownership(learning_goal, user_id)
             
             session.delete(learning_goal)
+            self.mongo_service.delete_learning_goal(learning_goal_id)
+
             session.commit()
 
             return {"message": "Learning goal deleted successfully", "learning_goal_id": learning_goal_id}

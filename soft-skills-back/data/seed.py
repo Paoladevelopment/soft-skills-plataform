@@ -1,9 +1,6 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 
-from passlib.context import CryptContext
-from sqlmodel import Session
-
 from enums.common import Priority, Status
 from enums.task import TaskType
 from enums.user import UserRoles
@@ -11,13 +8,13 @@ from model.learning_goal import LearningGoal
 from model.objective import Objective
 from model.task import Task
 from model.user import User
+from passlib.context import CryptContext
+from sqlmodel import Session
 from utils.db import get_session
 
-# Initialize password hasher
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_seed_data(session: Session):
-    # Generate Users
     users = [
         User(
             user_id=uuid.uuid4(),
@@ -56,10 +53,8 @@ def create_seed_data(session: Session):
     session.add_all(users)
     session.commit()
     
-    # Mapping users for easy access
     user_map = {user.name: user.user_id for user in users}
 
-    # Learning Goals
     learning_goals = []
 
     # User 1: 10 learning goals, each with 3 objectives
@@ -69,8 +64,6 @@ def create_seed_data(session: Session):
             user_id=user_map["Alice Johnson"],
             title=f"Learning Goal {i+1}",
             description=f"Description for Learning Goal {i+1}",
-            status=Status.NOT_STARTED,
-            priority=Priority.HIGH if i % 3 == 0 else Priority.MEDIUM,
             estimated_completion_time=90,
             impact="Boosting skills in various domains"
         )
@@ -119,7 +112,7 @@ def create_seed_data(session: Session):
     # Other users: Varied objectives per learning goal
     for user in ["Bob Smith", "Charlie Brown", "Diana Prince"]:
         for j in range(2):
-            num_objectives = 2 if j == 0 else 4  # One learning goal with 2, another with 4
+            num_objectives = 2 if j == 0 else 4 
             for obj_id in range(1, num_objectives + 1):
                 objectives.append(
                     Objective(
@@ -138,13 +131,10 @@ def create_seed_data(session: Session):
     session.commit()
 
     tasks = []
-    
-    # Mapping objectives for tasks
-    objective_map = {obj.title: obj.objective_id for obj in objectives}
 
     # Assigning tasks to objectives
     for obj in objectives:
-        for task_id in range(1, 4):  # Each objective gets 3 tasks
+        for task_id in range(1, 4): 
             tasks.append(
                 Task(
                     task_id=uuid.uuid4(),
@@ -168,7 +158,7 @@ def create_seed_data(session: Session):
     print("✅ Seed data inserted successfully!")
 
 if __name__ == "__main__":
-    session = next(get_session())  # Extract the session from the generator
+    session = next(get_session())
     try:
         create_seed_data(session)
         session.commit()

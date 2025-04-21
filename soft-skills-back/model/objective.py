@@ -2,11 +2,10 @@ import uuid
 from datetime import datetime, timezone
 from typing import List, Optional
 
+from enums.common import Priority, Status
 from pydantic import UUID4
 from sqlalchemy import Text
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
-
-from enums.common import Priority, Status
 
 
 class ObjectiveBase(SQLModel):

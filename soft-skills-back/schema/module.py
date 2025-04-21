@@ -1,9 +1,8 @@
 from typing import List
 
-from sqlmodel import Field, SQLModel
-
 from model.module import ModuleBase
 from schema.base import BaseResponse, PaginatedResponse
+from sqlmodel import Field, SQLModel
 from utils.payloads import (MODULE_CREATE_EXAMPLE, MODULE_READ_EXAMPLE,
                             MODULE_UPDATE_EXAMPLE)
 

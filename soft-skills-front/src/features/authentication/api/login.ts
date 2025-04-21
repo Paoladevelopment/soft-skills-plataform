@@ -15,14 +15,14 @@ export async function loginUser(username: string, password: string): Promise<Log
         body: formData
     })
 
+    const data = await response.json()
+
     if (!response.ok) {
-        const errBody = await response.json()
-        const message = errBody.detail.message
+        const message = data?.detail?.message || "Invalid credentials. Please try again."
         throw new Error(message)
     }
 
-    const rawData = await response.json()
-    const camelData = camelcaseKeys(rawData, {deep: true})
+    const camelData = camelcaseKeys(data, {deep: true})
 
     camelData.user.lastLogin = new Date(camelData.user.lastLogin)
 

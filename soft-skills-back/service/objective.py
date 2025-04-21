@@ -1,23 +1,26 @@
-from typing import List, Sequence
+from typing import Sequence
+from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import Depends
-from sqlalchemy.sql import case
-from sqlmodel import Session, func, select
-
 from enums.common import Status
+from fastapi import Depends
 from model.learning_goal import LearningGoal
 from model.objective import Objective
 from model.task import Task
+from mongo_service.objective import ObjectiveMongoService
 from schema.objective import ObjectiveCreate, ObjectiveUpdate
 from service.query import QueryService
+from sqlalchemy.sql import case
+from sqlmodel import Session, func, select
 from utils.db import get_session
 from utils.errors import APIException, Forbidden, Missing, handle_db_error
+from utils.mongo_serializers import build_objective_document
 
 
 class ObjectiveService:
     def __init__(self):
         self.query_service = QueryService()
+        self.mongo_service = ObjectiveMongoService()
 
     def verify_user_ownership(self, objective_id: UUID, user_id: UUID, session: Session):
         try:
@@ -44,6 +47,11 @@ class ObjectiveService:
             objective_dict = objective.model_dump()
 
             new_objective = Objective(**objective_dict)
+            new_objective.created_at = datetime.now(timezone.utc)
+            new_objective.updated_at = new_objective.created_at
+
+            mongo_data = build_objective_document(new_objective)
+            self.mongo_service.add_objective(new_objective.learning_goal_id, mongo_data)
             
             session.add(new_objective)
             session.commit()
@@ -140,6 +148,15 @@ class ObjectiveService:
             for key, value in objective_data.items():
                 setattr(existing_objective, key, value)
 
+            existing_objective.updated_at = datetime.now(timezone.utc)
+
+            mongo_data = build_objective_document(existing_objective)
+            self.mongo_service.update_objective(
+                existing_objective.learning_goal_id,
+                objective_id,
+                mongo_data
+            )
+
             session.commit()
 
             return existing_objective
@@ -173,6 +190,15 @@ class ObjectiveService:
 
             if objective.status != new_status:
                 objective.status = new_status
+                objective.updated_at = datetime.now(timezone.utc)
+
+                mongo_data = build_objective_document(objective)
+                self.mongo_service.update_objective(
+                    objective.learning_goal_id,
+                    objective_id,
+                    mongo_data
+                )
+
                 session.commit()
 
         except APIException as api_error:
@@ -187,6 +213,10 @@ class ObjectiveService:
         try:
             objective = self.get_objective(UUID(objective_id), session)
             self.verify_user_ownership(UUID(objective_id), user_id, session)
+            
+            learning_goal_id = objective.learning_goal_id
+
+            self.mongo_service.delete_objective(learning_goal_id, objective_id)
             
             session.delete(objective)
             session.commit()
