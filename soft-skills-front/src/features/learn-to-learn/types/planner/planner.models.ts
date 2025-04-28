@@ -1,16 +1,4 @@
-export type TaskType =
-  | 'reading'
-  | 'practice'
-  | 'writing'
-  | 'research'
-  | 'listening'
-  | 'discussion'
-  | 'problem_solving'
-  | 'experimenting'
-  | 'teaching'
-
-export type TaskStatus = 'not_started' | 'in_progress' | 'completed' | 'paused'
-export type Priority = 'low' | 'medium' | 'high'
+import { Priority, TaskStatus, TaskType } from "../common.enums"
 
 export interface Task {
   id: string

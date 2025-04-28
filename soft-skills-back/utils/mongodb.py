@@ -6,30 +6,20 @@ from pymongo.database import Database
 
 
 class MongoDB:
-    _instance = None
-    _client = None
-    _db = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(MongoDB, cls).__new__(cls)
-        return cls._instance
-
     def __init__(self):
-        if self._client is None:
-            try:
-                from os import getenv
+        try:
+            from os import getenv
 
-                from dotenv import load_dotenv
-                
-                load_dotenv()
-                mongo_uri = getenv("MONGODB_URI", "mongodb://localhost:27017")
-                db_name = getenv("MONGODB_DB_NAME", "soft_skills")
-                
-                self._client = MongoClient(mongo_uri)
-                self._db = self._client[db_name]
-            except Exception as err:
-                raise err
+            from dotenv import load_dotenv
+            
+            load_dotenv()
+            mongo_uri = getenv("MONGODB_URI", "mongodb://localhost:27017")
+            db_name = getenv("MONGODB_DB_NAME", "soft_skills")
+            
+            self._client = MongoClient(mongo_uri)
+            self._db = self._client[db_name]
+        except Exception as err:
+            raise err
 
     @property
     def client(self) -> MongoClient:
@@ -38,6 +28,9 @@ class MongoDB:
     @property
     def db(self) -> Database:
         return self._db
+    
+    def set_db(self, db_name: str):
+        self._db = self._client[db_name]
 
     def get_collection(self, collection_name: str) -> Collection:
         return self._db[collection_name]

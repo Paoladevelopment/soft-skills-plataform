@@ -5,7 +5,7 @@ import {
   CreateLearningGoalResponse,
   DeleteLearningGoalResponse,
   FetchLearningGoalResponse,
-} from '../types/learningGoals.api'
+} from '../types/planner/learningGoals.api'
 
 export async function getUserLearningGoals(
   offset: number, 
