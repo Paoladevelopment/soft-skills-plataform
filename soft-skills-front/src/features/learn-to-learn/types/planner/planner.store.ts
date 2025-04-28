@@ -1,5 +1,5 @@
 import { CreateLearningGoalPayload } from "./learningGoals.api"
-import { PaginationState } from "./pagination"
+import { PaginationState } from "../pagination"
 import { LearningGoal } from "./planner.models"
 
 export interface IPlanner {

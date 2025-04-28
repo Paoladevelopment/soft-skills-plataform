@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import {
   CheckCircle,
-  CalendarMonth,
+  Timeline,
   Explore,
   Dashboard,
   BarChart,
@@ -33,7 +33,7 @@ const LearnSidebar = () => {
     <SidebarIcon icon={<CheckCircle />} label="Planner" to="/learn/planner" />
     <SidebarIcon icon={<Explore />} label="Explore" to="/learn/explore" />
     <SidebarIcon icon={<BarChart />} label="Learning Reports" to="/learn/reports" />
-    <SidebarIcon icon={<CalendarMonth />} label="Calendar" to="/learn/calendar" />
+    <SidebarIcon icon={<Timeline />} label="Learning roadmaps" to="/learn/roadmaps" />
 
     <Box sx={{ flexGrow: 1 }} />
 

@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import { IPlanner } from '../types/planner.store'
+import { IPlanner } from '../types/planner/planner.store'
 import { getUserLearningGoals, createLearningGoal, deleteLearningGoal } from '../api/LearningGoals'
-import { LearningGoal } from '../types/planner.models'
+import { LearningGoal } from '../types/planner/planner.models'
 import { transformGoalResponse } from '../utils/transform'
-import { CreateLearningGoalPayload } from '../types/learningGoals.api'
+import { CreateLearningGoalPayload } from '../types/planner/learningGoals.api'
 import { useToastStore } from '../../../store/useToastStore'
 
 export const usePlannerStore = create<IPlanner>()(

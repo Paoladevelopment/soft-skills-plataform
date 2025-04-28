@@ -9,7 +9,7 @@ import {
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { LearningGoal } from '../../types/planner.models' 
+import { LearningGoal } from '../../types/planner/planner.models' 
 import { useState } from 'react'
 
 interface GoalCardProps {

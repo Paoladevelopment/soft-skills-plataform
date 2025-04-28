@@ -1,5 +1,5 @@
-import { LearningGoal } from "../types/planner.models"
-import { LearningGoalResponse } from "../types/learningGoals.api"
+import { LearningGoal } from "../types/planner/planner.models"
+import { LearningGoalResponse } from "../types/planner/learningGoals.api"
 
 export function transformGoalResponse(goal: LearningGoalResponse): LearningGoal {
   return {

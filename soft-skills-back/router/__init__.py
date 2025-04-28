@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from router import auth, learning_goal, module, objective, task, user
+from router import auth, learning_goal, module, objective, task, user, roadmap
 
 api = APIRouter(
   prefix="/api/v1"
@@ -39,4 +39,10 @@ api.include_router(
   task.router,
   prefix="/tasks",
   tags=["Tasks"]
+)
+
+api.include_router(
+  roadmap.router,
+  prefix="/roadmap",
+  tags=["Roadmaps"]
 )

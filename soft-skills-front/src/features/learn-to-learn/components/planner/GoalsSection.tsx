@@ -12,9 +12,9 @@ import { usePlannerStore } from '../../store/useLearningPlannerStore'
 import { useEffect, useState } from 'react'
 import GoalCard from './GoalCard'
 import AddGoalModal from './AddGoalModal'
-import { CreateLearningGoalPayload } from '../../types/learningGoals.api'
+import { CreateLearningGoalPayload } from '../../types/planner/learningGoals.api'
 import PaginationControls from '../PaginationControls'
-import { LearningGoal } from '../../types/planner.models'
+import { LearningGoal } from '../../types/planner/planner.models'
 import ConfirmDeleteModal from '../ConfirmDeleteModal'
 
 const GoalsSection = () => {

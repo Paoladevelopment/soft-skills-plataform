@@ -13,7 +13,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CreateLearningGoalPayload } from '../../types/learningGoals.api'
+import { CreateLearningGoalPayload } from '../../types/planner/learningGoals.api'
 import { useEffect } from 'react'
 
 const addGoalSchema = z.object({
