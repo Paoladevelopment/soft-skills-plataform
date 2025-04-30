@@ -50,7 +50,7 @@ function estimateTaskHeight(task: Task): number {
  * Sorts objectives by order_index ascending.
  */
 function sortObjectives(objectives: Objective[]): Objective[] {
-  return [...objectives].sort((a, b) => a.order_index - b.order_index);
+  return [...objectives].sort((a, b) => a.orderIndex - b.orderIndex);
 }
 
 /**
@@ -158,7 +158,7 @@ function generateSideTasks(
   let currentY = startY
 
   for (const task of tasks) {
-    const taskId = task.task_id
+    const taskId = task.taskId
     const taskHeight = estimateTaskHeight(task)
 
     const newTaskNode = createTaskNode(taskId, task, startX, currentY)
@@ -178,13 +178,17 @@ function generateSideTasks(
  * injecting the appropriate data from objectives and tasks.
  */
 function buildFromExistingLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
+  if (!roadmap.layout || !roadmap.layout.nodes || !roadmap.layout.edges) {
+    throw new Error("Invalid roadmap layout")
+  }
+
   const objectiveMap = new Map<string, Objective>()
   const taskMap = new Map<string, Task>()
 
   for (const objective of roadmap.objectives) {
-    objectiveMap.set(objective.objective_id, objective)
+    objectiveMap.set(objective.objectiveId, objective)
     for (const task of objective.tasks) {
-      taskMap.set(task.task_id, task)
+      taskMap.set(task.taskId, task)
     }
   }
 
@@ -229,6 +233,7 @@ function buildFromExistingLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges
  * Positions everything based on estimated sizes and spacing rules.
  */
 function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
+  console.log("acá estoy")
   const nodes: LayoutNode[] = []
   const edges: LayoutEdge[] = []
 
@@ -238,7 +243,7 @@ function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: Lay
 
   for (let i = 0; i < objectives.length; i++) {
     const objective = objectives[i]
-    const objectiveId = objective.objective_id
+    const objectiveId = objective.objectiveId
 
     const { leftTasks, rightTasks } = splitTasks(objective.tasks)
 
@@ -276,7 +281,7 @@ function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: Lay
 
     // Connect objectives
     if (i > 0) {
-      const previousObjectiveId = objectives[i - 1].objective_id
+      const previousObjectiveId = objectives[i - 1].objectiveId
 
       const newEdge = createEdge(previousObjectiveId, objectiveId, 'bottom', 'top')
       edges.push(newEdge)

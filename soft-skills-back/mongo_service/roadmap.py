@@ -6,7 +6,7 @@ from utils.mongodb import MongoDB
 from utils.logger import logger_config
 from utils.errors import APIException, Missing, handle_db_error
 from nosql_models.roadmap import Roadmap
-from nosql_schema.roadmap import to_roadmap_model
+from nosql_schema.roadmap import to_roadmap_model, to_roadmap_summary_model, PaginatedRoadmapsResponse
 
 logger = logger_config(__name__)
 
@@ -37,30 +37,44 @@ class RoadmapMongoService:
         except Exception as err:
             handle_db_error(err, "get_roadmap_by_id")
 
-    def get_user_roadmaps(self, user_id: str) -> List[Roadmap]:
+    def get_user_roadmaps(self, user_id: str, offset: int, limit: int) -> PaginatedRoadmapsResponse:
         try:
+            filter_query = { "user_id": user_id }
+
+            total = self.mongodb.count_documents(self.collection_name, filter_query)
+
             documents = self.mongodb.find_many(
                 self.collection_name, 
-                {
-                    "user_id": user_id
-                }
+                filter_query,
+                limit=limit,
+                skip=offset,
+                sort=[("created_at", -1)],
             )
 
-            return [to_roadmap_model(doc) for doc in documents]
+            summaries = [to_roadmap_summary_model(doc) for doc in documents]
+
+            return PaginatedRoadmapsResponse(data=summaries, total=total)
         
         except Exception as err:
             handle_db_error(err, "get_user_roadmaps")
       
-    def get_public_roadmaps(self) -> List[Roadmap]:
+    def get_public_roadmaps(self, offset: int, limit: int) -> PaginatedRoadmapsResponse:
         try:
+            filter_query = { "visibility": "public" }
+
+            total = self.mongodb.count_documents(self.collection_name, filter_query)
+
             documents = self.mongodb.find_many(
                 self.collection_name,
-                {
-                    "visibility": "public"
-                }
+                filter_query,
+                limit=limit,
+                skip=offset,
+                sort=[("created_at", -1)],
             )
 
-            return [to_roadmap_model(doc) for doc in documents]
+            summaries = [to_roadmap_summary_model(doc) for doc in documents]
+
+            return PaginatedRoadmapsResponse(data=summaries, total=total)
 
         except Exception as err:
             handle_db_error(err, "get_public_roadmaps")

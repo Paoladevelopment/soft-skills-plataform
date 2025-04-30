@@ -89,7 +89,7 @@ const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalPr
           />
 
           <TextField
-            label="Impact"
+            label="Personal impact"
             placeholder="Why this goal matters to you"
             fullWidth
             multiline

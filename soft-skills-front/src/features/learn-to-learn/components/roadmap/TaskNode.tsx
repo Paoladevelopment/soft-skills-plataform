@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { NodeProps, Position, useStore } from 'reactflow'
 import CustomHandle from './CustomHandle'
+import { findClosestObjectiveNode } from '../../utils/find_closest_objective_node'
 
 interface TaskNodeData {
   title: string
@@ -13,21 +14,13 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
   const node = nodeInternals.get(id)
   const nodePosition = node?.position
 
+  // Try to find a direct parent edge (i.e., which node this task is connected from)
   const parentEdge = Array.from(edges.values()).find((edge) => edge.target === id)
+
   const parentNode = parentEdge ? nodeInternals.get(parentEdge.source) : undefined
 
-  const closestObjective = !parentNode
-    ? Array.from(nodeInternals.values())
-        .filter((n) => n.type === 'objectiveNode')
-        .reduce((closest, n) => {
-          if (!n.position || !nodePosition) return closest
-          const distance = Math.abs(n.position.x - nodePosition.x)
-          if (!closest || distance < Math.abs(closest.position.x - nodePosition.x)) {
-            return n
-          }
-          return closest
-        }, undefined as typeof node | undefined)
-    : undefined
+  // If there's no parent node (maybe it's disconnected), find the closest objective by x-axis
+  const closestObjective = !parentNode ? findClosestObjectiveNode(nodeInternals, nodePosition) : undefined
 
   const referenceNode = parentNode ?? closestObjective
 

@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Query
 from typing import List
 
 from nosql_models.roadmap import Roadmap
-from nosql_schema.roadmap import RoadmapCreate, RoadmapUpdate, RoadmapResponse
+from nosql_schema.roadmap import RoadmapCreate, RoadmapUpdate, RoadmapResponse, PaginatedRoadmapsResponse
 from schema.token import TokenData
 from mongo_service.roadmap import RoadmapMongoService
 from service.auth_service import decode_jwt_token
@@ -39,14 +39,16 @@ def create_roadmap(
 @router.get(
     "/mine",
     summary="Get my roadmaps",
-    response_model=List[Roadmap]
+    response_model=PaginatedRoadmapsResponse
 )
 def get_user_roadmaps(
+    offset: int = Query(0, ge=0, description="Number of items to skip before starting to collect the result set"),
+    limit: int = Query(10, ge=10, le=50,  description="Maximum number of items to retrieve (between 10 and 50)"),
     token_data: TokenData = Depends(decode_jwt_token),
 ):
     try:
         user_id = str(token_data.user_id)
-        return roadmap_service.get_user_roadmaps(user_id)
+        return roadmap_service.get_user_roadmaps(user_id, offset, limit)
 
     except APIException as err:
         raise_http_exception(err)
@@ -55,14 +57,16 @@ def get_user_roadmaps(
 @router.get(
     "/public",
     summary="Get all public roadmaps",
-    response_model=List[Roadmap],
+    response_model=PaginatedRoadmapsResponse,
     status_code=status.HTTP_200_OK,
 )
 def get_public_roadmaps(
+    offset: int = Query(0, ge=0, description="Number of items to skip before starting to collect the result set"),
+    limit: int = Query(10, ge=10, le=50,  description="Maximum number of items to retrieve (between 10 and 50)"),
     token_data: TokenData = Depends(decode_jwt_token),
 ):
     try:
-        return roadmap_service.get_public_roadmaps()
+        return roadmap_service.get_public_roadmaps(offset, limit)
 
     except APIException as err:
         raise_http_exception(err)

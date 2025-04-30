@@ -12,8 +12,9 @@ import Planner from '../features/learn-to-learn/pages/Planner';
 import Dashboard from '../features/learn-to-learn/pages/Dashboard';
 import Explore from '../features/learn-to-learn/pages/Explore';
 import LearningReport from '../features/learn-to-learn/pages/LearningReport';
-import Roadmap from '../features/learn-to-learn/pages/Roadmap';
 import Help from '../features/learn-to-learn/pages/Help';
+import Roadmaps from '../features/learn-to-learn/pages/Roadmaps';
+import RoadmapDetail from '../features/learn-to-learn/pages/RoadmapDetail';
 
 
 export const RoutesConfiguration = () => {
@@ -41,7 +42,8 @@ export const RoutesConfiguration = () => {
             <Route path='dashboard' element={<Dashboard/>}></Route>
             <Route path='explore' element={<Explore/>}></Route>
             <Route path='reports' element={<LearningReport/>}></Route>
-            <Route path='roadmaps' element={<Roadmap/>}></Route>
+            <Route path='roadmaps' element={<Roadmaps/>}></Route>
+            <Route path="roadmaps/:roadmapId" element={<RoadmapDetail />} />
             <Route path='help' element={<Help/>}></Route>
           </Route>
         </Route>

@@ -11,6 +11,7 @@ import {
   FirstPage,
   LastPage
 } from '@mui/icons-material'
+import { usePlannerStore } from '../store/useLearningPlannerStore'
 
 interface PaginationControlsProps {
   total: number
@@ -18,6 +19,7 @@ interface PaginationControlsProps {
   limit: number
   onChangeLimit: (limit: number) => void
   onChangeOffset: (offset: number) => void
+  pageSizeOptions?: number[]
 }
 
 const PaginationControls = ({
@@ -25,16 +27,34 @@ const PaginationControls = ({
   offset,
   limit,
   onChangeLimit,
-  onChangeOffset
+  onChangeOffset,
+  pageSizeOptions = [5, 10]
 }: PaginationControlsProps) => {
+  const { setIsPaginating } = usePlannerStore()
+
   const totalPages = Math.ceil(total / limit)
   const start = offset + 1
   const end = Math.min(offset + limit, total)
 
-  const handleFirstPage = () => onChangeOffset(0)
-  const handlePrevPage = () => onChangeOffset(Math.max(0, offset - limit))
-  const handleNextPage = () => onChangeOffset(Math.min(offset + limit, (totalPages - 1) * limit))
-  const handleLastPage = () => onChangeOffset((totalPages - 1) * limit)
+  const handleFirstPage = () => {
+    setIsPaginating(true)
+    onChangeOffset(0)
+  }
+
+  const handlePrevPage = () => {
+    setIsPaginating(true)
+    onChangeOffset(Math.max(0, offset - limit))
+  }
+
+  const handleNextPage = () => {
+    setIsPaginating(true)
+    onChangeOffset(Math.min(offset + limit, (totalPages - 1) * limit))
+  }
+
+  const handleLastPage = () => {
+    setIsPaginating(true)
+    onChangeOffset((totalPages - 1) * limit)
+  }
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
@@ -45,7 +65,7 @@ const PaginationControls = ({
           value={limit}
           onChange={(e) => onChangeLimit(Number(e.target.value))}
         >
-          {[5, 10].map(value => (
+          {pageSizeOptions.map(value => (
             <MenuItem key={value} value={value}>{value}</MenuItem>
           ))}
         </Select>

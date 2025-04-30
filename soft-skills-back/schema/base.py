@@ -14,4 +14,3 @@ class PaginatedResponse(BaseResponse[List[T]], Generic[T]):
     total: int
     offset: int
     limit: int
-    total: int

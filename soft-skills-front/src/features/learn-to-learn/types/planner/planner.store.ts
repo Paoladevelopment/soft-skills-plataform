@@ -4,6 +4,7 @@ import { LearningGoal } from "./planner.models"
 
 export interface IPlanner {
   learningGoals: LearningGoal[]
+  isPaginating: boolean
   selectedGoalId: string | null
   selectedObjectiveId: string | null
   selectedTaskId: string | null
@@ -17,6 +18,8 @@ export interface IPlanner {
   setLearningGoalsTotal: (total: number) => void
 
   setLearningGoals: (goals: LearningGoal[]) => void
+
+  setIsPaginating: (value: boolean) => void
 
   fetchLearningGoals: (offset?: number, limit?: number) => Promise<void>
   createLearningGoal: (payload: CreateLearningGoalPayload) => Promise<void>

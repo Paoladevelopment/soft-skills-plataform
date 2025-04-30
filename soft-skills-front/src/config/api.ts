@@ -13,4 +13,10 @@ export const api = {
     byId: (id: string) => `${BASE_URL}/learning-goals/${id}`,
     getObjectives: (id: string) => `${BASE_URL}/learning-goals/${id}/objectives`
   },
+  roadmap: {
+    create: `${BASE_URL}/roadmap`,
+    getMine: `${BASE_URL}/roadmap/mine`,
+    getPublic: `${BASE_URL}/roadmap/public`,
+    byId: (id: string) => `${BASE_URL}/roadmap/${id}`
+  }
 }

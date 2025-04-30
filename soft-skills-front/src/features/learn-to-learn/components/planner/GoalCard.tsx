@@ -11,6 +11,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { LearningGoal } from '../../types/planner/planner.models' 
 import { useState } from 'react'
+import { formatDate } from '../../../../utils/formatDate'
 
 interface GoalCardProps {
   goal: LearningGoal
@@ -26,15 +27,6 @@ const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
   const percentComplete = total > 0 ? Math.round((completed / total) * 100) : 0
 
   const hasObjectives = total > 0
-
-  const formatDate = (date: Date | null) => {
-    if (!date) return "Not started yet"
-    return `Started: ${new Date(date).toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })}`
-  }
 
   return (
     <Paper

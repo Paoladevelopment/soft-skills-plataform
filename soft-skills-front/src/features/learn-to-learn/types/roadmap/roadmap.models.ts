@@ -8,19 +8,19 @@ export interface Resource {
 }
 
 export interface Task {
-  task_id: string
+  taskId: string
   title: string
-  order_index: number
+  orderIndex: number
   type: TaskType
   resources?: Resource[]
   comments?: string[]
 }
 
 export interface Objective {
-  objective_id: string
+  objectiveId: string
   title: string
   description?: string
-  order_index: number
+  orderIndex: number
   tasks: Task[]
   comments?: string[]
 }
@@ -51,12 +51,21 @@ export interface Layout {
 }
 
 export interface Roadmap {
-  roadmap_id: string
+  roadmapId: string
   title: string
   description?: string
   objectives: Objective[]
-  layout: Layout
-  user_id: string
+  layout?: Layout 
+  userId: string
   visibility: RoadmapVisibility
-  created_at?: string
+  createdAt: string | null
+  updatedAt: string | null
+}
+
+export interface RoadmapSummary {
+  roadmapId: string
+  title: string
+  description?: string
+  createdAt: string | null
+  stepsCount: number
 }

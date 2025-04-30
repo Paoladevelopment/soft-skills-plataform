@@ -13,6 +13,7 @@ export const usePlannerStore = create<IPlanner>()(
     immer(
       (set, get) => ({
         learningGoals: [],
+        isPaginating: false,
         selectedGoalId: null,
         selectedObjectiveId: null,
         selectedTaskId: null,
@@ -29,6 +30,12 @@ export const usePlannerStore = create<IPlanner>()(
             state.learningGoals = goals
           }, false, 'PLANNER/SET_LEARNING_GOALS')
         },
+
+        setIsPaginating: (value: boolean) => {
+          set((state) => {
+            state.isPaginating = value
+          }, false, 'SET_IS_PAGINATING')
+        },        
 
         setLearningGoalsOffset: (offset: number) => {
           set((state) => {
@@ -62,6 +69,7 @@ export const usePlannerStore = create<IPlanner>()(
 
             get().setLearningGoals(transformedGoals)
             get().setLearningGoalsTotal(total)
+
           } catch (err: unknown) {
             if (err instanceof Error) {
               useToastStore.getState().showToast(err.message || 'Error fetching goals', 'error')
@@ -69,6 +77,7 @@ export const usePlannerStore = create<IPlanner>()(
           } finally {
             set((state) => {
               state.isLoading = false
+              state.isPaginating = false
             }, false, 'PLANNER/FETCH_LEARNING_GOALS_COMPLETE')
           }
         },

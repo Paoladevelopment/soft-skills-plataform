@@ -26,6 +26,7 @@ const GoalsSection = () => {
   const {
     learningGoals,
     isLoading,
+    isPaginating,
     fetchLearningGoals,
     createLearningGoal,
     deleteLearningGoal,
@@ -40,7 +41,9 @@ const GoalsSection = () => {
   }, [offset, limit])
 
   const isEmpty = !isLoading && learningGoals.length === 0
-  const hasGoals = !isLoading && learningGoals.length > 0
+  const hasGoals = learningGoals.length > 0
+  const isInitialLoading = isLoading && learningGoals.length === 0
+
 
   const handleGoalSubmit = async (goal: CreateLearningGoalPayload) => {
     await createLearningGoal(goal)
@@ -117,7 +120,6 @@ const GoalsSection = () => {
             onClick={() => setAddModalOpen(true)}
             sx={{
               flexBasis: "20%",
-              textTransform: "none",
               borderRadius: 2,
               fontWeight: 500,
             }}
@@ -128,7 +130,7 @@ const GoalsSection = () => {
         <Box 
           my={4}
         >
-          {isLoading && (
+          {isInitialLoading && (
             <Box display="flex" justifyContent="center" py={4}>
               <CircularProgress />
             </Box>
@@ -167,6 +169,13 @@ const GoalsSection = () => {
                   />
                 ))}
               </Stack>
+
+              {isPaginating && (
+                <Box display="flex" justifyContent="center" pt={2}>
+                  <CircularProgress size={20} />
+                </Box>
+              )}
+      
               <PaginationControls
                 total={total}
                 offset={offset}

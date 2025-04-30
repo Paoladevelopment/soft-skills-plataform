@@ -10,11 +10,13 @@ class Resource(BaseModel):
     url: HttpUrl
 
 class Task(BaseModel):
+    task_id: str
     title: str
     order_index: int
     resources: list[Resource]
 
 class Objective(BaseModel):
+    objective_id: str
     title: str
     order_index: int
     tasks: list[Task]
@@ -35,3 +37,10 @@ class Roadmap(BaseModel):
             ObjectId: str,
         }
     }
+
+class RoadmapSummary(BaseModel):
+    roadmap_id: str
+    title: str
+    description: Optional[str] = None
+    created_at: Optional[str] = None
+    steps_count: int
