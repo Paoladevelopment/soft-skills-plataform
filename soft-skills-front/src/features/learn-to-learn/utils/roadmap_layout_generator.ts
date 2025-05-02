@@ -233,7 +233,6 @@ function buildFromExistingLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges
  * Positions everything based on estimated sizes and spacing rules.
  */
 function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
-  console.log("acá estoy")
   const nodes: LayoutNode[] = []
   const edges: LayoutEdge[] = []
 

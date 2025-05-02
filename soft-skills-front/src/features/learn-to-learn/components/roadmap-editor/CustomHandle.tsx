@@ -5,7 +5,7 @@ interface CustomHandleProps extends HandleProps {
   style?: CSSProperties;
 }
 
-export default function CustomHandle(props: CustomHandleProps) {
+const CustomHandle = (props: CustomHandleProps) => {
   return (
     <Handle
       style={{
@@ -18,3 +18,5 @@ export default function CustomHandle(props: CustomHandleProps) {
     />
   )
 }
+
+export default CustomHandle

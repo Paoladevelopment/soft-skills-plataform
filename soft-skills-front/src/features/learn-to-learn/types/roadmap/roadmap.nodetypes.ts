@@ -1,9 +1,7 @@
-import AddButtonNode from "../../components/roadmap/AddButtonNode";
-import ObjectiveNode from "../../components/roadmap/ObjectiveNode";
-import TaskNode from "../../components/roadmap/TaskNode";
+import ObjectiveNode from "../../components/roadmap-editor/ObjectiveNode";
+import TaskNode from "../../components/roadmap-editor/TaskNode";
 
 export const nodeTypes = {
   objectiveNode: ObjectiveNode,
-  addButtonNode: AddButtonNode,
   taskNode: TaskNode,
 }

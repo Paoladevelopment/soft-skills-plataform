@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { Position, NodeProps } from 'reactflow'
-import CustomHandle from './CustomHandle'
+import CustomHandle from '../roadmap-editor/CustomHandle'
 
 interface ObjectiveNodeData {
   title: string

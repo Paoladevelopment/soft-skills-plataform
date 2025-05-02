@@ -1,6 +1,7 @@
 import { environment } from "./env"
 
 const BASE_URL = environment.API_BASE_URL
+const CHATBOT_BASE_URL = environment.CHATBOT_BASE_URL
 
 export const api = {
   auth: {
@@ -18,5 +19,9 @@ export const api = {
     getMine: `${BASE_URL}/roadmap/mine`,
     getPublic: `${BASE_URL}/roadmap/public`,
     byId: (id: string) => `${BASE_URL}/roadmap/${id}`
-  }
+  },
+  chatbot: {
+    chat: (threadId?: string) =>
+      `${CHATBOT_BASE_URL}/chat${threadId ? `?thread_id=${threadId}` : ""}`,
+  },
 }

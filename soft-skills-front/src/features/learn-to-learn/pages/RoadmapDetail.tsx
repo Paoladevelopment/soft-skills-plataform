@@ -34,7 +34,6 @@ const RoadmapDetail = () => {
       getRoadmapById(roadmapId)
     }
 
-    // Clear on unmount
     return () => {
       setSelectedRoadmap(null)
       setSelectedRoadmapSteps(0)
@@ -51,7 +50,7 @@ const RoadmapDetail = () => {
   }
 
   return (
-    <Box px={4} py={4}>
+    <Box p={4}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
         <Stack direction="row" alignItems="center" spacing={1}>
           <IconButton onClick={() => navigate('/learn/roadmaps')}>

@@ -15,6 +15,8 @@ import LearningReport from '../features/learn-to-learn/pages/LearningReport';
 import Help from '../features/learn-to-learn/pages/Help';
 import Roadmaps from '../features/learn-to-learn/pages/Roadmaps';
 import RoadmapDetail from '../features/learn-to-learn/pages/RoadmapDetail';
+import CreateRoadmapWithChatbot from '../features/learn-to-learn/pages/CreateRoadmapWithChatbot';
+import NewRoadmap from '../features/learn-to-learn/pages/NewRoadmap';
 
 
 export const RoutesConfiguration = () => {
@@ -43,6 +45,8 @@ export const RoutesConfiguration = () => {
             <Route path='explore' element={<Explore/>}></Route>
             <Route path='reports' element={<LearningReport/>}></Route>
             <Route path='roadmaps' element={<Roadmaps/>}></Route>
+            <Route path='roadmaps/create/chat' element={<CreateRoadmapWithChatbot />} />
+            <Route path='roadmaps/create/manual' element={<NewRoadmap/>}/>
             <Route path="roadmaps/:roadmapId" element={<RoadmapDetail />} />
             <Route path='help' element={<Help/>}></Route>
           </Route>

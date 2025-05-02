@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import GoalsSection from '../components/planner/GoalsSection'
 
-function Planner() {
+const Planner = () => {
   return (
     <Box
       sx={{

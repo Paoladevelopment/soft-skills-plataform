@@ -2,7 +2,7 @@ import './App.css'
 import GlobalToastManager from './components/GlobalToastManger';
 import { RoutesConfiguration } from './routes/routes'
 
-function App() {
+const App = () => {
   return (
     <>
       <RoutesConfiguration />

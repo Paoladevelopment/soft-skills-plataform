@@ -1,4 +1,4 @@
-function LearningReport() {
+const LearningReport = () => {
   return (
     <>
       <h1>Learning report view page</h1>

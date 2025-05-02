@@ -9,11 +9,14 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import RoadmapCard from '../components/roadmap/RoadmapCard'
 import { useRoadmapStore } from '../store/useRoadmapStore'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import PaginationControls from '../components/PaginationControls'
 import { useNavigate } from 'react-router-dom'
+import CreateRoadmapModal from '../components/roadmap/CreateRoadmapModal'
 
 const Roadmaps = () => {
+  const [showCreateModal, setShowCreateModal] = useState(false)
+
   const { 
     myRoadmaps,
     isLoading,
@@ -36,10 +39,7 @@ const Roadmaps = () => {
 
   return (
     <Box 
-      sx={{ 
-        px: 4, 
-        py: 4, 
-      }}
+      p={4}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
         <Box>
@@ -58,6 +58,7 @@ const Roadmaps = () => {
           sx={{
             fontWeight: 500,
           }}
+          onClick={() => setShowCreateModal(true)}
         >
           Create new roadmap
         </Button>
@@ -102,6 +103,18 @@ const Roadmaps = () => {
           pageSizeOptions={[10, 25, 50]}
         />
       </Box>
+      <CreateRoadmapModal
+        open={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSelectOption={(option) => {
+          setShowCreateModal(false)
+          if (option === 'chatbot') {
+            navigate('/learn/roadmaps/create/chat')
+          } else {
+            navigate('/learn/roadmaps/create/manual')
+          }
+        }}
+      />
     </Box>
   )
 }

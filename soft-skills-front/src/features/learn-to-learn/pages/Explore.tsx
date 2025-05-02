@@ -1,4 +1,4 @@
-function Explore() {
+const Explore = () => {
   return (
     <>
       <h1>Explore view page</h1>

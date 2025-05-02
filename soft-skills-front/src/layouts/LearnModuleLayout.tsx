@@ -5,7 +5,7 @@ const LearnLayout = () => {
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <LearnSidebar />
-      <main style={{ flex: 1, marginLeft: '80px' }}>
+      <main style={{ flex: 1, marginLeft: '64px' }}>
         <Outlet />
       </main>
     </div>

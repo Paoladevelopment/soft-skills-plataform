@@ -35,7 +35,7 @@ const signUpSchema = z.object({
 
 type sigUpFields = z.infer<typeof signUpSchema>
 
-function Register() {
+const Register = () => {
   const theme = useTheme();
 
   const signUp = useAuthStore(state => state.signUp)
