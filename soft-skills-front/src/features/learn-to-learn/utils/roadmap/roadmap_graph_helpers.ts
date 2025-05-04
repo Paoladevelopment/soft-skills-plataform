@@ -1,5 +1,6 @@
 import { LayoutNodeType } from '../../types/roadmap/roadmap.enums'
-import { LayoutEdge, LayoutNode, Objective, Task } from '../../types/roadmap/roadmap.models'
+import { LayoutEdge, LayoutNode, Objective, ObjectiveNodeData, Task } from '../../types/roadmap/roadmap.models'
+import { isObjectiveNode } from './roadmap_node_type_utils'
 
 /**
  * Finds a node by ID from a list of nodes.
@@ -10,6 +11,17 @@ import { LayoutEdge, LayoutNode, Objective, Task } from '../../types/roadmap/roa
  */
 export function findNodeById(nodes: LayoutNode[], nodeId: string): LayoutNode | undefined {
   return nodes.find(n => n.id === nodeId)
+}
+
+/**
+ * Finds the index of a node by its ID.
+ *
+ * @param nodes - The list of layout nodes.
+ * @param nodeId - The ID of the node to find.
+ * @returns The index of the node, or -1 if not found.
+ */
+export function findNodeIndexById(nodes: LayoutNode[], nodeId: string): number {
+  return nodes.findIndex(n => n.id === nodeId)
 }
 
 /**
@@ -77,7 +89,7 @@ export function removeEdgesByIds(edges: LayoutEdge[], idsToRemove: string[]): La
 }
 
 /**
- * Updates the `total_tasks` field in the objective node if found.
+ * Updates the `totalTasks` field in the objective node if found.
  *
  * @param nodes - The list of editor nodes.
  * @param objectiveId - The ID of the objective node.
@@ -89,9 +101,11 @@ export function updateObjectiveTaskCount(
   newTaskCount: number
 ): void {
   const objectiveNode = findNodeById(nodes, objectiveId)
+  if (!objectiveNode) return
 
-  if (objectiveNode && objectiveNode.data.total_tasks !== undefined) {
-    objectiveNode.data.total_tasks = newTaskCount
+  if (isObjectiveNode(objectiveNode)) {
+    const data = objectiveNode.data as ObjectiveNodeData
+    data.totalTasks = newTaskCount
   }
 }
 
@@ -160,4 +174,15 @@ export function hasIncomingConnectionFromObjective(
     const sourceNode = findNodeById(nodes, edge.source)
     return sourceNode?.type === LayoutNodeType.Objective
   })
+}
+
+/**
+ * Safely extracts the title from a node's data if it's a valid string.
+ *
+ * @param node - The layout node to extract the title from.
+ * @returns The title if it's a string, otherwise null.
+ */
+export function getNodeTitle(node: LayoutNode): string | null {
+  const title = node.data?.title
+  return typeof title === 'string' ? title : null
 }

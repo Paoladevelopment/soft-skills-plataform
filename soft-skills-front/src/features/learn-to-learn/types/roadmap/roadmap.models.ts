@@ -1,5 +1,6 @@
 import { ResourceType, TaskType } from "../common.enums"
 import { LayoutNodeType, RoadmapVisibility } from "./roadmap.enums"
+import { FontSizeOption } from "./roadmap.options"
 
 export interface Resource {
   type: ResourceType
@@ -29,9 +30,26 @@ export interface Objective {
   resources?: Resource[]
 }
 
-export type NodeData = Record<string, unknown>
+export interface ObjectiveNodeData {
+  title: string
+  totalTasks?: number
+  isEditable?: boolean
+  fontSize?: FontSizeOption
+  backgroundColor?: string
+  width?: number
+  height?: number
+}
 
-export interface LayoutNode<T = NodeData> {
+export interface TaskNodeData {
+  title: string
+  isEditable?: boolean
+  fontSize?: FontSizeOption
+  backgroundColor?: string
+  width?: number
+  height?: number
+}
+
+export interface LayoutNode<T = ObjectiveNodeData | TaskNodeData> {
   id: string,
   type: LayoutNodeType
   position: {
@@ -39,6 +57,10 @@ export interface LayoutNode<T = NodeData> {
     y: number,
   }
   data: T
+  width: number
+  height: number
+  selected: boolean
+  dragging: boolean
 }
 
 export interface LayoutEdge {
@@ -73,3 +95,6 @@ export interface RoadmapSummary {
   createdAt: string | null
   stepsCount: number
 }
+
+export type OnlyContentFields = Pick<Objective, 'contentTitle' | 'description' | 'resources'>
+export type OptionalContentFields = Partial<OnlyContentFields>
