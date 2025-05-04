@@ -1,5 +1,5 @@
-import { LayoutNodeType } from "../types/roadmap/roadmap.enums"
-import { Objective, Task, LayoutNode, LayoutEdge, Roadmap } from "../types/roadmap/roadmap.models"
+import { LayoutNodeType } from "../../types/roadmap/roadmap.enums"
+import { Objective, Task, LayoutNode, LayoutEdge, Roadmap } from "../../types/roadmap/roadmap.models"
 
 // Constants
 const NODE_WIDTH = 250
@@ -19,12 +19,12 @@ const OBJECTIVE_TO_TASK_SPACING = 75
  * @example 
  * estimateObjectiveHeight({ title: 'Title', description: 'Some text', tasks: [] })
  */
-function estimateObjectiveHeight(objective: Objective): number {
+const estimateObjectiveHeight = (objective: Objective): number => {
   const averageCharactersPerLine = 30
-  const titleLines = Math.ceil(objective.title.length / averageCharactersPerLine);
+  const titleLines = Math.ceil(objective.title.length / averageCharactersPerLine)
   const titleHeight = titleLines * 24
 
-  const descriptionLines = objective.description ? Math.ceil(objective.description.length / averageCharactersPerLine) : 0;
+  const descriptionLines = objective.description ? Math.ceil(objective.description.length / averageCharactersPerLine) : 0
   const descHeight = descriptionLines * 20
 
   const tasksInfoHeight = 18 // Fixed for "Tasks: X"
@@ -49,8 +49,8 @@ function estimateTaskHeight(task: Task): number {
 /**
  * Sorts objectives by order_index ascending.
  */
-function sortObjectives(objectives: Objective[]): Objective[] {
-  return [...objectives].sort((a, b) => a.orderIndex - b.orderIndex);
+const sortObjectives = (objectives: Objective[]): Objective[] => {
+  return [...objectives].sort((a, b) => a.orderIndex - b.orderIndex)
 }
 
 /**
@@ -59,7 +59,7 @@ function sortObjectives(objectives: Objective[]): Objective[] {
  * @example
  * splitTasks([task1, task2, task3]) -> { leftTasks: [task1, task2], rightTasks: [task3] }
  */
-function splitTasks(tasks: Task[]): { leftTasks: Task[], rightTasks: Task[] } {
+const splitTasks = (tasks: Task[]): { leftTasks: Task[], rightTasks: Task[] }  => {
   const middle = Math.ceil(tasks.length / 2);
   return {
     leftTasks: tasks.slice(0, middle),
@@ -75,12 +75,12 @@ function splitTasks(tasks: Task[]): { leftTasks: Task[], rightTasks: Task[] } {
  * @example
  * calculateObjectiveVerticalLayout(previousBottomY, objective, leftTasks, rightTasks)
  */
-function calculateObjectiveVerticalLayout(
+const calculateObjectiveVerticalLayout = (
   previousBottomY: number,
   objective: Objective,
   leftTasks: Task[],
   rightTasks: Task[],
-): { blockTopY: number; blockCenterY: number; blockHeight: number; objectiveY: number } {
+): { blockTopY: number; blockCenterY: number; blockHeight: number; objectiveY: number } => {
   const objectiveHeight = estimateObjectiveHeight(objective)
 
   const leftTasksHeight = leftTasks.reduce(
@@ -106,13 +106,14 @@ function calculateObjectiveVerticalLayout(
 /**
  * Creates a Node for a task.
  */
-function createTaskNode(taskId: string, task: Task, x: number, y: number): LayoutNode {
+const createTaskNode = (taskId: string, task: Task, x: number, y: number, isEditable: boolean): LayoutNode => {
   return {
     id: taskId,
     type: LayoutNodeType.Task,
     position: { x, y },
     data: { 
-      title: task.title 
+      title: task.title,
+      isEditable,
     },
   }
 }
@@ -120,7 +121,7 @@ function createTaskNode(taskId: string, task: Task, x: number, y: number): Layou
 /**
  * Creates a Node for an objective.
  */
-function createObjectiveNode(objectiveId: string, objective: Objective, y: number): LayoutNode {
+const createObjectiveNode = (objectiveId: string, objective: Objective, y: number, isEditable: boolean): LayoutNode => {
   return {
     id: objectiveId,
     type: LayoutNodeType.Objective,
@@ -129,6 +130,7 @@ function createObjectiveNode(objectiveId: string, objective: Objective, y: numbe
       title: objective.title,
       description: objective.description,
       total_tasks: objective.tasks.length,
+      isEditable
     },
   }
 }
@@ -136,21 +138,22 @@ function createObjectiveNode(objectiveId: string, objective: Objective, y: numbe
 /**
  * Creates an Edge between two nodes.
  */
-function createEdge(source: string, target: string, sourceHandle?: string, targetHandle?: string): LayoutEdge {
+const createEdge = (source: string, target: string, sourceHandle?: string, targetHandle?: string): LayoutEdge => {
   return { id: `edge-${source}-${target}`, source, target, sourceHandle, targetHandle }
 }
 
 /**
  * Generates task nodes and edges for one side (left or right).
  */
-function generateSideTasks(
+const generateSideTasks = (
   tasks: Task[],
   objectiveId: string,
   startX: number,
   startY: number,
   sourceHandle: 'left' | 'right',
-  targetHandle: 'left' | 'right'
-): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
+  targetHandle: 'left' | 'right',
+  isEditable: boolean
+): { nodes: LayoutNode[]; edges: LayoutEdge[] } => {
 
   const sideNodes: LayoutNode[] = []
   const sideEdges: LayoutEdge[] = []
@@ -161,7 +164,7 @@ function generateSideTasks(
     const taskId = task.taskId
     const taskHeight = estimateTaskHeight(task)
 
-    const newTaskNode = createTaskNode(taskId, task, startX, currentY)
+    const newTaskNode = createTaskNode(taskId, task, startX, currentY, isEditable)
     sideNodes.push(newTaskNode)
 
     const newSideEdge = createEdge(objectiveId, taskId, sourceHandle, targetHandle)
@@ -177,7 +180,7 @@ function generateSideTasks(
  * Builds the layout using the predefined roadmap.layout,
  * injecting the appropriate data from objectives and tasks.
  */
-function buildFromExistingLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
+const buildFromExistingLayout = (roadmap: Roadmap, isEditable: boolean): { nodes: LayoutNode[]; edges: LayoutEdge[] } => {
   if (!roadmap.layout || !roadmap.layout.nodes || !roadmap.layout.edges) {
     throw new Error("Invalid roadmap layout")
   }
@@ -203,6 +206,7 @@ function buildFromExistingLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges
           title: objective.title,
           description: objective.description,
           total_tasks: objective.tasks.length,
+          isEditable,
         }
       }
     }
@@ -215,6 +219,7 @@ function buildFromExistingLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges
         ...node,
         data: {
           title: task.title,
+          isEditable,
         }
       }
     }
@@ -232,7 +237,7 @@ function buildFromExistingLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges
  * Dynamically builds the layout from objectives and tasks.
  * Positions everything based on estimated sizes and spacing rules.
  */
-function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
+const buildDynamicLayout = (roadmap: Roadmap, isEditable: boolean): { nodes: LayoutNode[]; edges: LayoutEdge[] } => {
   const nodes: LayoutNode[] = []
   const edges: LayoutEdge[] = []
 
@@ -249,7 +254,7 @@ function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: Lay
     const { blockTopY, blockHeight, objectiveY } = calculateObjectiveVerticalLayout(previousBottomY, objective, leftTasks, rightTasks)
 
     // Add objective node
-    const newObjective = createObjectiveNode(objectiveId, objective, objectiveY)
+    const newObjective = createObjectiveNode(objectiveId, objective, objectiveY, isEditable)
     nodes.push(newObjective)
 
     // Add left side tasks
@@ -259,7 +264,8 @@ function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: Lay
       -HORIZONTAL_SPACING,
       blockTopY,
       'left',
-      'right'
+      'right',
+      isEditable
     )
 
     nodes.push(...leftNodes)
@@ -272,7 +278,8 @@ function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: Lay
       HORIZONTAL_SPACING,
       blockTopY,
       'right',
-      'left'
+      'left',
+      isEditable
     )
 
     nodes.push(...rightNodes)
@@ -301,12 +308,12 @@ function buildDynamicLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: Lay
 /**
  * Builds the nodes and edges for the roadmap layout.
  */
-export function buildRoadmapLayout(roadmap: Roadmap): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
+export function buildRoadmapLayout(roadmap: Roadmap, isEditable: boolean): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
   if (roadmap.layout?.nodes?.length && roadmap.layout?.edges?.length) {
-    return buildFromExistingLayout(roadmap)
+    return buildFromExistingLayout(roadmap, isEditable)
   }
 
-  return buildDynamicLayout(roadmap)
+  return buildDynamicLayout(roadmap, isEditable)
 }
 
 

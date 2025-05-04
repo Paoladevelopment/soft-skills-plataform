@@ -1,4 +1,3 @@
-import { useMemo } from "react"
 import ReactFlow, {
   Background,
   Controls,
@@ -6,26 +5,17 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 
 
-import { Roadmap } from "../../types/roadmap/roadmap.models"
 import { nodeTypes } from "../../types/roadmap/roadmap.nodetypes"
-import { buildRoadmapLayout } from "../../utils/roadmap_layout_generator"
+import { useRoadmapStore } from "../../store/useRoadmapStore"
 
-interface RoadmapProps {
-  roadmap: Roadmap
-}
-
-const RoadmapFlow = ({ roadmap }: RoadmapProps) => {
-  const { nodes: initialNodes, edges: initialEdges } = 
-    useMemo(
-      () => buildRoadmapLayout(roadmap), 
-      [roadmap]
-    )
+const RoadmapFlow = () => {
+  const { editorNodes, editorEdges } = useRoadmapStore()
 
   return (
     <div style={{ width: "100%", height: "100vh" }}>
       <ReactFlow
-        nodes={initialNodes}
-        edges={initialEdges}
+        nodes={editorNodes}
+        edges={editorEdges}
         nodeTypes={nodeTypes}
         fitView
       >
