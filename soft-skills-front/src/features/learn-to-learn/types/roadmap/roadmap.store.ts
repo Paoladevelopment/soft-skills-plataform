@@ -1,7 +1,29 @@
+import { Connection } from "reactflow"
 import { PaginationState } from "../pagination"
-import { Roadmap, RoadmapSummary } from "./roadmap.models"
+import { LayoutEdge, LayoutNode, Roadmap, RoadmapSummary } from "./roadmap.models"
 
 export interface IRoadmapStore {
+  editorNodes: LayoutNode[]
+  editorEdges: LayoutEdge[]
+
+  setEditorNodes: (nodes: LayoutNode[]) => void
+  setEditorEdges: (edges: LayoutEdge[]) => void
+
+  addEditorNode: (node: LayoutNode) => void
+  updateEditorNode: (node: LayoutNode) => void
+  removeEditorNode: (id: string) => void
+
+  removeTaskNode: (taskId: string) => void
+  removeObjectiveNode: (objectiveId: string) => void
+
+  addEditorEdge: (edge: LayoutEdge) => void
+  removeEditorEdge: (id: string) => void
+
+  resetEditorLayout: () => void
+
+  selectedNodeId: string | null
+  setSelectedNodeId: (id: string | null) => void
+
   selectedRoadmap: Roadmap | null
   selectedRoadmapSteps: number
 
@@ -31,6 +53,8 @@ export interface IRoadmapStore {
   fetchMyRoadmaps: (offset?: number, limit?: number) => Promise<void>
   fetchPublicRoadmaps: (offset?: number, limit?: number) => Promise<void>
 
-  getRoadmapById: (id: string) => Promise<void>
+  getRoadmapById: (id: string, editable?: boolean) => Promise<void>
   deleteRoadmap: (id: string) => Promise<void>
+
+  updateRoadmapAfterConnection: (connection: Connection) => void
 }

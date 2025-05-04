@@ -1,19 +1,28 @@
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material'
+import { Heading1, Circle, CircleDashed } from 'lucide-react'
+import { LayoutNodeType } from '../../types/roadmap/roadmap.enums'
+import { ReactNode } from 'react'
 
-const components = [
-  { label: 'Title', type: 'title' },
-  { label: 'Objective', type: 'objective' },
-  { label: 'Task', type: 'task' },
-];
+type SidebarComponent = {
+  label: string
+  type: LayoutNodeType
+  icon?: ReactNode
+}
+
+const components: SidebarComponent[] = [
+  { label: 'Title', type: LayoutNodeType.Title, icon: <Heading1 size={18} /> },
+  { label: 'Objective', type: LayoutNodeType.Objective, icon: <Circle size={18} /> },
+  { label: 'Task', type: LayoutNodeType.Task, icon: <CircleDashed size={18} />},
+]
 
 const Sidebar = () => {
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
     nodeType: string
   ) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+    event.dataTransfer.setData('application/reactflow', nodeType)
+    event.dataTransfer.effectAllowed = 'move'
+  }
 
   return (
     <Box
@@ -21,7 +30,6 @@ const Sidebar = () => {
         width: 220,
         padding: 2,
         borderRight: '1px solid #ddd',
-        backgroundColor: '#f8f9fa',
       }}
     >
       <Typography variant="h6" gutterBottom fontWeight="bold">
@@ -41,19 +49,24 @@ const Sidebar = () => {
           sx={{
             padding: 1.5,
             marginBottom: 1,
-            textAlign: 'center',
-            cursor: 'grab',
+            cursor: "grab",
+            backgroundColor: "#fff",
+            boxShadow: "none",
             fontWeight: 500,
-            '&:hover': {
-              backgroundColor: '#eaeaea',
+            display: "flex",
+            alignItems: "center",
+            gap:1,
+            "&:hover": {
+              backgroundColor: "#eaeaea",
             },
           }}
         >
+          {item.icon}
           {item.label}
         </Paper>
       ))}
     </Box>
-  );
-};
+  )
+}
 
 export default Sidebar

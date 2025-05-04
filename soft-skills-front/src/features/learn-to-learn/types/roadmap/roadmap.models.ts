@@ -10,19 +10,23 @@ export interface Resource {
 export interface Task {
   taskId: string
   title: string
+  description?: string
+  contentTitle?: string
   orderIndex: number
-  type: TaskType
-  resources?: Resource[]
+  type?: TaskType
   comments?: string[]
+  resources?: Resource[]
 }
 
 export interface Objective {
   objectiveId: string
   title: string
   description?: string
+  contentTitle?: string
   orderIndex: number
   tasks: Task[]
   comments?: string[]
+  resources?: Resource[]
 }
 
 export type NodeData = Record<string, unknown>

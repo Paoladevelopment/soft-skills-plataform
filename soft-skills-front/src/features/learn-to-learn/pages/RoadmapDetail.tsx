@@ -26,8 +26,19 @@ const RoadmapDetail = () => {
     isLoading,
     getRoadmapById,
     setSelectedRoadmap,
-    setSelectedRoadmapSteps
+    setSelectedRoadmapSteps,
+    resetEditorLayout
   } = useRoadmapStore()
+
+  const resetRoadmapEditorState = () => {
+    setSelectedRoadmap(null)
+    setSelectedRoadmapSteps(0)
+    resetEditorLayout()
+  }
+
+  const handleBackToRoadmaps = () => {
+    navigate('/learn/roadmaps')
+  }
 
   useEffect(() => {
     if (roadmapId) {
@@ -35,8 +46,7 @@ const RoadmapDetail = () => {
     }
 
     return () => {
-      setSelectedRoadmap(null)
-      setSelectedRoadmapSteps(0)
+      resetRoadmapEditorState()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roadmapId])
@@ -53,7 +63,7 @@ const RoadmapDetail = () => {
     <Box p={4}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
         <Stack direction="row" alignItems="center" spacing={1}>
-          <IconButton onClick={() => navigate('/learn/roadmaps')}>
+          <IconButton onClick={handleBackToRoadmaps}>
             <ArrowBackIcon fontSize="small" />
           </IconButton>
           <Typography variant="body2" fontWeight="medium" color="text.secondary">
@@ -64,7 +74,7 @@ const RoadmapDetail = () => {
         <Button
           variant="contained"
           startIcon={<EditIcon />}
-          sx={{ backgroundColor: '#0A1128' }}
+          onClick={() => navigate(`/learn/roadmaps/${roadmapId}/edit`)}
         >
           Edit Roadmap
         </Button>
@@ -93,7 +103,7 @@ const RoadmapDetail = () => {
       </Stack>
 
       <Box mt={4} border="1px solid #e0e0e0" borderRadius={2} minHeight="700px">
-        {selectedRoadmap && <RoadmapFlow roadmap={selectedRoadmap} />}
+        <RoadmapFlow />
       </Box>
     </Box>
   )

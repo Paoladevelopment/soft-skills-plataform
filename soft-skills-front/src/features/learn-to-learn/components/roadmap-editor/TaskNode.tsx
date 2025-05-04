@@ -1,13 +1,20 @@
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { NodeProps, Position, useStore } from 'reactflow'
+import DeleteIcon from '@mui/icons-material/Delete'
 import CustomHandle from './CustomHandle'
-import { findClosestObjectiveNode } from '../../utils/find_closest_objective_node'
+import { findClosestObjectiveNode } from '../../utils/roadmap/find_closest_objective_node'
+import { useState } from 'react'
+import { useRoadmapStore } from '../../store/useRoadmapStore'
 
 interface TaskNodeData {
-  title: string
+  title: string,
+  isEditable?: boolean
 }
 
 const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
+  const [hovered, setHovered] = useState(false)
+  const removeTaskNode = useRoadmapStore((state) => state.removeTaskNode)
+
   const nodeInternals = useStore((store) => store.nodeInternals)
   const edges = useStore((store) => store.edges)
 
@@ -28,18 +35,27 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
     ? (nodePosition?.x ?? 0) < (referenceNode.position.x ?? 0) 
     : true
 
+  const shouldShowDeleteAction = data.isEditable && hovered
+
+  const handleDelete = () => {
+    removeTaskNode(id)
+  }
+
   return (
     <Box
       sx={{
         borderRadius: "8px",
-        padding: "8px 16px",
+        padding: "8px 12px 8px 16px",
         backgroundColor: "white",
         display: "flex",
         alignItems: "center",
+        justifyContent: "space-between",
         width: 250,
         boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
         position: 'relative',
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <CustomHandle
         type="target"
@@ -69,12 +85,24 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
       <Typography
         variant="subtitle2"
         sx={{
-          flexGrow: 1,
-          textAlign: "center",
+          flexShrink: 1,
+          textAlign: "left",
+          whiteSpace: "normal",
+          wordBreak: "break-word",
         }}
       >
         {data.title}
       </Typography>
+
+      {shouldShowDeleteAction && (
+        <IconButton
+          size="small"
+          onClick={handleDelete}
+          sx={{ padding: 0, ml: 1, alignSelf: "flex-start" }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      )}
     </Box>
   )
 }
