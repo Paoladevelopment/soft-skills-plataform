@@ -34,6 +34,45 @@ export function findObjectiveById(roadmap: Roadmap, objectiveId: string): Object
 }
 
 /**
+ * Finds a task in the roadmap by taskId, regardless of which objective it belongs to.
+ *
+ * @param roadmap - The roadmap containing the objectives and their tasks.
+ * @param taskId - The ID of the task to find.
+ * @returns The matching Task, or undefined if not found.
+ */
+export function findTaskById(roadmap: Roadmap, taskId: string): Task | undefined {
+  for (const objective of roadmap.objectives) {
+    const task = objective.tasks.find(t => t.taskId === taskId)
+
+    if (task) return task
+  }
+
+  return undefined
+}
+
+/**
+ * Finds a task by its ID within a specific objective.
+ *
+ * @param objective - The objective containing the task.
+ * @param taskId - The ID of the task to find.
+ * @returns The matching task, or undefined if not found.
+ */
+export function findTaskInObjective(objective: Objective, taskId: string): Task | undefined {
+  return objective.tasks.find(t => t.taskId === taskId)
+}
+
+/**
+ * Finds the parent objective that contains a task with the given ID.
+ *
+ * @param roadmap - The roadmap containing all objectives and their tasks.
+ * @param taskId - The ID of the task to locate.
+ * @returns The objective that contains the task, or undefined if not found.
+ */
+export function findParentObjectiveOfTask(roadmap: Roadmap, taskId: string): Objective | undefined {
+  return roadmap.objectives.find(o => o.tasks.some(t => t.taskId === taskId))
+}
+
+/**
  * Removes an objective from a roadmap by its objectiveId and returns a new array of objectives.
  *
  * @param objectives - The array of current objectives.
@@ -184,6 +223,34 @@ export function removeTaskFromObjective(objective: Objective, taskId: string): v
  */
 export function countAllTasks(objectives: Objective[]): number {
   return objectives.reduce((acc, obj) => acc + obj.tasks.length, 0)
+}
+
+/**
+ * Updates the title of an objective in the roadmap if it matches the given ID.
+ *
+ * @param roadmap - The roadmap containing the objective.
+ * @param objectiveId - The ID of the objective to update.
+ * @param newTitle - The new title to set.
+ */
+export function updateObjectiveTitle(roadmap: Roadmap, objectiveId: string, newTitle: string): void {
+  const objective = findObjectiveById(roadmap, objectiveId)
+  if (objective) {
+    objective.title = newTitle
+  }
+}
+
+/**
+ * Updates the title of a task in the roadmap if it matches the given ID.
+ *
+ * @param roadmap - The roadmap containing the objectives and tasks.
+ * @param taskId - The ID of the task to update.
+ * @param newTitle - The new title to set.
+ */
+export function updateTaskTitle(roadmap: Roadmap, taskId: string, newTitle: string): void {
+  const task = findTaskById(roadmap, taskId)
+  if (task) {
+    task.title = newTitle
+  }
 }
 
 

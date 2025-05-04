@@ -1,6 +1,6 @@
 import { Connection } from "reactflow"
 import { PaginationState } from "../pagination"
-import { LayoutEdge, LayoutNode, Roadmap, RoadmapSummary } from "./roadmap.models"
+import { LayoutEdge, LayoutNode, OptionalContentFields, Roadmap, RoadmapSummary } from "./roadmap.models"
 
 export interface IRoadmapStore {
   editorNodes: LayoutNode[]
@@ -57,4 +57,7 @@ export interface IRoadmapStore {
   deleteRoadmap: (id: string) => Promise<void>
 
   updateRoadmapAfterConnection: (connection: Connection) => void
+
+  updateObjectiveContent: (objectiveId: string, updates: OptionalContentFields) => void
+  updateTaskContent: (objectiveId: string, taskId: string, updates: OptionalContentFields) => void
 }

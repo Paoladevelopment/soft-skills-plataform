@@ -49,9 +49,11 @@ const RoadmapEditorContent = () => {
   }, [roadmapId])
 
   const onNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
-    if (node.type === LayoutNodeType.Objective) {
-      setSelectedNodeId(node.id)
-    }
+    setSelectedNodeId(node.id)
+  }, [setSelectedNodeId])  
+
+  const onPaneClick = useCallback(() => {
+    setSelectedNodeId(null)
   }, [setSelectedNodeId])  
 
   const onDrop = useCallback((event: React.DragEvent) => {
@@ -161,6 +163,7 @@ const RoadmapEditorContent = () => {
             onEdgesChange={onEdgesChange}
             isValidConnection={isValidConnection}
             onNodeClick={onNodeClick}
+            onPaneClick={onPaneClick}
           >
             <Background />
             <Controls />

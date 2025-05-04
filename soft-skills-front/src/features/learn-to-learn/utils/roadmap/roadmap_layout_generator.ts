@@ -1,5 +1,6 @@
 import { LayoutNodeType } from "../../types/roadmap/roadmap.enums"
 import { Objective, Task, LayoutNode, LayoutEdge, Roadmap } from "../../types/roadmap/roadmap.models"
+import { isObjectiveNode, isTaskNode } from "./roadmap_node_type_utils"
 
 // Constants
 const NODE_WIDTH = 250
@@ -129,7 +130,7 @@ const createObjectiveNode = (objectiveId: string, objective: Objective, y: numbe
     data: {
       title: objective.title,
       description: objective.description,
-      total_tasks: objective.tasks.length,
+      totalTasks: objective.tasks.length,
       isEditable
     },
   }
@@ -196,7 +197,7 @@ const buildFromExistingLayout = (roadmap: Roadmap, isEditable: boolean): { nodes
   }
 
   const filledNodes: LayoutNode[] = roadmap.layout.nodes.map((node) => {
-    if (node.type === LayoutNodeType.Objective) {
+    if (isObjectiveNode(node)) {
       const objective = objectiveMap.get(node.id)
       if (!objective) throw new Error(`Objective not found for node id ${node.id}`)
 
@@ -205,13 +206,17 @@ const buildFromExistingLayout = (roadmap: Roadmap, isEditable: boolean): { nodes
         data: {
           title: objective.title,
           description: objective.description,
-          total_tasks: objective.tasks.length,
+          totalTasks: objective.tasks.length,
           isEditable,
+          fontSize: node.data.fontSize ?? 'L',
+          backgroundColor: node.data.backgroundColor ?? '#FFFFFF',
+          width: node.data.width ?? 250,
+          height: node.data.height
         }
       }
     }
 
-    if (node.type === LayoutNodeType.Task) {
+    if (isTaskNode(node)) {
       const task = taskMap.get(node.id)
       if (!task) throw new Error(`Task not found for node id ${node.id}`)
 
@@ -220,6 +225,10 @@ const buildFromExistingLayout = (roadmap: Roadmap, isEditable: boolean): { nodes
         data: {
           title: task.title,
           isEditable,
+          fontSize: node.data.fontSize ?? 'M',
+          backgroundColor: node.data.backgroundColor ?? '#FFFFFF',
+          width: node.data.width ?? 250,
+          height: node.data.height
         }
       }
     }

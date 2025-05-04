@@ -4,13 +4,8 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import CustomHandle from '../roadmap-editor/CustomHandle'
 import { useState } from 'react'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
-
-interface ObjectiveNodeData {
-  title: string
-  description?: string
-  total_tasks: number
-  isEditable?: boolean
-}
+import { ObjectiveNodeData } from '../../types/roadmap/roadmap.models'
+import { captionFontSizeMap, fontSizeMap } from '../../types/roadmap/roadmap.options'
 
 const ObjectiveNode = (
   {data, id}: NodeProps<ObjectiveNodeData>
@@ -18,11 +13,18 @@ const ObjectiveNode = (
   const [hovered, setHovered] = useState(false)
   const removeObjectiveNode = useRoadmapStore((state) => state.removeObjectiveNode)
 
-  const handleDelete = () => {
+  const handleDelete = (event: React.MouseEvent) => {
+    event.stopPropagation()
     removeObjectiveNode(id)
   }
 
   const shouldShowDeleteAction = data.isEditable && hovered
+
+  const bgColor = data.backgroundColor ?? '#FFFFFF'
+  const width = data.width ?? 250
+  const height = data.height ?? 'auto'
+  const fontSize = fontSizeMap[data.fontSize ?? 'L']
+  const captionSize = captionFontSizeMap[data.fontSize ?? 'L']
 
   return (
     <Box
@@ -33,8 +35,9 @@ const ObjectiveNode = (
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'start',
-        width: 250,
-        backgroundColor: "white",
+        width,
+        height,
+        backgroundColor: bgColor,
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -66,36 +69,33 @@ const ObjectiveNode = (
 
       <Box sx={{ width: "100%"}}>
         <Typography 
-          variant="subtitle1" 
-          fontWeight="bold" 
-          gutterBottom
+          sx={{
+            fontWeight: 'bold',
+            fontSize,
+            marginBottom: 1,
+          }}
         >
           {data.title}
         </Typography>
-
-        {data.description && (
-          <Typography 
-            variant="body2" 
-            color="text.secondary" 
-            gutterBottom
-          >
-            {data.description}
-          </Typography>
-        )}
       </Box>  
 
       <Box display="flex" alignItems="center">
         <Typography 
-          variant="caption" 
           sx={{ 
+            fontSize: captionSize,
             color: 'purple', 
             fontWeight: 500, 
             mr: 0.5 
           }}>
           Tasks:
         </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {data.total_tasks}
+        <Typography
+          sx={{ 
+            fontSize: captionSize, 
+            color: 'text.secondary' 
+          }}
+        >
+          {data.totalTasks}
         </Typography>
       </Box>
     </Box>

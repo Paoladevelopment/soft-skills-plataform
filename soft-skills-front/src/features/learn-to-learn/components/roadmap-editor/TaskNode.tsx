@@ -37,7 +37,8 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
 
   const shouldShowDeleteAction = data.isEditable && hovered
 
-  const handleDelete = () => {
+  const handleDelete = (event: React.MouseEvent) => {
+    event.stopPropagation()
     removeTaskNode(id)
   }
 

@@ -3,6 +3,7 @@ export enum ResourceType {
   Book = 'book',
   Video = 'video',
   Web = 'web',
+  Other = 'other'
 }
 
 export enum TaskType {

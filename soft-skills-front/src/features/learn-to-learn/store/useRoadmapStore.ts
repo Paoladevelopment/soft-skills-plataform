@@ -6,9 +6,9 @@ import { useToastStore } from '../../../store/useToastStore'
 import { Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
 import { getPublicRoadmaps, getRoadmapById, getUserRoadmaps } from '../api/Roadmaps'
 import { buildRoadmapLayout } from '../utils/roadmap/roadmap_layout_generator'
-import { addTaskToObjective, countAllTasks, findObjectiveById, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective } from '../utils/roadmap/roadmap_structure_utils'
-import { LayoutNodeType } from '../types/roadmap/roadmap.enums'
-import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmap_graph_helpers'
+import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskInObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmap_structure_utils'
+import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmap_graph_helpers'
+import { isObjectiveNode, isObjectiveToObjectiveConnection, isObjectiveToTaskConnection, isTaskNode } from '../utils/roadmap/roadmap_node_type_utils'
 
 export const useRoadmapStore = create<IRoadmapStore>()(
   devtools(
@@ -129,11 +129,25 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       
       updateEditorNode: (updatedNode) => {
         set((state) => {
-          const index = state.editorNodes.findIndex(n => n.id === updatedNode.id)
+          const index = findNodeIndexById(state.editorNodes, updatedNode.id)
           if (index !== -1) {
             state.editorNodes[index] = updatedNode
           }
-        }, false, 'EDITOR/UPDATE_NODE')
+
+          if (!state.selectedRoadmap) return
+
+          const newTitle = getNodeTitle(updatedNode)
+          if (!newTitle) return
+
+          if(isObjectiveNode(updatedNode)) {
+            updateObjectiveTitle(state.selectedRoadmap, updatedNode.id, newTitle)
+          }
+
+          if(isTaskNode(updatedNode)) {
+            updateTaskTitle(state.selectedRoadmap, updatedNode.id, newTitle) 
+          }
+
+        }, false, 'EDITOR/UPDATE_NODE_AND_SYNC_TITLE')
       },
       
       removeEditorNode: (id) => {
@@ -292,7 +306,7 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         }
       },
 
-      deleteRoadmap: async (id: string) => {
+      deleteRoadmap: async (id) => {
         console.log(id)
       },
 
@@ -307,7 +321,7 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       
           if (!state.selectedRoadmap || !sourceNode || !targetNode) return
       
-          if (sourceNode.type === LayoutNodeType.Objective && targetNode.type === LayoutNodeType.Objective) {
+          if (isObjectiveToObjectiveConnection(sourceNode, targetNode)) {
             const sourceExists = !!findObjectiveById(state.selectedRoadmap, sourceNode.id)
             const targetExists = !!findObjectiveById(state.selectedRoadmap, targetNode.id)
 
@@ -326,7 +340,7 @@ export const useRoadmapStore = create<IRoadmapStore>()(
             return
           }
       
-          if (sourceNode.type === LayoutNodeType.Objective && targetNode.type === LayoutNodeType.Task) {
+          if (isObjectiveToTaskConnection(sourceNode, targetNode)) {
             const parentObjective = findObjectiveById(state.selectedRoadmap, source)
             if (parentObjective) {
               const newTask = createTaskFromNode(targetNode)
@@ -338,7 +352,28 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       
           state.selectedRoadmapSteps = countAllTasks(state.selectedRoadmap.objectives)
         }, false, 'ROADMAP/UPDATE_FROM_CONNECTION')
-      },     
+      },
+      
+      updateObjectiveContent: (objectiveId, updates) => {
+        set((state) => {
+          const objective = state.selectedRoadmap ? findObjectiveById(state.selectedRoadmap, objectiveId) : undefined
+          if (!objective) return
+      
+          Object.assign(objective, updates)
+        }, false, 'ROADMAP/UPDATE_OBJECTIVE_CONTENT')
+      },
+
+      updateTaskContent: (objectiveId, taskId, updates) => {
+        set((state) => {
+          const objective = state.selectedRoadmap ? findObjectiveById(state.selectedRoadmap, objectiveId) : undefined
+          if (!objective) return
+      
+          const task = findTaskInObjective(objective, taskId) 
+          if (!task) return
+      
+          Object.assign(task, updates)
+        }, false, 'ROADMAP/UPDATE_TASK_CONTENT')
+      },
     })),
 
     { name: 'roadmapStore' }

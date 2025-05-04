@@ -1,40 +1,31 @@
 import {
   Box,
-  TextField,
-  Typography,
   Button,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
-import { findNodeById } from '../../utils/roadmap/roadmap_graph_helpers'
-import { LayoutNodeType } from '../../types/roadmap/roadmap.enums'
 import { EditorTab } from '../../types/roadmap/roadmap.options'
+import PropertiesTab from './PropertiesTab'
+import ContentAndLinksTab from './ContentLinksTab'
 
 const SidebarEditor = () => {
   const [tab, setTab] = useState<EditorTab>('properties')
 
   const {
     selectedNodeId,
-    editorNodes,
-    setSelectedNodeId,
   } = useRoadmapStore()
+
+  useEffect(() => {
+    if (selectedNodeId) {
+      setTab('properties')
+    }
+  }, [selectedNodeId])
 
   if (!selectedNodeId) return null
 
-  const node = findNodeById(editorNodes, selectedNodeId)
-  if (!node || node.type !== LayoutNodeType.Objective) return null
-
-  const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e)
-  }
-
-  const handleChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e)
-  }
-
-  const getTabButtonStyles = (currentTab: EditorTab) =>  {
+  const getTabButtonStyles = (currentTab: EditorTab) => {
     const isActive = currentTab === tab
-  
+
     return {
       borderRadius: '999px',
       px: 1.5,
@@ -49,7 +40,9 @@ const SidebarEditor = () => {
       },
     }
   }
-  
+
+  const isPropertiesTab = () => tab === 'properties'
+  const isContentTab = () => tab === 'content'
 
   return (
     <Box
@@ -63,12 +56,12 @@ const SidebarEditor = () => {
         flexDirection: 'column',
       }}
     >
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
           p: 2,
-          gap: 1 
+          gap: 1
         }}
       >
         <Button
@@ -88,68 +81,21 @@ const SidebarEditor = () => {
         </Button>
       </Box>
 
-      <Box sx={{ p: 2, overflowY: 'auto', flex: 1 }}>
-        {tab === 'properties' && (
-          <>
-            <Typography fontWeight="bold" mb={1}>
-              Label
-            </Typography>
-
-            <TextField
-              size="small"
-              fullWidth
-              value={node.data.title}
-              onChange={handleChangeTitle}
-              sx={{ mb: 2 }}
-            />
-          </>
-        )}
-
-        {tab === 'content' && (
-          <>
-            <Typography fontWeight="bold" mb={1}>
-              Title
-            </Typography>
-            <TextField
-              size="small"
-              fullWidth
-              placeholder="Enter Title"
-              value={node.data.title}
-              onChange={handleChangeTitle}
-              sx={{ mb: 2 }}
-            />
-
-            <Typography fontWeight="bold" mb={1}>
-              Description
-            </Typography>
-            <TextField
-              size="small"
-              fullWidth
-              multiline
-              minRows={6}
-              placeholder="Enter description"
-              value={node.data.description || ''}
-              onChange={handleChangeDescription}
-              sx={{ mb: 2 }}
-            />
-
-            <Typography fontWeight="bold" mb={1}>
-              Links
-            </Typography>
-            <Button variant="outlined" fullWidth>
-              Add Link
-            </Button>
-          </>
-        )}
-      </Box>
-
-      <Button
-        onClick={() => setSelectedNodeId(null)}
-        fullWidth
-        sx={{ borderTop: '1px solid #eee' }}
+      <Box 
+        sx={{ 
+          p: 2, 
+          overflowY: 'auto', 
+          flex: 1 
+        }}
       >
-        Close
-      </Button>
+        {
+          isPropertiesTab() && <PropertiesTab />
+        }
+
+        {
+          isContentTab() && <ContentAndLinksTab />
+        }
+      </Box>
     </Box>
   )
 }
