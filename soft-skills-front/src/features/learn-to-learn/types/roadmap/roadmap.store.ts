@@ -55,6 +55,7 @@ export interface IRoadmapStore {
 
   getRoadmapById: (id: string, editable?: boolean) => Promise<void>
   deleteRoadmap: (id: string) => Promise<void>
+  createRoadmap: (title: string, description: string) => Promise<string | null>
 
   updateRoadmapAfterConnection: (connection: Connection) => void
 

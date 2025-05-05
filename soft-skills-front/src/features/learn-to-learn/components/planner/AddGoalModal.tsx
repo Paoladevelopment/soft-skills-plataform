@@ -101,7 +101,7 @@ const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalPr
         </DialogContent>
 
         <DialogActions sx={{ px: 3, pb: 3 }}>
-          <Button variant="contained" color="primary" type="submit">
+          <Button variant="contained" color="secondary" type="submit">
             Add Goal
           </Button>
         </DialogActions>

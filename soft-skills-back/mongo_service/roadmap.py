@@ -2,6 +2,7 @@ from typing import Dict, List
 from bson import ObjectId
 from datetime import datetime, timezone
 
+from enums.roadmap import Visibility
 from utils.mongodb import MongoDB
 from utils.logger import logger_config
 from utils.errors import APIException, Missing, handle_db_error
@@ -79,12 +80,20 @@ class RoadmapMongoService:
         except Exception as err:
             handle_db_error(err, "get_public_roadmaps")
 
-    def add_roadmap(self, roadmap_data: Dict) -> str:
+    def add_roadmap(self, roadmap_data: Dict, user_id: str) -> Dict:
         try:
-            roadmap_data["created_at"] = datetime.now(timezone.utc).isoformat()
+            current_time = datetime.now(timezone.utc).isoformat()
+            roadmap_data.update({
+                "user_id": user_id,
+                "visibility": Visibility.private,
+                "created_at": current_time,
+                "updated_at": current_time,
+                "objectives": [],
+            })
 
             result = self.mongodb.insert_one(self.collection_name, roadmap_data)
-            return str(result.inserted_id)
+            roadmap_data["roadmap_id"] = str(result.inserted_id)
+            return roadmap_data
         
         except Exception as err:
             handle_db_error(err, "add_roadmap")

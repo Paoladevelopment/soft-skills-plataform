@@ -10,8 +10,6 @@ T = TypeVar("T")
 class RoadmapBase(BaseModel):
     title: str
     description: str
-    objectives: List[Objective]
-    visibility: Visibility = Visibility.private
 
 class RoadmapCreate(RoadmapBase):
     model_config = {
@@ -31,6 +29,8 @@ class RoadmapUpdate(BaseModel):
 class Roadmap(RoadmapBase):
     roadmap_id: str
     user_id: str
+    objectives: List[Objective]
+    visibility: Visibility = Visibility.private
     created_at: Optional[str]
     updated_at: Optional[str] = None
 
@@ -46,11 +46,11 @@ class RoadmapResponse(BaseResponse[Roadmap]):
     pass
 
 def roadmap_serializer(model: Roadmap) -> dict:
-  return model.model_dump()
+    return model.model_dump()
 
 def to_roadmap_model(doc: dict) -> Roadmap:
-  doc["roadmap_id"] = str(doc.pop("_id"))
-  return Roadmap(**doc)
+    doc["roadmap_id"] = str(doc.pop("_id"))
+    return Roadmap(**doc)
 
 
 def to_roadmap_summary_model(doc: dict) -> RoadmapSummary:

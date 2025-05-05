@@ -39,6 +39,8 @@ class MongoDB:
         try:
             collection = self.get_collection(collection_name)
             result = collection.insert_one(document)
+
+            return result
         
         except Exception as err:
             raise err
