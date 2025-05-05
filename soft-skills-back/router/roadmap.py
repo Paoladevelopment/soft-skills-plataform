@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status, Query
-from typing import List
+from fastapi.responses import JSONResponse
 
 from nosql_models.roadmap import Roadmap
 from nosql_schema.roadmap import RoadmapCreate, RoadmapUpdate, RoadmapResponse, PaginatedRoadmapsResponse
@@ -24,13 +24,12 @@ def create_roadmap(
 ):
     try:
         roadmap_dict = roadmap_data.model_dump()
-        roadmap_dict["user_id"] = token_data.user_id
-        inserted_id = roadmap_service.add_roadmap(roadmap_dict)
+        user_id = str(token_data.user_id)
+        result_dict = roadmap_service.add_roadmap(roadmap_dict, user_id)
 
-        roadmap_dict["roadmap_id"] = inserted_id
         return RoadmapResponse(
             message="Roadmap created successfully",
-            data=Roadmap(**roadmap_dict)
+            data=result_dict
         )
 
     except APIException as err:
@@ -74,7 +73,7 @@ def get_public_roadmaps(
 @router.get(
     "/{id}",
     summary="Get roadmap by ID",
-    response_model=RoadmapResponse
+    response_model=RoadmapResponse,
 )
 def get_roadmap(
     id: str,
@@ -123,7 +122,8 @@ def delete_roadmap(
     token_data: TokenData = Depends(decode_jwt_token),
 ):
     try:
-        return roadmap_service.delete_roadmap(id)
+        roadmap_service.delete_roadmap(id)
+        return JSONResponse(status_code=200, content={"message": "Roadmap deleted successfully."})
 
     except APIException as err:
         raise_http_exception(err)

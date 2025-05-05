@@ -36,7 +36,10 @@ const RoadmapCard = ({ roadmapSummary, onDeleteClick, onViewClick }: GoalCardPro
         borderColor: hovered ? "#a9a9a9": "divider",
         backgroundColor: '#fff',
         borderRadius: 2,
-        boxShadow: "none"
+        boxShadow: "none",
+        minHeight: 300,
+        width: '100%',
+        height: '100%', 
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

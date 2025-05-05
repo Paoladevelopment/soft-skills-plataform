@@ -13,14 +13,19 @@ import { useEffect, useState } from 'react'
 import PaginationControls from '../components/PaginationControls'
 import { useNavigate } from 'react-router-dom'
 import CreateRoadmapModal from '../components/roadmap/CreateRoadmapModal'
+import { RoadmapSummary } from '../types/roadmap/roadmap.models'
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal'
 
 const Roadmaps = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [roadmapToDelete, setRoadmapToDelete] = useState<RoadmapSummary | null>(null)
 
   const { 
     myRoadmaps,
     isLoading,
     fetchMyRoadmaps,
+    deleteRoadmap,
     myRoadmapsPagination: {offset, limit, total},
     setMyRoadmapsOffset,
     setMyRoadmapsLimit,
@@ -36,6 +41,25 @@ const Roadmaps = () => {
   const isEmpty = !isLoading && myRoadmaps.length == 0
   const hasMyRoadmaps = myRoadmaps.length > 0
   const isInitialLoading = isLoading && myRoadmaps.length == 0
+
+  const handleOpenDeleteModal = (roadmap: RoadmapSummary) => {
+    setRoadmapToDelete(roadmap)
+    setDeleteModalOpen(true)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalOpen(false)
+    setRoadmapToDelete(null)
+  }
+
+  const handleConfirmDelete = async () => {
+    setDeleteModalOpen(false)
+
+    if (!roadmapToDelete) return
+    await deleteRoadmap(roadmapToDelete.roadmapId)
+
+    setRoadmapToDelete(null)
+  }
 
   return (
     <Box 
@@ -84,9 +108,7 @@ const Roadmaps = () => {
                   onViewClick={() => {
                     navigate(`/learn/roadmaps/${roadmap.roadmapId}`)
                   }}
-                  onDeleteClick={() => {
-                    // handle delete
-                  }}
+                  onDeleteClick={() => handleOpenDeleteModal(roadmap)}
                 />
               </Grid2>
               ))
@@ -106,14 +128,12 @@ const Roadmaps = () => {
       <CreateRoadmapModal
         open={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onSelectOption={(option) => {
-          setShowCreateModal(false)
-          if (option === 'chatbot') {
-            navigate('/learn/roadmaps/create/chat')
-          } else {
-            navigate('/learn/roadmaps/create/manual')
-          }
-        }}
+      />
+
+      <ConfirmDeleteModal
+        open={deleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
       />
     </Box>
   )

@@ -1,8 +1,9 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, Field
 from enums.resource import ResourceType
 from enums.roadmap import Visibility
+from enums.task.task_type import TaskType 
 from bson import ObjectId
-from typing import List, Optional
+from typing import List, Optional, Literal, Union
 
 class Resource(BaseModel):
     type: ResourceType
@@ -13,19 +14,67 @@ class Task(BaseModel):
     task_id: str
     title: str
     order_index: int
-    resources: list[Resource]
+    description: Optional[str] = None
+    type: Optional[TaskType] = None
+    content_title: Optional[str] = None
+    resources: List[Resource] = Field(default_factory=list)
+    comments: List[str] = Field(default_factory=list)
 
 class Objective(BaseModel):
     objective_id: str
     title: str
     order_index: int
-    tasks: list[Task]
+    description: Optional[str] = None
+    content_title: Optional[str] = None
+    resources: List[Resource] = Field(default_factory=list)
+    comments: List[str] = Field(default_factory=list)
+    tasks: list[Task] = Field(default_factory=list)
+
+class ObjectiveNodeData(BaseModel):
+    title: str
+    total_tasks: Optional[int] = None
+    is_editable: Optional[bool] = None
+    font_size: Optional[str] = None
+    background_color: Optional[str] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+
+class TaskNodeData(BaseModel):
+    title: str
+    is_editable: Optional[bool] = None
+    font_size: Optional[str] = None
+    background_color: Optional[str] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+
+class Position(BaseModel):
+    x: float = Field(..., description="X coordinate in the canvas")
+    y: float = Field(..., description="Y coordinate in the canvas")
+
+
+class LayoutNode(BaseModel):
+    id: str
+    type: Literal["objective", "task"]
+    position: Position
+    data: Union[ObjectiveNodeData, TaskNodeData]
+
+class LayoutEdge(BaseModel):
+    id: str
+    source: str
+    source_handle: Optional[str] = None
+    target: str
+    target_handle: Optional[str] = None
+
+class Layout(BaseModel):
+    nodes: List[LayoutNode]
+    edges: List[LayoutEdge]
 
 class Roadmap(BaseModel):
     roadmap_id: str
     title: str
     description: str
     objectives: List[Objective]
+    layout: Optional[Layout] = None
     user_id: str
     created_at: Optional[str]
     updated_at: Optional[str]

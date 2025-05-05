@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer'
 import { IRoadmapStore } from '../types/roadmap/roadmap.store'
 import { useToastStore } from '../../../store/useToastStore'
 import { Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
-import { getPublicRoadmaps, getRoadmapById, getUserRoadmaps } from '../api/Roadmaps'
+import { createRoadmap, deleteRoadmap, getPublicRoadmaps, getRoadmapById, getUserRoadmaps } from '../api/Roadmaps'
 import { buildRoadmapLayout } from '../utils/roadmap/roadmap_layout_generator'
 import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskInObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmap_structure_utils'
 import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmap_graph_helpers'
@@ -307,8 +307,55 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       },
 
       deleteRoadmap: async (id) => {
-        console.log(id)
+        try {
+          const { message } = await deleteRoadmap(id)
+
+          set((state) => {
+            state.myRoadmaps = state.myRoadmaps.filter(r => r.roadmapId !== id)
+            
+            const { offset, limit, total } = state.myRoadmapsPagination
+            const remainingItems = total - 1
+
+            const isPageEmpty = offset >= remainingItems && offset !== 0
+            if (isPageEmpty) {
+              state.myRoadmapsPagination.offset = offset - limit
+            }
+
+            state.myRoadmapsPagination.total = remainingItems
+          }, false, 'ROADMAP/DELETE_ROADMAP_SUCCESS')
+
+          useToastStore.getState().showToast(message || 'Roadmap deleted successfully.', 'success')
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            useToastStore.getState().showToast(err.message || 'Error deleting roadmap', 'error')
+          }
+        }
       },
+
+      createRoadmap: async (title, description) => {
+        set((state) => {
+          state.isLoading = true
+        }, false, 'ROADMAP/CREATE_REQUEST')
+      
+        try {
+          const newRoadmap = await createRoadmap({ title, description })
+          useToastStore.getState().showToast('Roadmap created successfully!', 'success')
+          
+          get().fetchMyRoadmaps()
+          return newRoadmap.roadmapId
+      
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            useToastStore.getState().showToast(err.message || 'Error creating roadmap', 'error')
+          }
+          
+          return null
+        } finally {
+          set((state) => {
+            state.isLoading = false
+          }, false, 'ROADMAP/CREATE_COMPLETE')
+        }
+      },      
 
       updateRoadmapAfterConnection: (connection) => {
         set((state) => {
