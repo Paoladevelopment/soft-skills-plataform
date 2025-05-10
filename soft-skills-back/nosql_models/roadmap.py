@@ -1,9 +1,9 @@
-from pydantic import BaseModel, HttpUrl, Field
+from pydantic import BaseModel, HttpUrl, Field, model_validator
 from enums.resource import ResourceType
-from enums.roadmap import Visibility
+from enums.roadmap import Visibility, LayoutNodeType
 from enums.task.task_type import TaskType 
 from bson import ObjectId
-from typing import List, Optional, Literal, Union
+from typing import List, Optional, Union
 
 class Resource(BaseModel):
     type: ResourceType
@@ -28,12 +28,11 @@ class Objective(BaseModel):
     content_title: Optional[str] = None
     resources: List[Resource] = Field(default_factory=list)
     comments: List[str] = Field(default_factory=list)
-    tasks: list[Task] = Field(default_factory=list)
+    tasks: List[Task] = Field(default_factory=list)
 
 class ObjectiveNodeData(BaseModel):
     title: str
     total_tasks: Optional[int] = None
-    is_editable: Optional[bool] = None
     font_size: Optional[str] = None
     background_color: Optional[str] = None
     width: Optional[int] = None
@@ -41,7 +40,6 @@ class ObjectiveNodeData(BaseModel):
 
 class TaskNodeData(BaseModel):
     title: str
-    is_editable: Optional[bool] = None
     font_size: Optional[str] = None
     background_color: Optional[str] = None
     width: Optional[int] = None
@@ -54,7 +52,7 @@ class Position(BaseModel):
 
 class LayoutNode(BaseModel):
     id: str
-    type: Literal["objective", "task"]
+    type: LayoutNodeType
     position: Position
     data: Union[ObjectiveNodeData, TaskNodeData]
 

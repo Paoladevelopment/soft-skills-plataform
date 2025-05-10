@@ -1,6 +1,6 @@
 import { Connection } from "reactflow"
 import { PaginationState } from "../pagination"
-import { LayoutEdge, LayoutNode, OptionalContentFields, Roadmap, RoadmapSummary } from "./roadmap.models"
+import { LayoutEdge, LayoutNode, OnlyRoadmapMetadata, OptionalContentFields, Roadmap, RoadmapSummary } from "./roadmap.models"
 
 export interface IRoadmapStore {
   editorNodes: LayoutNode[]
@@ -39,6 +39,7 @@ export interface IRoadmapStore {
   setPublicRoadmaps: (roadmaps: RoadmapSummary[]) => void
 
   setSelectedRoadmap: (roadmap: Roadmap | null) => void
+  setSelectedRoadmapMetadata: (metadata: OnlyRoadmapMetadata) => void
   setSelectedRoadmapSteps: (stepsCount: number) => void
 
   setMyRoadmapsOffset: (offset: number) => void
@@ -56,6 +57,8 @@ export interface IRoadmapStore {
   getRoadmapById: (id: string, editable?: boolean) => Promise<void>
   deleteRoadmap: (id: string) => Promise<void>
   createRoadmap: (title: string, description: string) => Promise<string | null>
+  updateRoadmap: (id: string) => Promise<void>
+  updateRoadmapMetadata: (id: string, updates: OnlyRoadmapMetadata) => Promise<void>
 
   updateRoadmapAfterConnection: (connection: Connection) => void
 

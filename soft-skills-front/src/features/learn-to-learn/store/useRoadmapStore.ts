@@ -3,10 +3,10 @@ import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { IRoadmapStore } from '../types/roadmap/roadmap.store'
 import { useToastStore } from '../../../store/useToastStore'
-import { Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
-import { createRoadmap, deleteRoadmap, getPublicRoadmaps, getRoadmapById, getUserRoadmaps } from '../api/Roadmaps'
+import { OnlyRoadmapMetadata, Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
+import { createRoadmap, deleteRoadmap, getPublicRoadmaps, getRoadmapById, getUserRoadmaps, updateRoadmap } from '../api/Roadmaps'
 import { buildRoadmapLayout } from '../utils/roadmap/roadmap_layout_generator'
-import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskInObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmap_structure_utils'
+import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, findTaskInObjective, getOrCreateOrphanObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, removeTaskFromOrphanObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmap_structure_utils'
 import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmap_graph_helpers'
 import { isObjectiveNode, isObjectiveToObjectiveConnection, isObjectiveToTaskConnection, isTaskNode } from '../utils/roadmap/roadmap_node_type_utils'
 
@@ -91,6 +91,17 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         }, false, 'ROADMAP/SET_SELECTED_ROADMAP')
       },
 
+      setSelectedRoadmapMetadata: (metadata: OnlyRoadmapMetadata) => {
+        set((state) => {
+          if (!state.selectedRoadmap) return
+
+          state.selectedRoadmap = {
+            ...state.selectedRoadmap,
+            ...metadata,
+          }
+        })
+      },
+
       setSelectedNodeId: (id: string | null) => {
         set((state) => {
           state.selectedNodeId = id
@@ -124,6 +135,26 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       addEditorNode: (node) => {
         set((state) => {
           state.editorNodes.push(node)
+
+          if (!state.selectedRoadmap) return
+
+          if (isObjectiveNode(node)) {
+            //TO DO: verify existence of the new inserted objective in case it is implemented the undo functionality
+            const newObjective = createObjectiveFromNode(node)
+            state.selectedRoadmap.objectives.push(newObjective)
+          }
+
+          if (isTaskNode(node)) {
+            const orphan = getOrCreateOrphanObjective(state.selectedRoadmap)
+            // TODO: If undo/redo is implemented, ensure task is not already present in orphan.tasks
+
+            const newTask = createTaskFromNode(node)
+            orphan.tasks.push(newTask)
+          }
+
+          if (state.selectedRoadmap.layout) {
+            state.selectedRoadmap.layout.nodes = state.editorNodes
+          }
         }, false, 'EDITOR/ADD_NODE')
       },
       
@@ -355,7 +386,72 @@ export const useRoadmapStore = create<IRoadmapStore>()(
             state.isLoading = false
           }, false, 'ROADMAP/CREATE_COMPLETE')
         }
-      },      
+      },  
+      
+      updateRoadmap: async (id) => {
+        const roadmap = get().selectedRoadmap
+        const editorNodes = get().editorNodes
+        const editorEdges = get().editorEdges
+
+        if (!roadmap) return
+
+        const isPublic = roadmap.visibility === 'public'
+        const hasNoObjectives = roadmap.objectives.length === 0
+        const orphanObjective = roadmap.objectives.find(obj => obj.objectiveId === '__unassigned__')
+        const hasUnassignedTasks =  orphanObjective && orphanObjective.tasks.length > 0
+      
+        if (isPublic && (hasNoObjectives || hasUnassignedTasks)) {
+          const msg = hasNoObjectives
+            ? 'A public roadmap must contain at least one objective.'
+            : 'All tasks of a public roadmap must be connected to an objective before saving.'
+      
+          useToastStore.getState().showToast(msg, 'error')
+          return
+        }
+
+        try {
+          const updatedRoadmap = {
+            ...roadmap,
+            layout: {
+              nodes: editorNodes,
+              edges: editorEdges,
+            }
+          }
+          
+          await updateRoadmap(id, updatedRoadmap)
+      
+          useToastStore.getState().showToast("Roadmap updated successfully!", "success")
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            useToastStore.getState().showToast(err.message || 'Error updating roadmap', 'error')
+          }
+        }
+      },
+
+      updateRoadmapMetadata: async (id: string, updates: OnlyRoadmapMetadata) => {
+        const roadmap = get().selectedRoadmap
+
+        if (!roadmap) return
+
+        try {
+          const updated = {
+            ...roadmap,
+            ...updates,
+          }
+
+          const response = await updateRoadmap(id, updated)
+
+          if (roadmap.roadmapId === response.roadmapId) {
+             get().setSelectedRoadmapMetadata(updates)
+          }
+
+           useToastStore.getState().showToast("Roadmap metadata updated successfully!", "success")
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            useToastStore.getState().showToast(err.message || 'Error updating roadmap metadata', 'error')
+          }
+        }
+      },
 
       updateRoadmapAfterConnection: (connection) => {
         set((state) => {
@@ -390,8 +486,17 @@ export const useRoadmapStore = create<IRoadmapStore>()(
           if (isObjectiveToTaskConnection(sourceNode, targetNode)) {
             const parentObjective = findObjectiveById(state.selectedRoadmap, source)
             if (parentObjective) {
-              const newTask = createTaskFromNode(targetNode)
-              addTaskToObjective(parentObjective, newTask)
+              const taskId = targetNode.id
+
+              const existingTask = findTaskById(state.selectedRoadmap, taskId)
+
+              if (existingTask) {
+                removeTaskFromOrphanObjective(state.selectedRoadmap, taskId)
+                addTaskToObjective(parentObjective, existingTask)
+              } else {
+                const newTask = createTaskFromNode(targetNode)
+                addTaskToObjective(parentObjective, newTask)
+              }
 
               updateObjectiveTaskCount(state.editorNodes, parentObjective.objectiveId, parentObjective.tasks.length)
             }

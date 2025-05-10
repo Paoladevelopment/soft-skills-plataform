@@ -1,5 +1,9 @@
 import { Objective, Roadmap, Task } from '../../types/roadmap/roadmap.models'
 
+export const ORPHAN_OBJECTIVE_ID = '__unassigned__'
+export const ORPHAN_OBJECTIVE_TITLE = 'Unassigned'
+export const ORPHAN_OBJECTIVE_ORDER_INDEX = -1
+
 /**
  * Updates the `orderIndex` of each objective in-place to reflect its position in the array.
  *
@@ -253,4 +257,40 @@ export function updateTaskTitle(roadmap: Roadmap, taskId: string, newTitle: stri
   }
 }
 
+/**
+ * Gets the orphan/unassigned objective used to temporarily hold disconnected tasks.
+ * Creates and appends it to the roadmap if it doesn't exist yet.
+ *
+ * @param roadmap - The roadmap to search and mutate.
+ * @returns The orphan Objective.
+ */
+export function getOrCreateOrphanObjective(roadmap: Roadmap): Objective {
+  let orphan = findObjectiveById(roadmap, ORPHAN_OBJECTIVE_ID)
+
+  if (!orphan) {
+    orphan = {
+      objectiveId: ORPHAN_OBJECTIVE_ID,
+      title: ORPHAN_OBJECTIVE_TITLE,
+      orderIndex: ORPHAN_OBJECTIVE_ORDER_INDEX,
+      tasks: [],
+    }
+
+    roadmap.objectives.push(orphan)
+  }
+
+  return orphan
+}
+
+/**
+ * Removes a task from the orphan (unassigned) objective if it exists.
+ *
+ * @param roadmap - The roadmap containing the objectives.
+ * @param taskId - The ID of the task to remove.
+ */
+export function removeTaskFromOrphanObjective(roadmap: Roadmap, taskId: string): void {
+  const orphan = findObjectiveById(roadmap, ORPHAN_OBJECTIVE_ID)
+  if (!orphan) return
+
+  orphan.tasks = orphan.tasks.filter(task => task.taskId !== taskId)
+}
 

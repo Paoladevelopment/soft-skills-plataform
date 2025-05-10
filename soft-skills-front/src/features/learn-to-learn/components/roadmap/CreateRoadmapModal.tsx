@@ -18,7 +18,7 @@ import { useState } from 'react'
 import { RoadmapCreationOption } from '../../types/roadmap/roadmap.options'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
 import { useNavigate } from 'react-router-dom'
-import RoadmapCreateForm from './RoadmapCreateForm'
+import RoadmapForm from './RoadmapForm'
 
 interface Props {
   open: boolean
@@ -162,13 +162,14 @@ const CreateRoadmapModal = ({ open, onClose }: Props) => {
         </DialogActions>
       </Dialog>
 
-      <RoadmapCreateForm
+      <RoadmapForm
         open={showManualForm}
         onClose={() => {
           setShowManualForm(false)
           onClose()
         }}
         onSubmit={handleManualSubmit}
+        mode='create'
       />
     </>
   )

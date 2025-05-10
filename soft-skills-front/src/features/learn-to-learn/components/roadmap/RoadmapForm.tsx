@@ -15,6 +15,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
+import { useEffect } from 'react'
 
 const roadmapSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -27,9 +28,21 @@ interface Props {
   open: boolean
   onClose: () => void
   onSubmit: (title: string, description: string) => void
+  mode: 'create' | 'edit'
+  initialValues?: {
+    title: string
+    description: string
+  }
 }
 
-const RoadmapCreateForm = ({ open, onClose, onSubmit }: Props) => {
+function getRoadmapFormLabels(mode: 'create' | 'edit') {
+  return {
+    dialogTitle: mode === 'create' ? 'New Roadmap' : 'Edit Roadmap',
+    submitButton: mode === 'create' ? 'Create Roadmap' : 'Save Changes',
+  }
+}
+
+const RoadmapForm = ({ open, onClose, onSubmit, mode, initialValues }: Props) => {
   const isLoading = useRoadmapStore((state) => state.isLoading)
 
   const {
@@ -37,9 +50,10 @@ const RoadmapCreateForm = ({ open, onClose, onSubmit }: Props) => {
     handleSubmit,
     formState: { errors },
     watch,
+    reset
   } = useForm<RoadmapFields>({
     resolver: zodResolver(roadmapSchema),
-    defaultValues: { title: '', description: '' },
+    defaultValues: initialValues ?? { title: '', description: '' },
   })
 
   const description = watch('description')
@@ -48,11 +62,19 @@ const RoadmapCreateForm = ({ open, onClose, onSubmit }: Props) => {
     onSubmit(title.trim(), description.trim())
   }
 
+  const { dialogTitle, submitButton } = getRoadmapFormLabels(mode)
+
+  useEffect(() => {
+    if (open && initialValues) {
+      reset(initialValues)
+    }
+  }, [open, initialValues, reset])
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography fontWeight="bold">New Roadmap</Typography>
+          <Typography fontWeight="bold">{dialogTitle}</Typography>
           <IconButton onClick={onClose} disabled={isLoading}>
             <CloseIcon />
           </IconButton>
@@ -60,7 +82,14 @@ const RoadmapCreateForm = ({ open, onClose, onSubmit }: Props) => {
       </DialogTitle>
 
       <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <DialogContent>
+        <DialogContent
+          sx={{
+            paddingTop: 0,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary" mb={2}>
+            Add a title and description to your roadmap.
+          </Typography>
           <Stack spacing={2} mt={1}>
             <TextField
               label="Roadmap Title"
@@ -100,7 +129,7 @@ const RoadmapCreateForm = ({ open, onClose, onSubmit }: Props) => {
             Cancel
           </Button>
           <Button type="submit" color="secondary" variant="contained" disabled={isLoading}>
-            {isLoading ? <CircularProgress size={20} /> : 'Create Roadmap'}
+            {isLoading ? <CircularProgress size={20} /> : submitButton}
           </Button>
         </DialogActions>
       </form>
@@ -108,4 +137,4 @@ const RoadmapCreateForm = ({ open, onClose, onSubmit }: Props) => {
   )
 }
 
-export default RoadmapCreateForm
+export default RoadmapForm

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, status, Query, Request
 from fastapi.responses import JSONResponse
 
 from nosql_models.roadmap import Roadmap
@@ -94,7 +94,7 @@ def get_roadmap(
     summary="Update roadmap by ID",
     response_model=RoadmapResponse
 )
-def update_roadmap(
+async def update_roadmap(
     id: str,
     update_data: RoadmapUpdate,
     token_data: TokenData = Depends(decode_jwt_token),

@@ -2,6 +2,7 @@ from nosql_models.roadmap import Roadmap, RoadmapSummary, Objective
 from typing import List, Optional, TypeVar
 from pydantic import BaseModel
 from enums.roadmap import Visibility
+from nosql_models.roadmap import Layout
 from schema.base import BaseResponse
 from utils.payloads import (ROADMAP_CREATE_EXAMPLE, ROADMAP_READ_EXAMPLE, ROADMAP_UPDATE_EXAMPLE)
 
@@ -21,21 +22,10 @@ class RoadmapUpdate(BaseModel):
     description: Optional[str] = None
     objectives: Optional[List[Objective]] = None
     visibility: Optional[Visibility] = None
+    layout: Optional[Layout] = None
 
     model_config = {
         "json_schema_extra": {"example": ROADMAP_UPDATE_EXAMPLE}
-    }
-
-class Roadmap(RoadmapBase):
-    roadmap_id: str
-    user_id: str
-    objectives: List[Objective]
-    visibility: Visibility = Visibility.private
-    created_at: Optional[str]
-    updated_at: Optional[str] = None
-
-    model_config = {
-        "json_schema_extra": {"example": ROADMAP_READ_EXAMPLE}
     }
 
 class PaginatedRoadmapsResponse(BaseModel):

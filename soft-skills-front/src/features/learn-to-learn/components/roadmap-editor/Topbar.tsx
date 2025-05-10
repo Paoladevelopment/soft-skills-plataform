@@ -10,8 +10,10 @@ import { ChevronDown, SquarePen, Ellipsis, Trash2, Copy } from 'lucide-react'
 import LockIcon from '@mui/icons-material/Lock'
 import PublicIcon from '@mui/icons-material/Public'
 import SaveIcon from '@mui/icons-material/Save'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useState } from 'react'
 import { RoadmapVisibility } from '../../types/roadmap/roadmap.enums'
+import { useRoadmapStore } from '../../store/useRoadmapStore'
 
 type TopbarProps = {
   title: string
@@ -19,9 +21,15 @@ type TopbarProps = {
   visibility: RoadmapVisibility
   onEditMetaClick: () => void
   onClickSharing: () => void
+  onBackClick: () => void
 }
 
-const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickSharing }: TopbarProps) => {
+const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickSharing, onBackClick }: TopbarProps) => {
+  const {
+    updateRoadmap,
+    selectedRoadmap
+  } = useRoadmapStore()
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -30,6 +38,12 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
 
   const handleMenuClose = () => {
     setAnchorEl(null)
+  }
+
+  const onSaveRoadmap = async () => {
+    if (!selectedRoadmap) return
+  
+    await updateRoadmap(selectedRoadmap.roadmapId)
   }
 
   const getVisibilityLabelAndIcon = (visibility: RoadmapVisibility) => {
@@ -63,7 +77,6 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
     <Box
       component="header"
       sx={{
-        height: 64,
         width: "100%",
         paddingLeft: 2,
         display: "flex",
@@ -74,7 +87,10 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
       }}
     >
       <Box display="flex" flexDirection="column" justifyContent="center">
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box display="flex" alignItems="center" gap={1} paddingTop={1}>
+          <IconButton onClick={onBackClick}>
+            <ArrowBackIcon fontSize="small" />
+          </IconButton>
           <Typography variant="h6" fontWeight="bold">
             {title || 'Untitled Roadmap'}
           </Typography>
@@ -149,6 +165,7 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            paddingBottom: 1,
           }}
         >
           {description || 'No description has been added yet.'}
@@ -189,6 +206,7 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
             fontWeight: 600 ,
             px: 2,
           }}
+          onClick={onSaveRoadmap}
         >
           Save Roadmap
         </Button>

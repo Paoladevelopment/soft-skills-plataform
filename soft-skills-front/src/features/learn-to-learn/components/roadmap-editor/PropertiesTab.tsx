@@ -26,8 +26,8 @@ const PropertiesTab = () => {
   const title = getNodeTitle(node) ?? ''
   const fontSize = node.data.fontSize ?? 'L'
   const backgroundColor = node.data.backgroundColor ?? '#FFFFFF'
-  const width = node.data.width ?? node.width
-  const height = node.data.height ?? node.height
+  const width = node.data.width ?? node.width ?? 0
+  const height = node.data.height ?? node.height ?? 0
 
   const updateNodeData = (updates: Partial<typeof node.data>) => {
     updateEditorNode({

@@ -98,3 +98,4 @@ export interface RoadmapSummary {
 
 export type OnlyContentFields = Pick<Objective, 'contentTitle' | 'description' | 'resources'>
 export type OptionalContentFields = Partial<OnlyContentFields>
+export type OnlyRoadmapMetadata = Pick<Roadmap, 'title' | 'description' | 'visibility'>

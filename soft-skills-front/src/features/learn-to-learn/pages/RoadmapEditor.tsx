@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
-import { useEffect, useRef, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useRef, useCallback, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import ReactFlow, {
   Background,
   Controls,
@@ -26,6 +26,8 @@ import { createNode } from '../utils/roadmap/node-utils'
 import { LayoutEdge, LayoutNode } from '../types/roadmap/roadmap.models'
 import { hasIncomingConnectionFromObjective, hasOutgoingConnectionToObjective } from '../utils/roadmap/roadmap_graph_helpers'
 import SidebarEditor from '../components/roadmap-editor/SidebarEditor'
+import RoadmapForm from '../components/roadmap/RoadmapForm'
+import UpdateSharingSettingsModal from '../components/roadmap/UpdateSharingSettingsModal'
 
 const RoadmapEditorContent = () => {
   const {
@@ -36,9 +38,11 @@ const RoadmapEditorContent = () => {
     getRoadmapById,
     addEditorNode,
     addEditorEdge,
-    updateRoadmapAfterConnection
+    updateRoadmapAfterConnection,
+    updateRoadmapMetadata
   } = useRoadmapStore()
 
+  const navigate = useNavigate()
   const { roadmapId } = useParams()
   const { screenToFlowPosition } = useReactFlow()
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null)
@@ -47,6 +51,15 @@ const RoadmapEditorContent = () => {
     if (roadmapId) getRoadmapById(roadmapId, true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roadmapId])
+
+  const [isEditMetaOpen, setEditMetaOpen] = useState(false)
+  const [isSharingSettingsOpen, setSharingSettingsOpen] = useState(false)
+
+  const handleOpenEditMeta = () => setEditMetaOpen(true)
+  const handleCloseEditMeta = () => setEditMetaOpen(false)
+  
+  const handleOpenSharingSettings = () => setSharingSettingsOpen(true)
+  const handleCloseSharingSettings = () => setSharingSettingsOpen(false)
 
   const onNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
     setSelectedNodeId(node.id)
@@ -133,14 +146,46 @@ const RoadmapEditorContent = () => {
     []
   )
 
+  const handleUpdateRoadmapMetadata = (title: string, description: string) => {
+    if (!selectedRoadmap) return
+
+    updateRoadmapMetadata(selectedRoadmap.roadmapId, {
+      title,
+      description,
+      visibility: selectedRoadmap.visibility,
+    })
+
+    handleCloseEditMeta()
+  }
+
+  const handleUpdateVisibility = async (newVisibility: RoadmapVisibility) => {
+    if (!selectedRoadmap) return
+
+    console.log(newVisibility)
+    await updateRoadmapMetadata(selectedRoadmap.roadmapId, {
+      title: selectedRoadmap.title,
+      description: selectedRoadmap.description || '',
+      visibility: newVisibility,
+    })
+
+    handleCloseSharingSettings()
+  }
+
+  const handleBackToRoadmapDetail = async () => {
+    if (!selectedRoadmap) return
+
+    navigate(`/learn/roadmaps/${selectedRoadmap.roadmapId}`)
+  }
+
   return (
     <Box display="flex" flexDirection="column" height="100vh">
       <Topbar
         title={selectedRoadmap?.title || 'Untitled Roadmap'}
         description={selectedRoadmap?.description}
         visibility={selectedRoadmap?.visibility ?? RoadmapVisibility.Private}
-        onEditMetaClick={() => {}}
-        onClickSharing={() => {}}
+        onEditMetaClick={handleOpenEditMeta}
+        onClickSharing={handleOpenSharingSettings}
+        onBackClick={handleBackToRoadmapDetail}
       />
 
       <Box display="flex" flexGrow={1} overflow="hidden">
@@ -171,6 +216,28 @@ const RoadmapEditorContent = () => {
         </Box>
 
         <SidebarEditor />
+
+        {selectedRoadmap && (
+          <RoadmapForm
+            open={isEditMetaOpen}
+            onClose={handleCloseEditMeta}
+            mode="edit"
+            initialValues={{
+              title: selectedRoadmap.title,
+              description: selectedRoadmap.description || '',
+            }}
+            onSubmit={handleUpdateRoadmapMetadata}
+          />
+        )}
+
+        {selectedRoadmap && (
+          <UpdateSharingSettingsModal
+            open={isSharingSettingsOpen}
+            visibility={selectedRoadmap.visibility}
+            onClose={handleCloseSharingSettings}
+            onSubmit={handleUpdateVisibility}
+          />
+        )}
       </Box>
     </Box>
   )
