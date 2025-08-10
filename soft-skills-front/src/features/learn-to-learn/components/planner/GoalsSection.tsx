@@ -8,7 +8,7 @@ import {
   CircularProgress,
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
-import { usePlannerStore } from '../../store/useLearningPlannerStore'
+import { useLearningGoalStore } from '../../store/useLearningGoalStore'
 import { useEffect, useState } from 'react'
 import GoalCard from './GoalCard'
 import AddGoalModal from './AddGoalModal'
@@ -33,7 +33,7 @@ const GoalsSection = () => {
     learningGoalsPagination: { offset, limit, total },
     setLearningGoalsOffset,
     setLearningGoalsLimit,
-  } = usePlannerStore()
+  } = useLearningGoalStore()
 
   useEffect(() => {
     fetchLearningGoals(offset, limit)

@@ -26,7 +26,6 @@ class TaskSummary(SQLModel):
     status: Status
     priority: Priority
     due_date: datetime | None
-    order_index: int
 
 
 class TaskUpdate(SQLModel):

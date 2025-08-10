@@ -22,7 +22,7 @@ export interface LearningGoalResponse {
   completedObjectives: number
 }
 
-export interface FetchLearningGoalResponse {
+export interface FetchLearningGoalsResponse {
   message: string
   data: LearningGoalResponse[]
   total: number

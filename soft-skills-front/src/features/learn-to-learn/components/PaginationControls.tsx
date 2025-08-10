@@ -11,7 +11,7 @@ import {
   FirstPage,
   LastPage
 } from '@mui/icons-material'
-import { usePlannerStore } from '../store/useLearningPlannerStore'
+import { useLearningGoalStore } from '../store/useLearningGoalStore'
 
 interface PaginationControlsProps {
   total: number
@@ -30,7 +30,7 @@ const PaginationControls = ({
   onChangeOffset,
   pageSizeOptions = [5, 10]
 }: PaginationControlsProps) => {
-  const { setIsPaginating } = usePlannerStore()
+  const { setIsPaginating } = useLearningGoalStore()
 
   const totalPages = Math.ceil(total / limit)
   const start = offset + 1

@@ -1,22 +1,20 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import { IPlanner } from '../types/planner/planner.store'
+import { ILearningGoal } from '../types/planner/learningGoal.store'
 import { getUserLearningGoals, createLearningGoal, deleteLearningGoal } from '../api/LearningGoals'
 import { LearningGoal } from '../types/planner/planner.models'
 import { transformGoalResponse } from '../utils/transform'
 import { CreateLearningGoalPayload } from '../types/planner/learningGoals.api'
 import { useToastStore } from '../../../store/useToastStore'
 
-export const usePlannerStore = create<IPlanner>()(
+export const useLearningGoalStore = create<ILearningGoal>()(
   devtools(
     immer(
       (set, get) => ({
         learningGoals: [],
         isPaginating: false,
         selectedGoalId: null,
-        selectedObjectiveId: null,
-        selectedTaskId: null,
         isLoading: false,
 
         learningGoalsPagination: {
@@ -28,31 +26,42 @@ export const usePlannerStore = create<IPlanner>()(
         setLearningGoals: (goals: LearningGoal[]) => {
           set((state) => {
             state.learningGoals = goals
-          }, false, 'PLANNER/SET_LEARNING_GOALS')
+          }, false, 'LEARNING_GOAL/SET_LEARNING_GOALS')
         },
 
         setIsPaginating: (value: boolean) => {
           set((state) => {
             state.isPaginating = value
           }, false, 'SET_IS_PAGINATING')
-        },        
+        },   
+        
+        setSelectedGoalId: (id: string) => {
+          set((state) => {
+            state.selectedGoalId = id
+          }, false, "SET_SELECTED_GOAL_ID") 
+        },
 
         setLearningGoalsOffset: (offset: number) => {
           set((state) => {
             state.learningGoalsPagination.offset = offset
-          }, false, 'PLANNER/SET_LEARNING_GOALS_OFFSET')
+          }, false, 'LEARNING_GOAL/SET_LEARNING_GOALS_OFFSET')
         },
 
         setLearningGoalsLimit: (limit: number) => {
           set((state) => {
             state.learningGoalsPagination.limit = limit
-          }, false, 'PLANNER/SET_LEARNING_GOALS_LIMIT')
+          }, false, 'LEARNING_GOAL/SET_LEARNING_GOALS_LIMIT')
         },
 
         setLearningGoalsTotal: (total: number) => {
           set((state) => {
             state.learningGoalsPagination.total = total
-          }, false, 'PLANNER/SET_LEARNING_GOALS_TOTAL')
+          }, false, 'LEARNING_GOAL/SET_LEARNING_GOALS_TOTAL')
+        },
+
+        getSelectedGoal: () => {
+          const {learningGoals, selectedGoalId} = get()
+          return learningGoals.find(goal => goal.id === selectedGoalId)
         },
 
         fetchLearningGoals: async (offset?: number, limit?: number) => {
@@ -61,7 +70,7 @@ export const usePlannerStore = create<IPlanner>()(
 
           set((state) => {
             state.isLoading = true
-          }, false, 'PLANNER/FETCH_LEARNING_GOALS_REQUEST')
+          }, false, 'LEARNING_GOAL/FETCH_LEARNING_GOALS_REQUEST')
 
           try {
             const {data: goals, total}  = await getUserLearningGoals(currentOffset, currentLimit)
@@ -78,7 +87,7 @@ export const usePlannerStore = create<IPlanner>()(
             set((state) => {
               state.isLoading = false
               state.isPaginating = false
-            }, false, 'PLANNER/FETCH_LEARNING_GOALS_COMPLETE')
+            }, false, 'LEARNING_GOAL/FETCH_LEARNING_GOALS_COMPLETE')
           }
         },
 
@@ -89,7 +98,7 @@ export const usePlannerStore = create<IPlanner>()(
         
             set((state) => {
               state.learningGoals.unshift(newGoal)
-            }, false, 'PLANNER/CREATE_LEARNING_GOAL_SUCCESS')
+            }, false, 'LEARNING_GOAL/CREATE_LEARNING_GOAL_SUCCESS')
 
             useToastStore.getState().showToast(message || `${payload.title} added to your learning goals.`, 'success')
           } catch (err: unknown) {
@@ -115,7 +124,7 @@ export const usePlannerStore = create<IPlanner>()(
               }
               
               state.learningGoalsPagination.total = remainingItems
-            }, false, 'PLANNER/DELETE_LEARNING_GOAL_SUCCESS')
+            }, false, 'LEARNING_GOAL/DELETE_LEARNING_GOAL_SUCCESS')
 
             useToastStore.getState().showToast(message || 'Goal deleted successfully', 'success')
           } catch (err: unknown) {
@@ -126,6 +135,6 @@ export const usePlannerStore = create<IPlanner>()(
         }
       })
     ),
-    { name: 'plannerStore' }
+    { name: 'learningGoalStore' }
   )
 )

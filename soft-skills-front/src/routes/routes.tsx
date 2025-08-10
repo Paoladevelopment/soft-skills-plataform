@@ -17,6 +17,8 @@ import Roadmaps from '../features/learn-to-learn/pages/Roadmaps'
 import RoadmapDetail from '../features/learn-to-learn/pages/RoadmapDetail'
 import CreateRoadmapWithChatbot from '../features/learn-to-learn/pages/CreateRoadmapWithChatbot'
 import RoadmapEditor from '../features/learn-to-learn/pages/RoadmapEditor'
+import LearningGoalDetail from '../features/learn-to-learn/pages/LearningGoalDetail'
+import ObjectiveDetail from '../features/learn-to-learn/pages/ObjectiveDetail'
 
 
 export const RoutesConfiguration = () => {
@@ -40,14 +42,23 @@ export const RoutesConfiguration = () => {
 
         <Route element={<ProtectedRoutes/>}>
           <Route path='/learn' element={<LearnLayout/>}>
-            <Route path='planner' element={<Planner/>}></Route>
+            <Route path='planner'>
+              <Route index element={<Planner />} />
+              <Route path='goals/:goalId' element={<LearningGoalDetail />} />
+              <Route path='objectives/:objectiveId' element={<ObjectiveDetail />} />
+            </Route>
+            
             <Route path='dashboard' element={<Dashboard/>}></Route>
             <Route path='explore' element={<Explore/>}></Route>
             <Route path='reports' element={<LearningReport/>}></Route>
-            <Route path='roadmaps' element={<Roadmaps/>}></Route>
-            <Route path='roadmaps/create/chat' element={<CreateRoadmapWithChatbot />} />
-            <Route path='roadmaps/:roadmapId/edit' element={<RoadmapEditor/>}/>
-            <Route path="roadmaps/:roadmapId" element={<RoadmapDetail />} />
+            
+            <Route path='roadmaps'>
+              <Route index element={<Roadmaps />} />
+              <Route path='create/chat' element={<CreateRoadmapWithChatbot />} />
+              <Route path=':roadmapId/edit' element={<RoadmapEditor />} />
+              <Route path=':roadmapId' element={<RoadmapDetail />} />
+            </Route>
+
             <Route path='help' element={<Help/>}></Route>
           </Route>
         </Route>

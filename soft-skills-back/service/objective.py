@@ -8,7 +8,7 @@ from model.learning_goal import LearningGoal
 from model.objective import Objective
 from model.task import Task
 from mongo_service.objective import ObjectiveMongoService
-from schema.objective import ObjectiveCreate, ObjectiveUpdate
+from schema.objective import ObjectiveCreate, ObjectiveUpdate, ObjectiveReadWithProgress
 from service.query import QueryService
 from sqlalchemy.sql import case
 from sqlmodel import Session, func, select
@@ -62,7 +62,19 @@ class ObjectiveService:
             session.rollback()
             handle_db_error(err, "create_objective", error_type="commit")
         
+    def __attach_task_progress(
+            self,
+            objective: Objective,
+            session: Session
+    ) -> ObjectiveReadWithProgress:
+        task_summary = self._tasks_by_status(objective.objective_id, session)
 
+        return ObjectiveReadWithProgress(
+            **objective.model_dump(),
+            total_tasks=task_summary["total"],
+            completed_tasks=task_summary["completed"]
+        )
+        
     def get_objectives_by_learning_goal(
             self,
             learning_goal_id: str,
@@ -72,10 +84,10 @@ class ObjectiveService:
             priority: str = None,
             order_by: list[str] = None,
             session: Session = Depends(get_session),
-        ) -> tuple[Sequence[Objective], int]:
+        ) -> tuple[Sequence[ObjectiveReadWithProgress], int]:
 
         try:
-            return self.query_service._get_paginated_entities(
+            objectives, total_count = self.query_service._get_paginated_entities(
                 entity=Objective,
                 filter_field="learning_goal_id",
                 filter_value=learning_goal_id,
@@ -87,6 +99,13 @@ class ObjectiveService:
                 default_order_field="order_index",
                 session=session
             )
+
+            objectives_with_progress = []
+            for objective in objectives:
+                objective_with_progress = self.__attach_task_progress(objective, session)
+                objectives_with_progress.append(objective_with_progress)
+            
+            return objectives_with_progress, total_count
         
         except Exception as err:
             handle_db_error(err, "get_objectives_by_learning_goal", error_type="query")

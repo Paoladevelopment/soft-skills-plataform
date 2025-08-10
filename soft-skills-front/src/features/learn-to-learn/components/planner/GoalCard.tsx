@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { LearningGoal } from '../../types/planner/planner.models' 
 import { useState } from 'react'
 import { formatDate } from '../../../../utils/formatDate'
+import { useNavigate } from 'react-router-dom'
+import { useLearningGoalStore } from '../../store/useLearningGoalStore'
 
 interface GoalCardProps {
   goal: LearningGoal
@@ -19,6 +21,8 @@ interface GoalCardProps {
 }
 
 const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
+  const setSelectedGoalId = useLearningGoalStore(state => state.setSelectedGoalId)
+  const navigate = useNavigate()
   const [hovered, setHovered] = useState(false)
 
   const total = goal.totalObjectives || 0
@@ -27,6 +31,11 @@ const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
   const percentComplete = total > 0 ? Math.round((completed / total) * 100) : 0
 
   const hasObjectives = total > 0
+
+  const handleNavigate = () => {
+    setSelectedGoalId(goal.id)
+    navigate(`/learn/planner/goals/${goal.id}`)
+  }
 
   return (
     <Paper
@@ -38,7 +47,6 @@ const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
         flexDirection: "column",
         gap: 1,
         borderColor: hovered ? "#a9a9a9": "divider",
-        cursor: hovered ? "pointer" : "default",
         transition: "border-color 0.2s ease-in-out",
       }}
       onMouseEnter={() => setHovered(true)}
@@ -68,7 +76,10 @@ const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
           )
 
           }
-          <IconButton size="small">
+          <IconButton 
+            size="small"
+            onClick={handleNavigate}
+          >
             <ArrowForwardIosIcon fontSize="small" />
           </IconButton>
         </Stack>

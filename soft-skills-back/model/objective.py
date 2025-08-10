@@ -1,15 +1,15 @@
 import uuid
 from datetime import datetime, timezone
 from typing import List, Optional
+from uuid import UUID
 
 from enums.common import Priority, Status
-from pydantic import UUID4
 from sqlalchemy import Text
+from sqlalchemy.dialects.postgresql import ARRAY, UUID as PG_UUID
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
 
 
 class ObjectiveBase(SQLModel):
-  learning_goal_id: UUID4
   title: str
   description: str
   status: Status = Field(default=Status.NOT_STARTED)
@@ -20,8 +20,8 @@ class ObjectiveBase(SQLModel):
 
 class Objective(ObjectiveBase, table=True):
   __tablename__ = "objectives"
-  objective_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-  learning_goal_id: uuid.UUID | None = Field(default=None, foreign_key="learning_goals.learning_goal_id")
+  objective_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+  learning_goal_id: UUID | None = Field(default=None, foreign_key="learning_goals.learning_goal_id")
   description: str = Field(sa_type=Text)
   created_at: datetime | None = Field(
         default_factory=lambda: datetime.now(timezone.utc),
@@ -33,6 +33,10 @@ class Objective(ObjectiveBase, table=True):
         "onupdate": lambda: datetime.now(timezone.utc),
     },
     sa_type=TIMESTAMP(timezone=True),
+  )
+  task_order: List[UUID] = Field(
+    default_factory=list,
+    sa_type=ARRAY(PG_UUID(as_uuid=True))
   )
   started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)
