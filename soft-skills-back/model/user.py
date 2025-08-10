@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timezone
+from uuid import UUID
 
 from enums.user import UserRoles
 from pydantic import EmailStr
@@ -15,7 +16,7 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     __tablename__ = "users"
-    user_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     username: str = Field(unique=True, index=True)
     email: str = Field(unique=True, index=True)
     password: str = Field(min_length=8, description="Hashed password")

@@ -1,5 +1,7 @@
 import uuid
 from datetime import datetime, timedelta, timezone
+from collections import defaultdict
+from uuid import UUID
 
 from enums.common import Priority, Status
 from enums.task import TaskType
@@ -13,6 +15,7 @@ from sqlmodel import Session
 from utils.db import get_session
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def create_seed_data(session: Session):
     users = [
@@ -52,12 +55,11 @@ def create_seed_data(session: Session):
 
     session.add_all(users)
     session.commit()
-    
+
     user_map = {user.name: user.user_id for user in users}
 
     learning_goals = []
 
-    # User 1: 10 learning goals, each with 3 objectives
     for i in range(10):
         lg = LearningGoal(
             learning_goal_id=uuid.uuid4(),
@@ -69,7 +71,6 @@ def create_seed_data(session: Session):
         )
         learning_goals.append(lg)
 
-    # Other users: 2 learning goals each with varied objectives
     for user in ["Bob Smith", "Charlie Brown", "Diana Prince"]:
         for j in range(2):
             lg = LearningGoal(
@@ -87,13 +88,10 @@ def create_seed_data(session: Session):
     session.add_all(learning_goals)
     session.commit()
 
-    # Mapping learning goals for objectives
     learning_goal_map = {lg.title: lg.learning_goal_id for lg in learning_goals}
 
-    # Objectives for each learning goal
     objectives = []
 
-    # Alice: 3 objectives per learning goal
     for i in range(10):
         for obj_id in range(1, 4):
             objectives.append(
@@ -109,10 +107,9 @@ def create_seed_data(session: Session):
                 )
             )
 
-    # Other users: Varied objectives per learning goal
     for user in ["Bob Smith", "Charlie Brown", "Diana Prince"]:
         for j in range(2):
-            num_objectives = 2 if j == 0 else 4 
+            num_objectives = 2 if j == 0 else 4
             for obj_id in range(1, num_objectives + 1):
                 objectives.append(
                     Objective(
@@ -131,13 +128,14 @@ def create_seed_data(session: Session):
     session.commit()
 
     tasks = []
+    task_map = defaultdict(list)
 
-    # Assigning tasks to objectives
     for obj in objectives:
-        for task_id in range(1, 4): 
+        for task_id in range(1, 4):
+            task_uuid = uuid.uuid4()
             tasks.append(
                 Task(
-                    task_id=uuid.uuid4(),
+                    task_id=task_uuid,
                     objective_id=obj.objective_id,
                     title=f"Task {task_id} for {obj.title}",
                     description=f"Detailed task description {task_id} for {obj.title}",
@@ -148,14 +146,24 @@ def create_seed_data(session: Session):
                     actual_time=None,
                     due_date=obj.due_date - timedelta(days=task_id * 5),
                     order_index=task_id,
-                    is_optional=True if task_id == 3 else False
+                    is_optional=(task_id == 3)
                 )
             )
+            task_map[obj.objective_id].append((task_id, task_uuid))
 
     session.add_all(tasks)
     session.commit()
 
+    # Update task_order on each objective
+    for obj in objectives:
+        sorted_tasks = sorted(task_map[obj.objective_id], key=lambda x: x[0])
+        obj.task_order = [task_id for _, task_id in sorted_tasks]
+
+    session.add_all(objectives)
+    session.commit()
+
     print("✅ Seed data inserted successfully!")
+
 
 if __name__ == "__main__":
     session = next(get_session())

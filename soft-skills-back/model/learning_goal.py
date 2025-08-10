@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 from typing import List
+from uuid import UUID
 
 from sqlalchemy import Text
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
@@ -14,8 +15,8 @@ class LearningGoalBase(SQLModel):
 
 class LearningGoal(LearningGoalBase, table=True):
   __tablename__ = "learning_goals"
-  learning_goal_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-  user_id: uuid.UUID | None = Field(default=None, foreign_key="users.user_id")
+  learning_goal_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+  user_id: UUID | None = Field(default=None, foreign_key="users.user_id")
   description: str = Field(sa_type=Text)
   created_at: datetime | None = Field(
         default_factory=lambda: datetime.now(timezone.utc),

@@ -4,13 +4,13 @@ import {
   CreateLearningGoalPayload,
   CreateLearningGoalResponse,
   DeleteLearningGoalResponse,
-  FetchLearningGoalResponse,
+  FetchLearningGoalsResponse,
 } from '../types/planner/learningGoals.api'
 
 export async function getUserLearningGoals(
   offset: number, 
   limit: number
-): Promise<FetchLearningGoalResponse> {
+): Promise<FetchLearningGoalsResponse> {
   const url = `${api.learningGoals.getAllByUser}?offset=${offset}&limit=${limit}`
 
   const response = await fetchWithAuth(url)

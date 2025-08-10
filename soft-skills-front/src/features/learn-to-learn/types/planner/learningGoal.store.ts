@@ -2,12 +2,10 @@ import { CreateLearningGoalPayload } from "./learningGoals.api"
 import { PaginationState } from "../pagination"
 import { LearningGoal } from "./planner.models"
 
-export interface IPlanner {
+export interface ILearningGoal {
   learningGoals: LearningGoal[]
   isPaginating: boolean
   selectedGoalId: string | null
-  selectedObjectiveId: string | null
-  selectedTaskId: string | null
 
   isLoading: boolean
 
@@ -18,10 +16,13 @@ export interface IPlanner {
   setLearningGoalsTotal: (total: number) => void
 
   setLearningGoals: (goals: LearningGoal[]) => void
-
   setIsPaginating: (value: boolean) => void
+
+  setSelectedGoalId: (id: string) => void
 
   fetchLearningGoals: (offset?: number, limit?: number) => Promise<void>
   createLearningGoal: (payload: CreateLearningGoalPayload) => Promise<void>
   deleteLearningGoal: (id: string) => Promise<void>
+
+  getSelectedGoal: () => LearningGoal | undefined
 }
