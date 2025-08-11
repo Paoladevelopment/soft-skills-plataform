@@ -10,8 +10,7 @@ export function transformGoalResponse(goal: LearningGoalResponse): LearningGoal 
     userId: goal.userId,
     startedAt: goal.startedAt ? new Date(goal.startedAt) : null,
     completedAt: goal.completedAt ? new Date(goal.completedAt) : null,
-    objectives: [],
-    totalObjectives: goal.totalObjectives,
-    completedObjectives: goal.completedObjectives
+    totalObjectives: goal.totalObjectives ?? 0,
+    completedObjectives: goal.completedObjectives ?? 0
   }
 }

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { ILearningGoal } from '../types/planner/learningGoal.store'
-import { getUserLearningGoals, createLearningGoal, deleteLearningGoal } from '../api/LearningGoals'
+import { getUserLearningGoals, getLearningGoalById, createLearningGoal, deleteLearningGoal } from '../api/LearningGoals'
 import { LearningGoal } from '../types/planner/planner.models'
 import { transformGoalResponse } from '../utils/transform'
 import { CreateLearningGoalPayload } from '../types/planner/learningGoals.api'
@@ -15,6 +15,7 @@ export const useLearningGoalStore = create<ILearningGoal>()(
         learningGoals: [],
         isPaginating: false,
         selectedGoalId: null,
+        selectedGoal: null,
         isLoading: false,
 
         learningGoalsPagination: {
@@ -41,6 +42,12 @@ export const useLearningGoalStore = create<ILearningGoal>()(
           }, false, "SET_SELECTED_GOAL_ID") 
         },
 
+        setSelectedGoal: (goal: LearningGoal) => {
+          set((state) => {
+            state.selectedGoal = goal
+          }, false, "SET_SELECTED_GOAL") 
+        },
+
         setLearningGoalsOffset: (offset: number) => {
           set((state) => {
             state.learningGoalsPagination.offset = offset
@@ -60,8 +67,18 @@ export const useLearningGoalStore = create<ILearningGoal>()(
         },
 
         getSelectedGoal: () => {
-          const {learningGoals, selectedGoalId} = get()
-          return learningGoals.find(goal => goal.id === selectedGoalId)
+          const {learningGoals, selectedGoalId, selectedGoal} = get()
+          
+          if (selectedGoal && selectedGoal.id === selectedGoalId) {
+            return selectedGoal
+          }
+          
+          const foundGoal = learningGoals.find(goal => goal.id === selectedGoalId)
+          if (foundGoal) {
+            get().setSelectedGoal(foundGoal)
+          }
+          
+          return foundGoal
         },
 
         fetchLearningGoals: async (offset?: number, limit?: number) => {
@@ -88,6 +105,30 @@ export const useLearningGoalStore = create<ILearningGoal>()(
               state.isLoading = false
               state.isPaginating = false
             }, false, 'LEARNING_GOAL/FETCH_LEARNING_GOALS_COMPLETE')
+          }
+        },
+
+        fetchLearningGoalById: async (id: string) => {
+          set((state) => {
+            state.isLoading = true
+          }, false, 'LEARNING_GOAL/FETCH_LEARNING_GOAL_BY_ID_REQUEST')
+
+          try {
+            const { data: goal } = await getLearningGoalById(id)
+            const transformedGoal = transformGoalResponse(goal)
+
+            get().setSelectedGoalId(id)
+            get().setSelectedGoal(transformedGoal)
+            
+          } catch (err: unknown) {
+            if (err instanceof Error) {
+              useToastStore.getState().showToast(err.message || 'Error fetching goal', 'error')
+            }
+            
+          } finally {
+            set((state) => {
+              state.isLoading = false
+            }, false, 'LEARNING_GOAL/FETCH_LEARNING_GOAL_BY_ID_COMPLETE')
           }
         },
 

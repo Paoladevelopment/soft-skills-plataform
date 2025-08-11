@@ -1,4 +1,5 @@
 import { Box, TextField, Typography } from '@mui/material'
+import { ReactNode } from 'react'
 import { useState } from 'react'
 
 interface EditableFieldProps {
@@ -6,8 +7,15 @@ interface EditableFieldProps {
   defaultValue: string
   onSave: (val: string) => void
   multiline?: boolean
+  /**
+   * When true, disables the default decoration of the field:
+   * - No label is shown
+   * - Field is styled as a title (Larger font, bold)
+   */
   disableDefaultDecoration?: boolean
   customInputStyles?: object
+  customTextFieldStyles?: object
+  icon?: ReactNode
 }
 
 const InlineEditableField = ({
@@ -17,6 +25,8 @@ const InlineEditableField = ({
   multiline = false,
   disableDefaultDecoration = false,
   customInputStyles,
+  customTextFieldStyles,
+  icon,
 }: EditableFieldProps) => {
   const [value, setValue] = useState(defaultValue)
   const [hovered, setHovered] = useState(false)
@@ -31,7 +41,24 @@ const InlineEditableField = ({
     fontWeight: 700,
   }
 
-  const inputTextStyles = customInputStyles || (disableDefaultDecoration ? defaultTitleInputStyles : {})
+  const withLabelTitleInputStyles = {
+    fontSize: '0.875rem',
+  }
+
+  const defaultTextFieldStyles = {
+    backgroundColor: inputBackgroundColor,
+    transition: 'background-color 0.2s ease-in-out',
+    paddingY: 1,
+  }
+
+  const withLabelTextFieldStyles = {
+    backgroundColor: inputBackgroundColor,
+    transition: 'background-color 0.2s ease-in-out',
+    padding: 1,
+  }
+
+  const inputTextStyles = customInputStyles || (disableDefaultDecoration ? defaultTitleInputStyles : withLabelTitleInputStyles)
+  const textFieldStyles = customTextFieldStyles || (disableDefaultDecoration ? defaultTextFieldStyles : withLabelTextFieldStyles)
 
   return (
     <Box
@@ -46,18 +73,37 @@ const InlineEditableField = ({
       }}
     >
       {shouldShowLabel && (
-        <Typography 
-          variant="subtitle2" 
-          color="text.secondary" 
-          gutterBottom
-          sx={{ 
-            minWidth: '100px', 
-            flexShrink: 0 
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            minWidth: '100px',
+            flexShrink: 0,
           }}
         >
-          {label}
-        </Typography>
+          {icon && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                color: 'text.secondary',
+                fontSize: '1.2rem',
+              }}
+            >
+              {icon}
+            </Box>
+          )}
+          <Typography 
+            variant="subtitle2" 
+            color="text.secondary" 
+            gutterBottom
+          >
+            {label}
+          </Typography>
+        </Box>
       )}
+
       <TextField
         fullWidth
         variant="standard"
@@ -76,11 +122,7 @@ const InlineEditableField = ({
             sx: inputTextStyles,
           },
         }}
-        sx={{
-          backgroundColor: inputBackgroundColor,
-          transition: 'background-color 0.2s ease-in-out',
-          padding: 1,
-        }}
+        sx={textFieldStyles}
       />
     </Box>
   )

@@ -18,8 +18,8 @@ export interface LearningGoalResponse {
   userId: string
   startedAt: string | null
   completedAt: string | null
-  totalObjectives: number
-  completedObjectives: number
+  totalObjectives?: number
+  completedObjectives?: number
 }
 
 export interface FetchLearningGoalsResponse {
@@ -31,6 +31,11 @@ export interface FetchLearningGoalsResponse {
 }
 
 export interface CreateLearningGoalResponse {
+  message: string
+  data: LearningGoalResponse
+}
+
+export interface FetchLearningGoalResponse {
   message: string
   data: LearningGoalResponse
 }
