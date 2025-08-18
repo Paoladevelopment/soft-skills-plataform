@@ -5,6 +5,9 @@ import {
   CreateLearningGoalResponse,
   DeleteLearningGoalResponse,
   FetchLearningGoalsResponse,
+  FetchLearningGoalResponse,
+  UpdateLearningGoalPayload,
+  UpdateLearningGoalResponse,
 } from '../types/planner/learningGoals.api'
 
 export async function getUserLearningGoals(
@@ -12,6 +15,15 @@ export async function getUserLearningGoals(
   limit: number
 ): Promise<FetchLearningGoalsResponse> {
   const url = `${api.learningGoals.getAllByUser}?offset=${offset}&limit=${limit}`
+
+  const response = await fetchWithAuth(url)
+  return response
+}
+
+export async function getLearningGoalById(
+  id: string
+): Promise<FetchLearningGoalResponse> {
+  const url = api.learningGoals.byId(id)
 
   const response = await fetchWithAuth(url)
   return response
@@ -37,6 +49,20 @@ export async function deleteLearningGoal(
 
   const response = await fetchWithAuth(url, {
     method: "DELETE",
+  })
+
+  return response
+}
+
+export async function updateLearningGoal(
+  id: string,
+  payload: UpdateLearningGoalPayload
+): Promise<UpdateLearningGoalResponse> {
+  const url = api.learningGoals.byId(id)
+
+  const response = await fetchWithAuth(url, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
   })
 
   return response

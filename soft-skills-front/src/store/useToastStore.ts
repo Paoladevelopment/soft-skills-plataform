@@ -9,10 +9,16 @@ export const useToastStore = create<IToastState>()(
       message: '',
       type: 'success',
       open: false,
+      timeout: 4000, // Default 4 seconds
 
-      showToast: (message: string, type: ToastType = 'success') => {
+      showToast: (message: string, type: ToastType = 'success', timeout?: number) => {
         set(
-          { message, type, open: true }
+          { 
+            message, 
+            type, 
+            open: true,
+            timeout: timeout || 4000
+          }
         )
       },
 

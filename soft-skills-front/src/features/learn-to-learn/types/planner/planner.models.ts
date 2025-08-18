@@ -36,6 +36,8 @@ export interface LearningGoal {
   description: string
   impact: string
   userId: string
+  createdAt: Date | null
+  updatedAt: Date | null
   startedAt: Date | null
   completedAt: Date | null
   totalObjectives: number

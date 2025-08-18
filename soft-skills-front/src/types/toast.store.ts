@@ -4,6 +4,7 @@ export interface IToastState {
   message: string
   type: ToastType
   open: boolean
-  showToast: (message: string, type?: ToastType) => void
+  timeout: number
+  showToast: (message: string, type?: ToastType, timeout?: number) => void
   hideToast: () => void
 }

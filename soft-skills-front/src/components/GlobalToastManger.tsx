@@ -22,13 +22,14 @@ const GlobalToastManager = () => {
     open, 
     message, 
     type, 
+    timeout,
     hideToast 
   } = useToastStore()
 
   return (
     <Snackbar
       open={open}
-      autoHideDuration={4000}
+      autoHideDuration={timeout}
       onClose={hideToast}
       anchorOrigin={{ 
         vertical: 'bottom', 
