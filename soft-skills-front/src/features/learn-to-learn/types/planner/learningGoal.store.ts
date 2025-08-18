@@ -1,4 +1,4 @@
-import { CreateLearningGoalPayload } from "./learningGoals.api"
+import { CreateLearningGoalPayload, UpdateLearningGoalPayload } from "./learningGoals.api"
 import { PaginationState } from "../pagination"
 import { LearningGoal } from "./planner.models"
 
@@ -25,6 +25,7 @@ export interface ILearningGoal {
   fetchLearningGoals: (offset?: number, limit?: number) => Promise<void>
   fetchLearningGoalById: (id: string) => Promise<void>
   createLearningGoal: (payload: CreateLearningGoalPayload) => Promise<void>
+  updateLearningGoal: (payload: UpdateLearningGoalPayload) => Promise<void>
   deleteLearningGoal: (id: string) => Promise<void>
   
   getSelectedGoal: () => LearningGoal | undefined

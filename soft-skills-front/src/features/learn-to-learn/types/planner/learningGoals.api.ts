@@ -16,6 +16,8 @@ export interface LearningGoalResponse {
   description: string
   impact: string
   userId: string
+  createdAt: string | null
+  updatedAt: string | null
   startedAt: string | null
   completedAt: string | null
   totalObjectives?: number

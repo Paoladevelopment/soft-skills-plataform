@@ -8,6 +8,8 @@ export function transformGoalResponse(goal: LearningGoalResponse): LearningGoal 
     description: goal.description,
     impact: goal.impact,
     userId: goal.userId,
+    createdAt: goal.createdAt ? new Date(goal.createdAt) : null,
+    updatedAt: goal.updatedAt ? new Date(goal.updatedAt) : null,
     startedAt: goal.startedAt ? new Date(goal.startedAt) : null,
     completedAt: goal.completedAt ? new Date(goal.completedAt) : null,
     totalObjectives: goal.totalObjectives ?? 0,

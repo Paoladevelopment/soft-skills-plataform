@@ -2,11 +2,12 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { ILearningGoal } from '../types/planner/learningGoal.store'
-import { getUserLearningGoals, getLearningGoalById, createLearningGoal, deleteLearningGoal } from '../api/LearningGoals'
+import { getUserLearningGoals, getLearningGoalById, createLearningGoal, deleteLearningGoal, updateLearningGoal } from '../api/LearningGoals'
 import { LearningGoal } from '../types/planner/planner.models'
 import { transformGoalResponse } from '../utils/transform'
-import { CreateLearningGoalPayload } from '../types/planner/learningGoals.api'
+import { CreateLearningGoalPayload, UpdateLearningGoalPayload } from '../types/planner/learningGoals.api'
 import { useToastStore } from '../../../store/useToastStore'
+import { hasChanges } from '../../../utils/objectUtils'
 
 export const useLearningGoalStore = create<ILearningGoal>()(
   devtools(
@@ -171,6 +172,38 @@ export const useLearningGoalStore = create<ILearningGoal>()(
           } catch (err: unknown) {
             if (err instanceof Error) {
               useToastStore.getState().showToast(err.message || 'Error deleting goal', 'error')
+            }
+          }
+        },
+
+        updateLearningGoal: async (payload: UpdateLearningGoalPayload) => {
+          const { selectedGoal } = get()
+          
+          if (!selectedGoal) {
+            return
+          }
+
+          if (!hasChanges(payload, selectedGoal, ['title', 'description', 'impact'])) {
+            return
+          }
+
+          try {
+            const { data, message } = await updateLearningGoal(selectedGoal.id, payload)
+            const updatedGoal = transformGoalResponse(data)
+
+            set((state) => {
+              state.selectedGoal = updatedGoal
+              
+              const goalIndex = state.learningGoals.findIndex(goal => goal.id === selectedGoal.id)
+              if (goalIndex !== -1) {
+                state.learningGoals[goalIndex] = updatedGoal
+              }
+            }, false, 'LEARNING_GOAL/UPDATE_LEARNING_GOAL_SUCCESS')
+
+            useToastStore.getState().showToast(message || 'Goal updated successfully', 'success', 2000)
+          } catch (err: unknown) {
+            if (err instanceof Error) {
+              useToastStore.getState().showToast(err.message || 'Error updating goal', 'error')
             }
           }
         }

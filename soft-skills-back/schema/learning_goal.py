@@ -20,8 +20,11 @@ class LearningGoalCreate(LearningGoalBase):
 class LearningGoalReadBase(LearningGoalBase):
   learning_goal_id: UUID4
   user_id: UUID4
-  started_at: datetime | None
+  created_at: datetime | None = Field(default=None)
+  updated_at: datetime | None = Field(default=None)
+  started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)
+
 class LearningGoalRead(LearningGoalReadBase):
   model_config={"json_schema_extra": {"example": LEARNING_GOAL_READ_EXAMPLE}}
 

@@ -1,6 +1,6 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { ReactNode } from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface EditableFieldProps {
   label: string
@@ -30,6 +30,10 @@ const InlineEditableField = ({
 }: EditableFieldProps) => {
   const [value, setValue] = useState(defaultValue)
   const [hovered, setHovered] = useState(false)
+
+  useEffect(() => {
+    setValue(defaultValue)
+  }, [defaultValue])
 
   const shouldShowShadow = !disableDefaultDecoration && hovered
   const shouldShowLabel = !disableDefaultDecoration
@@ -97,6 +101,9 @@ const InlineEditableField = ({
           <Typography 
             variant="subtitle2" 
             color="text.secondary" 
+            sx={{
+              fontWeight: 400,
+            }}
             gutterBottom
           >
             {label}
@@ -108,11 +115,13 @@ const InlineEditableField = ({
         fullWidth
         variant="standard"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          setValue(e.target.value)
+          onSave(e.target.value)
+        }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
-            onSave(value)
           }
         }}
         multiline={multiline}
