@@ -4,7 +4,7 @@ import { formatTimeAgo, formatDate } from '../../utils/timeUtils'
 
 interface DateItem {
   label: string
-  value: Date | null
+  value: string | null
 }
 
 interface DateDisplayProps {
@@ -45,10 +45,10 @@ const DateDisplay = ({ title, dates }: DateDisplayProps) => {
               color="text.secondary" 
               sx={{ fontWeight: 600 }}
             >
-              {formatDate(dateItem.value)}
+              {formatDate(new Date(dateItem.value))}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {formatTimeAgo(dateItem.value)}
+              {formatTimeAgo(new Date(dateItem.value))}
             </Typography>
           </Stack>
         ) : (

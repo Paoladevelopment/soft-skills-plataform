@@ -1,6 +1,7 @@
 import { Box, Typography, Breadcrumbs, Link, CircularProgress, Stack, Chip, Divider } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLearningGoalStore } from '../store/useLearningGoalStore'
+import { useLearningGoal, useUpdateLearningGoal } from '../hooks/useLearningGoals'
 import InlineEditableField from '../components/ui/InlineEditableField'
 import NoResults from '../components/ui/NoResults'
 import DateDisplay from '../components/ui/DateDisplay'
@@ -12,13 +13,10 @@ import { useDebounce } from '../hooks/useDebounce'
 const LearningGoalDetail = () => {
   const navigate = useNavigate()
   const { goalId } = useParams()
-  const {
-    selectedGoal: goal,
-    isLoading,
-    getSelectedGoal,
-    fetchLearningGoalById,
-    updateLearningGoal,
-  } = useLearningGoalStore()
+  const setSelectedGoalId = useLearningGoalStore(s => s.setSelectedGoalId)
+  
+  const { data: goal, isLoading, error } = useLearningGoal(goalId || null)
+  const { mutate: updateGoal, isPending: isSaving } = useUpdateLearningGoal()
 
   const [goalData, setGoalData] = useState({
     title: '',
@@ -26,7 +24,6 @@ const LearningGoalDetail = () => {
     impact: ''
   })
   
-  const [isSaving, setIsSaving] = useState(false)
   const [hasUserInteracted, setHasUserInteracted] = useState({
     title: false,
     description: false,
@@ -38,67 +35,38 @@ const LearningGoalDetail = () => {
   const debouncedImpact = useDebounce(goalData.impact)
 
   useEffect(() => {
-    const fetchGoal = async () => {
-      if (!goalId) return
-      
-      const existingGoal = getSelectedGoal()
-      
-      if (!existingGoal) {
-        await fetchLearningGoalById(goalId)
-      }
+    if (goalId) {
+      setSelectedGoalId(goalId)
     }
-
-    fetchGoal()
-  }, [goalId, getSelectedGoal, fetchLearningGoalById])
+  }, [goalId, setSelectedGoalId])
 
   useEffect(() => {
-    if (goal) {
+    if (goal && !goalData.title && !goalData.description && !goalData.impact) {
       setGoalData({
         title: goal.title,
         description: goal.description,
         impact: goal.impact
       })
     }
-  }, [goal])
+  }, [goal, goalData.title, goalData.description, goalData.impact])
 
   useEffect(() => {
-    const saveTitle = async () => {
-      if (hasUserInteracted.title && debouncedTitle !== undefined) {
-        setIsSaving(true)
-
-        await updateLearningGoal({ title: debouncedTitle })
-
-        setIsSaving(false)
-      }
+    if (hasUserInteracted.title && debouncedTitle !== undefined) {
+      updateGoal({ id: goalId!, payload: { title: debouncedTitle } })
     }
-    saveTitle()
-  }, [debouncedTitle, updateLearningGoal, hasUserInteracted.title])
+  }, [debouncedTitle, hasUserInteracted.title, goalId, updateGoal])
 
   useEffect(() => {
-    const saveDescription = async () => {
-      if (hasUserInteracted.description && debouncedDescription !== undefined) {
-        setIsSaving(true)
-
-        await updateLearningGoal({ description: debouncedDescription })
-
-        setIsSaving(false)
-      }
+    if (hasUserInteracted.description && debouncedDescription !== undefined) {
+      updateGoal({ id: goalId!, payload: { description: debouncedDescription } })
     }
-    saveDescription()
-  }, [debouncedDescription, updateLearningGoal, hasUserInteracted.description])
+  }, [debouncedDescription, hasUserInteracted.description, goalId, updateGoal])
 
   useEffect(() => {
-    const saveImpact = async () => {
-      if (hasUserInteracted.impact && debouncedImpact !== undefined) {
-        setIsSaving(true)
-
-        await updateLearningGoal({ impact: debouncedImpact })
-
-        setIsSaving(false)
-      }
+    if (hasUserInteracted.impact && debouncedImpact !== undefined) {
+      updateGoal({ id: goalId!, payload: { impact: debouncedImpact } })
     }
-    saveImpact()
-  }, [debouncedImpact, updateLearningGoal, hasUserInteracted.impact])
+  }, [debouncedImpact, hasUserInteracted.impact, goalId, updateGoal])
 
   const saveField = (field: 'title' | 'description' | 'impact', value: string) => {
     setGoalData(prev => ({
@@ -131,7 +99,7 @@ const LearningGoalDetail = () => {
     )
   }
 
-  if (!goal) {
+  if (error || !goal) {
     return (
       <NoResults
         title="Goal not found"

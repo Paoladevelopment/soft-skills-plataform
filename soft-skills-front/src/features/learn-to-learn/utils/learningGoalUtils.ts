@@ -27,8 +27,8 @@ export function getStatusChipColor(status: LearningGoalStatus): 'success' | 'pri
 }
 
 export function getLearningGoalStatus(
-  completedAt?: Date | null,
-  startedAt?: Date | null
+  completedAt?: string | null,
+  startedAt?: string | null
 ): LearningGoalStatus {
   if (completedAt) {
     return LearningGoalStatusEnum.COMPLETED
@@ -42,16 +42,17 @@ export function getLearningGoalStatus(
 }
 
 export function calculateElapsedTime(
-  startedAt?: Date | null,
-  completedAt?: Date | null
+  startedAt?: string | null,
+  completedAt?: string | null
 ): string | undefined {
   if (!startedAt) {
     return undefined
   }
 
-  const endDate = completedAt || new Date()
+  const startDate = new Date(startedAt)
+  const endDate = completedAt ? new Date(completedAt) : new Date()
   
-  const diffInMs = endDate.getTime() - startedAt.getTime()
+  const diffInMs = endDate.getTime() - startDate.getTime()
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
   const diffInHours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
   
@@ -66,8 +67,8 @@ export function calculateElapsedTime(
  * Gets complete status information for a learning goal
  */
 export function getLearningGoalStatusInfo(
-  completedAt?: Date | null,
-  startedAt?: Date | null
+  completedAt?: string | null,
+  startedAt?: string | null
 ): LearningGoalStatusInfo {
   const status = getLearningGoalStatus(completedAt, startedAt)
   const elapsedTime = calculateElapsedTime(startedAt, completedAt)

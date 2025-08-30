@@ -9,6 +9,7 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import { useLearningGoalStore } from '../../store/useLearningGoalStore'
+import { useLearningGoals, useCreateLearningGoal, useDeleteLearningGoal } from '../../hooks/useLearningGoals'
 import { useEffect, useState } from 'react'
 import GoalCard from './GoalCard'
 import AddGoalModal from './AddGoalModal'
@@ -24,38 +25,43 @@ const GoalsSection = () => {
   const [goalToDelete, setGoalToDelete] = useState<LearningGoal | null>(null)
 
   const {
-    learningGoals,
-    isLoading,
-    isPaginating,
-    fetchLearningGoals,
-    createLearningGoal,
-    deleteLearningGoal,
     learningGoalsPagination: { offset, limit, total },
     setLearningGoalsOffset,
     setLearningGoalsLimit,
+    setLearningGoalsTotal,
   } = useLearningGoalStore()
 
-  useEffect(() => {
-    fetchLearningGoals(offset, limit)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset, limit])
+  const { data, isLoading, isFetching } = useLearningGoals(offset, limit)
+  const { mutateAsync: createLearningGoal } = useCreateLearningGoal()
+  const { mutateAsync: deleteLearningGoal } = useDeleteLearningGoal()
 
+  useEffect(() => {
+    if (data?.total !== undefined) {
+      setLearningGoalsTotal(data.total)
+    }
+  }, [data?.total, setLearningGoalsTotal])
+
+  const learningGoals = data?.data || []
   const isEmpty = !isLoading && learningGoals.length === 0
   const hasGoals = learningGoals.length > 0
   const isInitialLoading = isLoading && learningGoals.length === 0
 
-
   const handleGoalSubmit = async (goal: CreateLearningGoalPayload) => {
     await createLearningGoal(goal)
     setInputTitle('')
+    setAddModalOpen(false)
   }
 
   const handleConfirmDelete = async () => {
     setDeleteModalOpen(false)
     
-    if (!goalToDelete) return
-    await deleteLearningGoal(goalToDelete.id)
-
+    if (!goalToDelete) {
+      return
+    }
+    
+    const goalId = goalToDelete.learningGoalId
+    
+    await deleteLearningGoal(goalId)
     setGoalToDelete(null)
   }
 
@@ -118,6 +124,7 @@ const GoalsSection = () => {
             color="secondary"
             startIcon={<AddIcon />}
             onClick={() => setAddModalOpen(true)}
+            disabled={false}
             sx={{
               flexBasis: "20%",
               borderRadius: 2,
@@ -163,14 +170,14 @@ const GoalsSection = () => {
               >
                 {learningGoals.map((goal) => (
                   <GoalCard 
-                    key={goal.id} 
+                    key={goal.learningGoalId} 
                     goal={goal} 
                     onDeleteClick={() => handleOpenDeleteModal(goal)}
                   />
                 ))}
               </Stack>
 
-              {isPaginating && (
+              {isFetching && (
                 <Box display="flex" justifyContent="center" pt={2}>
                   <CircularProgress size={20} />
                 </Box>
