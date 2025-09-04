@@ -11,7 +11,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { LearningGoal } from '../../types/planner/planner.models' 
 import { useState } from 'react'
-import { formatDate } from '../../../../utils/formatDate'
+import { formatDateString } from '../../../../utils/formatDate'
 import { useNavigate } from 'react-router-dom'
 import { useLearningGoalStore } from '../../store/useLearningGoalStore'
 
@@ -33,8 +33,8 @@ const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
   const hasObjectives = total > 0
 
   const handleNavigate = () => {
-    setSelectedGoalId(goal.id)
-    navigate(`/learn/planner/goals/${goal.id}`)
+    setSelectedGoalId(goal.learningGoalId)
+    navigate(`/learn/planner/goals/${goal.learningGoalId}`)
   }
 
   return (
@@ -63,7 +63,7 @@ const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
           <Stack direction="row" alignItems="center" spacing={0.5} mt={1}>
             <CalendarTodayIcon fontSize="small" sx={{ color: "text.secondary" }} />
             <Typography variant="body2" color="text.secondary" mt={1}>
-              {formatDate(goal.startedAt)}
+              {formatDateString(goal.startedAt)}
             </Typography>
           </Stack>
         </Box>

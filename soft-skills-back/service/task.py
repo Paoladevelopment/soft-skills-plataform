@@ -80,6 +80,8 @@ class TaskService:
         ) -> tuple[Sequence[Task], int]:
 
         try:
+            priority_list = [priority] if priority else None
+            
             return self.query_service._get_paginated_entities(
                 entity=Task,
                 filter_field="objective_id",
@@ -87,7 +89,7 @@ class TaskService:
                 offset=offset,
                 limit=limit,
                 status=status,
-                priority=priority,
+                priority=priority_list,
                 order_by=order_by,
                 session=session,
                 default_order_field="order_index"

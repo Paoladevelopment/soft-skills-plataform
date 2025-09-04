@@ -31,15 +31,15 @@ export interface Objective {
 }
 
 export interface LearningGoal {
-  id: string
+  learningGoalId: string
   title: string
   description: string
   impact: string
   userId: string
-  createdAt: Date | null
-  updatedAt: Date | null
-  startedAt: Date | null
-  completedAt: Date | null
-  totalObjectives: number
-  completedObjectives: number
+  createdAt: string | null
+  updatedAt: string | null
+  startedAt: string | null
+  completedAt: string | null
+  totalObjectives?: number
+  completedObjectives?: number
 }
