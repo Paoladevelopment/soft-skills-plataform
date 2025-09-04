@@ -17,6 +17,9 @@ export const api = {
     byId: (id: string) => `${BASE_URL}/learning-goals/${id}`,
     getObjectives: (id: string) => `${BASE_URL}/learning-goals/${id}/objectives`
   },
+  objectives: {
+    create: `${BASE_URL}/objectives`
+  },
   roadmap: {
     create: `${BASE_URL}/roadmap`,
     getMine: `${BASE_URL}/roadmap/mine`,

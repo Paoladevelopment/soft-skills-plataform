@@ -9,6 +9,7 @@ import {
   UpdateLearningGoalPayload,
   UpdateLearningGoalResponse,
 } from '../types/planner/learningGoals.api'
+import { FetchObjectivesResponse } from '../types/planner/objectives.api'
 
 export async function getUserLearningGoals(
   offset: number, 
@@ -65,5 +66,37 @@ export async function updateLearningGoal(
     body: JSON.stringify(payload),
   })
 
+  return response
+}
+
+export async function getObjectivesByLearningGoal(
+  learningGoalId: string,
+  offset: number = 0,
+  limit: number = 10,
+  status?: string,
+  priority?: string[],
+  search?: string,
+  orderBy?: string[]
+): Promise<FetchObjectivesResponse> {
+  const params = new URLSearchParams({
+    offset: offset.toString(),
+    limit: limit.toString(),
+  })
+
+  if (status) params.append('status', status)
+
+  if (priority && priority.length > 0) {
+    priority.forEach(item => params.append('priority', item))
+  }
+
+  if (search) params.append('search', search)
+    
+  if (orderBy && orderBy.length > 0) {
+    orderBy.forEach(item => params.append('order_by', item))
+  }
+
+  const url = `${api.learningGoals.getObjectives(learningGoalId)}?${params.toString()}`
+
+  const response = await fetchWithAuth(url)
   return response
 }

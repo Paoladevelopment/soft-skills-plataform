@@ -1,4 +1,5 @@
 from datetime import datetime
+from uuid import UUID
 
 from enums.common import Priority, Status
 from model.objective import ObjectiveBase
@@ -10,6 +11,7 @@ from utils.payloads import (OBJECTIVE_CREATE_EXAMPLE, OBJECTIVE_READ_EXAMPLE,
 
 
 class ObjectiveCreate(ObjectiveBase):
+    learning_goal_id: UUID
     model_config={"json_schema_extra": {"example": OBJECTIVE_CREATE_EXAMPLE}}
 
 class ObjectiveRead(ObjectiveBase):

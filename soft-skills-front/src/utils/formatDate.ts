@@ -8,11 +8,13 @@ export function formatDateString(
   const date = new Date(dateStr)
   if (isNaN(date.getTime())) return "Invalid date"
 
-  return `${prefix} ${date.toLocaleDateString(undefined, {
+  const formattedDate = date.toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
-  })}`
+  })
+
+  return prefix ? `${prefix} ${formattedDate}` : formattedDate
 }
 
 export function formatDate(

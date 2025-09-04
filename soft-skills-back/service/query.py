@@ -1,6 +1,7 @@
 from typing import List, Sequence, Tuple, Type
+from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, or_, and_
 from sqlalchemy.engine import ScalarResult
 from sqlalchemy.sql import Select
 from sqlmodel import Session, func, select
@@ -37,7 +38,8 @@ class QueryService:
         offset: int,
         limit: int,
         status: str = None,
-        priority: str = None,
+        priority: List[str] = None,
+        search: str = None,
         order_by: List[str] = None,
         default_order_field: str = None,
         session: Session = None,
@@ -54,8 +56,18 @@ class QueryService:
                 count_statement = count_statement.where(getattr(entity, "status") == status)
 
             if priority and hasattr(entity, "priority"):
-                statement = statement.where(getattr(entity, "priority") == priority)
-                count_statement = count_statement.where(getattr(entity, "priority") == priority)
+                priority_filters = [getattr(entity, "priority") == p for p in priority]
+                statement = statement.where(or_(*priority_filters))
+                count_statement = count_statement.where(or_(*priority_filters))
+
+            if search and hasattr(entity, "title") and hasattr(entity, "description"):
+                search_filter = or_(
+                    getattr(entity, "title").ilike(f"%{search}%"),
+                    getattr(entity, "description").ilike(f"%{search}%")
+                )
+                statement = statement.where(search_filter)
+                count_statement = count_statement.where(search_filter)
+
 
             statement = self._apply_ordering(statement, entity, order_by, default_order_field)
             total_count = session.scalar(count_statement)
@@ -67,3 +79,5 @@ class QueryService:
         
         except Exception as err:
             handle_db_error(err, "_get_paginated_entities", error_type="query")
+
+

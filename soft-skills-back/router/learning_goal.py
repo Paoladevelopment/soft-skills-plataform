@@ -75,13 +75,16 @@ def get_objectives_by_learning_goal(
     offset: int = Query(0, ge=0, description="Number of items to skip"),
     limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
     status: Optional[str] = Query(None, description="Filter by status ('completed', 'in_progress', etc.)"),
-    priority: Optional[str] = Query(None, description="Filter by priority ('high', 'medium', 'low')"),
+    priority: List[str] = Query(None, description="Filter by priority values ('high', 'medium', 'low'). Can specify multiple values."),
+    search: Optional[str] = Query(None, description="Search objectives by title or description"),
     order_by: List[str] = Query(None, description="Sorting criteria"),
     _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
     try:
-        objectives, total_count = objective_service.get_objectives_by_learning_goal(id, offset, limit, status, priority, order_by, session)
+        objectives, total_count = objective_service.get_objectives_by_learning_goal(
+            id, offset, limit, status, priority, search, order_by, session
+        )
 
         return ObjectivePaginatedResponse(
             message="Objectives retrieved successfully",

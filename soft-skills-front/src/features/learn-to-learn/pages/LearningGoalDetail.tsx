@@ -2,6 +2,7 @@ import { Box, Typography, Breadcrumbs, Link, CircularProgress, Stack, Chip, Divi
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLearningGoalStore } from '../store/useLearningGoalStore'
 import { useLearningGoal, useUpdateLearningGoal } from '../hooks/useLearningGoals'
+import ObjectivesList from '../components/objectives/ObjectivesList'
 import InlineEditableField from '../components/ui/InlineEditableField'
 import NoResults from '../components/ui/NoResults'
 import DateDisplay from '../components/ui/DateDisplay'
@@ -203,7 +204,7 @@ const LearningGoalDetail = () => {
           icon={<Notes />}
         />
 
-        <Divider sx={{ my: 1 }} />
+        <Divider sx={{ my: 3 }} />
 
         <DateDisplay
           title="Dates"
@@ -226,6 +227,10 @@ const LearningGoalDetail = () => {
             }
           ]}
         />
+
+        <Divider sx={{ my: 3 }} />
+
+        {goalId && <ObjectivesList learningGoalId={goalId} />}
       </Box>
     </Box>
   )

@@ -81,7 +81,8 @@ class ObjectiveService:
             offset: int,
             limit: int, 
             status: str = None,
-            priority: str = None,
+            priority: list[str] = None,
+            search: str = None,
             order_by: list[str] = None,
             session: Session = Depends(get_session),
         ) -> tuple[Sequence[ObjectiveReadWithProgress], int]:
@@ -95,6 +96,7 @@ class ObjectiveService:
                 limit=limit,
                 status=status,
                 priority=priority,
+                search=search,
                 order_by=order_by,
                 default_order_field="order_index",
                 session=session
