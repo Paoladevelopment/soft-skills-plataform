@@ -18,7 +18,8 @@ export const api = {
     getObjectives: (id: string) => `${BASE_URL}/learning-goals/${id}/objectives`
   },
   objectives: {
-    create: `${BASE_URL}/objectives`
+    create: `${BASE_URL}/objectives`,
+    delete: (id: string) => `${BASE_URL}/objectives/${id}`
   },
   roadmap: {
     create: `${BASE_URL}/roadmap`,

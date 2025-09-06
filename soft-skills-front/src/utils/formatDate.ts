@@ -1,12 +1,17 @@
 export function formatDateString(
-  dateStr: string | null, 
+  dateStr: string | null | undefined, 
   fallbackMessage = "Not started yet",
   prefix = "Started:"
 ): string {
-  if (!dateStr) return fallbackMessage
+  if (!dateStr || (typeof dateStr === 'string' && dateStr.trim() === '')) {
+    return fallbackMessage
+  }
 
   const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return "Invalid date"
+  
+  if (isNaN(date.getTime())) {
+    return fallbackMessage
+  }
 
   const formattedDate = date.toLocaleDateString(undefined, {
     year: 'numeric',

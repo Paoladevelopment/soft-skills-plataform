@@ -10,11 +10,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
-  TablePagination
+  TablePagination,
+  IconButton
 } from '@mui/material'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { Objective } from '../../types/planner/objectives.api'
 import { formatDateString } from '../../../../utils/formatDate'
 
@@ -51,6 +52,7 @@ interface ObjectivesTableProps {
   onPageChange: (event: unknown, newPage: number) => void
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   hasFiltersApplied: boolean
+  onDeleteClick?: (objective: Objective) => void
 }
 
 const ObjectivesTable = ({
@@ -62,7 +64,8 @@ const ObjectivesTable = ({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-  hasFiltersApplied
+  hasFiltersApplied,
+  onDeleteClick
 }: ObjectivesTableProps) => {
   if (isLoading) {
     return (
@@ -179,7 +182,7 @@ const ObjectivesTable = ({
           <TableBody>
             {objectives.map((objective, index) => (
               <TableRow 
-                key={objective.objective_id || `objective-${index}`} 
+                key={objective.objectiveId || `objective-${index}`} 
                 hover
                 sx={{
                   backgroundColor: '#fcfcfc',
@@ -239,7 +242,7 @@ const ObjectivesTable = ({
                   >
                     <CalendarTodayIcon fontSize="small" sx={{ color: "text.secondary" }} />
                     <Typography variant="body2" color="text.secondary">
-                      {formatDateString(objective.due_date, "No due date", "")}
+                      {formatDateString(objective.dueDate, "No due date", "")}
                     </Typography>
                   </Box>
                 </TableCell>
@@ -264,7 +267,7 @@ const ObjectivesTable = ({
                     />
                     <CircularProgress
                       variant="determinate"
-                      value={calculateProgress(objective.completed_tasks, objective.total_tasks)}
+                      value={calculateProgress(objective.completedTasks, objective.totalTasks)}
                       size={50}
                       thickness={4}
                       sx={{ color: 'primary.main' }}
@@ -278,7 +281,7 @@ const ObjectivesTable = ({
                       }}
                     >
                       <Typography variant="caption" component="div" color="text.secondary" fontWeight="bold">
-                        {calculateProgress(objective.completed_tasks, objective.total_tasks)}%
+                        {calculateProgress(objective.completedTasks, objective.totalTasks)}%
                       </Typography>
                     </Box>
                   </Box>
@@ -287,15 +290,13 @@ const ObjectivesTable = ({
                   <Box 
                     sx={{ 
                       display: 'flex', 
-                      justifyContent: 'center' 
+                      justifyContent: 'center',
+                      gap: 0.5
                     }}
                   >
-                    <Button 
-                      variant="text" 
+                    <IconButton 
                       size="small" 
                       sx={{ 
-                        minWidth: 'auto',
-                        padding: 1,
                         color: 'text.secondary',
                         '&:hover': {
                           color: 'primary.main'
@@ -303,7 +304,19 @@ const ObjectivesTable = ({
                       }}
                     >
                       <VisibilityIcon fontSize="small" />
-                    </Button>
+                    </IconButton>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => onDeleteClick?.(objective)}
+                      sx={{ 
+                        color: 'text.secondary',
+                        '&:hover': {
+                          color: 'error.main'
+                        }
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
                   </Box>
                 </TableCell>
               </TableRow>

@@ -1,17 +1,17 @@
 import { Priority, Status } from "../common.enums"
 
 export interface Objective {
-  objective_id: string
+  objectiveId: string
   title: string
   description: string
   status: Status
   priority: Priority
-  due_date: string
-  order_index: number
-  started_at: string | null
-  completed_at: string | null
-  total_tasks: number
-  completed_tasks: number
+  dueDate: string | null
+  orderIndex: number
+  startedAt: string | null
+  completedAt: string | null
+  totalTasks: number
+  completedTasks: number
 }
 
 export interface FetchObjectivesResponse {
@@ -51,4 +51,5 @@ export interface UpdateObjectiveResponse {
 
 export interface DeleteObjectiveResponse {
   message: string
+  objective_id: string
 }

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getObjectivesByLearningGoal } from '../api/LearningGoals'
-import { createObjective } from '../api/Objectives'
+import { createObjective, deleteObjective } from '../api/Objectives'
 import { useDebounce } from './useDebounce'
 import { CreateObjectivePayload, Objective, FetchObjectivesResponse } from '../types/planner/objectives.api'
 import { Status } from '../types/common.enums'
@@ -66,17 +66,17 @@ export const useCreateObjective = () => {
           if (!oldData || !oldData.data) return oldData
           
           const optimisticObjective: Objective = {
-            objective_id: `temp-${Date.now()}`,
+            objectiveId: `temp-${Date.now()}`,
             title: newObjective.title,
             description: newObjective.description || '',
             status: Status.NotStarted,
             priority: newObjective.priority,
-            due_date: newObjective.due_date || '',
-            order_index: oldData.data.length,
-            started_at: null,
-            completed_at: null,
-            total_tasks: 0,
-            completed_tasks: 0,
+            dueDate: newObjective.due_date || null,
+            orderIndex: oldData.data.length,
+            startedAt: null,
+            completedAt: null,
+            totalTasks: 0,
+            completedTasks: 0,
           }
 
           return {
@@ -107,5 +107,53 @@ export const useCreateObjective = () => {
       
       showToast('Objective created successfully!', 'success')
     },
+  })
+}
+
+export const useDeleteObjective = () => {
+  const queryClient = useQueryClient()
+  const { showToast } = useToastStore()
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await deleteObjective(id)
+      return response
+    },
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['objectives', 'detail', id] })
+      await queryClient.cancelQueries({ queryKey: ['objectives', 'list'] })
+
+      const previousLists = queryClient.getQueriesData({ queryKey: ['objectives', 'list'] })
+
+      queryClient.setQueriesData(
+        { queryKey: ['objectives', 'list'] },
+        (oldData: FetchObjectivesResponse | undefined) => {
+          if (!oldData || !oldData.data) return oldData
+          const filteredObjectives = oldData.data.filter((objective) => objective.objectiveId !== id)
+          return {
+            ...oldData,
+            data: filteredObjectives,
+            total: oldData.total - 1
+          }
+        }
+      )
+
+      queryClient.removeQueries({ queryKey: ['objectives', 'detail', id] })
+
+      return { previousLists }
+    },
+      
+    onError: (error: Error, _id, context) => {
+      if (context?.previousLists) {
+        context.previousLists.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+      
+      showToast(error.message || 'Error deleting objective', 'error')
+    },
+    onSuccess: ({ message }) => {
+      showToast(message || 'Objective deleted successfully', 'success')
+    }
   })
 }

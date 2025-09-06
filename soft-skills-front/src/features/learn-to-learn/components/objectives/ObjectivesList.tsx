@@ -7,12 +7,13 @@ import {
   Button
 } from '@mui/material'
 import { Add as AddIcon } from '@mui/icons-material'
-import { useObjectives, useCreateObjective } from '../../hooks/useObjectives'
+import { useObjectives, useCreateObjective, useDeleteObjective } from '../../hooks/useObjectives'
 import { useObjectiveStore } from '../../store/useObjectiveStore'
 import DataFilter from '../ui/DataFilter'
 import ObjectivesTable from './ObjectivesTable'
 import AddObjectiveModal from './AddObjectiveModal'
-import { CreateObjectivePayload } from '../../types/planner/objectives.api'
+import ConfirmDeleteModal from '../ConfirmDeleteModal'
+import { CreateObjectivePayload, Objective } from '../../types/planner/objectives.api'
 import { FilterOption, TabValue } from '../../types/ui/filter.types'
 import { Priority, Status } from '../../types/common.enums'
 
@@ -22,6 +23,8 @@ interface ObjectivesListProps {
 
 const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [objectiveToDelete, setObjectiveToDelete] = useState<Objective | null>(null)
 
   const {
     selectedTab,
@@ -38,6 +41,7 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
   } = useObjectiveStore()
 
   const { mutateAsync: createObjective } = useCreateObjective()
+  const { mutateAsync: deleteObjective } = useDeleteObjective()
 
   const { offset, limit } = objectivesPagination
   const page = Math.floor(offset / limit)
@@ -74,6 +78,29 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
 
     await createObjective(objectiveWithLearningGoal)
     setIsModalOpen(false)
+  }
+
+  const handleOpenDeleteModal = (objective: Objective) => {
+    setObjectiveToDelete(objective)
+    setDeleteModalOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    setDeleteModalOpen(false)
+    
+    if (!objectiveToDelete) {
+      return
+    }
+    
+    const objectiveId = objectiveToDelete.objectiveId
+    
+    await deleteObjective(objectiveId)
+    setObjectiveToDelete(null)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalOpen(false)
+    setObjectiveToDelete(null)
   }
 
   const getTabFilters = (tab: TabValue) => {
@@ -256,12 +283,21 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         hasFiltersApplied={hasFiltersApplied}
+        onDeleteClick={handleOpenDeleteModal}
       />
 
       <AddObjectiveModal
         open={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
+      />
+
+      <ConfirmDeleteModal
+        open={deleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete "${objectiveToDelete?.title}"? This action cannot be undone.`}
       />
     </Box>
   )
