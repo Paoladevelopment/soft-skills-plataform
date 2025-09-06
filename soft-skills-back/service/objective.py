@@ -232,8 +232,8 @@ class ObjectiveService:
 
     def delete_objective(self, objective_id: UUID, user_id: UUID, session: Session):
         try:
-            objective = self.get_objective(UUID(objective_id), session)
-            self.verify_user_ownership(UUID(objective_id), user_id, session)
+            objective = self.get_objective(objective_id, session)
+            self.verify_user_ownership(objective_id, user_id, session)
             
             learning_goal_id = objective.learning_goal_id
 

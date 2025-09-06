@@ -127,7 +127,7 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
           />
 
           <TextField
-            label="Due date"
+            label="Due date *"
             type="date"
             fullWidth
             slotProps={{
