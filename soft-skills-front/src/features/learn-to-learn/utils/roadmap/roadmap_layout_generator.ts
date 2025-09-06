@@ -107,7 +107,7 @@ const calculateObjectiveVerticalLayout = (
 /**
  * Creates a Node for a task.
  */
-const createTaskNode = (taskId: string, task: Task, x: number, y: number, isEditable: boolean): LayoutNode => {
+const createTaskNode = (taskId: string, task: Task, x: number, y: number, isEditable: boolean): Partial<LayoutNode> => {
   return {
     id: taskId,
     type: LayoutNodeType.Task,
@@ -122,7 +122,7 @@ const createTaskNode = (taskId: string, task: Task, x: number, y: number, isEdit
 /**
  * Creates a Node for an objective.
  */
-const createObjectiveNode = (objectiveId: string, objective: Objective, y: number, isEditable: boolean): LayoutNode => {
+const createObjectiveNode = (objectiveId: string, objective: Objective, y: number, isEditable: boolean): Partial<LayoutNode> => {
   return {
     id: objectiveId,
     type: LayoutNodeType.Objective,
@@ -154,9 +154,9 @@ const generateSideTasks = (
   sourceHandle: 'left' | 'right',
   targetHandle: 'left' | 'right',
   isEditable: boolean
-): { nodes: LayoutNode[]; edges: LayoutEdge[] } => {
+): { nodes: Partial<LayoutNode>[]; edges: LayoutEdge[] } => {
 
-  const sideNodes: LayoutNode[] = []
+  const sideNodes: Partial<LayoutNode>[] = []
   const sideEdges: LayoutEdge[] = []
 
   let currentY = startY
@@ -246,8 +246,8 @@ const buildFromExistingLayout = (roadmap: Roadmap, isEditable: boolean): { nodes
  * Dynamically builds the layout from objectives and tasks.
  * Positions everything based on estimated sizes and spacing rules.
  */
-const buildDynamicLayout = (roadmap: Roadmap, isEditable: boolean): { nodes: LayoutNode[]; edges: LayoutEdge[] } => {
-  const nodes: LayoutNode[] = []
+const buildDynamicLayout = (roadmap: Roadmap, isEditable: boolean): { nodes: Partial<LayoutNode>[]; edges: LayoutEdge[] } => {
+  const nodes: Partial<LayoutNode>[] = []
   const edges: LayoutEdge[] = []
 
   const objectives = sortObjectives(roadmap.objectives)
@@ -317,7 +317,7 @@ const buildDynamicLayout = (roadmap: Roadmap, isEditable: boolean): { nodes: Lay
 /**
  * Builds the nodes and edges for the roadmap layout.
  */
-export function buildRoadmapLayout(roadmap: Roadmap, isEditable: boolean): { nodes: LayoutNode[]; edges: LayoutEdge[] } {
+export function buildRoadmapLayout(roadmap: Roadmap, isEditable: boolean): { nodes: (LayoutNode | Partial<LayoutNode>)[]; edges: LayoutEdge[] } {
   if (roadmap.layout?.nodes?.length && roadmap.layout?.edges?.length) {
     return buildFromExistingLayout(roadmap, isEditable)
   }
