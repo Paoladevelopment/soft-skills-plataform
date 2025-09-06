@@ -5,10 +5,15 @@ import CustomHandle from './CustomHandle'
 import { findClosestObjectiveNode } from '../../utils/roadmap/find_closest_objective_node'
 import { useState } from 'react'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
+import { fontSizeMap } from '../../types/roadmap/roadmap.options'
 
 interface TaskNodeData {
   title: string,
-  isEditable?: boolean
+  isEditable?: boolean,
+  backgroundColor?: string,
+  width?: number,
+  height?: number | 'auto',
+  fontSize?: 'S' | 'M' | 'L' | 'XL'
 }
 
 const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
@@ -37,6 +42,11 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
 
   const shouldShowDeleteAction = data.isEditable && hovered
 
+  const bgColor = data.backgroundColor ?? '#FFFFFF'
+  const width = data.width ?? 250
+  const height = data.height ?? 'auto'
+  const fontSize = fontSizeMap[data.fontSize ?? 'M']
+
   const handleDelete = (event: React.MouseEvent) => {
     event.stopPropagation()
     removeTaskNode(id)
@@ -47,11 +57,12 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
       sx={{
         borderRadius: "8px",
         padding: "8px 12px 8px 16px",
-        backgroundColor: "white",
+        backgroundColor: bgColor,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        width: 250,
+        width,
+        height,
         boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
         position: 'relative',
       }}
@@ -90,6 +101,7 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
           textAlign: "left",
           whiteSpace: "normal",
           wordBreak: "break-word",
+          fontSize,
         }}
       >
         {data.title}

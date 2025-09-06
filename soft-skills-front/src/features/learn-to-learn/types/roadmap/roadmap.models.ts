@@ -32,6 +32,7 @@ export interface Objective {
 
 export interface ObjectiveNodeData {
   title: string
+  description?: string
   totalTasks?: number
   isEditable?: boolean
   fontSize?: FontSizeOption

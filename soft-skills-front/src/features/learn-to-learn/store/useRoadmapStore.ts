@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { IRoadmapStore } from '../types/roadmap/roadmap.store'
 import { useToastStore } from '../../../store/useToastStore'
-import { OnlyRoadmapMetadata, Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
+import { LayoutNode, OnlyRoadmapMetadata, Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
 import { createRoadmap, deleteRoadmap, getPublicRoadmaps, getRoadmapById, getUserRoadmaps, updateRoadmap } from '../api/Roadmaps'
 import { buildRoadmapLayout } from '../utils/roadmap/roadmap_layout_generator'
 import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, findTaskInObjective, getOrCreateOrphanObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, removeTaskFromOrphanObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmap_structure_utils'
@@ -324,7 +324,7 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       
           get().setSelectedRoadmap(roadmap)
           get().setSelectedRoadmapSteps(stepsCount)
-          get().setEditorNodes(layout.nodes)
+          get().setEditorNodes(layout.nodes as LayoutNode[])
           get().setEditorEdges(layout.edges)
         } catch (err: unknown) {
           if (err instanceof Error) {

@@ -52,8 +52,9 @@ const CreateRoadmapWithChatbot = () => {
           flex: 1, 
           display: 'flex', 
           justifyContent: 'center', 
-          alignItems: 'center' 
-          }}
+          alignItems: 'center',
+          overflowY: 'hidden'
+        }}
       >
         <AithenaChatbot
           messages={messages}
