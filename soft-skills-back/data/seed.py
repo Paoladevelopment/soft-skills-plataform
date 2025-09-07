@@ -102,7 +102,6 @@ def create_seed_data(session: Session):
                     description=f"Detailed description for Objective {obj_id} of Learning Goal {i+1}",
                     status=Status.NOT_STARTED,
                     priority=Priority.MEDIUM,
-                    order_index=obj_id,
                     due_date=datetime.now(timezone.utc) + timedelta(days=30 * obj_id)
                 )
             )
@@ -119,12 +118,22 @@ def create_seed_data(session: Session):
                         description=f"Description for Objective {obj_id}",
                         status=Status.NOT_STARTED,
                         priority=Priority.LOW if obj_id % 2 == 0 else Priority.HIGH,
-                        order_index=obj_id,
                         due_date=datetime.now(timezone.utc) + timedelta(days=15 * obj_id)
                     )
                 )
 
     session.add_all(objectives)
+    session.commit()
+
+    objective_map = defaultdict(list)
+    for obj in objectives:
+        objective_map[obj.learning_goal_id].append(obj.objective_id)
+    
+    for lg in learning_goals:
+        if lg.learning_goal_id in objective_map:
+            lg.objectives_order = objective_map[lg.learning_goal_id]
+    
+    session.add_all(learning_goals)
     session.commit()
 
     tasks = []
@@ -133,6 +142,17 @@ def create_seed_data(session: Session):
     for obj in objectives:
         for task_id in range(1, 4):
             task_uuid = uuid.uuid4()
+            
+            if task_id == 1:
+                task_status = Status.COMPLETED
+                actual_time = 30 + (task_id * 10) - 5 
+            elif task_id == 2:
+                task_status = Status.IN_PROGRESS
+                actual_time = None
+            else:
+                task_status = Status.NOT_STARTED
+                actual_time = None
+            
             tasks.append(
                 Task(
                     task_id=task_uuid,
@@ -140,24 +160,38 @@ def create_seed_data(session: Session):
                     title=f"Task {task_id} for {obj.title}",
                     description=f"Detailed task description {task_id} for {obj.title}",
                     task_type=TaskType.READING if task_id % 3 == 0 else TaskType.WRITING,
-                    status=Status.NOT_STARTED,
+                    status=task_status,
                     priority=Priority.MEDIUM if task_id % 2 == 0 else Priority.HIGH,
                     estimated_time=30 + (task_id * 10),
-                    actual_time=None,
+                    actual_time=actual_time,
                     due_date=obj.due_date - timedelta(days=task_id * 5),
-                    order_index=task_id,
                     is_optional=(task_id == 3)
                 )
             )
-            task_map[obj.objective_id].append((task_id, task_uuid))
+            task_map[obj.objective_id].append((task_id, task_uuid, task_status))
 
     session.add_all(tasks)
     session.commit()
 
-    # Update task_order on each objective
     for obj in objectives:
         sorted_tasks = sorted(task_map[obj.objective_id], key=lambda x: x[0])
-        obj.task_order = [task_id for _, task_id in sorted_tasks]
+        
+        obj.tasks_order_by_status = {
+            "not_started": [],
+            "in_progress": [],
+            "completed": [],
+            "paused": [],
+        }
+        
+        for _, task_uuid, task_status in sorted_tasks:
+            if task_status == Status.COMPLETED:
+                obj.tasks_order_by_status["completed"].append(str(task_uuid))
+            elif task_status == Status.IN_PROGRESS:
+                obj.tasks_order_by_status["in_progress"].append(str(task_uuid))
+            elif task_status == Status.PAUSED:
+                obj.tasks_order_by_status["paused"].append(str(task_uuid))
+            else: 
+                obj.tasks_order_by_status["not_started"].append(str(task_uuid))
 
     session.add_all(objectives)
     session.commit()

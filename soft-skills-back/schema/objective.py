@@ -33,7 +33,6 @@ class ObjectiveSummary(SQLModel):
     status: Status
     priority: Priority
     due_date: datetime | None
-    order_index: int
 
 class ObjectiveUpdate(SQLModel):
     title: str | None = Field(default=None, description="Updated title of the objective")

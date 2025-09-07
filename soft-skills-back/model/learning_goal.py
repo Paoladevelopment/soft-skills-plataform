@@ -4,6 +4,7 @@ from typing import List
 from uuid import UUID
 
 from sqlalchemy import Text
+from sqlalchemy.dialects.postgresql import ARRAY, UUID as PG_UUID
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
 
 
@@ -28,6 +29,10 @@ class LearningGoal(LearningGoalBase, table=True):
         "onupdate": lambda: datetime.now(timezone.utc),
     },
     sa_type=TIMESTAMP(timezone=True),
+  )
+  objectives_order: List[UUID] = Field(
+    default_factory=list,
+    sa_type=ARRAY(PG_UUID(as_uuid=True))
   )
   started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)

@@ -55,10 +55,19 @@ class TaskService:
 
             objective = self.objective_service.get_objective(new_task.objective_id, session)
 
+            session.add(new_task)
+            session.flush()
+
             mongo_data = build_task_document(new_task)
             self.mongo_service.add_task(objective.learning_goal_id, new_task.objective_id, mongo_data)
             
-            session.add(new_task)
+            self.objective_service.add_task_to_status_order(
+                new_task.objective_id,
+                new_task.task_id,
+                new_task.status,
+                session
+            )
+            
             session.commit()
   
             return new_task
@@ -92,7 +101,7 @@ class TaskService:
                 priority=priority_list,
                 order_by=order_by,
                 session=session,
-                default_order_field="order_index"
+                default_order_field="created_at"
             )
         
         except Exception as err:
@@ -181,6 +190,12 @@ class TaskService:
             self.verify_user_ownership(task.objective_id, user_id, session)
 
             objective = self.objective_service.get_objective(task.objective_id, session)
+
+            self.objective_service.remove_task_from_status_order(
+                task.objective_id,
+                task_id,
+                session
+            )
 
             self.mongo_service.delete_task(objective.learning_goal_id, task.objective_id, task_id)
             
