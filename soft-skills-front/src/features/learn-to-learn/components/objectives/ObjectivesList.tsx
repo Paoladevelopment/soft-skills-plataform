@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Box,
   Typography,
@@ -16,12 +17,14 @@ import ConfirmDeleteModal from '../ConfirmDeleteModal'
 import { CreateObjectivePayload, Objective } from '../../types/planner/objectives.api'
 import { FilterOption, TabValue } from '../../types/ui/filter.types'
 import { Priority, Status } from '../../types/common.enums'
+import { formatDateToDateTime } from '../../utils/dateUtils'
 
 interface ObjectivesListProps {
   learningGoalId: string
 }
 
 const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
+  const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [objectiveToDelete, setObjectiveToDelete] = useState<Objective | null>(null)
@@ -54,14 +57,6 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
     setIsModalOpen(false)
   }
 
-  const formatDateToDateTime = (dateString: string): string => {
-    if (dateString.includes('T')) {
-      return dateString
-    }
-    
-
-    return `${dateString}T23:59:59Z`
-  }
 
   const handleSubmit = async (objective: CreateObjectivePayload) => {
     const objectiveWithLearningGoal: CreateObjectivePayload = {
@@ -101,6 +96,9 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false)
     setObjectiveToDelete(null)
+  }
+  const handleOpenViewModal = (objective: Objective) => {
+    navigate(`/learn/planner/goals/${learningGoalId}/objectives/${objective.objectiveId}`)
   }
 
   const getTabFilters = (tab: TabValue) => {
@@ -284,6 +282,7 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
         onRowsPerPageChange={handleChangeRowsPerPage}
         hasFiltersApplied={hasFiltersApplied}
         onDeleteClick={handleOpenDeleteModal}
+        onViewClick={handleOpenViewModal}
       />
 
       <AddObjectiveModal

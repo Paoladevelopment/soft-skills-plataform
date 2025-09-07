@@ -1,6 +1,7 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { ReactNode } from 'react'
 import { useState, useEffect } from 'react'
+import { generateFormFieldAttributes } from '../../../../utils/formUtils'
 
 interface EditableFieldProps {
   label: string
@@ -16,6 +17,8 @@ interface EditableFieldProps {
   customInputStyles?: object
   customTextFieldStyles?: object
   icon?: ReactNode
+  id?: string
+  name?: string
 }
 
 const InlineEditableField = ({
@@ -27,6 +30,8 @@ const InlineEditableField = ({
   customInputStyles,
   customTextFieldStyles,
   icon,
+  id,
+  name,
 }: EditableFieldProps) => {
   const [value, setValue] = useState(defaultValue)
   const [hovered, setHovered] = useState(false)
@@ -39,6 +44,7 @@ const InlineEditableField = ({
   const shouldShowLabel = !disableDefaultDecoration
 
   const inputBackgroundColor = shouldShowShadow ? '#f9f9f9' : 'transparent'
+  const fieldAttributes = generateFormFieldAttributes(label, 'inline-editable', id, name)
 
   const defaultTitleInputStyles = {
     fontSize: '2rem',
@@ -125,6 +131,8 @@ const InlineEditableField = ({
           }
         }}
         multiline={multiline}
+        id={fieldAttributes.id}
+        name={fieldAttributes.name}
         slotProps={{
           input: {
             disableUnderline: true,

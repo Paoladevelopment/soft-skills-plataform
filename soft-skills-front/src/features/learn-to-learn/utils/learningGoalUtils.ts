@@ -1,3 +1,5 @@
+import { calculateElapsedTime } from './timeUtils'
+
 export enum LearningGoalStatusEnum {
   COMPLETED = 'Completed',
   IN_PROGRESS = 'In progress',
@@ -41,27 +43,6 @@ export function getLearningGoalStatus(
   return LearningGoalStatusEnum.NOT_STARTED
 }
 
-export function calculateElapsedTime(
-  startedAt?: string | null,
-  completedAt?: string | null
-): string | undefined {
-  if (!startedAt) {
-    return undefined
-  }
-
-  const startDate = new Date(startedAt)
-  const endDate = completedAt ? new Date(completedAt) : new Date()
-  
-  const diffInMs = endDate.getTime() - startDate.getTime()
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
-  const diffInHours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-  
-  if (diffInDays > 0) {
-    return `${diffInDays}d ${diffInHours}h`
-  }
-  
-  return `${diffInHours}h`
-}
 
 /**
  * Gets complete status information for a learning goal

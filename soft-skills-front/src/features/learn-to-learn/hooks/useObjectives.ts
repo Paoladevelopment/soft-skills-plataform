@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getObjectivesByLearningGoal } from '../api/LearningGoals'
-import { createObjective, deleteObjective } from '../api/Objectives'
+import { createObjective, deleteObjective, getObjectiveById, updateObjective } from '../api/Objectives'
 import { useDebounce } from './useDebounce'
-import { CreateObjectivePayload, Objective, FetchObjectivesResponse } from '../types/planner/objectives.api'
+import { CreateObjectivePayload, Objective, FetchObjectivesResponse, UpdateObjectivePayload } from '../types/planner/objectives.api'
 import { Status } from '../types/common.enums'
 import { useToastStore } from '../../../store/useToastStore'
 
@@ -36,7 +36,8 @@ export const useObjective = (objectiveId: string | null) => {
   return useQuery({
     queryKey: ['objectives', 'detail', objectiveId],
     queryFn: async () => {
-      return null
+      const { data: objective } = await getObjectiveById(objectiveId!)
+      return objective
     },
     enabled: !!objectiveId,
     staleTime: 5 * 60 * 1000,
@@ -72,7 +73,8 @@ export const useCreateObjective = () => {
             status: Status.NotStarted,
             priority: newObjective.priority,
             dueDate: newObjective.due_date || null,
-            orderIndex: oldData.data.length,
+            createdAt: null,
+            updatedAt: null,
             startedAt: null,
             completedAt: null,
             totalTasks: 0,
@@ -107,6 +109,64 @@ export const useCreateObjective = () => {
       
       showToast('Objective created successfully!', 'success')
     },
+  })
+}
+
+export const useUpdateObjective = () => {
+  const queryClient = useQueryClient()
+  const { showToast } = useToastStore()
+
+  return useMutation({
+    mutationFn: async ({ id, payload }: { id: string; payload: UpdateObjectivePayload }) => {
+      const { data, message } = await updateObjective(id, payload)
+      return { objective: data, message }
+    },
+    onMutate: async ({ id, payload }) => {
+      await queryClient.cancelQueries({ queryKey: ['objectives', 'detail', id] })
+      await queryClient.cancelQueries({ queryKey: ['objectives', 'list'] })
+
+      const previousDetail = queryClient.getQueryData(['objectives', 'detail', id])
+      const previousLists = queryClient.getQueriesData({ queryKey: ['objectives', 'list'] })
+
+      queryClient.setQueryData(['objectives', 'detail', id], (oldData: Objective | undefined) => {
+        if (!oldData) return oldData
+        return { ...oldData, ...payload, updatedAt: new Date().toISOString() }
+      })
+
+      queryClient.setQueriesData(
+        { queryKey: ['objectives', 'list'] },
+        (oldData: FetchObjectivesResponse | undefined) => {
+          if (!oldData || !oldData.data) return oldData
+          return {
+            ...oldData,
+            data: oldData.data.map((objective) =>
+              objective.objectiveId === id 
+                ? { ...objective, ...payload, updatedAt: new Date().toISOString() }
+                : objective
+            )
+          }
+        }
+      )
+
+      return { previousDetail, previousLists }
+    },
+    onError: (_error: Error, { id }, context) => {
+      if (context?.previousDetail) {
+        queryClient.setQueryData(['objectives', 'detail', id], context.previousDetail)
+      }
+
+      if (context?.previousLists) {
+        context.previousLists.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+      
+      showToast('Failed to update objective. Please try again.', 'error')
+    },
+    onSuccess: ({ objective, message }, { id }) => {
+      queryClient.setQueryData(['objectives', 'detail', id], objective)
+      showToast(message || 'Objective updated successfully!', 'success', 2000)
+    }
   })
 }
 
