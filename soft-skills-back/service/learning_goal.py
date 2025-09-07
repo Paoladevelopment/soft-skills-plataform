@@ -157,6 +157,54 @@ class LearningGoalService:
             session.rollback()
             handle_db_error(err, "update_learning_goal", error_type="commit")
 
+    def add_objective_to_order(self, learning_goal_id: UUID, objective_id: UUID, session: Session):
+        """Add an objective to the end of the objectives_order array"""
+        try:
+            learning_goal = self.get_learning_goal(learning_goal_id, session)
+            
+            if learning_goal.objectives_order is None:
+                learning_goal.objectives_order = []
+            
+            objective_id_str = str(objective_id)
+            if objective_id_str in learning_goal.objectives_order:
+                return 
+                
+            learning_goal.objectives_order.append(objective_id_str)
+            learning_goal.updated_at = datetime.now(timezone.utc)
+            
+            mongo_data = build_learning_goal_document(learning_goal)
+            self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
+                
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "add_objective_to_order", error_type="update")
+
+    def remove_objective_from_order(self, learning_goal_id: UUID, objective_id: UUID, session: Session):
+        """Remove an objective from the objectives_order array"""
+        try:
+            learning_goal = self.get_learning_goal(learning_goal_id, session)
+            
+            if not learning_goal.objectives_order:
+                return
+                
+            objective_id_str = str(objective_id)
+            if objective_id_str not in learning_goal.objectives_order:
+                return 
+                
+            learning_goal.objectives_order.remove(objective_id_str)
+            learning_goal.updated_at = datetime.now(timezone.utc)
+            
+            mongo_data = build_learning_goal_document(learning_goal)
+            self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
+                    
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "remove_objective_from_order", error_type="update")
+
     def delete_learning_goal(self, learning_goal_id: UUID, user_id: UUID, session: Session):
         try:
             learning_goal = self.get_learning_goal(learning_goal_id, session)

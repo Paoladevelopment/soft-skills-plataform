@@ -1,11 +1,11 @@
 import uuid
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 from enums.common import Priority, Status
 from sqlalchemy import Text
-from sqlalchemy.dialects.postgresql import ARRAY, UUID as PG_UUID
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
 
 
@@ -15,7 +15,6 @@ class ObjectiveBase(SQLModel):
   status: Status = Field(default=Status.NOT_STARTED)
   priority: Priority
   due_date: datetime | None = Field(default=None)
-  order_index: int
 
 
 class Objective(ObjectiveBase, table=True):
@@ -34,9 +33,14 @@ class Objective(ObjectiveBase, table=True):
     },
     sa_type=TIMESTAMP(timezone=True),
   )
-  task_order: List[UUID] = Field(
-    default_factory=list,
-    sa_type=ARRAY(PG_UUID(as_uuid=True))
+  tasks_order_by_status: Dict[str, List[str]] = Field(
+    default_factory=lambda: {
+      "not_started": [],
+      "in_progress": [],
+      "completed": [],
+      "paused": [],
+    },
+    sa_type=JSONB
   )
   started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)

@@ -2,6 +2,7 @@ from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
+from schema.kanban import KanbanBoardResponse, KanbanColumnPaginatedResponse
 from schema.objective import (ObjectiveCreate, ObjectiveRead,
                               ObjectiveResponse, ObjectiveUpdate)
 from schema.task import TaskPaginatedResponse
@@ -127,6 +128,46 @@ def delete_objective(
 ):
     try:
         return objective_service.delete_objective(UUID(id), token_data.user_id, session)
+    
+    except APIException as err:
+        raise_http_exception(err)
+
+
+@router.get(
+    "/{id}/kanban",
+    summary="Get Kanban board for an objective with first page of each status",
+    response_model=KanbanBoardResponse
+)
+def get_kanban_board(
+    id: str,
+    per_page: int = Query(10, ge=1, le=100, description="Items per page for each column (max 100)"),
+    _: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session),
+):
+    try:
+        kanban_data = objective_service.get_kanban_board(UUID(id), per_page, session)
+        return KanbanBoardResponse(**kanban_data)
+    
+    except APIException as err:
+        raise_http_exception(err)
+
+
+@router.get(
+    "/{id}/kanban/column",
+    summary="Get paginated tasks for a specific Kanban column",
+    response_model=KanbanColumnPaginatedResponse
+)
+def get_kanban_column(
+    id: str,
+    status: str = Query(..., regex="^(not_started|in_progress|completed|paused)$", description="Column status"),
+    page: int = Query(1, ge=1, description="Page number"),
+    per_page: int = Query(20, ge=1, le=100, description="Items per page (max 100)"),
+    _: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session),
+):
+    try:
+        column_data = objective_service.get_kanban_column(UUID(id), status, page, per_page, session)
+        return KanbanColumnPaginatedResponse(**column_data)
     
     except APIException as err:
         raise_http_exception(err)
