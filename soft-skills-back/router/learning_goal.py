@@ -135,3 +135,21 @@ def delete_learning_goal(
     
     except APIException as err:
         raise_http_exception(err)
+
+
+@router.post(
+    "/{id}/convert-to-roadmap",
+    summary="Convert learning goal to roadmap",
+    status_code=status.HTTP_201_CREATED,
+)
+def convert_learning_goal_to_roadmap(
+    id: str,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        result = learning_goal_service.convert_to_roadmap(UUID(id), token_data.user_id, session)
+        return result
+    
+    except APIException as err:
+        raise_http_exception(err)

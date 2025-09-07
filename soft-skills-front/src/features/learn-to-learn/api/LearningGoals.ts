@@ -8,6 +8,7 @@ import {
   FetchLearningGoalResponse,
   UpdateLearningGoalPayload,
   UpdateLearningGoalResponse,
+  ConvertToRoadmapResponse,
 } from '../types/planner/learningGoals.api'
 import { FetchObjectivesResponse } from '../types/planner/objectives.api'
 
@@ -98,5 +99,17 @@ export async function getObjectivesByLearningGoal(
   const url = `${api.learningGoals.getObjectives(learningGoalId)}?${params.toString()}`
 
   const response = await fetchWithAuth(url)
+  return response
+}
+
+export async function convertLearningGoalToRoadmap(
+  learningGoalId: string
+): Promise<ConvertToRoadmapResponse> {
+  const url = api.learningGoals.convertToRoadmap(learningGoalId)
+
+  const response = await fetchWithAuth(url, {
+    method: "POST",
+  })
+
   return response
 }

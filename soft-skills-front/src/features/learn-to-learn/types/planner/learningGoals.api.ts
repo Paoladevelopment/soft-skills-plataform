@@ -51,3 +51,8 @@ export interface DeleteLearningGoalResponse {
   message: string
   learningGoalId: string
 }
+
+export interface ConvertToRoadmapResponse {
+  message: string
+  roadmapId: string
+}

@@ -13,11 +13,13 @@ from sqlalchemy.sql import case
 from utils.db import get_session
 from utils.errors import APIException, Forbidden, Missing, handle_db_error
 from utils.mongo_serializers import build_learning_goal_document
+from mongo_service.roadmap import RoadmapMongoService
 
 
 class LearningGoalService:
     def __init__(self):
         self.mongo_service = LearningGoalMongoService()
+        self.roadmap_mongo_service = RoadmapMongoService()
 
     def verify_user_ownership(self, learning_goal: LearningGoal, user_id: UUID):
         if learning_goal.user_id != user_id:
@@ -223,3 +225,94 @@ class LearningGoalService:
         except Exception as err:
             session.rollback()
             handle_db_error(err, "delete_learning_goal", error_type="commit")
+
+    def convert_to_roadmap(self, learning_goal_id: UUID, user_id: UUID, session: Session) -> dict:
+        """Convert a learning goal to a roadmap format"""
+        try:
+            learning_goal = self.get_learning_goal(learning_goal_id, session)
+            self.verify_user_ownership(learning_goal, user_id)
+            
+            learning_goal_mongo = self.mongo_service.get_learning_goal(learning_goal_id)
+            
+            roadmap_data = {
+                "learning_goal_id": str(learning_goal_id),
+                "title": learning_goal_mongo["title"],
+                "description": learning_goal_mongo["description"],
+                "user_id": str(user_id),
+                "started_at": None,
+                "completed_at": None,
+                "objectives": []
+            }
+            
+            objectives_order = learning_goal_mongo.get("objectives_order", [])
+            mongo_objectives = learning_goal_mongo.get("objectives", [])
+            
+            objective_map = {obj["objective_id"]: obj for obj in mongo_objectives}
+            
+            converted_objectives = []
+            for index, objective_id in enumerate(objectives_order):
+                if objective_id in objective_map:
+                    mongo_obj = objective_map[objective_id]
+                    
+                    converted_tasks = self._convert_tasks_with_order(
+                        mongo_obj.get("tasks", []), 
+                        mongo_obj.get("tasks_order_by_status", {})
+                    )
+                    
+                    converted_objective = {
+                        "objective_id": objective_id,
+                        "learning_goal_id": str(learning_goal_id),
+                        "title": mongo_obj["title"],
+                        "description": mongo_obj.get("description", ""),
+                        "order_index": index,
+                        "tasks": converted_tasks
+                    }
+                    converted_objectives.append(converted_objective)
+            
+            roadmap_data["objectives"] = converted_objectives
+            
+            objectives = roadmap_data.pop("objectives")
+            result = self.roadmap_mongo_service.add_roadmap(roadmap_data, str(user_id))
+            
+            roadmap_id = result["roadmap_id"]
+            self.roadmap_mongo_service.update_roadmap(roadmap_id, {"objectives": objectives})
+            
+            return {
+                "message": "Learning goal converted to roadmap successfully",
+                "roadmap_id": result["roadmap_id"]
+            }
+            
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "convert_to_roadmap", error_type="conversion")
+
+    def _convert_tasks_with_order(self, tasks: list, tasks_order_by_status: dict) -> list:
+        """Convert tasks with proper order_index based on status priority (completed first)"""
+        task_map = {task["task_id"]: task for task in tasks}
+        
+        status_priority = ["completed", "in_progress", "paused", "not_started"]
+        
+        converted_tasks = []
+        order_index = 0
+        
+        for status in status_priority:
+            task_ids = tasks_order_by_status.get(status, [])
+            for task_id in task_ids:
+                if task_id in task_map:
+                    task = task_map[task_id]
+                    converted_task = {
+                        "task_id": task_id,
+                        "title": task["title"],
+                        "description": task.get("description", ""),
+                        "order_index": order_index,
+                        "type": task.get("type"),
+                        "content_title": task.get("content_title"),
+                        "resources": task.get("resources", []),
+                        "comments": task.get("comments", [])
+                    }
+                    converted_tasks.append(converted_task)
+                    order_index += 1
+        
+        return converted_tasks
