@@ -4,11 +4,13 @@ import {
   LinearProgress,
   Stack,
   IconButton,
-  Paper
+  Paper,
+  CircularProgress
 } from '@mui/material'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import DeleteIcon from '@mui/icons-material/Delete'
+import RouteIcon from '@mui/icons-material/Route'
 import { LearningGoal } from '../../types/planner/planner.models' 
 import { useState } from 'react'
 import { formatDateString } from '../../../../utils/formatDate'
@@ -18,9 +20,11 @@ import { useLearningGoalStore } from '../../store/useLearningGoalStore'
 interface GoalCardProps {
   goal: LearningGoal
   onDeleteClick?: () => void
+  onCreateRoadmapClick?: () => void
+  isConverting?: boolean
 }
 
-const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
+const GoalCard = ({ goal, onDeleteClick, onCreateRoadmapClick, isConverting }: GoalCardProps) => {
   const setSelectedGoalId = useLearningGoalStore(state => state.setSelectedGoalId)
   const navigate = useNavigate()
   const [hovered, setHovered] = useState(false)
@@ -70,12 +74,23 @@ const GoalCard = ({ goal, onDeleteClick }: GoalCardProps) => {
 
         <Stack direction="row" alignItems="center" spacing={1}>
           {hovered && (
-            <IconButton size="small" onClick={onDeleteClick}>
-              <DeleteIcon fontSize="small"/>
-            </IconButton>
-          )
-
-          }
+            <>
+              <IconButton 
+                size="small" 
+                onClick={onCreateRoadmapClick}
+                disabled={isConverting}
+              >
+                {isConverting ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <RouteIcon fontSize="small"/>
+                )}
+              </IconButton>
+              <IconButton size="small" onClick={onDeleteClick}>
+                <DeleteIcon fontSize="small"/>
+              </IconButton>
+            </>
+          )}
           <IconButton 
             size="small"
             onClick={handleNavigate}

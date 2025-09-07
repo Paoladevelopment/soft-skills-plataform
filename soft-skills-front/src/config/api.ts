@@ -15,7 +15,8 @@ export const api = {
     create: `${BASE_URL}/learning-goals`,
     getAllByUser: `${BASE_URL}/users/me/learning-goals`,
     byId: (id: string) => `${BASE_URL}/learning-goals/${id}`,
-    getObjectives: (id: string) => `${BASE_URL}/learning-goals/${id}/objectives`
+    getObjectives: (id: string) => `${BASE_URL}/learning-goals/${id}/objectives`,
+    convertToRoadmap: (id: string) => `${BASE_URL}/learning-goals/${id}/convert-to-roadmap`
   },
   objectives: {
     create: `${BASE_URL}/objectives`,

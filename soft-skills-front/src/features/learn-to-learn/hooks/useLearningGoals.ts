@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getUserLearningGoals, getLearningGoalById, createLearningGoal, updateLearningGoal, deleteLearningGoal } from '../api/LearningGoals'
+import { getUserLearningGoals, getLearningGoalById, createLearningGoal, updateLearningGoal, deleteLearningGoal, convertLearningGoalToRoadmap } from '../api/LearningGoals'
 
 import { CreateLearningGoalPayload, UpdateLearningGoalPayload, FetchLearningGoalsResponse } from '../types/planner/learningGoals.api'
 import { useToastStore } from '../../../store/useToastStore'
@@ -222,6 +222,33 @@ export const useDeleteLearningGoal = () => {
     },
     onSuccess: ({ message }) => {
       showToast(message || 'Goal deleted successfully', 'success')
+    }
+  })
+}
+
+export const useConvertLearningGoalToRoadmap = (onSuccess?: (roadmapId: string) => void) => {
+  const { showToast } = useToastStore()
+
+  return useMutation({
+    mutationFn: async (learningGoalId: string) => {
+      const response = await convertLearningGoalToRoadmap(learningGoalId)
+      return response
+    },
+    onSuccess: (response) => {
+      const { message, roadmapId } = response
+      
+      showToast(
+        message || 'Learning goal converted to roadmap successfully!', 
+        'success',
+        3000
+      )
+      
+      if (onSuccess && roadmapId) {
+        onSuccess(roadmapId)
+      }
+    },
+    onError: (error: Error) => {
+      showToast(error.message || 'Error converting goal to roadmap', 'error')
     }
   })
 }

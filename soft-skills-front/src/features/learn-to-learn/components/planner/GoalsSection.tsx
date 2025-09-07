@@ -9,8 +9,9 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import { useLearningGoalStore } from '../../store/useLearningGoalStore'
-import { useLearningGoals, useCreateLearningGoal, useDeleteLearningGoal } from '../../hooks/useLearningGoals'
+import { useLearningGoals, useCreateLearningGoal, useDeleteLearningGoal, useConvertLearningGoalToRoadmap } from '../../hooks/useLearningGoals'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import GoalCard from './GoalCard'
 import AddGoalModal from './AddGoalModal'
 import { CreateLearningGoalPayload } from '../../types/planner/learningGoals.api'
@@ -19,6 +20,7 @@ import { LearningGoal } from '../../types/planner/planner.models'
 import ConfirmDeleteModal from '../ConfirmDeleteModal'
 
 const GoalsSection = () => {
+  const navigate = useNavigate()
   const [addModalOpen, setAddModalOpen] = useState(false)
   const [inputTitle, setInputTitle] = useState('')
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -34,6 +36,13 @@ const GoalsSection = () => {
   const { data, isLoading, isFetching } = useLearningGoals(offset, limit)
   const { mutateAsync: createLearningGoal } = useCreateLearningGoal()
   const { mutateAsync: deleteLearningGoal } = useDeleteLearningGoal()
+  const { mutateAsync: convertToRoadmap, isPending: isConverting } = useConvertLearningGoalToRoadmap(
+    (roadmapId: string) => {
+      setTimeout(() => {
+        navigate(`/learn/roadmaps/${roadmapId}`)
+      }, 1500) 
+    }
+  )
 
   useEffect(() => {
     if (data?.total !== undefined) {
@@ -73,6 +82,10 @@ const GoalsSection = () => {
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false)
     setGoalToDelete(null)
+  }
+
+  const handleCreateRoadmapClick = async (goal: LearningGoal) => {
+    await convertToRoadmap(goal.learningGoalId)
   }
 
   return (
@@ -173,6 +186,8 @@ const GoalsSection = () => {
                     key={goal.learningGoalId} 
                     goal={goal} 
                     onDeleteClick={() => handleOpenDeleteModal(goal)}
+                    onCreateRoadmapClick={() => handleCreateRoadmapClick(goal)}
+                    isConverting={isConverting}
                   />
                 ))}
               </Stack>
