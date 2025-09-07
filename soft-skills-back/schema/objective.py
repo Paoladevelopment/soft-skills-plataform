@@ -16,8 +16,10 @@ class ObjectiveCreate(ObjectiveBase):
 
 class ObjectiveRead(ObjectiveBase):
     objective_id: UUID4
-    started_at: datetime | None
-    completed_at: datetime | None 
+    created_at: datetime | None = Field(default=None)
+    updated_at: datetime | None = Field(default=None)
+    started_at: datetime | None = Field(default=None)
+    completed_at: datetime | None = Field(default=None)
 
     model_config={"json_schema_extra": {"example": OBJECTIVE_READ_EXAMPLE}}
 

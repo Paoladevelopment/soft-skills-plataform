@@ -8,6 +8,7 @@ export const useLearningGoalStore = create<ILearningGoal>()(
     immer(
       (set) => ({
         selectedGoalId: null,
+        selectedGoalTitle: null,
         isPaginating: false,
         learningGoalsPagination: {
           total: 0,
@@ -19,6 +20,12 @@ export const useLearningGoalStore = create<ILearningGoal>()(
           set((state) => {
             state.selectedGoalId = id
           }, false, "SET_SELECTED_GOAL_ID")
+        },
+
+        setSelectedGoalTitle: (title: string | null) => {
+          set((state) => {
+            state.selectedGoalTitle = title
+          }, false, "SET_SELECTED_GOAL_TITLE")
         },
 
         setIsPaginating: (value: boolean) => {

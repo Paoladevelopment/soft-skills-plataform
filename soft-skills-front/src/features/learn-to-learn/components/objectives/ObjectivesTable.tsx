@@ -18,25 +18,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Objective } from '../../types/planner/objectives.api'
 import { formatDateString } from '../../../../utils/formatDate'
+import { getPriorityColor, getStatusChipColor, formatStatus } from '../../utils/objectiveUtils'
 
-const formatStatus = (status: string): string => {
-  return status.replace('_', ' ')
-}
 
-const getStatusColor = (status: string): 'success' | 'info' | 'warning' | 'default' => {
-  if (status === 'completed') return 'success'
-  if (status === 'in_progress') return 'info'
-  if (status === 'paused') return 'warning'
-  
-  return 'default'
-}
-
-const getPriorityColor = (priority: string): 'error' | 'warning' | 'default' => {
-  if (priority === 'high') return 'error'
-  if (priority === 'medium') return 'warning'
-  
-  return 'default'
-}
 
 const calculateProgress = (completedTasks: number, totalTasks: number): number => {
   return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
@@ -53,6 +37,7 @@ interface ObjectivesTableProps {
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   hasFiltersApplied: boolean
   onDeleteClick?: (objective: Objective) => void
+  onViewClick?: (objective: Objective) => void
 }
 
 const ObjectivesTable = ({
@@ -65,7 +50,8 @@ const ObjectivesTable = ({
   onPageChange,
   onRowsPerPageChange,
   hasFiltersApplied,
-  onDeleteClick
+  onDeleteClick,
+  onViewClick
 }: ObjectivesTableProps) => {
   if (isLoading) {
     return (
@@ -222,7 +208,7 @@ const ObjectivesTable = ({
                   <Chip 
                     label={formatStatus(objective.status)} 
                     size="small" 
-                    color={getStatusColor(objective.status)}
+                    color={getStatusChipColor(objective.status)}
                   />
                 </TableCell>
                 <TableCell>
@@ -296,6 +282,7 @@ const ObjectivesTable = ({
                   >
                     <IconButton 
                       size="small" 
+                      onClick={() => onViewClick?.(objective)}
                       sx={{ 
                         color: 'text.secondary',
                         '&:hover': {

@@ -15,6 +15,7 @@ const LearningGoalDetail = () => {
   const navigate = useNavigate()
   const { goalId } = useParams()
   const setSelectedGoalId = useLearningGoalStore(s => s.setSelectedGoalId)
+  const setSelectedGoalTitle = useLearningGoalStore(s => s.setSelectedGoalTitle)
   
   const { data: goal, isLoading, error } = useLearningGoal(goalId || null)
   const { mutate: updateGoal, isPending: isSaving } = useUpdateLearningGoal()
@@ -31,7 +32,7 @@ const LearningGoalDetail = () => {
     impact: false
   })
 
-  const debouncedTitle = useDebounce(goalData.title)
+  const debouncedTitle = useDebounce<string>(goalData.title)
   const debouncedDescription = useDebounce(goalData.description)
   const debouncedImpact = useDebounce(goalData.impact)
 
@@ -40,6 +41,12 @@ const LearningGoalDetail = () => {
       setSelectedGoalId(goalId)
     }
   }, [goalId, setSelectedGoalId])
+
+  useEffect(() => {
+    if (goal?.title) {
+      setSelectedGoalTitle(goal.title)
+    }
+  }, [goal?.title, setSelectedGoalTitle])
 
   useEffect(() => {
     if (goal && !goalData.title && !goalData.description && !goalData.impact) {
@@ -52,22 +59,22 @@ const LearningGoalDetail = () => {
   }, [goal, goalData.title, goalData.description, goalData.impact])
 
   useEffect(() => {
-    if (hasUserInteracted.title && debouncedTitle !== undefined) {
+    if (hasUserInteracted.title && goalId && debouncedTitle !== goal?.title) {
       updateGoal({ id: goalId!, payload: { title: debouncedTitle } })
     }
-  }, [debouncedTitle, hasUserInteracted.title, goalId, updateGoal])
+  }, [debouncedTitle, hasUserInteracted.title, goalId, goal?.title, updateGoal])
 
   useEffect(() => {
-    if (hasUserInteracted.description && debouncedDescription !== undefined) {
+    if (hasUserInteracted.description && goalId && debouncedDescription !== goal?.description) {
       updateGoal({ id: goalId!, payload: { description: debouncedDescription } })
     }
-  }, [debouncedDescription, hasUserInteracted.description, goalId, updateGoal])
+  }, [debouncedDescription, hasUserInteracted.description, goalId, goal?.description, updateGoal])
 
   useEffect(() => {
-    if (hasUserInteracted.impact && debouncedImpact !== undefined) {
+    if (hasUserInteracted.impact && goalId && debouncedImpact !== goal?.impact) {
       updateGoal({ id: goalId!, payload: { impact: debouncedImpact } })
     }
-  }, [debouncedImpact, hasUserInteracted.impact, goalId, updateGoal])
+  }, [debouncedImpact, hasUserInteracted.impact, goalId, goal?.impact, updateGoal])
 
   const saveField = (field: 'title' | 'description' | 'impact', value: string) => {
     setGoalData(prev => ({

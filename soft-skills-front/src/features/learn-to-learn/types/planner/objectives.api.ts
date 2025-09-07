@@ -7,7 +7,8 @@ export interface Objective {
   status: Status
   priority: Priority
   dueDate: string | null
-  orderIndex: number
+  createdAt: string | null
+  updatedAt: string | null
   startedAt: string | null
   completedAt: string | null
   totalTasks: number
@@ -52,4 +53,9 @@ export interface UpdateObjectiveResponse {
 export interface DeleteObjectiveResponse {
   message: string
   objective_id: string
+}
+
+export interface FetchObjectiveResponse {
+  message: string
+  data: Objective
 }

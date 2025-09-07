@@ -123,7 +123,7 @@ export const useUpdateLearningGoal = () => {
   return useMutation({
     mutationFn: async ({ id, payload }: { id: string; payload: UpdateLearningGoalPayload }) => {
       const { data, message } = await updateLearningGoal(id, payload)
-      return { goal: data, message, changed: true }
+      return { goal: data, message }
     },
     onMutate: async ({ id, payload }) => {
       await queryClient.cancelQueries({ queryKey: ['learningGoals', 'detail', id] })

@@ -44,8 +44,10 @@ export const RoutesConfiguration = () => {
           <Route path='/learn' element={<LearnLayout/>}>
             <Route path='planner'>
               <Route index element={<Planner />} />
-              <Route path='goals/:goalId' element={<LearningGoalDetail />} />
-              <Route path='objectives/:objectiveId' element={<ObjectiveDetail />} />
+              <Route path='goals/:goalId'>
+                <Route index element={<LearningGoalDetail />} />
+                <Route path='objectives/:objectiveId' element={<ObjectiveDetail />} />
+              </Route>
             </Route>
             
             <Route path='dashboard' element={<Dashboard/>}></Route>
