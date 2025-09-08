@@ -7,12 +7,14 @@ import InlineEditableField from '../components/ui/InlineEditableField'
 import InlineEditableSelect from '../components/ui/InlineEditableSelect'
 import InlineEditableDate from '../components/ui/InlineEditableDate'
 import DateDisplay from '../components/ui/DateDisplay'
+import Board from '../components/kanban/Board'
 import { Notes, AccessTime, Flag, CalendarToday } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { getObjectiveStatusInfo, getObjectiveStatusChipColor, getPriorityColor } from '../utils/objectiveUtils'
 import { useDebounce } from '../hooks/useDebounce'
 import { Priority } from '../types/common.enums'
 import { formatDateToDateTime, normalizeDate } from '../utils/dateUtils'
+import { createObjectiveBoardData } from '../data/kanbanData'
 
 const ObjectiveDetail = () => {
   const navigate = useNavigate()
@@ -293,6 +295,30 @@ const ObjectiveDetail = () => {
         />
 
         <Divider sx={{ my: 3 }} />
+
+        <Box sx={{ mb: 3 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              color: 'text.primary',
+              mb: 1
+            }}
+          >
+            Task Breakdown
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ mb: 2 }}
+          >
+            Break down this objective into manageable sub-tasks and track their progress
+          </Typography>
+          
+          <Board 
+            board={createObjectiveBoardData(objectiveId || '', objectiveData.title)} 
+          />
+        </Box>
       </Box>
     </Box>
   )
