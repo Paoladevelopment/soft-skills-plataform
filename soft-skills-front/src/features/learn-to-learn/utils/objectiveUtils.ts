@@ -69,8 +69,10 @@ export function getObjectiveStatusInfo(
 }
 
 export function getPriorityColor(priority: string): PriorityColorValue {
-  if (priority === 'high') return PRIORITY_COLORS.HIGH
-  if (priority === 'medium') return PRIORITY_COLORS.MEDIUM
+  const lowerPriority = priority.toLowerCase()
+  
+  if (lowerPriority === 'high') return PRIORITY_COLORS.HIGH
+  if (lowerPriority === 'medium') return PRIORITY_COLORS.MEDIUM
   
   return PRIORITY_COLORS.LOW
 }
