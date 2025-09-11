@@ -93,7 +93,12 @@ const TaskCard = ({ task }: TaskCardProps) => {
                 gap: 0.5 
               }}
             >
-              <CalendarToday sx={{ fontSize: '0.75rem', color: 'text.secondary' }} />
+              <CalendarToday 
+                sx={{ 
+                  fontSize: '0.75rem', 
+                  color: 'text.secondary' 
+                }} 
+              />
               <Typography 
                 variant="caption" 
                 color="text.secondary"

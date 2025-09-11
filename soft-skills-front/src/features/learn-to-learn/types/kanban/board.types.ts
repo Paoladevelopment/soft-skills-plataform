@@ -3,7 +3,7 @@ export interface SubTask {
   title: string
   description?: string
   priority: 'LOW' | 'MEDIUM' | 'HIGH'
-  dueDate?: string
+  dueDate?: string | null
   status: 'TODO' | 'IN_PROGRESS' | 'PAUSED' | 'DONE'
 }
 
