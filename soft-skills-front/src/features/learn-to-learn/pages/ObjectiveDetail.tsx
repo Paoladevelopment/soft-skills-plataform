@@ -14,7 +14,7 @@ import { getObjectiveStatusInfo, getObjectiveStatusChipColor, getPriorityColor }
 import { useDebounce } from '../hooks/useDebounce'
 import { Priority } from '../types/common.enums'
 import { formatDateToDateTime, normalizeDate } from '../utils/dateUtils'
-import { createObjectiveBoardData } from '../data/kanbanData'
+import { useKanbanTasks } from '../hooks/useKanbanTasks'
 
 const ObjectiveDetail = () => {
   const navigate = useNavigate()
@@ -30,6 +30,8 @@ const ObjectiveDetail = () => {
     priority: Priority.Medium,
     dueDate: null as string | null
   })
+
+  const { data: kanbanBoard, isLoading: isKanbanLoading, error: kanbanError } = useKanbanTasks(objectiveId || null, objectiveData.title)
   
   const [hasUserInteracted, setHasUserInteracted] = useState({
     title: false,
@@ -315,9 +317,21 @@ const ObjectiveDetail = () => {
             Break down this objective into manageable sub-tasks and track their progress
           </Typography>
           
-          <Board 
-            board={createObjectiveBoardData(objectiveId || '', objectiveData.title)} 
-          />
+          {isKanbanLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : kanbanError ? (
+            <Typography color="error" variant="body2">
+              Failed to load tasks. Please try again.
+            </Typography>
+          ) : kanbanBoard ? (
+            <Board board={kanbanBoard} />
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No tasks found for this objective.
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>

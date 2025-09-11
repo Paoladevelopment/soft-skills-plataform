@@ -21,7 +21,8 @@ export const api = {
   objectives: {
     create: `${BASE_URL}/objectives`,
     byId: (id: string) => `${BASE_URL}/objectives/${id}`,
-    delete: (id: string) => `${BASE_URL}/objectives/${id}`
+    delete: (id: string) => `${BASE_URL}/objectives/${id}`,
+    kanban: (id: string) => `${BASE_URL}/objectives/${id}/kanban`
   },
   roadmap: {
     create: `${BASE_URL}/roadmap`,
