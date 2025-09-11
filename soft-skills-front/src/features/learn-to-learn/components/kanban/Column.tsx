@@ -1,51 +1,37 @@
 import { Box, Typography, Chip } from '@mui/material'
 import { TaskColumn } from '../../types/kanban/board.types'
+import { ColumnData } from '../../types/kanban/drag-drop.types'
+import { getColumnColor } from '../../utils/columnColors'
 import CardList from './CardList'
+import { useEffect, useRef } from 'react'
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 
 interface ColumnProps {
   column: TaskColumn
 }
 
 const Column = ({ column }: ColumnProps) => {
-  const getColumnColor = (columnId: string) => {
-    switch (columnId) {
-      case 'todo':
-        return {
-          bg: '#f8f9fa',
-          border: '#e9ecef',
-          chipColor: 'default' as const
-        }
-      case 'in-progress':
-        return {
-          bg: '#e3f2fd',
-          border: '#bbdefb',
-          chipColor: 'info' as const
-        }
-      case 'done':
-        return {
-          bg: '#e8f5e8',
-          border: '#c8e6c9',
-          chipColor: 'success' as const
-        }
-      case 'paused':
-        return {
-          bg: '#fff3e0',
-          border: '#ffcc02',
-          chipColor: 'warning' as const
-        }
-      default:
-        return {
-          bg: '#f8f9fa',
-          border: '#e9ecef',
-          chipColor: 'default' as const
-        }
-    }
-  }
+  const columnRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const columnEl = columnRef.current
+    if (!columnEl) return
+
+    return dropTargetForElements({
+      element: columnEl,
+      getData: () => ({ 
+        type: 'column', 
+        columnId: column.id 
+      } satisfies ColumnData),
+      getIsSticky: () => true
+    })
+  }, [column.id])
 
   const colors = getColumnColor(column.id)
 
   return (
     <Box
+      ref={columnRef}
       sx={{
         width: 300,
         minWidth: 300,
@@ -104,6 +90,7 @@ const Column = ({ column }: ColumnProps) => {
         sx={{
           flex: 1,
           overflow: 'auto',
+          padding: '8px 0',
           '&::-webkit-scrollbar': {
             width: 6
           },
