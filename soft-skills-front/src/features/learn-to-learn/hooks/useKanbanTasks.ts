@@ -8,17 +8,11 @@ export const useKanbanTasks = (objectiveId: string | null, objectiveTitle: strin
     queryFn: async () => {
       if (!objectiveId) throw new Error('Objective ID is required')
       
-      try {
-        const apiResponse = await fetchKanbanTasks(objectiveId)
-        console.log('Kanban API Response:', apiResponse)
-        return transformKanbanApiResponse(apiResponse, objectiveId, objectiveTitle)
-      } catch (error) {
-        console.error('Kanban fetch error:', error)
-        throw error
-      }
+      const apiResponse = await fetchKanbanTasks(objectiveId)
+      return transformKanbanApiResponse(apiResponse, objectiveId, objectiveTitle)
     },
     enabled: !!objectiveId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 5 * 60 * 1000, 
+    gcTime: 10 * 60 * 1000, 
   })
 }

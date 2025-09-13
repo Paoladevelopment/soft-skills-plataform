@@ -1,6 +1,7 @@
 import { KanbanApiResponse, TaskItem, TaskStatus } from '../types/kanban/task.api'
 import { Priority } from '../types/common.enums'
 import { ObjectiveBoard, SubTask, TaskColumn } from '../types/kanban/board.types'
+import { CardData, ColumnData, ColumnModel, Task, DropTargetRecord } from '../types/kanban/drag-drop.types'
 import { normalizeDate } from './dateUtils'
 
 /**
@@ -37,7 +38,6 @@ function mapApiPriorityToComponentPriority(apiPriority: Priority): 'LOW' | 'MEDI
  * Maps API status values to component status values
  */
 function mapApiStatusToComponentStatus(apiStatus: TaskStatus): 'TODO' | 'IN_PROGRESS' | 'PAUSED' | 'DONE' {
-  console.log('API Status:', apiStatus)
   switch (apiStatus) {
     case TaskStatus.NOT_STARTED:
       return 'TODO'
@@ -88,3 +88,46 @@ export function transformKanbanApiResponse(
     columns
   }
 }
+
+/**
+ * Finds a column by its ID
+ */
+export const findColumnById = (columns: ColumnModel[], columnId: string): ColumnModel | undefined =>
+  columns.find(col => col.id === columnId)
+
+/**
+ * Finds the index of a task by its ID
+ */
+export const findTaskIndexById = (tasks: Task[], taskId: string): number =>
+  tasks.findIndex(task => task.id === taskId)
+
+/**
+ * Updates tasks for a specific column
+ */
+export const updateColumnTasks = (columns: ColumnModel[], columnId: string, newTasks: Task[]): ColumnModel[] =>
+  columns.map(col => (col.id === columnId ? { ...col, tasks: newTasks } : col))
+
+/**
+ * Removes a task from a column by task ID
+ */
+export const removeTaskFromColumn = (tasks: Task[], taskId: string): Task[] =>
+  tasks.filter(task => task.id !== taskId)
+
+/**
+ * Inserts a task at a specific position in a task list
+ */
+export const insertTaskAtPosition = (tasks: Task[], task: Task, position: number): Task[] => {
+  const newTasks = tasks.slice()
+  newTasks.splice(Math.max(0, Math.min(position, newTasks.length)), 0, task)
+  return newTasks
+}
+
+/**
+ * Type-safe casting helper for CardData
+ */
+export const asCardData = (x: unknown): CardData => x as CardData
+
+/**
+ * Extracts column ID from a drop target record
+ */
+export const columnIdFrom = (rec: DropTargetRecord): string => (rec.data as CardData | ColumnData).columnId
