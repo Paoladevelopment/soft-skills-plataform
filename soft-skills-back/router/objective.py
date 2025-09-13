@@ -2,21 +2,24 @@ from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
-from schema.kanban import KanbanBoardResponse, KanbanColumnPaginatedResponse
+from enums.common import Status
+from schema.kanban import KanbanBoardResponse, KanbanColumnPaginatedResponse, KanbanMoveRequest, KanbanMoveResponse
 from schema.objective import (ObjectiveCreate, ObjectiveRead,
                               ObjectiveResponse, ObjectiveUpdate)
 from schema.task import TaskPaginatedResponse
 from schema.token import TokenData
 from service.auth_service import decode_jwt_token
 from service.objective import ObjectiveService
+from service.kanban import KanbanService
 from service.task import TaskService
 from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import APIException, raise_http_exception
+from utils.errors import APIException, BadRequest, raise_http_exception
 
 router = APIRouter()
 
 objective_service = ObjectiveService()
+kanban_service = KanbanService()
 task_service = TaskService()
 
 @router.post(
@@ -145,7 +148,7 @@ def get_kanban_board(
     session: Session = Depends(get_session),
 ):
     try:
-        kanban_data = objective_service.get_kanban_board(UUID(id), per_page, session)
+        kanban_data = kanban_service.get_kanban_board(UUID(id), per_page, session)
         return KanbanBoardResponse(**kanban_data)
     
     except APIException as err:
@@ -159,15 +162,58 @@ def get_kanban_board(
 )
 def get_kanban_column(
     id: str,
-    status: str = Query(..., regex="^(not_started|in_progress|completed|paused)$", description="Column status"),
+    status: Status = Query(..., description="Column status"),
     page: int = Query(1, ge=1, description="Page number"),
     per_page: int = Query(20, ge=1, le=100, description="Items per page (max 100)"),
     _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
     try:
-        column_data = objective_service.get_kanban_column(UUID(id), status, page, per_page, session)
+        column_data = kanban_service.get_kanban_column(UUID(id), status.value, page, per_page, session)
         return KanbanColumnPaginatedResponse(**column_data)
+    
+    except APIException as err:
+        raise_http_exception(err)
+
+
+@router.patch(
+    "/{id}/kanban/move",
+    summary="Move a task in the Kanban board",
+    response_model=KanbanMoveResponse,
+    status_code=status.HTTP_200_OK
+)
+def move_kanban_task(
+    id: str,
+    move_request: KanbanMoveRequest,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session),
+):
+    try:
+        result = kanban_service.move_kanban_task(UUID(id), move_request, token_data.user_id, session)
+        
+        return KanbanMoveResponse(
+            message=result["message"],
+            data=result["task"],
+            old=result["old"]
+        )
+    
+    except APIException as err:
+        raise_http_exception(err)
+
+
+@router.post(
+    "/{id}/kanban/sync",
+    summary="Sync Kanban board with actual task statuses",
+    status_code=status.HTTP_200_OK
+)
+def sync_kanban_board(
+    id: str,
+    _: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session),
+):
+    try:
+        result = kanban_service.sync_kanban_with_task_statuses(UUID(id), session)
+        return result
     
     except APIException as err:
         raise_http_exception(err)

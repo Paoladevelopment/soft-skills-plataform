@@ -9,12 +9,13 @@ from model.objective import Objective
 from model.task import Task
 from mongo_service.objective import ObjectiveMongoService
 from schema.objective import ObjectiveCreate, ObjectiveUpdate, ObjectiveReadWithProgress
+from schema.kanban import KanbanMoveRequest
 from service.learning_goal import LearningGoalService
 from service.query import QueryService
 from sqlalchemy.sql import case
 from sqlmodel import Session, func, select
 from utils.db import get_session
-from utils.errors import APIException, Forbidden, Missing, handle_db_error
+from utils.errors import APIException, Forbidden, Missing, BadRequest, handle_db_error
 from utils.mongo_serializers import build_objective_document
 
 
@@ -402,101 +403,3 @@ class ObjectiveService:
             result[status] = tasks
         
         return result
-
-    def get_kanban_board(self, objective_id: UUID, per_page: int, session: Session) -> dict:
-        """Get the full Kanban board for an objective with first page of each status"""
-        try:
-            objective = self.get_objective(objective_id, session)
-            
-            if not objective.tasks_order_by_status:
-                return self._create_empty_kanban_columns(per_page)
-            
-            task_ids_by_status = {}
-            per_page_per_status = {}
-            column_metadata = {}
-            
-            for status in ["not_started", "in_progress", "completed", "paused"]:
-                task_ids = objective.tasks_order_by_status.get(status, [])
-                total = len(task_ids)
-                total_pages = self._calculate_total_pages(total, per_page)
-                has_next = total > per_page
-                
-                task_ids_by_status[status] = task_ids
-                per_page_per_status[status] = per_page
-                column_metadata[status] = {
-                    "page": 1,
-                    "per_page": per_page,
-                    "total": total,
-                    "total_pages": total_pages,
-                    "has_next": has_next
-                }
-            
-            tasks_by_status = self._fetch_tasks_by_ids_ordered(
-                task_ids_by_status, 
-                per_page_per_status, 
-                session
-            )
-            
-            columns = {}
-            for status in ["not_started", "in_progress", "completed", "paused"]:
-                columns[status] = {
-                    **column_metadata[status],
-                    "items": tasks_by_status[status]
-                }
-            
-            return {"columns": columns}
-            
-        except APIException as api_error:
-            raise api_error
-        
-        except Exception as err:
-            handle_db_error(err, "get_kanban_board", error_type="query")
-
-    def get_kanban_column(self, objective_id: UUID, status: str, page: int, per_page: int, session: Session) -> dict:
-        """Get a specific page of tasks for a Kanban column"""
-        try:
-            objective = self.get_objective(objective_id, session)
-            
-            if not objective.tasks_order_by_status or status not in objective.tasks_order_by_status:
-                return {
-                    "status": status,
-                    "page": page,
-                    "per_page": per_page,
-                    "total": 0,
-                    "total_pages": 0,
-                    "has_next": False,
-                    "items": []
-                }
-            
-            task_ids = objective.tasks_order_by_status[status]
-            total = len(task_ids)
-            total_pages = self._calculate_total_pages(total, per_page)
-            
-            start_idx = (page - 1) * per_page
-            end_idx = start_idx + per_page
-            has_next = end_idx < total
-            
-            page_task_ids = task_ids[start_idx:end_idx]
-            
-            tasks_by_status = self._fetch_tasks_by_ids_ordered(
-                {status: page_task_ids},
-                {status: len(page_task_ids)},
-                session
-            )
-            tasks = tasks_by_status.get(status, [])
-            
-            return {
-                "status": status,
-                "page": page,
-                "per_page": per_page,
-                "total": total,
-                "total_pages": total_pages,
-                "has_next": has_next,
-                "items": tasks
-            }
-            
-        except APIException as api_error:
-            raise api_error
-        
-        except Exception as err:
-            handle_db_error(err, "get_kanban_column", error_type="query")

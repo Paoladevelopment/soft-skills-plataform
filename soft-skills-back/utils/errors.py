@@ -38,6 +38,11 @@ class Forbidden(APIException):
     status_code = status.HTTP_403_FORBIDDEN
     error_title = "Forbidden"
 
+class BadRequest(APIException):
+    """Bad Request / Invalid Input"""
+    status_code = status.HTTP_400_BAD_REQUEST
+    error_title = "Bad Request"
+
 class InternalError(APIException):
     """Internal Server Error"""
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
