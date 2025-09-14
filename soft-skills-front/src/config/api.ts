@@ -34,4 +34,8 @@ export const api = {
     chat: (threadId?: string) =>
       `${CHATBOT_BASE_URL}/chat${threadId ? `?thread_id=${threadId}` : ""}`,
   },
+  pomodoroPreferences: {
+    get: `${BASE_URL}/users/me/pomodoro-preferences`,
+    createOrUpdate: `${BASE_URL}/users/me/pomodoro-preferences`,
+  },
 }

@@ -1,7 +1,7 @@
 import { Priority, Status, TaskType } from "../common.enums"
 
 export interface Task {
-  id: string
+  taskId: string
   title: string
   description: string
   taskType: TaskType
@@ -9,23 +9,25 @@ export interface Task {
   priority: Priority
   estimatedTime: number | null 
   actualTime: number | null 
-  dueDate: Date | null
-  orderIndex: number
   isOptional: boolean
-  startedAt: Date | null
-  completedAt: Date | null
+  dueDate: string | null
+  createdAt: string | null
+  updatedAt: string | null
+  startedAt: string | null
+  completedAt: string | null
 }
 
 export interface Objective {
-  id: string
+  objectiveId: string
   title: string
   description: string
   status: Status
   priority: Priority
-  dueDate: Date | null
-  orderIndex: number
-  startedAt: Date | null
-  completedAt: Date | null
+  dueDate: string | null
+  createdAt: string | null
+  updatedAt: string | null
+  startedAt: string | null
+  completedAt: string | null
   totalTasks: number
   completedTasks: number
 }

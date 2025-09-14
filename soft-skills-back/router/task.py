@@ -22,11 +22,11 @@ task_service = TaskService()
 )
 def create_task(
     task: TaskCreate,
-    _: TokenData = Depends(decode_jwt_token),
+    token_data: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session)
 ):
     try:
-        created_task = task_service.create_task(task, session)
+        created_task = task_service.create_task(task, token_data.user_id, session)
         task_data = TaskRead.model_validate(created_task)
 
         return TaskResponse(

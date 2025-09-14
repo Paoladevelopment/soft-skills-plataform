@@ -11,3 +11,4 @@ class TaskType(str, Enum):
     PROBLEM_SOLVING = "problem_solving"
     EXPERIMENTING = "experimenting"
     TEACHING = "teaching"
+    OTHER = "other"

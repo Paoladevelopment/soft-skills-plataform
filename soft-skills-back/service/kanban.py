@@ -291,21 +291,17 @@ class KanbanService:
         """Handle moving task between different columns"""
         now = datetime.now(timezone.utc)
         
-        # Create a copy to force SQLAlchemy to detect changes
         tasks_order = objective.tasks_order_by_status.copy()
         
-        # Remove from source column
         from_column_tasks = tasks_order[move_request.from_column.value].copy()
         if task_id_str in from_column_tasks:
             from_column_tasks.remove(task_id_str)
         tasks_order[move_request.from_column.value] = from_column_tasks
         
-        # Add to destination column
         to_column_tasks = tasks_order[move_request.to_column.value].copy()
         to_column_tasks.insert(move_request.new_position, task_id_str)
         tasks_order[move_request.to_column.value] = to_column_tasks
         
-        # Reassign to trigger SQLAlchemy change detection
         objective.tasks_order_by_status = tasks_order
         
         task.status = move_request.to_column
