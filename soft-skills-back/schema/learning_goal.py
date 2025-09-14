@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, TypeVar
 
 from model.learning_goal import LearningGoalBase
-from pydantic import UUID4
+from pydantic import UUID4, field_serializer
 from schema.base import BaseResponse, PaginatedResponse
 from schema.objective import ObjectiveSummary
 from sqlmodel import Field, SQLModel
@@ -12,6 +12,7 @@ from utils.payloads import (LEARNING_GOAL_CREATE_EXAMPLE,
                             LEARNING_GOAL_READ_EXAMPLE,
                             LEARNING_GOAL_WITH_PROGRESS_READ_EXAMPLE,
                             LEARNING_GOAL_UPDATE_EXAMPLE)
+from utils.serializers import serialize_datetime_without_microseconds
 
 T = TypeVar("T")
 class LearningGoalCreate(LearningGoalBase):
@@ -24,6 +25,14 @@ class LearningGoalReadBase(LearningGoalBase):
   updated_at: datetime | None = Field(default=None)
   started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)
+
+  @field_serializer("started_at", "completed_at", "created_at", "updated_at", when_used="json")
+  def serialize_datetime_fields(self, v: datetime | None) -> str | None:
+      return serialize_datetime_without_microseconds(v)
+
+  model_config = {
+      "from_attributes": True
+  }
 
 class LearningGoalRead(LearningGoalReadBase):
   model_config={"json_schema_extra": {"example": LEARNING_GOAL_READ_EXAMPLE}}
