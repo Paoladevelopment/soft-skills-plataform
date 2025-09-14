@@ -62,7 +62,7 @@ def get_user_roadmaps(
 def get_public_roadmaps(
     offset: int = Query(0, ge=0, description="Number of items to skip before starting to collect the result set"),
     limit: int = Query(10, ge=10, le=50,  description="Maximum number of items to retrieve (between 10 and 50)"),
-    token_data: TokenData = Depends(decode_jwt_token),
+    _: TokenData = Depends(decode_jwt_token),
 ):
     try:
         return roadmap_service.get_public_roadmaps(offset, limit)
@@ -77,7 +77,7 @@ def get_public_roadmaps(
 )
 def get_roadmap(
     id: str,
-    token_data: TokenData = Depends(decode_jwt_token),
+    _: TokenData = Depends(decode_jwt_token),
 ):
     try:
         roadmap = roadmap_service.get_roadmap_by_id(id)
@@ -97,7 +97,7 @@ def get_roadmap(
 async def update_roadmap(
     id: str,
     update_data: RoadmapUpdate,
-    token_data: TokenData = Depends(decode_jwt_token),
+    _: TokenData = Depends(decode_jwt_token),
 ):
     try:
         success = roadmap_service.update_roadmap(id, update_data.model_dump(mode="json", exclude_none=True))
@@ -119,7 +119,7 @@ async def update_roadmap(
 )
 def delete_roadmap(
     id: str,
-    token_data: TokenData = Depends(decode_jwt_token),
+    _: TokenData = Depends(decode_jwt_token),
 ):
     try:
         roadmap_service.delete_roadmap(id)

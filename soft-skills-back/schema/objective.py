@@ -3,11 +3,12 @@ from uuid import UUID
 
 from enums.common import Priority, Status
 from model.objective import ObjectiveBase
-from pydantic import UUID4
+from pydantic import UUID4, field_serializer
 from schema.base import BaseResponse, PaginatedResponse
 from sqlmodel import Field, SQLModel
 from utils.payloads import (OBJECTIVE_CREATE_EXAMPLE, OBJECTIVE_READ_EXAMPLE,
                             OBJECTIVE_WITH_PROGRESS_READ_EXAMPLE, OBJECTIVE_UPDATE_EXAMPLE)
+from utils.serializers import serialize_datetime_without_microseconds
 
 
 class ObjectiveCreate(ObjectiveBase):
@@ -21,7 +22,14 @@ class ObjectiveRead(ObjectiveBase):
     started_at: datetime | None = Field(default=None)
     completed_at: datetime | None = Field(default=None)
 
-    model_config={"json_schema_extra": {"example": OBJECTIVE_READ_EXAMPLE}}
+    @field_serializer("started_at", "completed_at", "created_at", "updated_at", "due_date", when_used="json")
+    def serialize_datetime_fields(self, v: datetime | None) -> str | None:
+        return serialize_datetime_without_microseconds(v)
+
+    model_config={
+        "json_schema_extra": {"example": OBJECTIVE_READ_EXAMPLE},
+        "from_attributes": True
+    }
 
 class ObjectiveReadWithProgress(ObjectiveRead):
     total_tasks: int
@@ -36,15 +44,28 @@ class ObjectiveSummary(SQLModel):
     priority: Priority
     due_date: datetime | None
 
+    @field_serializer("due_date", when_used="json")
+    def serialize_due_date(self, v: datetime | None) -> str | None:
+        return serialize_datetime_without_microseconds(v)
+
+    model_config = {
+        "from_attributes": True
+    }
+
 class ObjectiveUpdate(SQLModel):
     title: str | None = Field(default=None, description="Updated title of the objective")
-    description: str | None = Field(default=None, description="Updated detailed explanation of the objective’s purpose")
+    description: str | None = Field(default=None, description="Updated detailed explanation of the objective's purpose")
     priority: Priority | None = Field(default=None, description="Updated priority level of the objective (low, medium, high)")
     due_date: datetime | None = Field(default=None, description="Updated deadline for completing the objective (ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ)")
 
+    @field_serializer("due_date", when_used="json")
+    def serialize_due_date(self, v: datetime | None) -> str | None:
+        return serialize_datetime_without_microseconds(v)
+
     model_config={
       "json_schema_extra": {"example": OBJECTIVE_UPDATE_EXAMPLE},
-      "extra": "forbid"
+      "extra": "forbid",
+      "from_attributes": True
     }
 
 
