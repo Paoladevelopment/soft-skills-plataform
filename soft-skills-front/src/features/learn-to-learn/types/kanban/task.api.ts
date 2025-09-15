@@ -1,4 +1,5 @@
 import { Priority } from '../common.enums'
+import { TaskType } from '../common.enums'
 
 export enum TaskStatus {
   NOT_STARTED = 'notStarted',
@@ -9,19 +10,14 @@ export enum TaskStatus {
 
 
 export interface TaskItem {
-  objectiveId: string
+  taskId: string
   title: string
   description: string
-  taskType: string
+  taskType: TaskType
   status: TaskStatus
   priority: Priority
-  estimatedTime: number
-  actualTime: number | null
   dueDate: string | null
   isOptional: boolean
-  taskId: string
-  startedAt: string | null
-  completedAt: string | null
 }
 
 export interface TaskColumnResponse {

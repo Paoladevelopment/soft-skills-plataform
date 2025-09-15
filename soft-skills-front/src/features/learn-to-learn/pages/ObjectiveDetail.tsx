@@ -1,4 +1,4 @@
-import { Box, Typography, Breadcrumbs, Link, CircularProgress, Stack, Chip, Divider } from '@mui/material'
+import { Box, Typography, Breadcrumbs, Link, CircularProgress, Stack, Chip, Divider, Button } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLearningGoalStore } from '../store/useLearningGoalStore'
 import { useObjective, useUpdateObjective } from '../hooks/useObjectives'
@@ -8,13 +8,18 @@ import InlineEditableSelect from '../components/ui/InlineEditableSelect'
 import InlineEditableDate from '../components/ui/InlineEditableDate'
 import DateDisplay from '../components/ui/DateDisplay'
 import Board from '../components/kanban/Board'
-import { Notes, AccessTime, Flag, CalendarToday } from '@mui/icons-material'
+import AddTaskModal from '../components/objectives/AddTaskModal'
+import { Notes, AccessTime, Flag, CalendarToday, Add as AddIcon } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { getObjectiveStatusInfo, getObjectiveStatusChipColor, getPriorityColor } from '../utils/objectiveUtils'
 import { useDebounce } from '../hooks/useDebounce'
 import { Priority } from '../types/common.enums'
 import { formatDateToDateTime, normalizeDate } from '../utils/dateUtils'
 import { useKanbanTasks } from '../hooks/useKanbanTasks'
+import { useCreateTask } from '../hooks/useTasks'
+import { CreateTaskPayload } from '../types/planner/task.api'
+import { usePomodoroPreferencesStore } from '../store/usePomodoroPreferencesStore'
+import { AddTaskFields } from '../components/objectives/AddTaskModal'
 
 const ObjectiveDetail = () => {
   const navigate = useNavigate()
@@ -23,6 +28,8 @@ const ObjectiveDetail = () => {
   
   const { data: objective, isLoading, error } = useObjective(objectiveId || null)
   const { mutate: updateObjective, isPending: isSaving } = useUpdateObjective()
+  const { mutateAsync: createTask } = useCreateTask()
+  const { isConfigured, effectivePomodoroLengthMinutes } = usePomodoroPreferencesStore()
 
   const [objectiveData, setObjectiveData] = useState({
     title: '',
@@ -38,37 +45,16 @@ const ObjectiveDetail = () => {
     description: false
   })
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const debouncedTitle = useDebounce<string>(objectiveData.title)
   const debouncedDescription = useDebounce(objectiveData.description)
 
-  useEffect(() => {
-    if (objective && !objectiveData.title && !objectiveData.description) {
-      setObjectiveData({
-        title: objective.title,
-        description: objective.description,
-        priority: objective.priority,
-        dueDate: normalizeDate(objective.dueDate)
-      })
-    }
-  }, [objective, objectiveData.title, objectiveData.description])
-
-  useEffect(() => {
-    if (hasUserInteracted.title && objectiveId && debouncedTitle !== objective?.title) {
-      updateObjective({
-        id: objectiveId,
-        payload: { title: debouncedTitle }
-      })
-    }
-  }, [debouncedTitle, hasUserInteracted.title, objectiveId, objective?.title, updateObjective])
-
-  useEffect(() => {
-    if (hasUserInteracted.description && objectiveId && debouncedDescription !== objective?.description) {
-      updateObjective({
-        id: objectiveId,
-        payload: { description: debouncedDescription }
-      })
-    }
-  }, [debouncedDescription, hasUserInteracted.description, objectiveId, objective?.description, updateObjective])
+  const priorityOptions = [
+    { value: Priority.Low, label: 'low' },
+    { value: Priority.Medium, label: 'medium' },
+    { value: Priority.High, label: 'high' }
+  ]
 
   const saveField = (field: 'title' | 'description', value: string) => {
     setObjectiveData(prev => ({
@@ -119,11 +105,64 @@ const ObjectiveDetail = () => {
     }
   }
 
-  const priorityOptions = [
-    { value: Priority.Low, label: 'low' },
-    { value: Priority.Medium, label: 'medium' },
-    { value: Priority.High, label: 'high' }
-  ]
+  const handleOpenModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleCreateTask = async (taskData: AddTaskFields) => {
+    const pomodoroLengthSeconds = isConfigured ? effectivePomodoroLengthMinutes * 60 : 60 * 60
+    
+    const taskPayload: CreateTaskPayload = {
+      title: taskData.title,
+      description: taskData.description,
+      task_type: taskData.task_type,
+      priority: taskData.priority,
+      estimated_seconds: taskData.estimated_pomodoros * pomodoroLengthSeconds,
+      pomodoro_length_seconds_snapshot: pomodoroLengthSeconds,
+      objective_id: objectiveId || '',
+      is_optional: taskData.is_optional || false
+    }
+    
+    if (taskData.due_date && taskData.due_date.trim() !== '') {
+      taskPayload.due_date = formatDateToDateTime(taskData.due_date)
+    }
+    
+    await createTask(taskPayload)
+    setIsModalOpen(false)
+  }
+
+  useEffect(() => {
+    if (objective && !objectiveData.title && !objectiveData.description) {
+      setObjectiveData({
+        title: objective.title,
+        description: objective.description,
+        priority: objective.priority,
+        dueDate: normalizeDate(objective.dueDate)
+      })
+    }
+  }, [objective, objectiveData.title, objectiveData.description])
+
+  useEffect(() => {
+    if (hasUserInteracted.title && objectiveId && debouncedTitle !== objective?.title) {
+      updateObjective({
+        id: objectiveId,
+        payload: { title: debouncedTitle }
+      })
+    }
+  }, [debouncedTitle, hasUserInteracted.title, objectiveId, objective?.title, updateObjective])
+
+  useEffect(() => {
+    if (hasUserInteracted.description && objectiveId && debouncedDescription !== objective?.description) {
+      updateObjective({
+        id: objectiveId,
+        payload: { description: debouncedDescription }
+      })
+    }
+  }, [debouncedDescription, hasUserInteracted.description, objectiveId, objective?.description, updateObjective])
 
   if (isLoading) {
     return (
@@ -299,23 +338,47 @@ const ObjectiveDetail = () => {
         <Divider sx={{ my: 3 }} />
 
         <Box sx={{ mb: 3 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              color: 'text.primary',
-              mb: 1
+          <Stack 
+            direction="row" 
+            justifyContent="space-between" 
+            alignItems="center" 
+            sx={{ 
+              mb: 2 
             }}
           >
-            Task Breakdown
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mb: 2 }}
-          >
-            Break down this objective into manageable sub-tasks and track their progress
-          </Typography>
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  mb: 1
+                }}
+              >
+                Task Breakdown
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+              >
+                Break down this objective into manageable sub-tasks and track their progress
+              </Typography>
+            </Box>
+            
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<AddIcon />}
+              onClick={handleOpenModal}
+              sx={{
+                textTransform: 'none',
+                borderRadius: 2,
+                fontWeight: 500,
+              }}
+            >
+              Add Task
+            </Button>
+          </Stack>
           
           {isKanbanLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -334,6 +397,12 @@ const ObjectiveDetail = () => {
           )}
         </Box>
       </Box>
+
+      <AddTaskModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleCreateTask}
+      />
     </Box>
   )
 }

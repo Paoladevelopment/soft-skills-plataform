@@ -7,7 +7,7 @@ from enums.common import Priority, Status
 from enums.task import TaskType
 from enums.user import UserRoles
 from model.learning_goal import LearningGoal
-from model.objective import Objective
+from model.objective import Objective, default_status_order
 from model.task import Task
 from model.user import User
 from passlib.context import CryptContext
@@ -204,8 +204,9 @@ def create_seed_data(session: Session):
                     task_type=TaskType.READING if task_id % 3 == 0 else TaskType.WRITING,
                     status=task_status,
                     priority=Priority.MEDIUM if task_id % 2 == 0 else Priority.HIGH,
-                    estimated_time=60 * (1 + task_id * 0.5),  # 60, 90, 120 minutes (1, 1.5, 2 pomodoros)
-                    actual_time=actual_time,
+                    estimated_seconds=60 * 60 * (1 + task_id * 0.5),  # 3600, 5400, 7200 seconds (1, 1.5, 2 pomodoros)
+                    actual_seconds=int(actual_time * 60) if actual_time else None,  # Convert minutes to seconds
+                    pomodoro_length_seconds_snapshot=60 * 60,  # 60 minutes in seconds (default)
                     started_at=started_at,
                     completed_at=completed_at,
                     due_date=obj.due_date - timedelta(days=task_id * 5),
@@ -220,12 +221,7 @@ def create_seed_data(session: Session):
     for obj in objectives:
         sorted_tasks = sorted(task_map[obj.objective_id], key=lambda x: x[0])
         
-        obj.tasks_order_by_status = {
-            "not_started": [],
-            "in_progress": [],
-            "completed": [],
-            "paused": [],
-        }
+        obj.tasks_order_by_status = default_status_order()
         
         has_active_tasks = False
         has_completed_tasks = False

@@ -8,7 +8,11 @@ import {
   Stack,
   IconButton,
   Typography,
-  MenuItem
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { SubmitHandler, useForm, Controller } from "react-hook-form"
@@ -20,7 +24,7 @@ import { Priority } from '../../types/common.enums'
 
 const addObjectiveSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
+  description: z.string().min(1, "Description is required"),
   priority: z.nativeEnum(Priority, {
     required_error: "Priority is required",
   }),
@@ -73,7 +77,13 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
   }, [open, defaultValues, reset])
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog 
+        open={open} 
+        onClose={onClose} 
+        fullWidth 
+        maxWidth="sm"
+        disableRestoreFocus
+    >
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography fontWeight="bold">Create objective</Typography>
@@ -86,6 +96,7 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField
+            id="objective-title"
             label="Title"
             placeholder="Objective title"
             fullWidth
@@ -96,6 +107,7 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
           />
 
           <TextField
+            id="objective-description"
             label="Description"
             placeholder="Add a short description"
             fullWidth
@@ -110,23 +122,29 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
             name="priority"
             control={control}
             render={({ field }) => (
-              <TextField
-                label="Priority"
-                select
-                fullWidth
-                value={field.value || Priority.Medium}
-                onChange={field.onChange}
-                error={!!errors.priority}
-                helperText={errors.priority?.message}
-              >
-                <MenuItem value={Priority.Low}>Low</MenuItem>
-                <MenuItem value={Priority.Medium}>Medium</MenuItem>
-                <MenuItem value={Priority.High}>High</MenuItem>
-              </TextField>
+              <FormControl fullWidth error={!!errors.priority}>
+                <InputLabel id="objective-priority-label">Priority</InputLabel>
+                <Select
+                  labelId="objective-priority-label"
+                  id="objective-priority"
+                  label="Priority"
+                  value={field.value ?? Priority.Medium}
+                  onChange={field.onChange}
+                >
+                  <MenuItem value={Priority.Low}>Low</MenuItem>
+                  <MenuItem value={Priority.Medium}>Medium</MenuItem>
+                  <MenuItem value={Priority.High}>High</MenuItem>
+                </Select>
+
+                <FormHelperText>
+                  {errors.priority?.message}
+                </FormHelperText>
+              </FormControl>
             )}
           />
 
           <TextField
+            id="objective-due-date"
             label="Due date *"
             type="date"
             fullWidth

@@ -47,7 +47,6 @@ def build_task_document(model: Task) -> Dict[str, Any]:
         "estimated_seconds": model.estimated_seconds,
         "actual_seconds": model.actual_seconds,
         "pomodoro_length_seconds_snapshot": model.pomodoro_length_seconds_snapshot,
-        "estimated_pomodoros_snapshot": model.estimated_pomodoros_snapshot,
         "due_date": model.due_date,
         "is_optional": model.is_optional,
         "created_at": model.created_at,

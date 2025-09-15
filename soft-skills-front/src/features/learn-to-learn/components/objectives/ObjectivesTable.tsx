@@ -16,7 +16,7 @@ import {
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Objective } from '../../types/planner/objectives.api'
+import { Objective } from '../../types/planner/planner.models'
 import { formatDateString } from '../../../../utils/formatDate'
 import { getPriorityColor, getStatusChipColor, formatStatus } from '../../utils/objectiveUtils'
 
@@ -312,6 +312,7 @@ const ObjectivesTable = ({
         </Table>
       </TableContainer>
       <TablePagination
+        id="objectives-pagination"
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={total}

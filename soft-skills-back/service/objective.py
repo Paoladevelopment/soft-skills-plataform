@@ -5,13 +5,14 @@ from uuid import UUID
 from enums.common import Status
 from fastapi import Depends
 from model.learning_goal import LearningGoal
-from model.objective import Objective
+from model.objective import Objective, default_status_order
 from model.task import Task
 from mongo_service.objective import ObjectiveMongoService
 from schema.objective import ObjectiveCreate, ObjectiveUpdate, ObjectiveReadWithProgress
 from schema.kanban import KanbanMoveRequest
 from service.learning_goal import LearningGoalService
 from service.query import QueryService
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.sql import case
 from sqlmodel import Session, func, select
 from utils.db import get_session
@@ -274,12 +275,7 @@ class ObjectiveService:
             objective = self.get_objective(objective_id, session)
             
             if objective.tasks_order_by_status is None:
-                objective.tasks_order_by_status = {
-                    "not_started": [],
-                    "in_progress": [],
-                    "completed": [],
-                    "paused": [],
-                }
+                objective.tasks_order_by_status = default_status_order()
             
             task_id_str = str(task_id)
             status_key = status.value.lower()
@@ -288,16 +284,17 @@ class ObjectiveService:
                 if task_id_str in status_list:
                     return
             
-            if status_key in objective.tasks_order_by_status:
-                objective.tasks_order_by_status[status_key].append(task_id_str)
-                objective.updated_at = datetime.now(timezone.utc)
-                
-                mongo_data = build_objective_document(objective)
-                self.mongo_service.update_objective(
-                    objective.learning_goal_id,
-                    objective_id,
-                    mongo_data
-                )
+            objective.tasks_order_by_status.setdefault(status_key, MutableList())
+            
+            objective.tasks_order_by_status[status_key].append(task_id_str)
+            objective.updated_at = datetime.now(timezone.utc)
+            
+            mongo_data = build_objective_document(objective)
+            self.mongo_service.update_objective(
+                objective.learning_goal_id,
+                objective_id,
+                mongo_data
+            )
                 
         except APIException as api_error:
             raise api_error

@@ -51,9 +51,12 @@ class TaskRead(TaskBase):
 class TaskSummary(SQLModel):
     task_id: UUID4
     title: str
+    description: str
+    task_type: TaskType
     status: Status
     priority: Priority
     due_date: datetime | None
+    is_optional: bool
 
     @field_serializer("due_date", when_used="json")
     def serialize_due_date(self, v: datetime | None) -> str | None:

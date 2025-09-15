@@ -82,6 +82,7 @@ const DataFilter = ({
       }}
     >
       <TextField
+        id="objectives-search"
         placeholder={searchPlaceholder}
         value={searchValue}
         onChange={(e) => onSearchChange(e.target.value)}
@@ -154,6 +155,7 @@ const DataFilter = ({
                   {option.values.map((item) => (
                     <CustomCheckbox
                       key={`${option.key}-${item.value}`}
+                      id={`filter-${option.key}-${item.value}`}
                       checked={isValueSelected(option.key, item.value)}
                       onChange={(e) => handleCheckboxChange(option.key, item.value, e.target.checked)}
                       label={item.label}
@@ -164,6 +166,8 @@ const DataFilter = ({
 
               {option.type === 'select' && (
                 <CustomSelect
+                  id={`filter-${option.key}`}
+                  label={option.label}
                   value={getSelectedValue(option.key)}
                   onChange={(e) => handleSelectChange(option.key, e.target.value)}
                   options={option.values}

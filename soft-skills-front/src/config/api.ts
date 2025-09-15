@@ -38,4 +38,10 @@ export const api = {
     get: `${BASE_URL}/users/me/pomodoro-preferences`,
     createOrUpdate: `${BASE_URL}/users/me/pomodoro-preferences`,
   },
+  tasks: {
+    create: `${BASE_URL}/tasks`,
+    byId: (id: string) => `${BASE_URL}/tasks/${id}`,
+    update: (id: string) => `${BASE_URL}/tasks/${id}`,
+    delete: (id: string) => `${BASE_URL}/tasks/${id}`,
+  },
 }

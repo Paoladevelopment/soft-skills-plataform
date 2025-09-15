@@ -10,10 +10,10 @@ export interface FetchObjectivesResponse {
 
 export interface CreateObjectivePayload {
   title: string
-  description: string
+  description?: string
   priority: Priority
   due_date?: string
-  learning_goal_id: string
+  learning_goal_id?: string
 }
 
 export interface UpdateObjectivePayload {

@@ -7,7 +7,8 @@ export interface CreateTaskPayload {
   description: string
   task_type: TaskType
   priority: Priority
-  estimated_time: number
+  estimated_seconds: number
+  pomodoro_length_seconds_snapshot: number
   due_date?: string
   is_optional?: boolean
   objective_id: string
@@ -20,25 +21,16 @@ export interface UpdateTaskPayload {
   priority?: Priority
   due_date?: string
   is_optional?: boolean
-  estimated_time?: number
+  estimated_seconds?: number
+  pomodoro_length_seconds_snapshot?: number
 }
 
-export interface CreateTaskResponse {
+export interface TaskResponse {
   message: string
   data: Task
 }
 
-export interface UpdateTaskResponse {
-  message: string
-  data: Task
-}
-
-export interface DeleteObjectiveResponse {
+export interface DeleteTaskResponse {
   message: string
   task_id: string
-}
-
-export interface FetchTaskResponse {
-  message: string
-  data: Task
 }

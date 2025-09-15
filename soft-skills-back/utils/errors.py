@@ -1,4 +1,5 @@
 import logging
+from uuid import UUID
 
 from fastapi import HTTPException, status
 
@@ -77,3 +78,22 @@ def raise_unauthorized_exception():
         },
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+def validate_uuid(uuid_string: str, field_name: str = "ID") -> UUID:
+    """
+    Validate and convert a string to UUID.
+    
+    Args:
+        uuid_string: The string to validate and convert
+        field_name: The name of the field for error messages (e.g., "task ID", "objective ID")
+    
+    Returns:
+        UUID: The validated UUID object
+        
+    Raises:
+        BadRequest: If the UUID string is malformed
+    """
+    try:
+        return UUID(uuid_string)
+    except ValueError:
+        raise BadRequest(f"Invalid {field_name} format: {uuid_string}")

@@ -1,4 +1,4 @@
-import { FormControl, Select, MenuItem, SelectChangeEvent } from '@mui/material'
+import { FormControl, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material'
 
 interface SelectOption {
   value: string
@@ -10,11 +10,20 @@ interface CustomSelectProps {
   onChange: (event: SelectChangeEvent<string>) => void
   options: SelectOption[]
   placeholder: string
+  id?: string
+  label?: string
 }
 
-const CustomSelect = ({ value, onChange, options, placeholder }: CustomSelectProps) => (
+const CustomSelect = ({ value, onChange, options, placeholder, id, label }: CustomSelectProps) => (
   <FormControl fullWidth size="small">
+    {label && (
+      <InputLabel id={`${id}-label`} sx={{ display: 'none' }}>
+        {label}
+      </InputLabel>
+    )}
     <Select
+      id={id}
+      labelId={label ? `${id}-label` : undefined}
       value={value}
       onChange={onChange}
       displayEmpty

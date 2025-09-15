@@ -31,6 +31,10 @@ interface BoardProps {
 const Board = ({ board }: BoardProps) => {
   const [columnsData, setColumnsData] = useState<ObjectiveBoard>(board)
 
+  useEffect(() => {
+    setColumnsData(board)
+  }, [board])
+
   const reorderCard = useCallback(
     (
       { columnId, startIndex, finishIndex }: 

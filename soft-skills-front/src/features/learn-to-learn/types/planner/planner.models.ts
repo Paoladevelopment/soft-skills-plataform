@@ -7,8 +7,13 @@ export interface Task {
   taskType: TaskType
   status: Status
   priority: Priority
-  estimatedTime: number | null 
-  actualTime: number | null 
+  estimatedSeconds: number | null 
+  actualSeconds: number | null 
+  estimatedMinutes: number | null 
+  actualMinutes: number | null 
+  estimatedPomodoros: number | null 
+  actualPomodoros: number | null 
+  pomodoroLengthSecondsSnapshot: number | null 
   isOptional: boolean
   dueDate: string | null
   createdAt: string | null
