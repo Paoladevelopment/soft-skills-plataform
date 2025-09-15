@@ -5,12 +5,14 @@ interface CustomCheckboxProps {
   checked: boolean
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   label: string
+  id?: string
 }
 
-const CustomCheckbox = ({ checked, onChange, label }: CustomCheckboxProps) => (
+const CustomCheckbox = ({ checked, onChange, label, id }: CustomCheckboxProps) => (
   <FormControlLabel
     control={
       <Checkbox
+        id={id}
         checked={checked}
         onChange={onChange}
         size="small"

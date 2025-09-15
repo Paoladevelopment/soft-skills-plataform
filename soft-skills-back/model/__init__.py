@@ -3,3 +3,4 @@ from .module import Module
 from .objective import Objective
 from .task import Task
 from .user import User
+from .pomodoro_preferences import PomodoroPreferences

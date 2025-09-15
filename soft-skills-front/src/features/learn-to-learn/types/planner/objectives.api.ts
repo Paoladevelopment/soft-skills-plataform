@@ -1,20 +1,5 @@
 import { Priority, Status } from "../common.enums"
-
-export interface Objective {
-  objectiveId: string
-  title: string
-  description: string
-  status: Status
-  priority: Priority
-  dueDate: string | null
-  createdAt: string | null
-  updatedAt: string | null
-  startedAt: string | null
-  completedAt: string | null
-  totalTasks: number
-  completedTasks: number
-}
-
+import { Objective } from "./planner.models"
 export interface FetchObjectivesResponse {
   message: string
   data: Objective[]
@@ -29,7 +14,6 @@ export interface CreateObjectivePayload {
   priority: Priority
   due_date?: string
   learning_goal_id?: string
-  order_index?: number
 }
 
 export interface UpdateObjectivePayload {

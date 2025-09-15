@@ -1,31 +1,38 @@
 import { Priority, Status, TaskType } from "../common.enums"
 
 export interface Task {
-  id: string
+  taskId: string
   title: string
   description: string
   taskType: TaskType
   status: Status
   priority: Priority
-  estimatedTime: number | null 
-  actualTime: number | null 
-  dueDate: Date | null
-  orderIndex: number
+  estimatedSeconds: number | null 
+  actualSeconds: number | null 
+  estimatedMinutes: number | null 
+  actualMinutes: number | null 
+  estimatedPomodoros: number | null 
+  actualPomodoros: number | null 
+  pomodoroLengthSecondsSnapshot: number | null 
   isOptional: boolean
-  startedAt: Date | null
-  completedAt: Date | null
+  dueDate: string | null
+  createdAt: string | null
+  updatedAt: string | null
+  startedAt: string | null
+  completedAt: string | null
 }
 
 export interface Objective {
-  id: string
+  objectiveId: string
   title: string
   description: string
   status: Status
   priority: Priority
-  dueDate: Date | null
-  orderIndex: number
-  startedAt: Date | null
-  completedAt: Date | null
+  dueDate: string | null
+  createdAt: string | null
+  updatedAt: string | null
+  startedAt: string | null
+  completedAt: string | null
   totalTasks: number
   completedTasks: number
 }

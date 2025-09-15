@@ -6,7 +6,17 @@ from uuid import UUID
 from enums.common import Priority, Status
 from sqlalchemy import Text
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlmodel import TIMESTAMP, Field, Relationship, SQLModel
+
+
+def default_status_order():
+    return {
+        "not_started": MutableList(),
+        "in_progress": MutableList(),
+        "completed": MutableList(),
+        "paused": MutableList(),
+    }
 
 
 class ObjectiveBase(SQLModel):
@@ -33,14 +43,9 @@ class Objective(ObjectiveBase, table=True):
     },
     sa_type=TIMESTAMP(timezone=True),
   )
-  tasks_order_by_status: Dict[str, List[str]] = Field(
-    default_factory=lambda: {
-      "not_started": [],
-      "in_progress": [],
-      "completed": [],
-      "paused": [],
-    },
-    sa_type=JSONB
+  tasks_order_by_status: Optional[dict] = Field(
+    default_factory=default_status_order,
+    sa_type=MutableDict.as_mutable(JSONB),
   )
   started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)

@@ -5,7 +5,7 @@ from sqlmodel import Field, SQLModel
 
 from enums.common import Status
 from schema.base import BaseResponse
-from schema.task import TaskRead
+from schema.task import TaskSummary
 
 
 class KanbanColumnResponse(BaseModel):
@@ -15,7 +15,7 @@ class KanbanColumnResponse(BaseModel):
     total: int
     total_pages: int
     has_next: bool
-    items: List[TaskRead]
+    items: List[TaskSummary]
 
 
 class KanbanBoardResponse(BaseModel):
@@ -31,7 +31,7 @@ class KanbanColumnPaginatedResponse(BaseModel):
     total: int
     total_pages: int
     has_next: bool
-    items: List[TaskRead]
+    items: List[TaskSummary]
 
 
 class KanbanMoveRequest(SQLModel):

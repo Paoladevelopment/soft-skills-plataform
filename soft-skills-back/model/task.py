@@ -16,10 +16,41 @@ class TaskBase(SQLModel):
   task_type: TaskType
   status: Status = Field(default=Status.NOT_STARTED)
   priority: Priority
-  estimated_time: float
-  actual_time: float | None = Field(default=None)
+
+  estimated_seconds: int = Field(default=0)
+  actual_seconds: int | None = Field(default=None)
+
+  # Immutable snapshot from user's prefs at estimate time
+  pomodoro_length_seconds_snapshot: int = Field(default=60*60, ge=60)
+
   due_date: datetime | None = Field(default=None)
   is_optional: bool = Field(default=False)
+
+  @property
+  def estimated_minutes(self) -> float:
+    return self.estimated_seconds / 60
+  
+  @property
+  def actual_minutes(self) -> float | None:
+    return None if self.actual_seconds is None else self.actual_seconds / 60
+  
+  @property
+  def estimated_pomodoros(self) -> float:
+    if self.estimated_seconds <= 0:
+      return 0
+    if self.pomodoro_length_seconds_snapshot <= 0:
+      return 0
+      
+    return self.estimated_seconds / self.pomodoro_length_seconds_snapshot
+  
+  @property
+  def actual_pomodoros(self) -> float | None:
+    if self.actual_seconds is None:
+      return None
+    if self.pomodoro_length_seconds_snapshot <= 0:
+      return None
+
+    return self.actual_seconds / self.pomodoro_length_seconds_snapshot
 
 
 class Task(TaskBase, table=True):

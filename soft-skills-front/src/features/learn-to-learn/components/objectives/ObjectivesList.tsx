@@ -14,7 +14,8 @@ import DataFilter from '../ui/DataFilter'
 import ObjectivesTable from './ObjectivesTable'
 import AddObjectiveModal from './AddObjectiveModal'
 import ConfirmDeleteModal from '../ConfirmDeleteModal'
-import { CreateObjectivePayload, Objective } from '../../types/planner/objectives.api'
+import { CreateObjectivePayload } from '../../types/planner/objectives.api'
+import { Objective } from '../../types/planner/planner.models'
 import { FilterOption, TabValue } from '../../types/ui/filter.types'
 import { Priority, Status } from '../../types/common.enums'
 import { formatDateToDateTime } from '../../utils/dateUtils'
@@ -64,7 +65,6 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
       description: objective.description,
       priority: objective.priority,
       learning_goal_id: learningGoalId,
-      order_index: 0
     }
 
     if (objective.due_date && objective.due_date.trim() !== '') {

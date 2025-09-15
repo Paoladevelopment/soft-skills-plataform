@@ -2,9 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getObjectivesByLearningGoal } from '../api/LearningGoals'
 import { createObjective, deleteObjective, getObjectiveById, updateObjective } from '../api/Objectives'
 import { useDebounce } from './useDebounce'
-import { CreateObjectivePayload, Objective, FetchObjectivesResponse, UpdateObjectivePayload } from '../types/planner/objectives.api'
+import { CreateObjectivePayload, FetchObjectivesResponse, UpdateObjectivePayload } from '../types/planner/objectives.api'
+import { Objective } from '../types/planner/planner.models'
 import { Status } from '../types/common.enums'
 import { useToastStore } from '../../../store/useToastStore'
+import { useLearningGoalStore } from '../store/useLearningGoalStore'
+
+const useSelectedGoalId = () => useLearningGoalStore(s => s.selectedGoalId)
 
 export const useObjectives = (
   learningGoalId: string | null,
@@ -47,6 +51,7 @@ export const useObjective = (objectiveId: string | null) => {
 export const useCreateObjective = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const selectedGoalId = useSelectedGoalId()
 
   return useMutation({
     mutationFn: (payload: CreateObjectivePayload) => 
@@ -83,7 +88,7 @@ export const useCreateObjective = () => {
 
           return {
             ...oldData,
-            data: [optimisticObjective, ...oldData.data],
+            data: [...oldData.data, optimisticObjective],
             total: oldData.total + 1,
           }
         }
@@ -106,6 +111,16 @@ export const useCreateObjective = () => {
       queryClient.invalidateQueries({ 
         queryKey: ['objectives', 'list'] 
       })
+
+      queryClient.invalidateQueries({ 
+        queryKey: ['learningGoals', 'list'] 
+      })
+      
+      if (selectedGoalId) {
+        queryClient.invalidateQueries({ 
+          queryKey: ['learningGoals', 'detail', selectedGoalId] 
+        })
+      }
       
       showToast('Objective created successfully!', 'success')
     },
@@ -173,6 +188,7 @@ export const useUpdateObjective = () => {
 export const useDeleteObjective = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const selectedGoalId = useSelectedGoalId()
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -213,6 +229,16 @@ export const useDeleteObjective = () => {
       showToast(error.message || 'Error deleting objective', 'error')
     },
     onSuccess: ({ message }) => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['learningGoals', 'list'] 
+      })
+      
+      if (selectedGoalId) {
+        queryClient.invalidateQueries({ 
+          queryKey: ['learningGoals', 'detail', selectedGoalId] 
+        })
+      }
+      
       showToast(message || 'Objective deleted successfully', 'success')
     }
   })

@@ -11,6 +11,7 @@ from mongo_service.task import TaskMongoService
 from schema.task import TaskCreate, TaskUpdate
 from service.learning_goal import LearningGoalService
 from service.objective import ObjectiveService
+from service.pomodoro_preferences import PomodoroPreferencesService
 from service.query import QueryService
 from sqlmodel import Session, select
 from utils.db import get_session
@@ -23,6 +24,7 @@ class TaskService:
         self.query_service = QueryService()
         self.objective_service = ObjectiveService()
         self.learning_goal_service = LearningGoalService()
+        self.prefs_service = PomodoroPreferencesService()
         self.mongo_service = TaskMongoService()
     
     def verify_user_ownership(self, objective_id: UUID, user_id: UUID, session: Session):
@@ -45,11 +47,27 @@ class TaskService:
             handle_db_error(err, "verify_user_ownership", error_type="query")
   
         
-    def create_task(self, task: TaskCreate, session: Session) -> Task:
+    def create_task(self, task: TaskCreate, user_id: UUID, session: Session) -> Task:
         try:
             task_dict = task.model_dump()
-
+            
+            task_dict.pop('pomodoro_length_seconds_snapshot', None)
+            task_dict.pop('estimated_pomodoros_snapshot', None)
+            
+            snap_secs = 3600
+            prefs = self.prefs_service.get_user_preferences(user_id, session)
+            if prefs:
+                snap_secs = prefs.pomodoro_length_minutes * 60
+            
             new_task = Task(**task_dict)
+            new_task.pomodoro_length_seconds_snapshot = snap_secs
+
+            if new_task.estimated_seconds is None:
+                new_task.estimated_seconds = 0
+            
+            if new_task.estimated_seconds < 0:
+                new_task.estimated_seconds = 0
+
             new_task.created_at = datetime.now(timezone.utc)
             new_task.updated_at = new_task.created_at
 
@@ -127,6 +145,12 @@ class TaskService:
             self.verify_user_ownership(existing_task.objective_id, user_id, session)
 
             task_data = task.model_dump(exclude_unset=True)
+            
+            task_data.pop('pomodoro_length_seconds_snapshot', None)
+            task_data.pop('estimated_pomodoros_snapshot', None)
+            task_data.pop('actual_seconds', None) 
+            task_data.pop('status', None) 
+            
             for key, value in task_data.items():
                 setattr(existing_task, key, value)
 

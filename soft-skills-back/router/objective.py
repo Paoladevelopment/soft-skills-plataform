@@ -14,7 +14,7 @@ from service.kanban import KanbanService
 from service.task import TaskService
 from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import APIException, BadRequest, raise_http_exception
+from utils.errors import APIException, BadRequest, raise_http_exception, validate_uuid
 
 router = APIRouter()
 
@@ -56,7 +56,8 @@ def get_objective(
     session: Session = Depends(get_session)
 ):
     try:
-        objective = objective_service.get_objective(UUID(id), session)
+        objective_uuid = validate_uuid(id, "objective ID")
+        objective = objective_service.get_objective(objective_uuid, session)
         objective_data = ObjectiveRead.model_validate(objective)
 
         return ObjectiveResponse(
@@ -109,7 +110,8 @@ def update_objective(
     session: Session = Depends(get_session),
 ):
     try:
-        updated_objective = objective_service.update_objective(UUID(id), objective, token_data.user_id, session)
+        objective_uuid = validate_uuid(id, "objective ID")
+        updated_objective = objective_service.update_objective(objective_uuid, objective, token_data.user_id, session)
         objective_data = ObjectiveRead.model_validate(updated_objective)
 
         return ObjectiveResponse(
@@ -130,7 +132,8 @@ def delete_objective(
     session: Session = Depends(get_session),
 ):
     try:
-        return objective_service.delete_objective(UUID(id), token_data.user_id, session)
+        objective_uuid = validate_uuid(id, "objective ID")
+        return objective_service.delete_objective(objective_uuid, token_data.user_id, session)
     
     except APIException as err:
         raise_http_exception(err)
@@ -148,7 +151,8 @@ def get_kanban_board(
     session: Session = Depends(get_session),
 ):
     try:
-        kanban_data = kanban_service.get_kanban_board(UUID(id), per_page, session)
+        objective_uuid = validate_uuid(id, "objective ID")
+        kanban_data = kanban_service.get_kanban_board(objective_uuid, per_page, session)
         return KanbanBoardResponse(**kanban_data)
     
     except APIException as err:
@@ -169,7 +173,8 @@ def get_kanban_column(
     session: Session = Depends(get_session),
 ):
     try:
-        column_data = kanban_service.get_kanban_column(UUID(id), status.value, page, per_page, session)
+        objective_uuid = validate_uuid(id, "objective ID")
+        column_data = kanban_service.get_kanban_column(objective_uuid, status.value, page, per_page, session)
         return KanbanColumnPaginatedResponse(**column_data)
     
     except APIException as err:
@@ -189,7 +194,8 @@ def move_kanban_task(
     session: Session = Depends(get_session),
 ):
     try:
-        result = kanban_service.move_kanban_task(UUID(id), move_request, token_data.user_id, session)
+        objective_uuid = validate_uuid(id, "objective ID")
+        result = kanban_service.move_kanban_task(objective_uuid, move_request, token_data.user_id, session)
         
         return KanbanMoveResponse(
             message=result["message"],
@@ -212,7 +218,8 @@ def sync_kanban_board(
     session: Session = Depends(get_session),
 ):
     try:
-        result = kanban_service.sync_kanban_with_task_statuses(UUID(id), session)
+        objective_uuid = validate_uuid(id, "objective ID")
+        result = kanban_service.sync_kanban_with_task_statuses(objective_uuid, session)
         return result
     
     except APIException as err:

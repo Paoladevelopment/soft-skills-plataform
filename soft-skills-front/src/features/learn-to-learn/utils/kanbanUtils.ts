@@ -1,5 +1,5 @@
 import { KanbanApiResponse, TaskItem, TaskStatus } from '../types/kanban/task.api'
-import { Priority } from '../types/common.enums'
+import { Priority, Status } from '../types/common.enums'
 import { ObjectiveBoard, SubTask, TaskColumn } from '../types/kanban/board.types'
 import { CardData, ColumnData, ColumnModel, Task, DropTargetRecord } from '../types/kanban/drag-drop.types'
 import { normalizeDate } from './dateUtils'
@@ -21,7 +21,7 @@ function transformTaskItem(task: TaskItem): SubTask {
 /**
  * Maps API priority values to component priority values
  */
-function mapApiPriorityToComponentPriority(apiPriority: Priority): 'LOW' | 'MEDIUM' | 'HIGH' {
+export function mapApiPriorityToComponentPriority(apiPriority: Priority): 'LOW' | 'MEDIUM' | 'HIGH' {
   switch (apiPriority) {
     case Priority.High:
       return 'HIGH'
@@ -37,7 +37,7 @@ function mapApiPriorityToComponentPriority(apiPriority: Priority): 'LOW' | 'MEDI
 /**
  * Maps API status values to component status values
  */
-function mapApiStatusToComponentStatus(apiStatus: TaskStatus): 'TODO' | 'IN_PROGRESS' | 'PAUSED' | 'DONE' {
+export function mapApiStatusToComponentStatus(apiStatus: TaskStatus): 'TODO' | 'IN_PROGRESS' | 'PAUSED' | 'DONE' {
   switch (apiStatus) {
     case TaskStatus.NOT_STARTED:
       return 'TODO'
@@ -46,6 +46,24 @@ function mapApiStatusToComponentStatus(apiStatus: TaskStatus): 'TODO' | 'IN_PROG
     case TaskStatus.COMPLETED:
       return 'DONE'
     case TaskStatus.PAUSED:
+      return 'PAUSED'
+    default:
+      return 'TODO'
+  }
+}
+
+/**
+ * Maps Status enum from common.enums to component status values
+ */
+export function mapStatusToComponentStatus(status: Status): 'TODO' | 'IN_PROGRESS' | 'PAUSED' | 'DONE' {
+  switch (status) {
+    case Status.NotStarted:
+      return 'TODO'
+    case Status.InProgress:
+      return 'IN_PROGRESS'
+    case Status.Completed:
+      return 'DONE'
+    case Status.Paused:
       return 'PAUSED'
     default:
       return 'TODO'

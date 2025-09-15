@@ -8,7 +8,7 @@ from service.auth_service import decode_jwt_token
 from service.task import TaskService
 from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import APIException, raise_http_exception
+from utils.errors import APIException, BadRequest, raise_http_exception, validate_uuid
 
 router = APIRouter()
 
@@ -22,11 +22,11 @@ task_service = TaskService()
 )
 def create_task(
     task: TaskCreate,
-    _: TokenData = Depends(decode_jwt_token),
+    token_data: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session)
 ):
     try:
-        created_task = task_service.create_task(task, session)
+        created_task = task_service.create_task(task, token_data.user_id, session)
         task_data = TaskRead.model_validate(created_task)
 
         return TaskResponse(
@@ -48,7 +48,9 @@ def get_task(
     session: Session = Depends(get_session)
 ):
     try:
-        task = task_service.get_task(UUID(id), session)
+        task_uuid = validate_uuid(id, "task ID")
+        
+        task = task_service.get_task(task_uuid, session)
         task_data = TaskRead.model_validate(task)
 
         return TaskResponse(
@@ -72,7 +74,9 @@ def update_task(
     session: Session = Depends(get_session),
 ):
     try:
-        updated_task = task_service.update_task(UUID(id), task, token_data.user_id, session)
+        task_uuid = validate_uuid(id, "task ID")
+        
+        updated_task = task_service.update_task(task_uuid, task, token_data.user_id, session)
         task_data = TaskRead.model_validate(updated_task)
 
         return TaskResponse(
@@ -95,7 +99,9 @@ def update_task_status(
     session: Session = Depends(get_session),
 ):
     try: 
-        updated_task = task_service.update_task_status(UUID(id), new_status, token_data.user_id, session)
+        task_uuid = validate_uuid(id, "task ID")
+        
+        updated_task = task_service.update_task_status(task_uuid, new_status, token_data.user_id, session)
         return TaskResponse(
             message=f"Task status changed to {new_status.value}",
             data=updated_task
@@ -115,7 +121,9 @@ def delete_objective(
     session: Session = Depends(get_session),
 ):
     try:
-        return task_service.delete_task(UUID(id), token_data.user_id, session)
+        task_uuid = validate_uuid(id, "task ID")
+        
+        return task_service.delete_task(task_uuid, token_data.user_id, session)
     
     except APIException as err:
         raise_http_exception(err)

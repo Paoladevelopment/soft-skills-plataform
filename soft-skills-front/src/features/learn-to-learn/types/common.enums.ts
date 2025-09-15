@@ -16,6 +16,7 @@ export enum TaskType {
   ProblemSolving = 'problem_solving',
   Experimenting = 'experimenting',
   Teaching = 'teaching',
+  Other = 'other',
 }
 
 export enum Status {

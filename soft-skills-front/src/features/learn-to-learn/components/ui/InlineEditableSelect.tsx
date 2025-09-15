@@ -1,4 +1,4 @@
-import { Box, Typography, Select, MenuItem, FormControl, Chip } from '@mui/material'
+import { Box, Typography, Select, MenuItem, FormControl, Chip, InputLabel } from '@mui/material'
 import { ReactNode, useState } from 'react'
 import { PriorityColorValue } from '../../types/ui/colors'
 import { generateFormFieldAttributes } from '../../../../utils/formUtils'
@@ -96,7 +96,11 @@ const InlineEditableSelect = ({
           padding: 1,
         }}
       >
+        <InputLabel id={`${fieldAttributes.id}-label`} sx={{ display: 'none' }}>
+          {label}
+        </InputLabel>
         <Select
+          labelId={`${fieldAttributes.id}-label`}
           value={value}
           onChange={(e) => handleChange(e.target.value)}
           variant="standard"

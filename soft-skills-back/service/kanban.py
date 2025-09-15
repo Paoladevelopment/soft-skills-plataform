@@ -4,12 +4,13 @@ from uuid import UUID
 
 from enums.common import Status
 from model.learning_goal import LearningGoal
-from model.objective import Objective
+from model.objective import Objective, default_status_order
 from model.task import Task
 from mongo_service.objective import ObjectiveMongoService
 from schema.kanban import KanbanMoveRequest
 from service.learning_goal import LearningGoalService
 from service.objective import ObjectiveService
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.sql import case
 from sqlmodel import Session, func, select
 from utils.errors import APIException, BadRequest, Missing, handle_db_error
@@ -140,12 +141,7 @@ class KanbanService:
                 raise BadRequest(f"Task is currently in '{task.status.value}', not '{move_request.from_column.value}'")
             
             if not objective.tasks_order_by_status:
-                objective.tasks_order_by_status = {
-                    "not_started": [],
-                    "in_progress": [],
-                    "completed": [],
-                    "paused": [],
-                }
+                objective.tasks_order_by_status = default_status_order()
             
             from_column_tasks = objective.tasks_order_by_status.get(move_request.from_column.value, [])
             to_column_tasks = objective.tasks_order_by_status.get(move_request.to_column.value, [])
@@ -272,18 +268,17 @@ class KanbanService:
 
     def _reorder_task_in_column(self, objective: Objective, move_request: KanbanMoveRequest, task_id_str: str):
         """Handle reordering within the same column"""
-        # Create a copy to force SQLAlchemy to detect changes
-        tasks_order = objective.tasks_order_by_status.copy()
-        column_tasks = tasks_order[move_request.to_column.value].copy()
+        if objective.tasks_order_by_status is None:
+            objective.tasks_order_by_status = default_status_order()
         
+        column_key = move_request.to_column.value
+        objective.tasks_order_by_status.setdefault(column_key, MutableList())
+        
+        column_tasks = objective.tasks_order_by_status[column_key]
         if task_id_str in column_tasks:
             column_tasks.remove(task_id_str)
         
         column_tasks.insert(move_request.new_position, task_id_str)
-        
-        # Reassign to trigger SQLAlchemy change detection
-        tasks_order[move_request.to_column.value] = column_tasks
-        objective.tasks_order_by_status = tasks_order
         
         objective.updated_at = datetime.now(timezone.utc)
 
@@ -291,22 +286,18 @@ class KanbanService:
         """Handle moving task between different columns"""
         now = datetime.now(timezone.utc)
         
-        # Create a copy to force SQLAlchemy to detect changes
-        tasks_order = objective.tasks_order_by_status.copy()
+        from_column_key = move_request.from_column.value
+        to_column_key = move_request.to_column.value
         
-        # Remove from source column
-        from_column_tasks = tasks_order[move_request.from_column.value].copy()
+        objective.tasks_order_by_status.setdefault(from_column_key, MutableList())
+        objective.tasks_order_by_status.setdefault(to_column_key, MutableList())
+        
+        from_column_tasks = objective.tasks_order_by_status[from_column_key]
         if task_id_str in from_column_tasks:
             from_column_tasks.remove(task_id_str)
-        tasks_order[move_request.from_column.value] = from_column_tasks
         
-        # Add to destination column
-        to_column_tasks = tasks_order[move_request.to_column.value].copy()
+        to_column_tasks = objective.tasks_order_by_status[to_column_key]
         to_column_tasks.insert(move_request.new_position, task_id_str)
-        tasks_order[move_request.to_column.value] = to_column_tasks
-        
-        # Reassign to trigger SQLAlchemy change detection
-        objective.tasks_order_by_status = tasks_order
         
         task.status = move_request.to_column
         task.updated_at = now
@@ -448,10 +439,10 @@ class KanbanService:
             ).all()
             
             new_ordering = {
-                "not_started": [],
-                "in_progress": [],
-                "completed": [],
-                "paused": [],
+                "not_started": MutableList(),
+                "in_progress": MutableList(),
+                "completed": MutableList(),
+                "paused": MutableList(),
             }
             
             for task in tasks:
