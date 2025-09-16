@@ -22,9 +22,11 @@ import Topbar from '../components/roadmap-editor/Topbar'
 import { nodeTypes } from '../types/roadmap/roadmap.nodetypes'
 import { LayoutNodeType, RoadmapVisibility } from '../types/roadmap/roadmap.enums'
 import { useRoadmapStore } from '../store/useRoadmapStore'
+import { useToastStore } from '../../../store/useToastStore'
 import { createNode } from '../utils/roadmap/node-utils'
 import { LayoutEdge, LayoutNode } from '../types/roadmap/roadmap.models'
-import { hasIncomingConnectionFromObjective, hasOutgoingConnectionToObjective } from '../utils/roadmap/roadmap_graph_helpers'
+import { hasIncomingConnectionFromObjective, hasOutgoingConnectionToObjective } from '../utils/roadmap/roadmapGraphHelpers'
+import { validateRoadmapForPublicVisibility } from '../utils/roadmap/roadmapValidationUtils'
 import SidebarEditor from '../components/roadmap-editor/SidebarEditor'
 import RoadmapForm from '../components/roadmap/RoadmapForm'
 import UpdateSharingSettingsModal from '../components/roadmap/UpdateSharingSettingsModal'
@@ -160,6 +162,15 @@ const RoadmapEditorContent = () => {
 
   const handleUpdateVisibility = async (newVisibility: RoadmapVisibility) => {
     if (!selectedRoadmap) return
+
+    if (newVisibility === 'public') {
+      const validation = validateRoadmapForPublicVisibility(selectedRoadmap)
+      
+      if (!validation.isValid) {
+        useToastStore.getState().showToast(validation.errorMessage!, 'error')
+        return
+      }
+    }
 
     console.log(newVisibility)
     await updateRoadmapMetadata(selectedRoadmap.roadmapId, {

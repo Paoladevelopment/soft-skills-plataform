@@ -91,3 +91,4 @@ class RoadmapSummary(BaseModel):
     description: Optional[str] = None
     created_at: Optional[str] = None
     steps_count: int
+    visibility: Visibility

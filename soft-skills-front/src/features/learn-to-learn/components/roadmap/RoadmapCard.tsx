@@ -10,6 +10,8 @@ import {
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import PublicIcon from '@mui/icons-material/Public'
+import LockIcon from '@mui/icons-material/Lock'
 import { useState } from 'react'
 import { RoadmapSummary } from '../../types/roadmap/roadmap.models'
 import { formatDateString } from '../../../../utils/formatDate'
@@ -45,7 +47,18 @@ const RoadmapCard = ({ roadmapSummary, onDeleteClick, onViewClick }: GoalCardPro
       onMouseLeave={() => setHovered(false)}
       >
       <CardHeader
-        title={roadmapSummary.title}
+        title={
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography variant="h6" component="span">
+              {roadmapSummary.title}
+            </Typography>
+            {roadmapSummary.visibility === 'public' ? (
+              <PublicIcon sx={{ color: 'text.secondary', fontSize: '1.2rem' }} />
+            ) : (
+              <LockIcon sx={{ color: 'text.secondary', fontSize: '1.2rem' }} />
+            )}
+          </Stack>
+        }
         action={
           hovered && (
             <IconButton aria-label='delete' onClick={onDeleteClick}>

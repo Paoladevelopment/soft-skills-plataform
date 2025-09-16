@@ -95,6 +95,7 @@ export interface RoadmapSummary {
   description?: string
   createdAt: string | null
   stepsCount: number
+  visibility: RoadmapVisibility
 }
 
 export type OnlyContentFields = Pick<Objective, 'contentTitle' | 'description' | 'resources'>

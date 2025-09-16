@@ -1,6 +1,6 @@
 import { LayoutNodeType } from "../../types/roadmap/roadmap.enums"
 import { Objective, Task, LayoutNode, LayoutEdge, Roadmap } from "../../types/roadmap/roadmap.models"
-import { isObjectiveNode, isTaskNode } from "./roadmap_node_type_utils"
+import { isObjectiveNode, isTaskNode } from "./roadmapNodeTypeUtils"
 
 // Constants
 const NODE_WIDTH = 250
@@ -318,7 +318,7 @@ const buildDynamicLayout = (roadmap: Roadmap, isEditable: boolean): { nodes: Par
  * Builds the nodes and edges for the roadmap layout.
  */
 export function buildRoadmapLayout(roadmap: Roadmap, isEditable: boolean): { nodes: (LayoutNode | Partial<LayoutNode>)[]; edges: LayoutEdge[] } {
-  if (roadmap.layout?.nodes?.length && roadmap.layout?.edges?.length) {
+  if (roadmap.layout?.nodes?.length) {
     return buildFromExistingLayout(roadmap, isEditable)
   }
 

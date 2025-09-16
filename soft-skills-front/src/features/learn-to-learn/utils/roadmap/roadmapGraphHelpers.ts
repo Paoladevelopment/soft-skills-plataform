@@ -1,6 +1,6 @@
 import { LayoutNodeType } from '../../types/roadmap/roadmap.enums'
 import { LayoutEdge, LayoutNode, Objective, ObjectiveNodeData, Task } from '../../types/roadmap/roadmap.models'
-import { isObjectiveNode } from './roadmap_node_type_utils'
+import { isObjectiveNode } from './roadmapNodeTypeUtils'
 
 /**
  * Finds a node by ID from a list of nodes.
