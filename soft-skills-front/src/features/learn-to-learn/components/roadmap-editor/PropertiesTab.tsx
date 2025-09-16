@@ -8,7 +8,7 @@ import {
   Divider,
 } from '@mui/material'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
-import { findNodeById, getNodeTitle } from '../../utils/roadmap/roadmap_graph_helpers'
+import { findNodeById, getNodeTitle } from '../../utils/roadmap/roadmapGraphHelpers'
 import { colorOptions, FontSizeOption, fontSizeOptions } from '../../types/roadmap/roadmap.options'
 
 const PropertiesTab = () => {

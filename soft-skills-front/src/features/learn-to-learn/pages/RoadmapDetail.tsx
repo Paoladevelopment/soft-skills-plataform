@@ -10,6 +10,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import EditIcon from '@mui/icons-material/Edit'
+import PublicIcon from '@mui/icons-material/Public'
+import LockIcon from '@mui/icons-material/Lock'
 import { useNavigate, useParams } from 'react-router-dom'
 import { formatDateString } from '../../../utils/formatDate'
 import { useRoadmapStore } from '../store/useRoadmapStore'
@@ -80,9 +82,16 @@ const RoadmapDetail = () => {
         </Button>
       </Stack>
 
-      <Typography variant="h4" fontWeight="bold" mb={1}>
-        {selectedRoadmap.title}
-      </Typography>
+      <Stack direction="row" alignItems="center" spacing={1} mb={1}>
+        <Typography variant="h4" fontWeight="bold">
+          {selectedRoadmap.title}
+        </Typography>
+        {selectedRoadmap.visibility === 'public' ? (
+          <PublicIcon sx={{ color: 'text.secondary', fontSize: '1.5rem' }} />
+        ) : (
+          <LockIcon sx={{ color: 'text.secondary', fontSize: '1.5rem' }} />
+        )}
+      </Stack>
       <Typography variant="subtitle1" color="text.secondary" mb={2}>
         {selectedRoadmap.description}
       </Typography>

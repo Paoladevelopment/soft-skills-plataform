@@ -12,14 +12,14 @@ import AddIcon from '@mui/icons-material/Add'
 import { CircleCheck, Link as LinkIcon } from 'lucide-react'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
 import { ResourceType } from '../../types/common.enums'
-import { findNodeById } from '../../utils/roadmap/roadmap_graph_helpers'
+import { findNodeById } from '../../utils/roadmap/roadmapGraphHelpers'
 import { Resource } from '../../types/roadmap/roadmap.models'
 import {
   findObjectiveById,
   findParentObjectiveOfTask,
   findTaskById,
-} from '../../utils/roadmap/roadmap_structure_utils'
-import { isObjectiveNode } from '../../utils/roadmap/roadmap_node_type_utils'
+} from '../../utils/roadmap/roadmapStructureUtils'
+import { isObjectiveNode } from '../../utils/roadmap/roadmapNodeTypeUtils'
 
 const ContentAndLinksTab = () => {
   const {

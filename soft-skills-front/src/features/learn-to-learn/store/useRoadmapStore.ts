@@ -5,10 +5,11 @@ import { IRoadmapStore } from '../types/roadmap/roadmap.store'
 import { useToastStore } from '../../../store/useToastStore'
 import { LayoutNode, OnlyRoadmapMetadata, Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
 import { createRoadmap, deleteRoadmap, getPublicRoadmaps, getRoadmapById, getUserRoadmaps, updateRoadmap } from '../api/Roadmaps'
-import { buildRoadmapLayout } from '../utils/roadmap/roadmap_layout_generator'
-import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, findTaskInObjective, getOrCreateOrphanObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, removeTaskFromOrphanObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmap_structure_utils'
-import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmap_graph_helpers'
-import { isObjectiveNode, isObjectiveToObjectiveConnection, isObjectiveToTaskConnection, isTaskNode } from '../utils/roadmap/roadmap_node_type_utils'
+import { buildRoadmapLayout } from '../utils/roadmap/roadmapLayoutGenerator'
+import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, findTaskInObjective, getOrCreateOrphanObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, removeTaskFromOrphanObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmapStructureUtils'
+import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmapGraphHelpers'
+import { isObjectiveNode, isObjectiveToObjectiveConnection, isObjectiveToTaskConnection, isTaskNode } from '../utils/roadmap/roadmapNodeTypeUtils'
+import { validateRoadmapForPublicSave } from '../utils/roadmap/roadmapValidationUtils'
 
 export const useRoadmapStore = create<IRoadmapStore>()(
   devtools(
@@ -396,17 +397,14 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         if (!roadmap) return
 
         const isPublic = roadmap.visibility === 'public'
-        const hasNoObjectives = roadmap.objectives.length === 0
-        const orphanObjective = roadmap.objectives.find(obj => obj.objectiveId === '__unassigned__')
-        const hasUnassignedTasks =  orphanObjective && orphanObjective.tasks.length > 0
       
-        if (isPublic && (hasNoObjectives || hasUnassignedTasks)) {
-          const msg = hasNoObjectives
-            ? 'A public roadmap must contain at least one objective.'
-            : 'All tasks of a public roadmap must be connected to an objective before saving.'
-      
-          useToastStore.getState().showToast(msg, 'error')
-          return
+        if (isPublic) {
+          const validation = validateRoadmapForPublicSave(roadmap)
+          
+          if (!validation.isValid) {
+            useToastStore.getState().showToast(validation.errorMessage!, 'error')
+            return
+          }
         }
 
         try {
