@@ -25,10 +25,17 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 
 interface BoardProps {
   board: ObjectiveBoard
+  moveTask: (
+    taskId: string,
+    fromColumnId: string,
+    toColumnId: string,
+    newPosition: number,
+    reason?: string
+  ) => void
 }
 
 
-const Board = ({ board }: BoardProps) => {
+const Board = ({ board, moveTask }: BoardProps) => {
   const [columnsData, setColumnsData] = useState<ObjectiveBoard>(board)
 
   useEffect(() => {
@@ -43,6 +50,9 @@ const Board = ({ board }: BoardProps) => {
       const sourceColumn = findColumnById(columnsData.columns, columnId)
       if (!sourceColumn) return
 
+      const taskToMove = sourceColumn.tasks[startIndex]
+      if (!taskToMove) return
+
       const updatedItems = reorder<Task>({
         list: sourceColumn.tasks,
         startIndex,
@@ -52,8 +62,16 @@ const Board = ({ board }: BoardProps) => {
       const updatedColumns = updateColumnTasks(columnsData.columns, columnId, updatedItems)
 
       setColumnsData(prev => ({ ...prev, columns: updatedColumns }))
+
+      moveTask(
+        taskToMove.id,
+        columnId,
+        columnId,
+        finishIndex,
+        'Task reordered within column'
+      )
     },
-    [columnsData]
+    [columnsData, moveTask]
   )
 
   const moveCard = useCallback(
@@ -88,8 +106,20 @@ const Board = ({ board }: BoardProps) => {
       })
 
       setColumnsData(prev => ({ ...prev, columns: updatedColumns }))
+
+      const reason = sourceColumnId === destinationColumnId 
+        ? 'Task reordered within column' 
+        : `Task moved from ${sourceColumn.title} to ${destinationColumn.title}`
+      
+      moveTask(
+        cardToMove.id,
+        sourceColumnId,
+        destinationColumnId,
+        movedCardIndexInDestinationColumn,
+        reason
+      )
     },
-    [columnsData]
+    [columnsData, moveTask]
   )
 
   const getSourceColumnData = useCallback(
