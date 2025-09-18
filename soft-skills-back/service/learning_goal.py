@@ -109,12 +109,13 @@ class LearningGoalService:
     def _objectives_by_status(self, learning_goal_id: UUID, session: Session):
         try:
             completed_case = case((Objective.status == Status.COMPLETED, 1), else_=0)
-
+            active_case = case((Objective.status.in_([Status.IN_PROGRESS, Status.PAUSED, Status.COMPLETED]), 1), else_=0)
 
             result = session.exec(
                 select(
                     func.count().label("total"),
                     func.sum(completed_case).label("completed"),
+                    func.sum(active_case).label("active"),
                 )
                 .where(Objective.learning_goal_id == learning_goal_id)
             ).first()
@@ -123,16 +124,18 @@ class LearningGoalService:
                 return {
                     "total": 0,
                     "completed": 0,
+                    "active": 0,
                 }
 
-            total, completed = (result[0] or 0), (result[1] or 0)
+            total, completed, active = (result[0] or 0), (result[1] or 0), (result[2] or 0)
             return {
                 "total": total,
                 "completed": completed,
+                "active": active,
             }
         
         except Exception as err:
-            handle_db_error(err, "_tasks_by_status", error_type="query")
+            handle_db_error(err, "_objectives_by_status", error_type="query")
 
     def update_learning_goal(self, learning_goal_id: UUID, learning_goal: LearningGoalUpdate, user_id: UUID, session: Session) -> LearningGoal:
         try:
@@ -206,6 +209,45 @@ class LearningGoalService:
         
         except Exception as err:
             handle_db_error(err, "remove_objective_from_order", error_type="update")
+
+    def update_learning_goal_completion_after_objective_change(self, learning_goal_id: UUID, session: Session):
+        """Update learning goal completed_at field after objective status changes"""
+        try:
+            learning_goal = self.get_learning_goal(learning_goal_id, session)
+            
+            objective_counts = self._objectives_by_status(learning_goal_id, session)
+            total = objective_counts["total"]
+            completed = objective_counts["completed"]
+            active = objective_counts["active"]
+            
+            now = datetime.now(timezone.utc)
+            
+            all_completed = completed == total and total > 0
+            should_set_completed = all_completed and learning_goal.completed_at is None
+            should_clear_completed = not all_completed and learning_goal.completed_at is not None
+            
+            should_set_started = (active > 0 and learning_goal.started_at is None)
+            
+            if should_set_completed:
+                learning_goal.completed_at = now
+                learning_goal.updated_at = now
+            elif should_clear_completed:
+                learning_goal.completed_at = None
+                learning_goal.updated_at = now
+            
+            if should_set_started:
+                learning_goal.started_at = now
+                learning_goal.updated_at = now
+            
+            if should_set_completed or should_clear_completed or should_set_started:
+                mongo_data = build_learning_goal_document(learning_goal)
+                self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
+                
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "update_learning_goal_completion_after_objective_change", error_type="update")
 
     def delete_learning_goal(self, learning_goal_id: UUID, user_id: UUID, session: Session):
         try:

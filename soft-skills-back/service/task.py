@@ -86,6 +86,11 @@ class TaskService:
                 session
             )
             
+            self.objective_service.update_objective_status_after_task_change(
+                new_task.objective_id, 
+                session
+            )
+            
             session.commit()
   
             return new_task
@@ -224,6 +229,12 @@ class TaskService:
             self.mongo_service.delete_task(objective.learning_goal_id, task.objective_id, task_id)
             
             session.delete(task)
+            
+            self.objective_service.update_objective_status_after_task_change(
+                task.objective_id, 
+                session
+            )
+            
             session.commit()
 
             return {"message": "Task deleted successfully", "task_id": task_id}

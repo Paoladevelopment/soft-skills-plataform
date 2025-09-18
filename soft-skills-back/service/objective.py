@@ -66,6 +66,12 @@ class ObjectiveService:
                 session
             )
             
+
+            self.learning_goal_service.update_learning_goal_completion_after_objective_change(
+                new_objective.learning_goal_id, 
+                session
+            )
+            
             session.commit()
 
             return new_objective
@@ -210,20 +216,24 @@ class ObjectiveService:
             in_progress = task_counts["in_progress"]
             paused = task_counts["paused"]
 
-            if completed == total:
+            if completed == total and total > 0:
                 new_status = Status.COMPLETED
             elif in_progress > 0:
                 new_status = Status.IN_PROGRESS
-            elif paused == total:
+            elif paused == total and total > 0:
                 new_status = Status.PAUSED
             else:
                 new_status = Status.NOT_STARTED
         
             objective = self.get_objective(objective_id, session)
+            now = datetime.now(timezone.utc)
 
             if objective.status != new_status:
+                old_status = objective.status
                 objective.status = new_status
-                objective.updated_at = datetime.now(timezone.utc)
+                objective.updated_at = now
+
+                self._update_objective_timestamps(objective, old_status, new_status, now)
 
                 mongo_data = build_objective_document(objective)
                 self.mongo_service.update_objective(
@@ -236,10 +246,58 @@ class ObjectiveService:
 
         except APIException as api_error:
             raise api_error
-
+        
         except Exception as err:
             session.rollback()
             handle_db_error(err, "update_status", error_type="commit")
+
+    def update_objective_status_after_task_change(self, objective_id: UUID, session: Session):
+        """Update objective status after task creation/deletion/modification"""
+        try:
+            objective = self.get_objective(objective_id, session)
+            old_status = objective.status
+            
+            task_counts = self._tasks_by_status(objective_id, session)
+            total = task_counts["total"]
+            completed = task_counts["completed"]
+            in_progress = task_counts["in_progress"]
+            paused = task_counts["paused"]
+            
+            now = datetime.now(timezone.utc)
+            
+            if completed == total and total > 0:
+                new_status = Status.COMPLETED
+            elif in_progress > 0:
+                new_status = Status.IN_PROGRESS
+            elif paused == total and total > 0:
+                new_status = Status.PAUSED
+            else:
+                new_status = Status.NOT_STARTED
+            
+            if objective.status != new_status:
+                objective.status = new_status
+                objective.updated_at = now
+                
+                self._update_objective_timestamps(objective, old_status, new_status, now)
+            
+            mongo_data = build_objective_document(objective)
+            self.mongo_service.update_objective(
+                objective.learning_goal_id,
+                objective_id,
+                mongo_data
+            )
+            
+            if objective.status != old_status and objective.learning_goal_id:
+                self.learning_goal_service.update_learning_goal_completion_after_objective_change(
+                    objective.learning_goal_id, 
+                    session
+                )
+                
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "update_objective_status_after_task_change", error_type="update")
 
 
     def delete_objective(self, objective_id: UUID, user_id: UUID, session: Session):
@@ -258,6 +316,12 @@ class ObjectiveService:
             self.mongo_service.delete_objective(learning_goal_id, objective_id)
             
             session.delete(objective)
+            
+            self.learning_goal_service.update_learning_goal_completion_after_objective_change(
+                learning_goal_id, 
+                session
+            )
+            
             session.commit()
 
             return {"message": "Objective deleted successfully", "objective_id": objective_id}
@@ -400,3 +464,22 @@ class ObjectiveService:
             result[status] = tasks
         
         return result
+
+    def _update_objective_timestamps(self, objective: Objective, old_status: Status, new_status: Status, now: datetime):
+        """Update objective timestamps based on status transitions"""
+        is_becoming_completed = new_status == Status.COMPLETED and old_status != Status.COMPLETED
+        is_leaving_completed = new_status != Status.COMPLETED and old_status == Status.COMPLETED
+        
+        if is_becoming_completed and objective.completed_at is None:
+            objective.completed_at = now
+        elif is_leaving_completed:
+            objective.completed_at = None
+        
+        is_first_activation = (
+            old_status == Status.NOT_STARTED and 
+            new_status in [Status.IN_PROGRESS, Status.PAUSED, Status.COMPLETED] and 
+            objective.started_at is None
+        )
+        
+        if is_first_activation:
+            objective.started_at = now

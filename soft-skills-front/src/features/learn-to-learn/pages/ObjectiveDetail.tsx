@@ -15,7 +15,7 @@ import { getObjectiveStatusInfo, getObjectiveStatusChipColor, getPriorityColor }
 import { useDebounce } from '../hooks/useDebounce'
 import { Priority } from '../types/common.enums'
 import { formatDateToDateTime, normalizeDate } from '../utils/dateUtils'
-import { useKanbanTasks } from '../hooks/useKanbanTasks'
+import { useKanbanTasks, useKanbanMoveTasks } from '../hooks/useKanbanTasks'
 import { useCreateTask } from '../hooks/useTasks'
 import { CreateTaskPayload } from '../types/planner/task.api'
 import { usePomodoroPreferencesStore } from '../store/usePomodoroPreferencesStore'
@@ -39,6 +39,23 @@ const ObjectiveDetail = () => {
   })
 
   const { data: kanbanBoard, isLoading: isKanbanLoading, error: kanbanError } = useKanbanTasks(objectiveId || null, objectiveData.title)
+  const { mutate: moveTaskMutation } = useKanbanMoveTasks(objectiveId || null)
+
+  const moveTask = (
+    taskId: string,
+    fromColumnId: string,
+    toColumnId: string,
+    newPosition: number,
+    reason?: string
+  ) => {
+    moveTaskMutation({
+      taskId,
+      fromColumnId,
+      toColumnId,
+      newPosition,
+      reason
+    })
+  }
   
   const [hasUserInteracted, setHasUserInteracted] = useState({
     title: false,
@@ -389,7 +406,7 @@ const ObjectiveDetail = () => {
               Failed to load tasks. Please try again.
             </Typography>
           ) : kanbanBoard ? (
-            <Board board={kanbanBoard} />
+            <Board board={kanbanBoard} moveTask={moveTask} />
           ) : (
             <Typography variant="body2" color="text.secondary">
               No tasks found for this objective.

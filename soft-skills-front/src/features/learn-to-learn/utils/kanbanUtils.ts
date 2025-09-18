@@ -149,3 +149,21 @@ export const asCardData = (x: unknown): CardData => x as CardData
  * Extracts column ID from a drop target record
  */
 export const columnIdFrom = (rec: DropTargetRecord): string => (rec.data as CardData | ColumnData).columnId
+
+/**
+ * Maps component column IDs to API column format
+ */
+export const mapColumnIdToApiFormat = (columnId: string): string => {
+  switch (columnId) {
+    case 'todo':
+      return 'not_started'
+    case 'in-progress':
+      return 'in_progress'
+    case 'done':
+      return 'completed'
+    case 'paused':
+      return 'paused'
+    default:
+      return 'not_started'
+  }
+}
