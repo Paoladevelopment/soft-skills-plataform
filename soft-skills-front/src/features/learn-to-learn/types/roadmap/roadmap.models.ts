@@ -84,6 +84,7 @@ export interface Roadmap {
   objectives: Objective[]
   layout?: Layout 
   userId: string
+  username: string
   visibility: RoadmapVisibility
   createdAt: string | null
   updatedAt: string | null
@@ -92,6 +93,7 @@ export interface Roadmap {
 export interface RoadmapSummary {
   roadmapId: string
   title: string
+  username: string
   description?: string
   createdAt: string | null
   stepsCount: number

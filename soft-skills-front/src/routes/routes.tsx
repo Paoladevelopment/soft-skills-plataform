@@ -51,7 +51,10 @@ export const RoutesConfiguration = () => {
             </Route>
             
             <Route path='dashboard' element={<Dashboard/>}></Route>
-            <Route path='explore' element={<Explore/>}></Route>
+            <Route path='explore'>
+              <Route index element={<Explore/>} />
+              <Route path=':roadmapId' element={<RoadmapDetail />} />
+            </Route>
             <Route path='reports' element={<LearningReport/>}></Route>
             
             <Route path='roadmaps'>

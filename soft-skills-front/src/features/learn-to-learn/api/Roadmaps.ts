@@ -1,6 +1,6 @@
 import { api } from "../../../config/api"
 import { fetchWithAuth } from "../../../utils/fetchWithAuth"
-import { CreateRoadmapPayload, FetchRoadmapsSummaryResponse } from "../types/roadmap/roadmap.api"
+import { CreateRoadmapPayload, FetchRoadmapsSummaryResponse, PublicRoadmapsParams } from "../types/roadmap/roadmap.api"
 import { Roadmap } from "../types/roadmap/roadmap.models"
 import { normalizeLayoutNodes } from "../utils/roadmap/roadmapSerializers"
 import snakecaseKeys from 'snakecase-keys'
@@ -16,10 +16,27 @@ export async function getUserRoadmaps(
 }
 
 export async function getPublicRoadmaps(
-  offset: number, 
-  limit: number
+  params: PublicRoadmapsParams = {}
 ): Promise<FetchRoadmapsSummaryResponse> {
-  const url = `${api.roadmap.getPublic}?offset=${offset}&limit=${limit}`
+  const { 
+    search, 
+    authorId, 
+    minSteps, 
+    maxSteps, 
+    offset = 0, 
+    limit = 10 
+  } = params
+
+  const searchParams = new URLSearchParams()
+  searchParams.append('offset', offset.toString())
+  searchParams.append('limit', limit.toString())
+  
+  if (search) searchParams.append('title', search)
+  if (authorId) searchParams.append('username', authorId)
+  if (minSteps !== undefined) searchParams.append('steps_min', minSteps.toString())
+  if (maxSteps !== undefined) searchParams.append('steps_max', maxSteps.toString())
+
+  const url = `${api.roadmap.getPublic}?${searchParams.toString()}`
 
   const response = await fetchWithAuth(url)
   return response

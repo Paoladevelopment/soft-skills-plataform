@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, status, Query, Request
 from fastapi.responses import JSONResponse
+from typing import Optional
+from datetime import datetime
 
 from nosql_models.roadmap import Roadmap
 from nosql_schema.roadmap import RoadmapCreate, RoadmapUpdate, RoadmapResponse, PaginatedRoadmapsResponse
@@ -7,6 +9,8 @@ from schema.token import TokenData
 from mongo_service.roadmap import RoadmapMongoService
 from service.auth_service import decode_jwt_token
 from utils.errors import APIException, raise_http_exception
+from utils.db import get_session
+from sqlmodel import Session
 
 router = APIRouter()
 
@@ -21,11 +25,12 @@ roadmap_service = RoadmapMongoService()
 def create_roadmap(
     roadmap_data: RoadmapCreate,
     token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session),
 ):
     try:
         roadmap_dict = roadmap_data.model_dump()
         user_id = str(token_data.user_id)
-        result_dict = roadmap_service.add_roadmap(roadmap_dict, user_id)
+        result_dict = roadmap_service.add_roadmap(roadmap_dict, user_id, session)
 
         return RoadmapResponse(
             message="Roadmap created successfully",
@@ -62,10 +67,27 @@ def get_user_roadmaps(
 def get_public_roadmaps(
     offset: int = Query(0, ge=0, description="Number of items to skip before starting to collect the result set"),
     limit: int = Query(10, ge=10, le=50,  description="Maximum number of items to retrieve (between 10 and 50)"),
+    title: Optional[str] = Query(None, description="Filter by roadmap title (partial match)"),
+    description: Optional[str] = Query(None, description="Filter by roadmap description (partial match)"),
+    created_at_from: Optional[datetime] = Query(None, description="Filter roadmaps created from this date"),
+    created_at_to: Optional[datetime] = Query(None, description="Filter roadmaps created until this date"),
+    steps_min: Optional[int] = Query(None, ge=0, description="Minimum number of steps"),
+    steps_max: Optional[int] = Query(None, ge=0, description="Maximum number of steps"),
+    username: Optional[str] = Query(None, description="Filter by username who created the roadmap"),
     _: TokenData = Depends(decode_jwt_token),
 ):
     try:
-        return roadmap_service.get_public_roadmaps(offset, limit)
+        return roadmap_service.get_public_roadmaps(
+            offset=offset,
+            limit=limit,
+            title=title,
+            description=description,
+            created_at_from=created_at_from,
+            created_at_to=created_at_to,
+            steps_min=steps_min,
+            steps_max=steps_max,
+            username=username
+        )
 
     except APIException as err:
         raise_http_exception(err)

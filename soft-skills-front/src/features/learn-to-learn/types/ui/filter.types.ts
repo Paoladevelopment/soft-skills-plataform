@@ -1,4 +1,4 @@
-export type FilterType = 'checkbox' | 'select'
+export type FilterType = 'checkbox' | 'select' | 'text' | 'range'
 
 export type TabValue = 'all' | 'incomplete' | 'ongoing' | 'finished'
 
@@ -16,5 +16,7 @@ export interface FilterOption {
   label: string
   placeholder?: string
   type: FilterType
-  values: FilterValue[]
+  values?: FilterValue[] 
+  minPlaceholder?: string 
+  maxPlaceholder?: string
 }

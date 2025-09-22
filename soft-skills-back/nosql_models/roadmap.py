@@ -74,6 +74,7 @@ class Roadmap(BaseModel):
     objectives: List[Objective]
     layout: Optional[Layout] = None
     user_id: str
+    username: str
     created_at: Optional[str]
     updated_at: Optional[str]
     visibility: Visibility = Visibility.private
@@ -88,6 +89,7 @@ class Roadmap(BaseModel):
 class RoadmapSummary(BaseModel):
     roadmap_id: str
     title: str
+    username: str
     description: Optional[str] = None
     created_at: Optional[str] = None
     steps_count: int

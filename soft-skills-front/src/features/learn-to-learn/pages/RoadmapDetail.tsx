@@ -10,9 +10,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import EditIcon from '@mui/icons-material/Edit'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import PersonIcon from '@mui/icons-material/Person'
 import PublicIcon from '@mui/icons-material/Public'
 import LockIcon from '@mui/icons-material/Lock'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { formatDateString } from '../../../utils/formatDate'
 import { useRoadmapStore } from '../store/useRoadmapStore'
 import { useEffect } from 'react'
@@ -21,6 +23,9 @@ import RoadmapFlow from '../components/roadmap/RoadmapFlow'
 const RoadmapDetail = () => {
   const { roadmapId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const isPublicMode = location.pathname.startsWith('/learn/explore')
 
   const {
     selectedRoadmap,
@@ -39,7 +44,15 @@ const RoadmapDetail = () => {
   }
 
   const handleBackToRoadmaps = () => {
-    navigate('/learn/roadmaps')
+    if (isPublicMode) {
+      navigate('/learn/explore')
+    } else {
+      navigate('/learn/roadmaps')
+    }
+  }
+
+  const handleCopyRoadmap = () => {
+    console.log('Copy roadmap:', roadmapId)
   }
 
   useEffect(() => {
@@ -69,17 +82,27 @@ const RoadmapDetail = () => {
             <ArrowBackIcon fontSize="small" />
           </IconButton>
           <Typography variant="body2" fontWeight="medium" color="text.secondary">
-            Back to roadmaps
+            {isPublicMode ? 'Back to explore' : 'Back to roadmaps'}
           </Typography>
         </Stack>
 
-        <Button
-          variant="contained"
-          startIcon={<EditIcon />}
-          onClick={() => navigate(`/learn/roadmaps/${roadmapId}/edit`)}
-        >
-          Edit Roadmap
-        </Button>
+        {isPublicMode ? (
+          <Button
+            variant="contained"
+            startIcon={<ContentCopyIcon />}
+            onClick={handleCopyRoadmap}
+          >
+            Copy Roadmap
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            startIcon={<EditIcon />}
+            onClick={() => navigate(`/learn/roadmaps/${roadmapId}/edit`)}
+          >
+            Edit Roadmap
+          </Button>
+        )}
       </Stack>
 
       <Stack direction="row" alignItems="center" spacing={1} mb={1}>
@@ -92,6 +115,26 @@ const RoadmapDetail = () => {
           <LockIcon sx={{ color: 'text.secondary', fontSize: '1.5rem' }} />
         )}
       </Stack>
+      
+      {isPublicMode && (
+        <Stack 
+          direction="row" 
+          alignItems="center" 
+          spacing={1} 
+          mb={1}
+        >
+          <PersonIcon 
+            sx={{ 
+              fontSize: '1rem', 
+              color: 'text.secondary' 
+            }} 
+          />
+          <Typography variant="body1" color="text.secondary">
+            Created by <strong>{selectedRoadmap.username || 'Unknown Author'}</strong>
+          </Typography>
+        </Stack>
+      )}
+      
       <Typography variant="subtitle1" color="text.secondary" mb={2}>
         {selectedRoadmap.description}
       </Typography>
