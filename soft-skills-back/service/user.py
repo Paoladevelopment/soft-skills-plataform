@@ -73,6 +73,21 @@ class UserService:
         except Exception as err:
             handle_db_error(err, "get_user", error_type="query")
 
+    def get_user_by_username(self, username: str, session: Session) -> User:
+        try:
+            query = select(User).where(User.username == username)
+            user = session.exec(query).first()
+
+            if not user:
+                raise Missing("User not found")
+            return user
+        
+        except APIException as api_error:
+            raise api_error
+
+        except Exception as err:
+            handle_db_error(err, "get_user_by_username", error_type="query")
+
     def update_user(self, user_id: UUID, user: UserUpdate, session: Session) -> User:
         try:
             existing_user = self.get_user(user_id, session)

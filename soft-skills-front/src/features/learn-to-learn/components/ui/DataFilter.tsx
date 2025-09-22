@@ -26,6 +26,8 @@ export interface DataFilterProps {
   filterOptions: FilterOption[]
   selectedFilters: SelectedFilters
   onFilterChange: (filterKey: string, values: string[]) => void
+  onApplyFilters?: () => void
+  applyButtonText?: string
 }
 
 const DataFilter = ({
@@ -35,9 +37,12 @@ const DataFilter = ({
   onSearchChange,
   filterOptions,
   selectedFilters,
-  onFilterChange
+  onFilterChange,
+  onApplyFilters,
+  applyButtonText = "Aplicar filtros"
 }: DataFilterProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [rangeErrors, setRangeErrors] = useState<{[key: string]: string}>({})
 
   const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -60,6 +65,29 @@ const DataFilter = ({
     onFilterChange(filterKey, value ? [value] : [])
   }
 
+  const handleTextChange = (filterKey: string, value: string) => {
+    onFilterChange(filterKey, value ? [value] : [])
+  }
+
+  const handleRangeChange = (filterKey: string, minValue: string, maxValue: string) => {
+    setRangeErrors(prev => ({ ...prev, [filterKey]: '' }))
+    
+    const minNum = minValue ? parseInt(minValue) : null
+    const maxNum = maxValue ? parseInt(maxValue) : null
+    
+    const validMin = minNum !== null && minNum < 0 ? 0 : minNum
+    const validMax = maxNum !== null && maxNum < 0 ? 0 : maxNum
+    
+    const finalMinStr = validMin !== null ? validMin.toString() : ''
+    const finalMaxStr = validMax !== null ? validMax.toString() : ''
+    
+    const rangeValue = finalMinStr || finalMaxStr ? 
+      [`${finalMinStr}-${finalMaxStr}`] : 
+      []
+
+    onFilterChange(filterKey, rangeValue)
+  }
+
   const isValueSelected = (filterKey: string, value: string) => {
     return (selectedFilters[filterKey] || []).includes(value)
   }
@@ -67,6 +95,54 @@ const DataFilter = ({
   const getSelectedValue = (filterKey: string) => {
     return (selectedFilters[filterKey] || [])[0] || ""
   }
+
+  const getTextValue = (filterKey: string) => {
+    return (selectedFilters[filterKey] || [])[0] || ""
+  }
+
+  const getRangeValues = (filterKey: string) => {
+    const rangeString = (selectedFilters[filterKey] || [])[0] || ""
+    if (!rangeString) return { 
+      min: "", 
+      max: "" 
+    }
+    
+    const [min, max] = rangeString.split('-')
+    return { 
+      min: min || "", 
+      max: max || "" 
+    }
+  }
+
+  const validateRanges = () => {
+    const errors: {[key: string]: string} = {}
+    
+    filterOptions.forEach(option => {
+      if (option.type === 'range') {
+        const { min, max } = getRangeValues(option.key)
+        if (min && max) {
+          const minNum = parseInt(min)
+          const maxNum = parseInt(max)
+          
+          if (maxNum < minNum) {
+            errors[option.key] = `Max value cannot be less than min value`
+          }
+        }
+      }
+    })
+    
+    setRangeErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const handleApplyFilters = () => {
+    if (validateRanges() && onApplyFilters) {
+      onApplyFilters()
+      handleFilterClose()
+    }
+  }
+
+
 
   const open = Boolean(anchorEl)
   const id = open ? 'data-filter-popover' : undefined
@@ -99,7 +175,12 @@ const DataFilter = ({
         slotProps={{
           input: {
             startAdornment: (
-              <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
+              <SearchIcon 
+                sx={{ 
+                  color: 'text.secondary', 
+                  mr: 1 
+                }} 
+              />
             ),
           },
         }}
@@ -150,7 +231,7 @@ const DataFilter = ({
                 {option.label}
               </Typography>
               
-              {option.type === 'checkbox' && (
+              {option.type === 'checkbox' && option.values && (
                 <Stack>
                   {option.values.map((item) => (
                     <CustomCheckbox
@@ -170,12 +251,111 @@ const DataFilter = ({
                   label={option.label}
                   value={getSelectedValue(option.key)}
                   onChange={(e) => handleSelectChange(option.key, e.target.value)}
-                  options={option.values}
+                  options={option.values || []}
                   placeholder={option.placeholder || option.label}
                 />
               )}
+
+              {option.type === 'text' && (
+                <TextField
+                  id={`filter-${option.key}`}
+                  placeholder={option.placeholder || option.label}
+                  value={getTextValue(option.key)}
+                  onChange={(e) => handleTextChange(option.key, e.target.value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: 'white',
+                      borderRadius: 1
+                    }
+                  }}
+                />
+              )}
+
+              {option.type === 'range' && (
+                <Stack spacing={1}>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <TextField
+                      id={`filter-${option.key}-min`}
+                      placeholder={option.minPlaceholder || "Min"}
+                      value={getRangeValues(option.key).min}
+                      onChange={(e) => {
+                        const { max } = getRangeValues(option.key)
+                        handleRangeChange(option.key, e.target.value, max)
+                      }}
+                      size="small"
+                      type="number"
+                      slotProps={{ 
+                        htmlInput: { min: 0 } 
+                      }}
+                      error={!!rangeErrors[option.key]}
+                      sx={{
+                        flex: 1,
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: 'white',
+                          borderRadius: 1
+                        }
+                      }}
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      to
+                    </Typography>
+                    <TextField
+                      id={`filter-${option.key}-max`}
+                      placeholder={option.maxPlaceholder || "Max"}
+                      value={getRangeValues(option.key).max}
+                      onChange={(e) => {
+                        const { min } = getRangeValues(option.key)
+                        handleRangeChange(option.key, min, e.target.value)
+                      }}
+                      size="small"
+                      type="number"
+                      slotProps={{ 
+                        htmlInput: { min: 0 } 
+                      }}
+                      error={!!rangeErrors[option.key]}
+                      sx={{
+                        flex: 1,
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: 'white',
+                          borderRadius: 1
+                        }
+                      }}
+                    />
+                  </Stack>
+                  {rangeErrors[option.key] && (
+                    <Typography variant="caption" color="error" sx={{ fontSize: '0.75rem' }}>
+                      {rangeErrors[option.key]}
+                    </Typography>
+                  )}
+                </Stack>
+              )}
             </Box>
           ))}
+          
+          {onApplyFilters && (
+            <Box 
+              sx={{ 
+                mt: 2, 
+                pt: 2, 
+                borderTop: '1px solid #e0e0e0' 
+              }}
+            >
+              <Button
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={handleApplyFilters}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 500
+                }}
+              >
+                {applyButtonText}
+              </Button>
+            </Box>
+          )}
         </Stack>
       </Popover>
     </Box>

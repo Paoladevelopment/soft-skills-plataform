@@ -8,6 +8,13 @@ const theme = createTheme({
     },
     secondary: {
       main: "#2383E2",
+      50: "#e3f2fd",
+      100: "#bbdefb", 
+      200: "#90caf9",
+      500: "#2196f3",
+      600: "#1e88e5",
+      800: "#1565c0",
+      900: "#0d47a1",
     },
     background: {
       default: "#FFFFFF",

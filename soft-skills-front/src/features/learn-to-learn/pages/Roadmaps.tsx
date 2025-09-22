@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom'
 import CreateRoadmapModal from '../components/roadmap/CreateRoadmapModal'
 import { RoadmapSummary } from '../types/roadmap/roadmap.models'
 import ConfirmDeleteModal from '../components/ConfirmDeleteModal'
+import EmptyState from '../components/ui/EmptyState'
 
 const Roadmaps = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -75,17 +76,19 @@ const Roadmaps = () => {
           </Typography>
         </Box>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<AddIcon />}
-          sx={{
-            fontWeight: 500,
-          }}
-          onClick={() => setShowCreateModal(true)}
-        >
-          Create new roadmap
-        </Button>
+        {hasMyRoadmaps && (
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<AddIcon />}
+            sx={{
+              fontWeight: 500,
+            }}
+            onClick={() => setShowCreateModal(true)}
+          >
+            Create new roadmap
+          </Button>
+        )}
       </Stack>
 
       <Box>
@@ -116,14 +119,26 @@ const Roadmaps = () => {
           </Grid2>
         )}
 
-        <PaginationControls
-          total={total}
-          offset={offset}
-          limit={limit}
-          onChangeOffset={setMyRoadmapsOffset}
-          onChangeLimit={setMyRoadmapsLimit}
-          pageSizeOptions={[10, 25, 50]}
-        />
+        {isEmpty && (
+          <EmptyState
+            title="No roadmaps yet"
+            description="Start your learning journey by creating your first personalized roadmap. Build structured paths to achieve your goals."
+            buttonText="Create your first roadmap"
+            onButtonClick={() => setShowCreateModal(true)}
+            fullHeight
+          />
+        )}
+
+        {hasMyRoadmaps && (
+          <PaginationControls
+            total={total}
+            offset={offset}
+            limit={limit}
+            onChangeOffset={setMyRoadmapsOffset}
+            onChangeLimit={setMyRoadmapsLimit}
+            pageSizeOptions={[10, 25, 50]}
+          />
+        )}
       </Box>
       <CreateRoadmapModal
         open={showCreateModal}

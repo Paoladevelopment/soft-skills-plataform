@@ -9,6 +9,7 @@ from model.objective import Objective
 from mongo_service.learning_goal import LearningGoalMongoService
 from schema.learning_goal import LearningGoalCreate, LearningGoalUpdate, LearningGoalReadWithProgress
 from sqlmodel import desc, Session, func, select
+from sqlalchemy.orm import attributes
 from sqlalchemy.sql import case
 from utils.db import get_session
 from utils.errors import APIException, Forbidden, Missing, handle_db_error
@@ -170,12 +171,15 @@ class LearningGoalService:
             if learning_goal.objectives_order is None:
                 learning_goal.objectives_order = []
             
-            objective_id_str = str(objective_id)
-            if objective_id_str in learning_goal.objectives_order:
+            if objective_id in learning_goal.objectives_order:
                 return 
                 
-            learning_goal.objectives_order.append(objective_id_str)
+            learning_goal.objectives_order.append(objective_id)
             learning_goal.updated_at = datetime.now(timezone.utc)
+            
+            attributes.flag_modified(learning_goal, 'objectives_order')
+            
+            session.commit()
             
             mongo_data = build_learning_goal_document(learning_goal)
             self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
@@ -194,12 +198,15 @@ class LearningGoalService:
             if not learning_goal.objectives_order:
                 return
                 
-            objective_id_str = str(objective_id)
-            if objective_id_str not in learning_goal.objectives_order:
+            if objective_id not in learning_goal.objectives_order:
                 return 
                 
-            learning_goal.objectives_order.remove(objective_id_str)
+            learning_goal.objectives_order.remove(objective_id)
             learning_goal.updated_at = datetime.now(timezone.utc)
+            
+            attributes.flag_modified(learning_goal, 'objectives_order')
+            
+            session.commit()
             
             mongo_data = build_learning_goal_document(learning_goal)
             self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
@@ -291,30 +298,39 @@ class LearningGoalService:
             
             objective_map = {obj["objective_id"]: obj for obj in mongo_objectives}
             
-            converted_objectives = []
-            for index, objective_id in enumerate(objectives_order):
+            all_objective_ids = []
+            
+            for objective_id in objectives_order:
                 if objective_id in objective_map:
-                    mongo_obj = objective_map[objective_id]
-                    
-                    converted_tasks = self._convert_tasks_with_order(
-                        mongo_obj.get("tasks", []), 
-                        mongo_obj.get("tasks_order_by_status", {})
-                    )
-                    
-                    converted_objective = {
-                        "objective_id": objective_id,
-                        "learning_goal_id": str(learning_goal_id),
-                        "title": mongo_obj["title"],
-                        "description": mongo_obj.get("description", ""),
-                        "order_index": index,
-                        "tasks": converted_tasks
-                    }
-                    converted_objectives.append(converted_objective)
+                    all_objective_ids.append(objective_id)
+            
+            for objective_id in objective_map.keys():
+                if objective_id not in all_objective_ids:
+                    all_objective_ids.append(objective_id)
+            
+            converted_objectives = []
+            for index, objective_id in enumerate(all_objective_ids):
+                mongo_obj = objective_map[objective_id]
+                
+                converted_tasks = self._convert_tasks_with_order(
+                    mongo_obj.get("tasks", []), 
+                    mongo_obj.get("tasks_order_by_status", {})
+                )
+                
+                converted_objective = {
+                    "objective_id": objective_id,
+                    "learning_goal_id": str(learning_goal_id),
+                    "title": mongo_obj["title"],
+                    "description": mongo_obj.get("description", ""),
+                    "order_index": index,
+                    "tasks": converted_tasks
+                }
+                converted_objectives.append(converted_objective)
             
             roadmap_data["objectives"] = converted_objectives
             
             objectives = roadmap_data.pop("objectives")
-            result = self.roadmap_mongo_service.add_roadmap(roadmap_data, str(user_id))
+            result = self.roadmap_mongo_service.add_roadmap(roadmap_data, str(user_id), session)
             
             roadmap_id = result["roadmap_id"]
             self.roadmap_mongo_service.update_roadmap(roadmap_id, {"objectives": objectives})

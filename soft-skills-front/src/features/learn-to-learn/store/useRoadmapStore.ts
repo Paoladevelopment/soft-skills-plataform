@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer'
 import { IRoadmapStore } from '../types/roadmap/roadmap.store'
 import { useToastStore } from '../../../store/useToastStore'
 import { LayoutNode, OnlyRoadmapMetadata, Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
-import { createRoadmap, deleteRoadmap, getPublicRoadmaps, getRoadmapById, getUserRoadmaps, updateRoadmap } from '../api/Roadmaps'
+import { createRoadmap, deleteRoadmap, getRoadmapById, getUserRoadmaps, updateRoadmap } from '../api/Roadmaps'
 import { buildRoadmapLayout } from '../utils/roadmap/roadmapLayoutGenerator'
 import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, findTaskInObjective, getOrCreateOrphanObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, removeTaskFromOrphanObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmapStructureUtils'
 import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmapGraphHelpers'
@@ -18,19 +18,12 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       editorEdges: [],
 
       myRoadmaps: [],
-      publicRoadmaps: [],
       isLoading: false,
 
       myRoadmapsPagination: {
         total: 0,
         offset: 0,
         limit: 10,
-      },
-
-      publicRoadmapsPagination: {
-        offset: 0,
-        limit: 10,
-        total: 0,
       },
 
       selectedRoadmap: null,
@@ -44,11 +37,6 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         }, false, 'ROADMAP/SET_MY_ROADMAPS')
       },
 
-      setPublicRoadmaps: (roadmaps: RoadmapSummary[]) => {
-        set((state) => {
-          state.publicRoadmaps = roadmaps
-        }, false, 'ROADMAP/SET_PUBLIC_ROADMAPS')
-      },
 
       setMyRoadmapsOffset: (offset: number) => {
         set((state) => {
@@ -56,11 +44,6 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         }, false, 'ROADMAP/SET_MY_OFFSET')
       },
 
-      setPublicRoadmapsOffset: (offset: number) => {
-        set((state) => {
-          state.publicRoadmapsPagination.offset = offset
-        }, false, 'ROADMAP/SET_PUBLIC_OFFSET')
-      },
 
       setMyRoadmapsLimit: (limit: number) => {
         set((state) => {
@@ -68,11 +51,6 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         }, false, 'ROADMAP/SET_MY_LIMIT')
       },
 
-      setPublicRoadmapsLimit: (limit: number) => {
-        set((state) => {
-          state.publicRoadmapsPagination.limit = limit
-        }, false, 'ROADMAP/SET_PUBLIC_LIMIT')
-      },
 
       setMyRoadmapsTotal: (total: number) => {
         set((state) => {
@@ -80,11 +58,6 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         }, false, 'ROADMAP/SET_MY_TOTAL')
       },
 
-      setPublicRoadmapsTotal: (total: number) => {
-        set((state) => {
-          state.publicRoadmapsPagination.total = total
-        }, false, 'ROADMAP/SET_PUBLIC_TOTAL')
-      },
 
       setSelectedRoadmap: (roadmap: Roadmap | null) => {
         set((state) => {
@@ -288,29 +261,6 @@ export const useRoadmapStore = create<IRoadmapStore>()(
         }
       },
 
-      fetchPublicRoadmaps: async (offset?: number, limit?: number) => {
-        const currentOffset = offset ?? get().publicRoadmapsPagination.offset
-        const currentLimit = limit ?? get().publicRoadmapsPagination.limit
-
-        set((state) => {
-          state.isLoading = true
-        }, false, 'ROADMAP/FETCH_PUBLIC_REQUEST')
-
-        try {
-          const { data, total } = await getPublicRoadmaps(currentOffset, currentLimit)
-
-          get().setPublicRoadmaps(data)
-          get().setPublicRoadmapsTotal(total)
-        } catch (err: unknown) {
-          if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error fetching public roadmaps', 'error')
-          }
-        } finally {
-          set((state) => {
-            state.isLoading = false
-          }, false, 'ROADMAP/FETCH_PUBLIC_COMPLETE')
-        }
-      },
 
       getRoadmapById: async (id: string, editable: boolean = false) => {
         set((state) => {

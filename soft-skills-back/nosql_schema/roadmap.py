@@ -52,6 +52,7 @@ def to_roadmap_summary_model(doc: dict) -> RoadmapSummary:
     return RoadmapSummary(
         roadmap_id=str(doc["_id"]),
         title=doc.get("title", ""),
+        username=doc.get("username", ""),
         description=doc.get("description"),
         created_at=doc.get("created_at"),  
         steps_count=total_tasks,
