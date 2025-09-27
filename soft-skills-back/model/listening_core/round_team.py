@@ -1,6 +1,7 @@
 from uuid import uuid4
+from datetime import datetime, timezone
 from uuid import UUID
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, TIMESTAMP
 from sqlalchemy import UniqueConstraint, Index
 
 from enums.listening_game import RoundTeamStatus, PromptType, AudioLength, Difficulty
@@ -21,6 +22,17 @@ class RoundTeam(RoundTeamBase, table=True):
     round_id: UUID = Field(foreign_key="listening_round.id")
     team_id: UUID = Field(foreign_key="listening_team.id")
     listener_user_id: UUID = Field(foreign_key="users.user_id")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=TIMESTAMP(timezone=True)
+    )
+    updated_at: datetime | None = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column_kwargs={
+            "onupdate": lambda: datetime.now(timezone.utc),
+        },
+        sa_type=TIMESTAMP(timezone=True),
+    )
     
     __table_args__ = (
         UniqueConstraint("round_id", "team_id", name="uq_listening_round_team_unique"),

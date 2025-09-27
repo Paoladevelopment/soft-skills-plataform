@@ -17,6 +17,17 @@ class Round(RoundBase, table=True):
     
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     game_id: UUID = Field(foreign_key="listening_game.id")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=TIMESTAMP(timezone=True)
+    )
+    updated_at: datetime | None = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column_kwargs={
+            "onupdate": lambda: datetime.now(timezone.utc),
+        },
+        sa_type=TIMESTAMP(timezone=True),
+    )
     started_at: datetime | None = Field(
         default=None,
         sa_type=TIMESTAMP(timezone=True)

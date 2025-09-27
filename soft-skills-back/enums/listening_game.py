@@ -7,6 +7,9 @@ class RoomStatus(str, Enum):
     finished = "finished"
     archived = "archived"
 
+    def __str__(self) -> str:
+        return self.value
+
 
 class GameStatus(str, Enum):
     active = "active"

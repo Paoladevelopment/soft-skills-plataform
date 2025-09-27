@@ -1,10 +1,10 @@
 ROOM_CREATE_EXAMPLE = {
-    "owner_user_id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Epic Listening Challenge",
     "config": {
         "rounds_total": 5,
         "round_time_limit_sec": 90,
         "listener_max_playbacks": 2,
-        "allowed_types": ["descriptive", "conversational", "soundscape"],
+        "allowed_types": ["descriptive", "conversational"],
         "difficulty": "intermediate",
         "audio_effects": {"reverb": 0.3, "echo": 0.1}
     }
@@ -12,6 +12,7 @@ ROOM_CREATE_EXAMPLE = {
 
 ROOM_READ_EXAMPLE = {
     "id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
+    "name": "Epic Listening Challenge",
     "owner_user_id": "123e4567-e89b-12d3-a456-426614174000",
     "status": "lobby",
     "created_at": "2025-09-22T10:30:00Z",
@@ -21,6 +22,7 @@ ROOM_READ_EXAMPLE = {
 
 ROOM_DETAIL_EXAMPLE = {
     "id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
+    "name": "Epic Listening Challenge",
     "owner_user_id": "123e4567-e89b-12d3-a456-426614174000",
     "status": "active",
     "created_at": "2025-09-22T10:30:00Z",

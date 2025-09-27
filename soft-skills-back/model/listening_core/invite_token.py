@@ -14,6 +14,17 @@ class InviteToken(InviteTokenBase, table=True):
     
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     room_id: UUID = Field(foreign_key="listening_room.id")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=TIMESTAMP(timezone=True)
+    )
+    updated_at: datetime | None = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column_kwargs={
+            "onupdate": lambda: datetime.now(timezone.utc),
+        },
+        sa_type=TIMESTAMP(timezone=True),
+    )
     expires_at: datetime = Field(sa_type=TIMESTAMP(timezone=True))
     used_by_user_id: UUID | None = Field(
         default=None,
