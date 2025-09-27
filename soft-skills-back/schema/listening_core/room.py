@@ -7,7 +7,8 @@ from sqlmodel import SQLModel
 
 from model.listening_core import RoomBase
 from schema.base import BaseResponse, PaginatedResponse
-from schema.listening_core.room_config import RoomConfigCreate
+from schema.listening_core.room_config import RoomConfigCreate, RoomConfigRead
+from enums.listening_game import PromptType, Difficulty, RoomStatus
 from utils.payloads_listening_game import (
     ROOM_CREATE_EXAMPLE,
     ROOM_READ_EXAMPLE, 
@@ -18,8 +19,7 @@ from utils.serializers import serialize_datetime_without_microseconds
 T = TypeVar("T")
 
 
-class RoomCreate(SQLModel):
-    owner_user_id: UUID
+class RoomCreate(RoomBase):
     config: Optional[RoomConfigCreate] = None
     
     model_config = {"json_schema_extra": {"example": ROOM_CREATE_EXAMPLE}}
@@ -49,7 +49,7 @@ class TeamSummary(SQLModel):
 
 
 class RoomDetail(RoomRead):
-    config: RoomConfigCreate
+    config: RoomConfigRead
     teams: List[TeamSummary] = []
     
     model_config = {
@@ -62,5 +62,10 @@ class RoomResponse(BaseResponse[T]):
     pass
 
 
+class RoomUpdate(SQLModel):
+    name: Optional[str] = None
+    status: Optional[RoomStatus] = None
+    
+    model_config = {"from_attributes": True}
 class RoomPaginatedResponse(PaginatedResponse):
     data: List[RoomRead]

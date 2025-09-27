@@ -22,6 +22,13 @@ class Room(RoomBase, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         sa_type=TIMESTAMP(timezone=True)
     )
+    updated_at: datetime | None = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column_kwargs={
+            "onupdate": lambda: datetime.now(timezone.utc),
+        },
+        sa_type=TIMESTAMP(timezone=True),
+    )
     started_at: datetime | None = Field(
         default=None,
         sa_type=TIMESTAMP(timezone=True)

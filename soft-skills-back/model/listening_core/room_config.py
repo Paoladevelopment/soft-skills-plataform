@@ -3,7 +3,6 @@ from sqlmodel import SQLModel, Field, Column, JSON
 
 from enums.listening_game import Difficulty, PromptType
 
-
 class RoomConfigBase(SQLModel):
     rounds_total: int = Field(default=5)
     round_time_limit_sec: int = Field(default=90)

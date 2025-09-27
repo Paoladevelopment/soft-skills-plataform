@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from router import auth, learning_goal, module, objective, task, user, roadmap
+from router import auth, learning_goal, module, objective, task, user, roadmap, room
 
 api = APIRouter(
   prefix="/api/v1"
@@ -45,4 +45,10 @@ api.include_router(
   roadmap.router,
   prefix="/roadmap",
   tags=["Roadmaps"]
+)
+
+api.include_router(
+  room.router,
+  prefix="/rooms",
+  tags=["Listening game rooms"]
 )

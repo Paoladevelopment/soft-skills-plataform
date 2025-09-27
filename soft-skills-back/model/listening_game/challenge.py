@@ -1,6 +1,7 @@
 from uuid import uuid4
+from datetime import datetime, timezone
 from uuid import UUID
-from sqlmodel import SQLModel, Field, Column, JSON
+from sqlmodel import SQLModel, Field, Column, JSON, TIMESTAMP
 
 
 class ChallengeBase(SQLModel):
@@ -17,6 +18,17 @@ class Challenge(ChallengeBase, table=True):
     round_team_id: UUID = Field(
         foreign_key="listening_round_team.id",
         unique=True
+    )
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_type=TIMESTAMP(timezone=True)
+    )
+    updated_at: datetime | None = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column_kwargs={
+            "onupdate": lambda: datetime.now(timezone.utc),
+        },
+        sa_type=TIMESTAMP(timezone=True),
     )
     forbidden_words: list[str] = Field(
         default_factory=list,
