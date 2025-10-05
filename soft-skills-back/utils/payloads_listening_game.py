@@ -6,7 +6,9 @@ ROOM_CREATE_EXAMPLE = {
         "listener_max_playbacks": 2,
         "allowed_types": ["descriptive", "conversational"],
         "difficulty": "intermediate",
-        "audio_effects": {"reverb": 0.3, "echo": 0.1}
+        "audio_effects": {"reverb": 0.3, "echo": 0.1},
+        "team_assignment_mode": "random",
+        "team_size": 3
     }
 }
 

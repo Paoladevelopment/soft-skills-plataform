@@ -12,7 +12,7 @@ from schema.token import TokenData
 from service.user import UserService
 from sqlmodel import Session
 from utils.config import settings
-from utils.errors import APIException, raise_unauthorized_exception
+from utils.errors import APIException
 from utils.security import verify_password
 
 logger = logging.getLogger(__name__)

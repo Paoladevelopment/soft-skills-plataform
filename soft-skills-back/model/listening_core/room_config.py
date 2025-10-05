@@ -1,7 +1,8 @@
 from uuid import UUID
 from sqlmodel import SQLModel, Field, Column, JSON
 
-from enums.listening_game import Difficulty, PromptType
+from enums.listening_game import Difficulty, PromptType, TeamAssignmentMode
+from utils.listening_game_constants import DEFAULT_TEAM_SIZE, DEFAULT_TEAMS_COUNT
 
 class RoomConfigBase(SQLModel):
     rounds_total: int = Field(default=5)
@@ -12,6 +13,8 @@ class RoomConfigBase(SQLModel):
     )
     difficulty: Difficulty = Field(default=Difficulty.easy)
     audio_effects: dict = Field(default_factory=dict)
+    team_assingment_mode: TeamAssignmentMode = Field(default=TeamAssignmentMode.manual)
+    team_size: int = Field(default=DEFAULT_TEAM_SIZE)
 
 
 class RoomConfig(RoomConfigBase, table=True):
@@ -29,3 +32,4 @@ class RoomConfig(RoomConfigBase, table=True):
         default_factory=dict,
         sa_column=Column(JSON)
     )
+    teams_count: int = Field(default=DEFAULT_TEAMS_COUNT)

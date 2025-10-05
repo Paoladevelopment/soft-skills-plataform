@@ -1,12 +1,13 @@
 from datetime import datetime
 from uuid import UUID
 from pydantic import field_serializer
+from sqlmodel import SQLModel
 
-from model.listening_core import TeamMemberBase
 from utils.serializers import serialize_datetime_without_microseconds
 
 
-class TeamMemberRead(TeamMemberBase):
+class TeamMemberRead(SQLModel):
+    joined_at: datetime
     team_id: UUID
     user_id: UUID
     

@@ -1,7 +1,6 @@
-import uuid
+from uuid import UUID, uuid4
 from datetime import datetime, timezone
 from typing import List
-from uuid import UUID
 
 from sqlalchemy import Text
 from sqlalchemy.dialects.postgresql import ARRAY, UUID as PG_UUID
@@ -16,7 +15,7 @@ class LearningGoalBase(SQLModel):
 
 class LearningGoal(LearningGoalBase, table=True):
   __tablename__ = "learning_goals"
-  learning_goal_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+  learning_goal_id: UUID = Field(default_factory=uuid4, primary_key=True)
   user_id: UUID | None = Field(default=None, foreign_key="users.user_id")
   description: str = Field(sa_type=Text)
   created_at: datetime | None = Field(

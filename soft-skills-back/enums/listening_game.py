@@ -71,3 +71,8 @@ class VoiceProvider(str, Enum):
     discord = "discord"
     jitsi = "jitsi"
     custom = "custom"
+
+
+class TeamAssignmentMode(str, Enum):
+    manual = "manual"
+    random = "random"

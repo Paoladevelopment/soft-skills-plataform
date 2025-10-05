@@ -64,8 +64,10 @@ class RoomService:
                 room_id=new_room.id,
                 **cfg_payload
             )
-            
             session.add(room_config)
+
+            self.team_service.create_default_teams(new_room.id, session)
+
             session.commit()
             session.refresh(new_room)
             
