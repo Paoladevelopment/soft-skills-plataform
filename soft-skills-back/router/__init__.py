@@ -9,7 +9,8 @@ from router import (
   roadmap, 
   room, 
   room_invite,
-  room_member
+  room_member,
+  team_member
 )
 
 api = APIRouter(
@@ -74,4 +75,10 @@ api.include_router(
   room_member.router,
   prefix="/rooms",
   tags=["Room members"]
+)
+
+api.include_router(
+  team_member.router,
+  prefix="/rooms",
+  tags=["Team members"]
 )
