@@ -61,7 +61,6 @@ class RoomDetail(RoomRead):
 class RoomResponse(BaseResponse[T]):
     pass
 
-
 class RoomUpdate(SQLModel):
     name: Optional[str] = None
     status: Optional[RoomStatus] = None

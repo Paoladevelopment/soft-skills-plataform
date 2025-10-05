@@ -1,22 +1,24 @@
 from uuid import UUID, uuid4
 from datetime import datetime, timezone
+from typing import Optional
 from sqlmodel import SQLModel, Field, TIMESTAMP
-from sqlalchemy import Index, Column, String
-
-from enums.listening_game import RoomStatus
+from sqlalchemy import Column, String, Index
 
 
-class RoomBase(SQLModel):
-    status: RoomStatus = Field(default=RoomStatus.lobby)
-    name: str
+class RoomInviteBase(SQLModel):
+    expires_at: Optional[datetime] = None
+    max_uses: Optional[int] = None
 
 
-class Room(RoomBase, table=True):
-    __tablename__ = "listening_room"
+class RoomInvite(RoomInviteBase, table=True):
+    __tablename__ = "listening_room_invite"
     
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    name: str = Field(sa_column=Column(String(255)))
-    owner_user_id: UUID = Field(foreign_key="users.user_id")
+    room_id: UUID = Field(foreign_key="listening_room.id", index=True)
+    created_by: UUID = Field(foreign_key="users.user_id")
+
+    token_hash: str = Field(sa_column=Column(String(255), unique=True))
+
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
         sa_type=TIMESTAMP(timezone=True)
@@ -28,15 +30,10 @@ class Room(RoomBase, table=True):
         },
         sa_type=TIMESTAMP(timezone=True),
     )
-    started_at: datetime | None = Field(
+    expires_at: datetime | None = Field(
         default=None,
         sa_type=TIMESTAMP(timezone=True)
     )
-    finished_at: datetime | None = Field(
-        default=None,
-        sa_type=TIMESTAMP(timezone=True)
-    )
-    
-    __table_args__ = (
-        Index("ix_listening_room_status_created", "status", "created_at"),
-    )
+    max_uses: int | None = Field(default=None)
+    uses: int = Field(default=0)
+    revoked: bool = Field(default=False) 

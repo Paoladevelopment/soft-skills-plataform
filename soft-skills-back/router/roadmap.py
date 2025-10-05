@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, status, Query, Request
+from fastapi import APIRouter, Depends, status, Query
 from fastapi.responses import JSONResponse
 from typing import Optional
 from datetime import datetime
 
-from nosql_models.roadmap import Roadmap
 from nosql_schema.roadmap import RoadmapCreate, RoadmapUpdate, RoadmapResponse, PaginatedRoadmapsResponse
 from schema.token import TokenData
 from mongo_service.roadmap import RoadmapMongoService

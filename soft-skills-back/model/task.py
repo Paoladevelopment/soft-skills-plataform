@@ -1,7 +1,6 @@
-import uuid
+from uuid import UUID, uuid4
 from datetime import datetime, timezone
 from typing import Optional
-from uuid import UUID
 
 from enums.common import Priority, Status
 from enums.task import TaskType
@@ -20,7 +19,6 @@ class TaskBase(SQLModel):
   estimated_seconds: int = Field(default=0)
   actual_seconds: int | None = Field(default=None)
 
-  # Immutable snapshot from user's prefs at estimate time
   pomodoro_length_seconds_snapshot: int = Field(default=60*60, ge=60)
 
   due_date: datetime | None = Field(default=None)
@@ -55,7 +53,7 @@ class TaskBase(SQLModel):
 
 class Task(TaskBase, table=True):
   __tablename__ = "tasks"
-  task_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+  task_id: UUID = Field(default_factory=uuid4, primary_key=True)
   objective_id: UUID | None = Field(default=None, foreign_key="objectives.objective_id")
   description: str = Field(sa_type=Text)
   created_at: datetime | None = Field(

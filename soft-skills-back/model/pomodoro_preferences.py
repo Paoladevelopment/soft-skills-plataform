@@ -1,6 +1,6 @@
-import uuid
+from uuid import UUID, uuid4
 from datetime import datetime, timezone
-from uuid import UUID
+
 
 
 from sqlmodel import TIMESTAMP, Field, SQLModel
@@ -20,7 +20,7 @@ class PomodoroPreferencesBase(SQLModel):
 
 class PomodoroPreferences(PomodoroPreferencesBase, table=True):
     __tablename__ = "pomodoro_preferences"
-    pomodoro_preferences_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    pomodoro_preferences_id: UUID = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID | None = Field(default=None, foreign_key="users.user_id")
     created_at: datetime | None = Field(
     default_factory=lambda: datetime.now(timezone.utc),

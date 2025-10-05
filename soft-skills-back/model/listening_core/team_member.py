@@ -1,15 +1,8 @@
-from datetime import datetime, timezone
 from uuid import UUID
+from datetime import datetime, timezone
 from sqlmodel import SQLModel, Field, TIMESTAMP
 
-
-class TeamMemberBase(SQLModel):
-    joined_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
-    )
-
-
-class TeamMember(TeamMemberBase, table=True):
+class TeamMember(SQLModel, table=True):
     __tablename__ = "listening_team_member"
     
     team_id: UUID = Field(

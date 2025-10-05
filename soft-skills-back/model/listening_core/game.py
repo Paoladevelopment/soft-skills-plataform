@@ -1,6 +1,5 @@
-from uuid import uuid4
+from uuid import UUID, uuid4
 from datetime import datetime, timezone
-from uuid import UUID
 from sqlmodel import SQLModel, Field, TIMESTAMP
 
 from enums.listening_game import GameStatus

@@ -36,9 +36,6 @@ def login_for_access_token(
     """
     try:
         user: User = authenticate_user(form_data.username, form_data.password, session)
-
-        if not user:
-            raise_unauthorized_exception()
         
         user_service.update_last_login_from_user(user, session)
         

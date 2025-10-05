@@ -42,8 +42,14 @@ def validate_allowed_types_strict(seq: Sequence[PromptType]) -> List[PromptType]
 
     return list(seq)
 
-def normalize_audio_effects(v):
+def validate_team_size(v: int, min_v: int = 2, max_v: int = 4) -> int:
+    v = int(v)
+
+    if not (min_v <= v <= max_v):
+        raise ValueError(f"team_size must be between {min_v} and {max_v}")
+    
     return v
+
 
 def normalize_audio_effects_read(v):
     if v is None:
@@ -90,10 +96,9 @@ def validate_allowed_types_strict_optional(
 
     return validate_allowed_types_strict(seq)
 
-def normalize_audio_effects_optional(
-    v: Optional[AudioEffects]
-) -> Optional[AudioEffects]:
+
+def validate_team_size_optional(v: Optional[int], *, min_v: int = 2, max_v: int = 4) -> Optional[int]:
     if v is None:
         return None
-
-    return normalize_audio_effects(v)
+    
+    return validate_team_size(v, min_v=min_v, max_v=max_v)

@@ -1,7 +1,6 @@
-import uuid
+from uuid import UUID, uuid4
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
-from uuid import UUID
 
 from enums.common import Priority, Status
 from sqlalchemy import Text
@@ -29,7 +28,7 @@ class ObjectiveBase(SQLModel):
 
 class Objective(ObjectiveBase, table=True):
   __tablename__ = "objectives"
-  objective_id: UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+  objective_id: UUID = Field(default_factory=uuid4, primary_key=True)
   learning_goal_id: UUID | None = Field(default=None, foreign_key="learning_goals.learning_goal_id")
   description: str = Field(sa_type=Text)
   created_at: datetime | None = Field(
