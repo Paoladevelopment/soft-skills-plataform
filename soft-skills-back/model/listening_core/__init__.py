@@ -13,7 +13,7 @@ __all__ = [
     "RoomConfigBase", "RoomConfig", 
     "RoomInviteBase", "RoomInvite",
     "TeamBase", "Team", 
-    "TeamMemberBase", "TeamMember",
+    "TeamMember",
     "RoomMemberBase", "RoomMember",
     "GameBase", "Game", 
     "RoundBase", "Round", 

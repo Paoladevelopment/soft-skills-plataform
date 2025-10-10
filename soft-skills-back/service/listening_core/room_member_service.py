@@ -70,7 +70,7 @@ class RoomMemberService:
     ) -> Tuple[Optional[UUID], Optional[str], str]:
     
         config = self.room_service.get_config(room_id, session)
-        mode = config.team_assingment_mode
+        mode = config.team_assignment_mode
         mode_str = getattr(mode, "value", str(mode))
 
         if mode == TeamAssignmentMode.manual:
@@ -141,6 +141,7 @@ class RoomMemberService:
     ) -> None:
         try:
             room_member = self.get_room_member(room_id, user_id, session)
+
             if not room_member or not room_member.active:
                 raise BadRequest("You are not a member of this room or you have already left.")
             

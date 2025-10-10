@@ -13,7 +13,7 @@ class RoomConfigBase(SQLModel):
     )
     difficulty: Difficulty = Field(default=Difficulty.easy)
     audio_effects: dict = Field(default_factory=dict)
-    team_assingment_mode: TeamAssignmentMode = Field(default=TeamAssignmentMode.manual)
+    team_assignment_mode: TeamAssignmentMode = Field(default=TeamAssignmentMode.manual)
     team_size: int = Field(default=DEFAULT_TEAM_SIZE)
 
 

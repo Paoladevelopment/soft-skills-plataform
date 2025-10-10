@@ -92,8 +92,12 @@ class TeamMemberService:
                 raise Missing("Team does not belong to this room.")
 
             existing_team = self.team_service._get_user_team_in_room(room_id, user_id, session)
-            if existing_team:
+
+            if existing_team and existing_team.id != team_id:
                 raise Duplicate("You already belong to a team in this room. Leave it before joining another.")
+            
+            if existing_team and existing_team.id == team_id:
+                return
 
             config = self.room_service.get_config(room_id, session)
 

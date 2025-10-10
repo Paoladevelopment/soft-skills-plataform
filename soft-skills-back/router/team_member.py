@@ -27,7 +27,10 @@ def join_team(
 ):
     try:
         team_member_service.join_team_manually(room_id, team_id, token_data.user_id, session)
-        return BaseResponse(message="Joined team successfully.")
+        return BaseResponse(
+            message="Joined team successfully.", 
+            data=f"Joined team '{team_id}' successfully."
+        )
     except APIException as exc:
         raise_http_exception(exc)
 
@@ -49,7 +52,7 @@ def leave_team(
         removed_team_id = team_member_service.leave_team_manually(room_id, team_id, token_data.user_id, session)
         return BaseResponse(
             message=f"Left team {removed_team_id} successfully.",
-            data=removed_team_id
+            data=str(removed_team_id)
         )
         
     except APIException as exc:
