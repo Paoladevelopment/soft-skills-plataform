@@ -69,7 +69,7 @@ class RoomInviteService:
         room = self.room_service.get_room(room_id, session) 
 
         if room.owner_user_id != user_id:
-            raise BadRequest("Only the room owner can create an invite")
+            raise BadRequest("Only the room owner can perform this action")
 
     def create_invite_for_room(
         self,
@@ -202,18 +202,17 @@ class RoomInviteService:
             Returns the new `uses` value on success.
         """
         try:
-            result = session.exec(
-                text("""
-                    UPDATE listening_room_invite
-                    SET uses = uses + 1, updated_at = NOW()
-                    WHERE id = :id
-                      AND revoked = false
-                      AND (expires_at IS NULL OR expires_at > NOW())
-                      AND (max_uses IS NULL OR uses < max_uses)
-                    RETURNING uses
-                """),
-                {"id": invite_id},
-            )
+            stmt = text("""
+                UPDATE listening_room_invite
+                SET uses = uses + 1, updated_at = NOW()
+                WHERE id = :id
+                AND revoked = false
+                AND (expires_at IS NULL OR expires_at > NOW())
+                AND (max_uses IS NULL OR uses < max_uses)
+                RETURNING uses
+            """).bindparams(id=str(invite_id))
+
+            result = session.exec(stmt)
             row = result.first()
 
             if row is None:
