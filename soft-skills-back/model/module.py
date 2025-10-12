@@ -14,6 +14,7 @@ class ModuleBase(SQLModel):
     image_url: str | None = Field(default=None)
     objective: str
     tags: List[str] = Field(default_factory=list)
+    route_path: str
 
 
 class Module(ModuleBase, table=True):

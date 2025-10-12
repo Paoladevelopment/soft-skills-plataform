@@ -39,6 +39,7 @@ def create_module(
 def get_all_modules(
         offset: int = Query(0, ge=0, description="Number of items to skip"),
         limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
+        _ = Depends(get_current_admin_user),
         session: Session = Depends(get_session),
     ):
 
@@ -57,7 +58,11 @@ def get_all_modules(
 
 
 @router.get("/{id}", summary="Retrieve a module by ID", response_model=ModuleResponse)
-def get_module(id: int, session: Session = Depends(get_session)):
+def get_module(
+    id: int, 
+    _ = Depends(get_current_admin_user),
+    session: Session = Depends(get_session)
+):
     try:
         module = module_service.get_module(id, session)
         module_data = ModuleRead.model_validate(module)

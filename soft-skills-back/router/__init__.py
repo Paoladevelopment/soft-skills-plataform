@@ -31,7 +31,7 @@ api.include_router(
 
 api.include_router(
   module.router,
-  prefix="/module",
+  prefix="/modules",
   tags=["Soft skills modules"]
 )
 
