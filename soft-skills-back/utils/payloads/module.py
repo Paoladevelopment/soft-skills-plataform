@@ -5,7 +5,8 @@ MODULE_CREATE_EXAMPLE = {
     "description": "Learn how to resolve workplace conflicts effectively.",
     "image_url": None,
     "objective": "Improve negotiation and conflict resolution skills.",
-    "tags": ["negotiation", "empathy"]
+    "tags": ["negotiation", "empathy"],
+    "route_path": "/conflict-resolution"
 }
 
 MODULE_READ_EXAMPLE = {
@@ -16,7 +17,8 @@ MODULE_READ_EXAMPLE = {
     "description": "Learn how to resolve workplace conflicts effectively.",
     "image_url": None,
     "objective": "Improve negotiation and conflict resolution skills.",
-    "tags": ["negotiation", "empathy"]
+    "tags": ["negotiation", "empathy"],
+    "route_path": "/conflict-resolution"
 }
 
 MODULE_UPDATE_EXAMPLE = {

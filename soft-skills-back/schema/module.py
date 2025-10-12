@@ -26,6 +26,7 @@ class ModuleUpdate(SQLModel):
     default=None, 
     description="Updated list of tags. If omitted, tags remain unchanged. If an empty list is sent, tags will be removed."
   )
+  route_path: str | None = Field(default=None, description="Updated route path of the module.")
 
   model_config = {"json_schema_extra": {"example": MODULE_UPDATE_EXAMPLE}}
 

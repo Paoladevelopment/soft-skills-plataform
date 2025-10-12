@@ -45,4 +45,7 @@ export const api = {
     update: (id: string) => `${BASE_URL}/tasks/${id}`,
     delete: (id: string) => `${BASE_URL}/tasks/${id}`,
   },
+  modules: {
+    getAll: `${BASE_URL}/modules`,
+  }
 }
