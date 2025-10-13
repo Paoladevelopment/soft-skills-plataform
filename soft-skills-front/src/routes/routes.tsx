@@ -19,6 +19,7 @@ import CreateRoadmapWithChatbot from '../features/learn-to-learn/pages/CreateRoa
 import RoadmapEditor from '../features/learn-to-learn/pages/RoadmapEditor'
 import LearningGoalDetail from '../features/learn-to-learn/pages/LearningGoalDetail'
 import ObjectiveDetail from '../features/learn-to-learn/pages/ObjectiveDetail'
+import ActiveListeningHome from '../features/active-listening/pages/Home'
 
 
 export const RoutesConfiguration = () => {
@@ -66,6 +67,10 @@ export const RoutesConfiguration = () => {
 
             <Route path='help' element={<Help/>}></Route>
           </Route>
+        </Route>
+
+        <Route element={<ProtectedRoutes/>}>
+          <Route path='/active-listening' element={<ActiveListeningHome/>}></Route>
         </Route>
         
       </Routes>

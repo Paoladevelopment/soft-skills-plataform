@@ -1,13 +1,15 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Sequence
 from uuid import UUID
 from datetime import datetime, timezone
 
-from sqlmodel import Session
+from sqlmodel import Session, select, func
 from model.listening_core.room import Room
 from model.listening_core.room_config import RoomConfig
-from schema.listening_core.room import RoomCreate, TeamSummary
+from model.listening_core.room_member import RoomMember
+from schema.listening_core.room import RoomCreate, RoomSummary, TeamSummary
 from enums.listening_game import RoomStatus
 from utils.errors import APIException, Missing, BadRequest, handle_db_error
+from utils.listening_game_constants import DEFAULT_TEAMS_COUNT
 from .team_service import TeamService
 
 
@@ -159,3 +161,68 @@ class RoomService:
         except Exception as err:
             session.rollback()
             handle_db_error(err, "update_room_config", error_type="commit")
+    
+    def count_active_members(self, room_id: UUID, session: Session) -> int:
+        try:
+            return session.scalar(
+                select(func.count())
+                .select_from(RoomMember)
+                .where(
+                    RoomMember.room_id == room_id,
+                    RoomMember.active == True
+                )
+            ) or 0
+        
+        except Exception as err:
+            handle_db_error(err, "count_active_members", error_type="query")
+    
+    def _count_rooms(self, session: Session) -> int:
+        return session.scalar(
+            select(
+                func.count(Room.id)
+            )
+        )
+    
+    def _get_rooms(self, offset: int, limit: int, session: Session) -> Sequence[Room]:
+        return session.exec(
+            select(Room).
+            offset(offset).
+            limit(limit)
+        ).all()
+    
+    def _get_rooms_paginated(self, offset: int, limit: int, session: Session) -> Tuple[Sequence[Room], int]:
+        total_count = self._count_rooms(session)
+        rooms = self._get_rooms(offset, limit, session)
+        return rooms, total_count
+    
+    def _calculate_max_players(self, config: RoomConfig) -> int:
+        return config.team_size * DEFAULT_TEAMS_COUNT
+    
+    def list_rooms(self, offset: int, limit: int, session: Session) -> Tuple[Sequence[RoomSummary], int]:
+        try:
+            rooms, total_count = self._get_rooms_paginated(offset, limit, session)
+            
+            room_summaries = []
+            for room in rooms:
+                config = self.get_config(room.id, session)
+                max_players = self._calculate_max_players(config)
+                players_count = self.count_active_members(room.id, session)
+                
+                room_summary = RoomSummary(
+                    id=room.id,
+                    name=room.name,
+                    status=room.status,
+                    owner_user_id=room.owner_user_id,
+                    created_at=room.created_at,
+                    max_players=max_players,
+                    players_count=players_count
+                )
+                
+                room_summaries.append(room_summary)
+            
+            return room_summaries, total_count
+            
+        except APIException:
+            raise
+        except Exception as err:
+            handle_db_error(err, "list_rooms", error_type="query")
