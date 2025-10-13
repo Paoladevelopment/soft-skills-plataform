@@ -18,6 +18,23 @@ from utils.serializers import serialize_datetime_without_microseconds
 
 T = TypeVar("T")
 
+class RoomSummary(RoomBase):
+    id: UUID
+    owner_user_id: UUID
+    created_at: datetime
+    max_players: int
+    players_count: int
+    
+    @field_serializer("created_at", when_used="json")
+    def serialize_created_at(self, v: datetime) -> str:
+        return serialize_datetime_without_microseconds(v)
+    
+    model_config = {"from_attributes": True}
+
+class TeamSummary(SQLModel):
+    id: UUID
+    name: str
+    member_count: int
 
 class RoomCreate(RoomBase):
     config: Optional[RoomConfigCreate] = None
@@ -42,10 +59,11 @@ class RoomRead(RoomBase):
     }
 
 
-class TeamSummary(SQLModel):
-    id: UUID
-    name: str
-    member_count: int
+class RoomUpdate(SQLModel):
+    name: Optional[str] = None
+    status: Optional[RoomStatus] = None
+    
+    model_config = {"from_attributes": True}
 
 
 class RoomDetail(RoomRead):
@@ -61,10 +79,6 @@ class RoomDetail(RoomRead):
 class RoomResponse(BaseResponse[T]):
     pass
 
-class RoomUpdate(SQLModel):
-    name: Optional[str] = None
-    status: Optional[RoomStatus] = None
-    
-    model_config = {"from_attributes": True}
+
 class RoomPaginatedResponse(PaginatedResponse):
-    data: List[RoomRead]
+    data: List[RoomSummary]

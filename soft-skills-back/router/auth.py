@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from model.user import User
 from schema.auth import AuthResponse
@@ -36,6 +36,12 @@ def login_for_access_token(
     """
     try:
         user: User = authenticate_user(form_data.username, form_data.password, session)
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password"
+            )
         
         user_service.update_last_login_from_user(user, session)
         

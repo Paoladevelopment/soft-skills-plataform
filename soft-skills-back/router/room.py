@@ -1,8 +1,8 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 
 from schema.listening_core.room import (
-    RoomCreate, RoomRead, RoomDetail, RoomUpdate, RoomResponse
+    RoomCreate, RoomRead, RoomDetail, RoomUpdate, RoomResponse, RoomPaginatedResponse
 )
 from schema.listening_core.room_config import RoomConfigRead, RoomConfigUpdate
 from schema.token import TokenData
@@ -18,6 +18,32 @@ router = APIRouter()
 
 room_service = RoomService()
 game_service = GameService()
+
+
+@router.get(
+    "",
+    summary="List all rooms with pagination",
+    response_model=RoomPaginatedResponse,
+)
+def list_rooms(
+    offset: int = Query(0, ge=0, description="Number of items to skip"),
+    limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        room_summaries, total_count = room_service.list_rooms(offset, limit, session)
+        
+        return RoomPaginatedResponse(
+            message="Rooms retrieved successfully",
+            data=room_summaries,
+            total=total_count,
+            offset=offset,
+            limit=limit
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
 
 
 @router.post(
