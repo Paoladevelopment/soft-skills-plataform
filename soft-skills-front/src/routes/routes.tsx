@@ -20,6 +20,7 @@ import RoadmapEditor from '../features/learn-to-learn/pages/RoadmapEditor'
 import LearningGoalDetail from '../features/learn-to-learn/pages/LearningGoalDetail'
 import ObjectiveDetail from '../features/learn-to-learn/pages/ObjectiveDetail'
 import ActiveListeningHome from '../features/active-listening/pages/Home'
+import Rooms from '../features/active-listening/pages/Rooms'
 
 
 export const RoutesConfiguration = () => {
@@ -70,7 +71,10 @@ export const RoutesConfiguration = () => {
         </Route>
 
         <Route element={<ProtectedRoutes/>}>
-          <Route path='/active-listening' element={<ActiveListeningHome/>}></Route>
+          <Route path='/active-listening'>
+            <Route index element={<ActiveListeningHome/>} />
+            <Route path='rooms' element={<Rooms/>} />
+          </Route>
         </Route>
         
       </Routes>

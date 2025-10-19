@@ -14,7 +14,7 @@ import PaginationControls from '../components/PaginationControls'
 import { useNavigate } from 'react-router-dom'
 import CreateRoadmapModal from '../components/roadmap/CreateRoadmapModal'
 import { RoadmapSummary } from '../types/roadmap/roadmap.models'
-import ConfirmDeleteModal from '../components/ConfirmDeleteModal'
+import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
 import EmptyState from '../components/ui/EmptyState'
 
 const Roadmaps = () => {

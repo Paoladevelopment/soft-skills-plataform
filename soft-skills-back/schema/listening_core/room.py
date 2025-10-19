@@ -20,10 +20,9 @@ T = TypeVar("T")
 
 class RoomSummary(RoomBase):
     id: UUID
-    owner_user_id: UUID
-    created_at: datetime
     max_players: int
     players_count: int
+    created_at: datetime
     
     @field_serializer("created_at", when_used="json")
     def serialize_created_at(self, v: datetime) -> str:
@@ -42,14 +41,11 @@ class RoomCreate(RoomBase):
     model_config = {"json_schema_extra": {"example": ROOM_CREATE_EXAMPLE}}
 
 
-class RoomRead(RoomBase):
-    id: UUID
-    owner_user_id: UUID
-    created_at: datetime
+class RoomRead(RoomSummary):
     started_at: Optional[datetime] = None
     finished_at: Optional[datetime] = None
     
-    @field_serializer("created_at", "started_at", "finished_at", when_used="json")
+    @field_serializer("started_at", "finished_at", when_used="json")
     def serialize_datetime_fields(self, v: datetime | None) -> str | None:
         return serialize_datetime_without_microseconds(v)
     

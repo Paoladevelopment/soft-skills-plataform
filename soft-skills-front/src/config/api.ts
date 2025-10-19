@@ -47,5 +47,12 @@ export const api = {
   },
   modules: {
     getAll: `${BASE_URL}/modules`,
+  },
+  rooms: {
+    getAll: (offset: number, limit: number) => `${BASE_URL}/rooms?offset=${offset}&limit=${limit}`,
+    byId: (id: string) => `${BASE_URL}/rooms/${id}`,
+    create: `${BASE_URL}/rooms`,
+    updateConfig: (id: string) => `${BASE_URL}/rooms/${id}/config`,
+    delete: (id: string) => `${BASE_URL}/rooms/${id}`,
   }
 }

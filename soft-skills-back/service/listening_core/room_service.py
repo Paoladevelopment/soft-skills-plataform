@@ -8,7 +8,7 @@ from model.listening_core.room_config import RoomConfig
 from model.listening_core.room_member import RoomMember
 from schema.listening_core.room import RoomCreate, RoomSummary, TeamSummary
 from enums.listening_game import RoomStatus
-from utils.errors import APIException, Missing, BadRequest, handle_db_error
+from utils.errors import APIException, Missing, BadRequest, Forbidden, handle_db_error
 from utils.listening_game_constants import DEFAULT_TEAMS_COUNT
 from .team_service import TeamService
 
@@ -47,6 +47,10 @@ class RoomService:
         except Exception as err:
             handle_db_error(err, "get_config", error_type="query")
     
+    def verify_room_ownership(self, room: Room, user_id: UUID):
+        if room.owner_user_id != user_id:
+            raise Forbidden("You are not allowed to perform this action")
+    
     def create_room_with_config(self, room_data: RoomCreate, owner_user_id: UUID, session: Session) -> Room:
         try:
             new_room = Room(
@@ -79,9 +83,11 @@ class RoomService:
             session.rollback()
             handle_db_error(err, "create_room_with_config", error_type="commit")
     
-    def get_room_detail(self, room_id: UUID, session: Session) -> Tuple[Room, RoomConfig, List[TeamSummary]]:
+    def get_room_detail(self, room_id: UUID, user_id: UUID, session: Session) -> Tuple[Room, RoomConfig, List[TeamSummary]]:
         try:
             room = self.get_room(room_id, session)
+            self.verify_room_ownership(room, user_id)
+            
             config = self.get_config(room_id, session)
             team_summaries = self.team_service.get_team_summaries(room_id, session)
             
@@ -92,9 +98,10 @@ class RoomService:
         except Exception as err:
             handle_db_error(err, "get_room_detail", error_type="query")
     
-    def update_room(self, room_id: UUID, name: Optional[str], new_status: Optional[RoomStatus], session: Session) -> Room:
+    def update_room(self, room_id: UUID, user_id: UUID, name: Optional[str], new_status: Optional[RoomStatus], session: Session) -> Room:
         try:
             room = self.get_room(room_id, session)
+            self.verify_room_ownership(room, user_id)
             
             if name is not None:
                 room.name = name
@@ -139,9 +146,11 @@ class RoomService:
             session.rollback()
             handle_db_error(err, "update_room", error_type="commit")
     
-    def update_room_config(self, room_id: UUID, config_updates: dict, session: Session) -> RoomConfig:
+    def update_room_config(self, room_id: UUID, user_id: UUID, config_updates: dict, session: Session) -> RoomConfig:
         try:
             room = self.get_room(room_id, session)
+            self.verify_room_ownership(room, user_id)
+            
             if room.status != RoomStatus.lobby:
                 raise BadRequest("Room configuration can only be updated when room is in lobby status")
 
@@ -162,6 +171,22 @@ class RoomService:
             session.rollback()
             handle_db_error(err, "update_room_config", error_type="commit")
     
+    def delete_room(self, room_id: UUID, user_id: UUID, session: Session):
+        try:
+            room = self.get_room(room_id, session)
+            self.verify_room_ownership(room, user_id)
+            
+            session.delete(room)
+            session.commit()
+
+            return {"message": "Room deleted successfully", "room_id": room_id}
+        
+        except APIException:
+            raise
+        except Exception as err:
+            session.rollback()
+            handle_db_error(err, "delete_room", error_type="commit")
+    
     def count_active_members(self, room_id: UUID, session: Session) -> int:
         try:
             return session.scalar(
@@ -176,31 +201,31 @@ class RoomService:
         except Exception as err:
             handle_db_error(err, "count_active_members", error_type="query")
     
-    def _count_rooms(self, session: Session) -> int:
+    def _count_rooms(self, user_id: UUID, session: Session) -> int:
         return session.scalar(
-            select(
-                func.count(Room.id)
-            )
+            select(func.count(Room.id)).
+            where(Room.owner_user_id == user_id)
         )
     
-    def _get_rooms(self, offset: int, limit: int, session: Session) -> Sequence[Room]:
+    def _get_rooms(self, user_id: UUID, offset: int, limit: int, session: Session) -> Sequence[Room]:
         return session.exec(
-            select(Room).
-            offset(offset).
-            limit(limit)
+            select(Room)
+            .where(Room.owner_user_id == user_id)
+            .offset(offset)
+            .limit(limit)
         ).all()
     
-    def _get_rooms_paginated(self, offset: int, limit: int, session: Session) -> Tuple[Sequence[Room], int]:
-        total_count = self._count_rooms(session)
-        rooms = self._get_rooms(offset, limit, session)
+    def _get_rooms_paginated(self, user_id: UUID, offset: int, limit: int, session: Session) -> Tuple[Sequence[Room], int]:
+        total_count = self._count_rooms(user_id, session)
+        rooms = self._get_rooms(user_id, offset, limit, session)
         return rooms, total_count
     
     def _calculate_max_players(self, config: RoomConfig) -> int:
         return config.team_size * DEFAULT_TEAMS_COUNT
     
-    def list_rooms(self, offset: int, limit: int, session: Session) -> Tuple[Sequence[RoomSummary], int]:
+    def list_rooms(self, user_id: UUID, offset: int, limit: int, session: Session) -> Tuple[Sequence[RoomSummary], int]:
         try:
-            rooms, total_count = self._get_rooms_paginated(offset, limit, session)
+            rooms, total_count = self._get_rooms_paginated(user_id, offset, limit, session)
             
             room_summaries = []
             for room in rooms:
@@ -212,7 +237,6 @@ class RoomService:
                     id=room.id,
                     name=room.name,
                     status=room.status,
-                    owner_user_id=room.owner_user_id,
                     created_at=room.created_at,
                     max_players=max_players,
                     players_count=players_count
