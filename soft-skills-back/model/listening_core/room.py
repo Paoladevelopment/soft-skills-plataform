@@ -1,6 +1,7 @@
 from uuid import UUID, uuid4
 from datetime import datetime, timezone
-from sqlmodel import SQLModel, Field, TIMESTAMP
+from typing import List
+from sqlmodel import SQLModel, Field, TIMESTAMP, Relationship
 from sqlalchemy import Index, Column, String
 
 from enums.listening_game import RoomStatus
@@ -36,6 +37,11 @@ class Room(RoomBase, table=True):
         default=None,
         sa_type=TIMESTAMP(timezone=True)
     )
+    
+    config: "RoomConfig" = Relationship(sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"})
+    teams: List["Team"] = Relationship(sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"})
+    members: List["RoomMember"] = Relationship(sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"})
+    invites: List["RoomInvite"] = Relationship(sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"})
     
     __table_args__ = (
         Index("ix_listening_room_status_created", "status", "created_at"),

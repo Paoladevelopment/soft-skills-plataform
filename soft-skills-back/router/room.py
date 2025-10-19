@@ -13,6 +13,7 @@ from service.listening_core.game_service import GameService
 from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
+from utils.listening_game_constants import DEFAULT_TEAM_SIZE, DEFAULT_TEAMS_COUNT
 
 router = APIRouter()
 
@@ -22,7 +23,7 @@ game_service = GameService()
 
 @router.get(
     "",
-    summary="List all rooms with pagination",
+    summary="List all rooms owned by the authenticated user",
     response_model=RoomPaginatedResponse,
 )
 def list_rooms(
@@ -32,7 +33,9 @@ def list_rooms(
     session: Session = Depends(get_session)
 ):
     try:
-        room_summaries, total_count = room_service.list_rooms(offset, limit, session)
+        room_summaries, total_count = room_service.list_rooms(
+            token_data.user_id, offset, limit, session
+        )
         
         return RoomPaginatedResponse(
             message="Rooms retrieved successfully",
@@ -67,7 +70,20 @@ def create_room(
         created_room = room_service.create_room_with_config(
             room_data, token_data.user_id, session
         )
-        room_read = RoomRead.model_validate(created_room)
+        
+        team_size = room_data.config.team_size if room_data.config else DEFAULT_TEAM_SIZE
+        max_players = team_size * DEFAULT_TEAMS_COUNT
+        
+        room_read = RoomRead(
+            id=created_room.id,
+            name=created_room.name,
+            status=created_room.status,
+            created_at=created_room.created_at,
+            started_at=created_room.started_at,
+            finished_at=created_room.finished_at,
+            max_players=max_players,
+            players_count=0
+        )
         
         return RoomResponse(
             message="Room created successfully",
@@ -95,9 +111,23 @@ def get_room(
     - Team count and summary
     """
     try:
-        room, config, team_summaries = room_service.get_room_detail(room_id, session)
+        room, config, team_summaries = room_service.get_room_detail(
+            room_id, token_data.user_id, session
+        )
 
-        room_read = RoomRead.model_validate(room)
+        max_players = room_service._calculate_max_players(config)
+        players_count = room_service.count_active_members(room_id, session)
+
+        room_read = RoomRead(
+            id=room.id,
+            name=room.name,
+            status=room.status,
+            created_at=room.created_at,
+            started_at=room.started_at,
+            finished_at=room.finished_at,
+            max_players=max_players,
+            players_count=players_count
+        )
         config_read = RoomConfigRead.model_validate(config)
         
         room_detail = RoomDetail(
@@ -136,10 +166,23 @@ def update_room(
     """
     try:
         updated_room = room_service.update_room(
-            room_id, room_update.name, room_update.status, session
+            room_id, token_data.user_id, room_update.name, room_update.status, session
         )
+        
+        config = room_service.get_config(updated_room.id, session)
+        max_players = room_service._calculate_max_players(config)
+        players_count = room_service.count_active_members(room_id, session)
 
-        room_read = RoomRead.model_validate(updated_room)
+        room_read = RoomRead(
+            id=updated_room.id,
+            name=updated_room.name,
+            status=updated_room.status,
+            created_at=updated_room.created_at,
+            started_at=updated_room.started_at,
+            finished_at=updated_room.finished_at,
+            max_players=max_players,
+            players_count=players_count
+        )
         
         return RoomResponse(
             message="Room updated successfully",
@@ -170,13 +213,31 @@ def update_room_config(
     try:
         config_updates = config_update.model_dump(exclude_none=True)
         
-        updated_config = room_service.update_room_config(room_id, config_updates, session)
+        updated_config = room_service.update_room_config(
+            room_id, token_data.user_id, config_updates, session
+        )
         config_read = RoomConfigRead.model_validate(updated_config)
         
         return BaseResponse(
             message="Room configuration updated successfully",
             data=config_read
         )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.delete(
+    "/{room_id}",
+    summary="Delete a room by ID"
+)
+def delete_room(
+    room_id: UUID,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        return room_service.delete_room(room_id, token_data.user_id, session)
     
     except APIException as exc:
         raise_http_exception(exc)

@@ -17,7 +17,7 @@ import AddGoalModal from './AddGoalModal'
 import { CreateLearningGoalPayload } from '../../types/planner/learningGoals.api'
 import PaginationControls from '../PaginationControls'
 import { LearningGoal } from '../../types/planner/planner.models'
-import ConfirmDeleteModal from '../ConfirmDeleteModal'
+import ConfirmDeleteModal from '../../../../components/ConfirmDeleteModal'
 
 const GoalsSection = () => {
   const navigate = useNavigate()

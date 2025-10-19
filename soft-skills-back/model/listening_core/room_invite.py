@@ -2,7 +2,7 @@ from uuid import UUID, uuid4
 from datetime import datetime, timezone
 from typing import Optional
 from sqlmodel import SQLModel, Field, TIMESTAMP
-from sqlalchemy import Column, String, Index
+from sqlalchemy import Column, String
 
 
 class RoomInviteBase(SQLModel):
