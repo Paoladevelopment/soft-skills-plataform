@@ -2,6 +2,7 @@ import { Button, Divider, Stack } from '@mui/material'
 import { Save } from '@mui/icons-material'
 import { useRoomDraftStore } from '../store/useRoomDraftStore'
 import { AllowedType, RoomDifficulty, TeamAssignmentMode } from '../types/room/room.models'
+import { ROOM_MODE, RoomMode } from '../constants/roomMode'
 import RoomNameSection from './sections/RoomNameSection'
 import GameSettingsSection from './sections/GameSettingsSection'
 import ContentSettingsSection from './sections/ContentSettingsSection'
@@ -24,11 +25,11 @@ interface RoomFormData {
 }
 
 interface RoomFormProps {
-  mode?: 'create' | 'update'
+  mode?: RoomMode
   onSubmit?: (data: RoomFormData) => void | Promise<void>
 }
 
-const RoomForm = ({ mode = 'create', onSubmit }: RoomFormProps) => {
+const RoomForm = ({ mode = ROOM_MODE.CREATE, onSubmit }: RoomFormProps) => {
   const getSnapshot = useRoomDraftStore((state) => state.getSnapshot)
 
   const handleSubmit = async () => {
@@ -41,7 +42,7 @@ const RoomForm = ({ mode = 'create', onSubmit }: RoomFormProps) => {
 
   return (
     <Stack spacing={3}>
-      <RoomNameSection />
+      <RoomNameSection mode={mode} />
 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
@@ -67,7 +68,7 @@ const RoomForm = ({ mode = 'create', onSubmit }: RoomFormProps) => {
         startIcon={<Save />}
         fullWidth
         sx={{
-          background: 'linear-gradient(180deg, #34D399 0%, #10B981 100%)',
+          background: 'linear-gradient(180deg, #FFA726 0%, #F57C00 100%)',
           color: 'white',
           py: 1.5,
           fontWeight: 'bold',
@@ -75,11 +76,11 @@ const RoomForm = ({ mode = 'create', onSubmit }: RoomFormProps) => {
           fontSize: '1.1rem',
           borderRadius: '12px',
           '&:hover': {
-            background: 'linear-gradient(180deg, #0FAA78 0%, #0B8F63 100%)',
+            background: 'linear-gradient(180deg, #FB8C00 0%, #EF6C00 100%)',
           },
         }}
       >
-        {mode === 'create' ? 'Create Room' : 'Update Room'}
+        {mode === ROOM_MODE.CREATE ? 'Create Room' : 'Update Configuration'}
       </Button>
     </Stack>
   )

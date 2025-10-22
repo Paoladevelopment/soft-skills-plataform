@@ -14,17 +14,21 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import RoomCard from '../components/RoomCard'
 import RoomForm from '../components/RoomForm'
+import RoomSettingsModal from '../components/RoomSettingsModal'
+import { ROOM_MODE } from '../constants/roomMode'
 import backgroundImage from '../assets/background_2.png'
 import { useRoomStore } from '../store/useRoomStore'
 import { useRoomDraftStore } from '../store/useRoomDraftStore'
 import { CreateRoomRequest } from '../types/room/room.api'
-import { AllowedType, RoomListItem } from '../types/room/room.models'
+import { AllowedType, RoomListItem, RoomDifficulty, TeamAssignmentMode } from '../types/room/room.models'
 import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
 
 const Rooms = () => {
   const navigate = useNavigate()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [roomToDelete, setRoomToDelete] = useState<RoomListItem | null>(null)
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false)
+  const [selectedRoom, setSelectedRoom] = useState<RoomListItem | null>(null)
 
   const rooms = useRoomStore((state) => state.rooms)
   const isLoading = useRoomStore((state) => state.isLoading)
@@ -34,6 +38,7 @@ const Rooms = () => {
 
   const getSnapshot = useRoomDraftStore((state) => state.getSnapshot)
   const resetRoomDraft = useRoomDraftStore((state) => state.reset)
+  const loadRoom = useRoomDraftStore((state) => state.loadRoom)
 
   useEffect(() => {
     fetchRooms()
@@ -74,7 +79,29 @@ const Rooms = () => {
   }
 
   const handleSettingsRoom = (roomId: string) => {
-    console.log('Settings room:', roomId)
+    const room = rooms.find((r) => r.id === roomId)
+    if (!room) return
+
+    setSelectedRoom(room)
+    
+    // Load mock data into draft store
+    // TODO: Replace with actual API call to fetch full room details
+    loadRoom({
+      roomName: room.name,
+      totalRounds: 5,
+      roundTimeLimit: 90,
+      maxPlaybacks: 2,
+      allowedTypes: [AllowedType.DESCRIPTIVE, AllowedType.CONVERSATIONAL],
+      difficulty: RoomDifficulty.INTERMEDIATE,
+      reverb: 0.3,
+      echo: 0.1,
+      noise: 0,
+      speedVar: 0,
+      teamAssignmentMode: TeamAssignmentMode.RANDOM,
+      teamSize: 3,
+    })
+    
+    setSettingsModalOpen(true)
   }
 
   const handleShareRoom = (roomId: string) => {
@@ -198,7 +225,7 @@ const Rooms = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <RoomForm mode="create" onSubmit={handleCreateRoom} />
+            <RoomForm mode={ROOM_MODE.CREATE} onSubmit={handleCreateRoom} />
           </AccordionDetails>
         </Accordion>
 
@@ -229,6 +256,15 @@ const Rooms = () => {
         title="Delete Room"
         message={`Are you sure you want to delete "${roomToDelete?.name}"? This action cannot be undone.`}
       />
+
+      {selectedRoom && (
+        <RoomSettingsModal
+          open={settingsModalOpen}
+          onClose={() => setSettingsModalOpen(false)}
+          roomId={selectedRoom.id}
+          roomName={selectedRoom.name}
+        />
+      )}
     </Box>
   )
 }
