@@ -20,7 +20,7 @@ import backgroundImage from '../assets/background_2.png'
 import { useRoomStore } from '../store/useRoomStore'
 import { useRoomDraftStore } from '../store/useRoomDraftStore'
 import { CreateRoomRequest } from '../types/room/room.api'
-import { AllowedType, RoomListItem, RoomDifficulty, TeamAssignmentMode } from '../types/room/room.models'
+import { AllowedType, RoomListItem } from '../types/room/room.models'
 import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
 
 const Rooms = () => {
@@ -29,6 +29,7 @@ const Rooms = () => {
   const [roomToDelete, setRoomToDelete] = useState<RoomListItem | null>(null)
   const [settingsModalOpen, setSettingsModalOpen] = useState(false)
   const [selectedRoom, setSelectedRoom] = useState<RoomListItem | null>(null)
+  const [isLoadingRoomData, setIsLoadingRoomData] = useState(false)
 
   const rooms = useRoomStore((state) => state.rooms)
   const isLoading = useRoomStore((state) => state.isLoading)
@@ -39,6 +40,7 @@ const Rooms = () => {
   const getSnapshot = useRoomDraftStore((state) => state.getSnapshot)
   const resetRoomDraft = useRoomDraftStore((state) => state.reset)
   const loadRoom = useRoomDraftStore((state) => state.loadRoom)
+  const getRoomById = useRoomStore((state) => state.getRoomById)
 
   useEffect(() => {
     fetchRooms()
@@ -78,30 +80,38 @@ const Rooms = () => {
     console.log('Join room:', roomId)
   }
 
-  const handleSettingsRoom = (roomId: string) => {
+  const handleSettingsRoom = async (roomId: string) => {
     const room = rooms.find((r) => r.id === roomId)
     if (!room) return
 
     setSelectedRoom(room)
-    
-    // Load mock data into draft store
-    // TODO: Replace with actual API call to fetch full room details
-    loadRoom({
-      roomName: room.name,
-      totalRounds: 5,
-      roundTimeLimit: 90,
-      maxPlaybacks: 2,
-      allowedTypes: [AllowedType.DESCRIPTIVE, AllowedType.CONVERSATIONAL],
-      difficulty: RoomDifficulty.INTERMEDIATE,
-      reverb: 0.3,
-      echo: 0.1,
-      noise: 0,
-      speedVar: 0,
-      teamAssignmentMode: TeamAssignmentMode.RANDOM,
-      teamSize: 3,
-    })
-    
     setSettingsModalOpen(true)
+    setIsLoadingRoomData(true)
+    
+    try {
+      await getRoomById(roomId)
+      
+      const fullRoom = useRoomStore.getState().selectedRoom
+      
+      if (fullRoom) {
+        loadRoom({
+          roomName: fullRoom.name,
+          totalRounds: fullRoom.config.roundsTotal,
+          roundTimeLimit: fullRoom.config.roundTimeLimitSec,
+          maxPlaybacks: fullRoom.config.listenerMaxPlaybacks,
+          allowedTypes: fullRoom.config.allowedTypes,
+          difficulty: fullRoom.config.difficulty,
+          reverb: fullRoom.config.audioEffects.reverb ?? 0,
+          echo: fullRoom.config.audioEffects.echo ?? 0,
+          noise: fullRoom.config.audioEffects.noise ?? 0,
+          speedVar: fullRoom.config.audioEffects.speedVar ?? 0,
+          teamAssignmentMode: fullRoom.config.teamAssignmentMode,
+          teamSize: fullRoom.config.teamSize,
+        })
+      }
+    } finally {
+      setIsLoadingRoomData(false)
+    }
   }
 
   const handleShareRoom = (roomId: string) => {
@@ -260,9 +270,13 @@ const Rooms = () => {
       {selectedRoom && (
         <RoomSettingsModal
           open={settingsModalOpen}
-          onClose={() => setSettingsModalOpen(false)}
+          onClose={() => {
+            setSettingsModalOpen(false)
+            setIsLoadingRoomData(false)
+          }}
           roomId={selectedRoom.id}
           roomName={selectedRoom.name}
+          isLoading={isLoadingRoomData}
         />
       )}
     </Box>

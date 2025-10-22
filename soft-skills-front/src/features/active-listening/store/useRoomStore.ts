@@ -2,10 +2,10 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { IRoomStore } from '../types/room/room.store'
-import { CreateRoomRequest, UpdateRoomRequest } from '../types/room/room.api'
+import { CreateRoomRequest, UpdateRoomRequest, UpdateConfigRoomRequest } from '../types/room/room.api'
 import { useToastStore } from '../../../store/useToastStore'
 import { RoomListItem, Room } from '../types/room/room.models'
-import { getUserRooms, getRoomById, createRoom, updateRoom, deleteRoom } from '../api/Rooms'
+import { getUserRooms, getRoomById, createRoom, updateRoom, updateRoomConfig, deleteRoom } from '../api/Rooms'
 
 export const useRoomStore = create<IRoomStore>()(
   devtools(
@@ -134,6 +134,31 @@ export const useRoomStore = create<IRoomStore>()(
         try {
           const { message } = await updateRoom(id, roomData)
           useToastStore.getState().showToast(message || 'Room updated successfully!', 'success')
+
+          get().fetchRooms()
+          
+          if (get().selectedRoom?.id === id) {
+            await get().getRoomById(id)
+          }
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            useToastStore.getState().showToast(err.message, 'error')
+          }
+        } finally {
+          set((state) => {
+            state.isLoading = false
+          }, false, 'ROOM/UPDATE_COMPLETE')
+        }
+      },
+
+      updateRoomConfig: async (id: string, roomData: UpdateConfigRoomRequest) => {
+        set((state) => {
+          state.isLoading = true
+        }, false, 'ROOM/UPDATE_CONFIG_REQUEST')
+
+        try {
+          const { message } = await updateRoomConfig(id, roomData)
+          useToastStore.getState().showToast(message || 'Room configuration updated successfully!', 'success')
 
           get().fetchRooms()
           

@@ -1,11 +1,13 @@
 import { Box, TextField, Typography, IconButton, InputAdornment } from '@mui/material'
 import { Edit, Check, Close } from '@mui/icons-material'
 import { useRoomDraftStore } from '../../store/useRoomDraftStore'
+import { useRoomStore } from '../../store/useRoomStore'
 import { useState } from 'react'
 import { ROOM_MODE, RoomMode } from '../../constants/roomMode'
 
 interface RoomNameSectionProps {
   mode?: RoomMode
+  roomId?: string
 }
 
 interface EditButtonProps {
@@ -76,9 +78,10 @@ const ActionButtons = ({ onConfirm, onCancel }: ActionButtonsProps) => (
   </InputAdornment>
 )
 
-const RoomNameSection = ({ mode = ROOM_MODE.CREATE }: RoomNameSectionProps) => {
+const RoomNameSection = ({ mode = ROOM_MODE.CREATE, roomId }: RoomNameSectionProps) => {
   const roomName = useRoomDraftStore((state) => state.roomName)
   const setField = useRoomDraftStore((state) => state.setField)
+  const updateRoom = useRoomStore((state) => state.updateRoom)
   const [isLocked, setIsLocked] = useState(mode === ROOM_MODE.UPDATE)
   const [originalName, setOriginalName] = useState(roomName)
 
@@ -87,7 +90,11 @@ const RoomNameSection = ({ mode = ROOM_MODE.CREATE }: RoomNameSectionProps) => {
     setIsLocked(false)
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    if (mode === ROOM_MODE.UPDATE && roomId && roomName !== originalName) {
+      await updateRoom(roomId, { name: roomName })
+    }
+    
     setIsLocked(true)
     setOriginalName(roomName)
   }
