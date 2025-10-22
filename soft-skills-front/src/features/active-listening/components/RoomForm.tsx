@@ -26,10 +26,11 @@ interface RoomFormData {
 
 interface RoomFormProps {
   mode?: RoomMode
+  roomId?: string
   onSubmit?: (data: RoomFormData) => void | Promise<void>
 }
 
-const RoomForm = ({ mode = ROOM_MODE.CREATE, onSubmit }: RoomFormProps) => {
+const RoomForm = ({ mode = ROOM_MODE.CREATE, roomId, onSubmit }: RoomFormProps) => {
   const getSnapshot = useRoomDraftStore((state) => state.getSnapshot)
 
   const handleSubmit = async () => {
@@ -42,7 +43,7 @@ const RoomForm = ({ mode = ROOM_MODE.CREATE, onSubmit }: RoomFormProps) => {
 
   return (
     <Stack spacing={3}>
-      <RoomNameSection mode={mode} />
+      <RoomNameSection mode={mode} roomId={roomId} />
 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 

@@ -43,7 +43,11 @@ export interface CreateRoomResponse {
 
 export interface UpdateRoomRequest {
   name?: string
-  config?: Partial<RoomConfigPayload>
+  status?: string
+}
+
+export interface UpdateConfigRoomRequest {
+  config: Partial<RoomConfigPayload>
 }
 
 export interface UpdateRoomResponse {

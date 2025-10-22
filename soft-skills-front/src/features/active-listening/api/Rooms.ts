@@ -1,6 +1,6 @@
 import { fetchWithAuth } from '../../../utils/fetchWithAuth'
 import { api } from '../../../config/api'
-import { GetRoomsResponse, GetRoomResponse, CreateRoomRequest, UpdateRoomRequest, CreateRoomResponse, UpdateRoomResponse } from '../types/room/room.api'
+import { GetRoomsResponse, GetRoomResponse, CreateRoomRequest, UpdateRoomRequest, UpdateConfigRoomRequest, CreateRoomResponse, UpdateRoomResponse } from '../types/room/room.api'
 
 export async function getUserRooms(
   offset: number,
@@ -25,6 +25,15 @@ export async function createRoom(roomData: CreateRoomRequest): Promise<CreateRoo
 }
 
 export async function updateRoom(id: string, roomData: UpdateRoomRequest): Promise<UpdateRoomResponse> {
+  const response = await fetchWithAuth(api.rooms.update(id), {
+    method: 'PATCH',
+    body: JSON.stringify(roomData),
+  })
+
+  return response
+}
+
+export async function updateRoomConfig(id: string, roomData: UpdateConfigRoomRequest): Promise<UpdateRoomResponse> {
   const response = await fetchWithAuth(api.rooms.updateConfig(id), {
     method: 'PATCH',
     body: JSON.stringify(roomData.config),

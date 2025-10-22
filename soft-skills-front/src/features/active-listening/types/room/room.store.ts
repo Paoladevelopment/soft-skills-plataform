@@ -1,5 +1,5 @@
 import { RoomListItem, Room } from './room.models'
-import { CreateRoomRequest, UpdateRoomRequest } from './room.api'
+import { CreateRoomRequest, UpdateRoomRequest, UpdateConfigRoomRequest } from './room.api'
 
 export interface RoomsPagination {
   total: number
@@ -23,5 +23,6 @@ export interface IRoomStore {
   getRoomById: (id: string) => Promise<void>
   createRoom: (roomData: CreateRoomRequest) => Promise<void>
   updateRoom: (id: string, roomData: UpdateRoomRequest) => Promise<void>
+  updateRoomConfig: (id: string, roomData: UpdateConfigRoomRequest) => Promise<void>
   deleteRoom: (id: string) => Promise<void>
 }

@@ -7,17 +7,21 @@ import {
   Tabs,
   Tab,
   Typography,
+  CircularProgress,
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import { useState } from 'react'
 import RoomForm from './RoomForm'
 import { ROOM_MODE } from '../constants/roomMode'
+import { useRoomStore } from '../store/useRoomStore'
+import { AllowedType, RoomDifficulty, TeamAssignmentMode } from '../types/room/room.models'
 
 interface RoomSettingsModalProps {
   open: boolean
   onClose: () => void
   roomId: string
   roomName: string
+  isLoading?: boolean
 }
 
 interface TabPanelProps {
@@ -36,17 +40,49 @@ const TabPanel = ({ children, value, index }: TabPanelProps) => (
   </div>
 )
 
-const RoomSettingsModal = ({ open, onClose, roomId, roomName }: RoomSettingsModalProps) => {
+const RoomSettingsModal = ({ open, onClose, roomId, roomName, isLoading = false }: RoomSettingsModalProps) => {
   const [tabValue, setTabValue] = useState(0)
+  const updateRoomConfig = useRoomStore((state) => state.updateRoomConfig)
+  const selectedRoom = useRoomStore((state) => state.selectedRoom)
   
+  const displayRoomName = selectedRoom?.name || roomName
   const invitationsCount = 2
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
   }
 
-  const handleUpdateRoom = async () => {
-    console.log('Updating room:', roomId)
+  const handleUpdateRoom = async (data: {
+    roomName: string
+    totalRounds: number
+    roundTimeLimit: number
+    maxPlaybacks: number
+    allowedTypes: AllowedType[]
+    difficulty: RoomDifficulty
+    reverb: number
+    echo: number
+    noise: number
+    speedVar: number
+    teamAssignmentMode: TeamAssignmentMode
+    teamSize: number
+  }) => {
+    await updateRoomConfig(roomId, {
+      config: {
+        rounds_total: data.totalRounds,
+        round_time_limit_sec: data.roundTimeLimit,
+        listener_max_playbacks: data.maxPlaybacks,
+        allowed_types: data.allowedTypes,
+        difficulty: data.difficulty,
+        audio_effects: {
+          reverb: data.reverb > 0 ? data.reverb : null,
+          echo: data.echo > 0 ? data.echo : null,
+          noise: data.noise > 0 ? data.noise : null,
+          speed_var: data.speedVar > 0 ? data.speedVar : null,
+        },
+        team_assignment_mode: data.teamAssignmentMode,
+        team_size: data.teamSize,
+      },
+    })
     onClose()
   }
 
@@ -78,7 +114,7 @@ const RoomSettingsModal = ({ open, onClose, roomId, roomName }: RoomSettingsModa
       >
         <Box>
           <Typography variant="h6" fontWeight="bold">
-            Room Settings - {roomName}
+            Room Settings - {displayRoomName}
           </Typography>
           <Typography variant="body2" color="rgba(255, 255, 255, 0.6)">
             Manage room configuration and invitations
@@ -174,7 +210,19 @@ const RoomSettingsModal = ({ open, onClose, roomId, roomName }: RoomSettingsModa
         }}
       >
         <TabPanel value={tabValue} index={0}>
-          <RoomForm mode={ROOM_MODE.UPDATE} onSubmit={handleUpdateRoom} />
+          {isLoading ? (
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                py: 8 
+              }}
+            >
+              <CircularProgress sx={{ color: 'white' }} size={48} />
+            </Box>
+          ) : (
+            <RoomForm mode={ROOM_MODE.UPDATE} roomId={roomId} onSubmit={handleUpdateRoom} />
+          )}
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <Box sx={{ py: 4, textAlign: 'center' }}>

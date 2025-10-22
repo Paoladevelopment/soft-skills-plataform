@@ -107,6 +107,9 @@ class RoomService:
                 room.name = name
             
             if new_status is None or new_status == room.status:
+                session.add(room)
+                session.commit()
+                session.refresh(room)
                 return room
             
             current_status = room.status
@@ -211,6 +214,7 @@ class RoomService:
         return session.exec(
             select(Room)
             .where(Room.owner_user_id == user_id)
+            .order_by(Room.created_at.desc())
             .offset(offset)
             .limit(limit)
         ).all()
