@@ -12,132 +12,119 @@ import {
 import { ExpandMore, ArrowBack } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import RoomCard from '../components/RoomCard'
-import RoomForm from '../components/RoomForm'
-import RoomSettingsModal from '../components/RoomSettingsModal'
-import { ROOM_MODE } from '../constants/roomMode'
+import GameSessionCard from '../components/GameSessionCard'
+import GameSessionForm from '../components/GameSessionForm'
+import GameSessionSettingsModal from '../components/GameSessionSettingsModal'
+import { GAME_SESSION_MODE } from '../constants/gameSessionMode'
 import backgroundImage from '../assets/background_2.png'
-import { useRoomStore } from '../store/useRoomStore'
-import { useRoomDraftStore } from '../store/useRoomDraftStore'
-import { CreateRoomRequest } from '../types/room/room.api'
-import { AllowedType, RoomListItem } from '../types/room/room.models'
+import { useGameSessionStore } from '../store/useGameSessionStore'
+import { useGameSessionDraftStore } from '../store/useGameSessionDraftStore'
+import { CreateGameSessionRequest } from '../types/game-sessions/gameSession.api'
+import { PromptType, GameSessionListItem } from '../types/game-sessions/gameSession.models'
 import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
+import { convertAudioEffectsToSnakeCase } from '../utils/audioEffectsUtils'
 
-const Rooms = () => {
+const GameSessions = () => {
   const navigate = useNavigate()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [roomToDelete, setRoomToDelete] = useState<RoomListItem | null>(null)
+  const [sessionToDelete, setSessionToDelete] = useState<GameSessionListItem | null>(null)
   const [settingsModalOpen, setSettingsModalOpen] = useState(false)
-  const [selectedRoom, setSelectedRoom] = useState<RoomListItem | null>(null)
-  const [isLoadingRoomData, setIsLoadingRoomData] = useState(false)
+  const [selectedSession, setSelectedSession] = useState<GameSessionListItem | null>(null)
+  const [isLoadingSessionData, setIsLoadingSessionData] = useState(false)
 
-  const rooms = useRoomStore((state) => state.rooms)
-  const isLoading = useRoomStore((state) => state.isLoading)
-  const fetchRooms = useRoomStore((state) => state.fetchRooms)
-  const createRoom = useRoomStore((state) => state.createRoom)
-  const deleteRoom = useRoomStore((state) => state.deleteRoom)
+  const gameSessions = useGameSessionStore((state) => state.gameSessions)
+  const isLoading = useGameSessionStore((state) => state.isLoading)
+  const fetchGameSessions = useGameSessionStore((state) => state.fetchGameSessions)
+  const createGameSession = useGameSessionStore((state) => state.createGameSession)
+  const deleteGameSession = useGameSessionStore((state) => state.deleteGameSession)
 
-  const getSnapshot = useRoomDraftStore((state) => state.getSnapshot)
-  const resetRoomDraft = useRoomDraftStore((state) => state.reset)
-  const loadRoom = useRoomDraftStore((state) => state.loadRoom)
-  const getRoomById = useRoomStore((state) => state.getRoomById)
+  const getSnapshot = useGameSessionDraftStore((state) => state.getSnapshot)
+  const resetSessionDraft = useGameSessionDraftStore((state) => state.reset)
+  const loadGameSession = useGameSessionDraftStore((state) => state.loadGameSession)
+  const getGameSessionById = useGameSessionStore((state) => state.getGameSessionById)
 
   useEffect(() => {
-    fetchRooms()
-  }, [fetchRooms])
+    fetchGameSessions()
+  }, [fetchGameSessions])
 
   const handleGoBack = () => {
     navigate('/active-listening')
   }
 
-  const handleCreateRoom = async () => {
+  const handleCreateSession = async () => {
     const draft = getSnapshot()
 
-    const roomData: CreateRoomRequest = {
-      name: draft.roomName,
+    const sessionData: CreateGameSessionRequest = {
+      name: draft.sessionName,
       config: {
-        rounds_total: draft.totalRounds,
-        round_time_limit_sec: draft.roundTimeLimit,
-        listener_max_playbacks: draft.maxPlaybacks,
-        allowed_types: draft.allowedTypes as AllowedType[],
+        total_rounds: draft.totalRounds,
+        max_replays_per_round: draft.maxReplaysPerRound,
         difficulty: draft.difficulty,
-        audio_effects: {
-          reverb: draft.reverb > 0 ? draft.reverb : null,
-          echo: draft.echo > 0 ? draft.echo : null,
-          noise: draft.noise > 0 ? draft.noise : null,
-          speed_var: draft.speedVar > 0 ? draft.speedVar : null,
-        },
-        team_assignment_mode: draft.teamAssignmentMode,
-        team_size: draft.teamSize,
+        response_time_limits: draft.responseTimeLimits,
+        selected_modes: draft.selectedModes,
+        allowed_types: draft.allowedTypes as PromptType[],
+        audio_effects: convertAudioEffectsToSnakeCase(draft.audioEffects),
       },
     }
 
-    await createRoom(roomData)  
-    resetRoomDraft()
+    await createGameSession(sessionData)  
+    resetSessionDraft()
   }
 
-  const handleJoinRoom = (roomId: string) => {
-    console.log('Join room:', roomId)
+  const handlePlaySession = (sessionId: string) => {
+    console.log('Play session:', sessionId)
   }
 
-  const handleSettingsRoom = async (roomId: string) => {
-    const room = rooms.find((r) => r.id === roomId)
-    if (!room) return
+  const handleSettingsSession = async (sessionId: string) => {
+    const session = gameSessions.find((s) => s.id === sessionId)
+    if (!session) return
 
-    setSelectedRoom(room)
+    setSelectedSession(session)
     setSettingsModalOpen(true)
-    setIsLoadingRoomData(true)
+    setIsLoadingSessionData(true)
     
     try {
-      await getRoomById(roomId)
+      await getGameSessionById(sessionId)
       
-      const fullRoom = useRoomStore.getState().selectedRoom
+      const fullSession = useGameSessionStore.getState().selectedGameSession
       
-      if (fullRoom) {
-        loadRoom({
-          roomName: fullRoom.name,
-          totalRounds: fullRoom.config.roundsTotal,
-          roundTimeLimit: fullRoom.config.roundTimeLimitSec,
-          maxPlaybacks: fullRoom.config.listenerMaxPlaybacks,
-          allowedTypes: fullRoom.config.allowedTypes,
-          difficulty: fullRoom.config.difficulty,
-          reverb: fullRoom.config.audioEffects.reverb ?? 0,
-          echo: fullRoom.config.audioEffects.echo ?? 0,
-          noise: fullRoom.config.audioEffects.noise ?? 0,
-          speedVar: fullRoom.config.audioEffects.speedVar ?? 0,
-          teamAssignmentMode: fullRoom.config.teamAssignmentMode,
-          teamSize: fullRoom.config.teamSize,
-        })
-      }
+        if (fullSession) {
+          loadGameSession({
+            sessionName: fullSession.name,
+            totalRounds: fullSession.config.totalRounds,
+            maxReplaysPerRound: fullSession.config.maxReplaysPerRound,
+            difficulty: fullSession.config.difficulty,
+            responseTimeLimits: fullSession.config.responseTimeLimits,
+            selectedModes: fullSession.config.selectedModes,
+            allowedTypes: fullSession.config.allowedTypes,
+            audioEffects: fullSession.config.audioEffects,
+          })
+        }
     } finally {
-      setIsLoadingRoomData(false)
+      setIsLoadingSessionData(false)
     }
   }
 
-  const handleShareRoom = (roomId: string) => {
-    console.log('Share room:', roomId)
-  }
-
-  const handleOpenDeleteModal = (roomId: string) => {
-    const room = rooms.find((r) => r.id === roomId)
-    if (room) {
-      setRoomToDelete(room)
+  const handleOpenDeleteModal = (sessionId: string) => {
+    const session = gameSessions.find((s) => s.id === sessionId)
+    if (session) {
+      setSessionToDelete(session)
       setDeleteModalOpen(true)
     }
   }
 
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false)
-    setRoomToDelete(null)
+    setSessionToDelete(null)
   }
 
   const handleConfirmDelete = async () => {
     setDeleteModalOpen(false)
 
-    if (!roomToDelete) return
-    await deleteRoom(roomToDelete.id)
+    if (!sessionToDelete) return
+    await deleteGameSession(sessionToDelete.id)
 
-    setRoomToDelete(null)
+    setSessionToDelete(null)
   }
 
   return (
@@ -201,7 +188,7 @@ const Rooms = () => {
                 lineHeight: 1,
               }}
             >
-              Rooms
+              Sessions
             </Typography>
           </Box>
         </Box>
@@ -228,31 +215,30 @@ const Rooms = () => {
             }}
           >
             <Typography variant="h6" fontWeight="bold">
-              Create New Room
+              Create New Session
             </Typography>
             <Typography variant="body2" color="white">
-              Configure and create your own game room
+              Configure and create your own game session
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <RoomForm mode={ROOM_MODE.CREATE} onSubmit={handleCreateRoom} />
+            <GameSessionForm mode={GAME_SESSION_MODE.CREATE} onSubmit={handleCreateSession} />
           </AccordionDetails>
         </Accordion>
 
-        {isLoading && rooms.length === 0 && (
+        {isLoading && gameSessions.length === 0 && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
             <CircularProgress sx={{ color: 'white' }} />
           </Box>
         )}
 
         <Stack spacing={2}>
-          {rooms.map((room) => (
-            <RoomCard
-              key={room.id}
-              room={room}
-              onJoin={handleJoinRoom}
-              onSettings={handleSettingsRoom}
-              onShare={handleShareRoom}
+          {gameSessions.map((session) => (
+            <GameSessionCard
+              key={session.id}
+              session={session}
+              onPlay={handlePlaySession}
+              onSettings={handleSettingsSession}
               onDelete={handleOpenDeleteModal}
             />
           ))}
@@ -263,25 +249,25 @@ const Rooms = () => {
         open={deleteModalOpen}
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
-        title="Delete Room"
-        message={`Are you sure you want to delete "${roomToDelete?.name}"? This action cannot be undone.`}
+        title="Delete Session"
+        message={`Are you sure you want to delete "${sessionToDelete?.name}"? This action cannot be undone.`}
       />
 
-      {selectedRoom && (
-        <RoomSettingsModal
+      {selectedSession && (
+        <GameSessionSettingsModal
           open={settingsModalOpen}
           onClose={() => {
             setSettingsModalOpen(false)
-            setIsLoadingRoomData(false)
+            setIsLoadingSessionData(false)
           }}
-          roomId={selectedRoom.id}
-          roomName={selectedRoom.name}
-          isLoading={isLoadingRoomData}
+          sessionId={selectedSession.id}
+          sessionName={selectedSession.name}
+          isLoading={isLoadingSessionData}
         />
       )}
     </Box>
   )
 }
 
-export default Rooms
+export default GameSessions
 

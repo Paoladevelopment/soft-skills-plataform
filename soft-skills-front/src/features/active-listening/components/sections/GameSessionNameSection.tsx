@@ -1,13 +1,13 @@
 import { Box, TextField, Typography, IconButton, InputAdornment } from '@mui/material'
 import { Edit, Check, Close } from '@mui/icons-material'
-import { useRoomDraftStore } from '../../store/useRoomDraftStore'
-import { useRoomStore } from '../../store/useRoomStore'
+import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
+import { useGameSessionStore } from '../../store/useGameSessionStore'
 import { useState } from 'react'
-import { ROOM_MODE, RoomMode } from '../../constants/roomMode'
+import { GAME_SESSION_MODE, GameSessionMode } from '../../constants/gameSessionMode'
 
-interface RoomNameSectionProps {
-  mode?: RoomMode
-  roomId?: string
+interface GameSessionNameSectionProps {
+  mode?: GameSessionMode
+  sessionId?: string
 }
 
 interface EditButtonProps {
@@ -78,47 +78,47 @@ const ActionButtons = ({ onConfirm, onCancel }: ActionButtonsProps) => (
   </InputAdornment>
 )
 
-const RoomNameSection = ({ mode = ROOM_MODE.CREATE, roomId }: RoomNameSectionProps) => {
-  const roomName = useRoomDraftStore((state) => state.roomName)
-  const setField = useRoomDraftStore((state) => state.setField)
-  const updateRoom = useRoomStore((state) => state.updateRoom)
-  const [isLocked, setIsLocked] = useState(mode === ROOM_MODE.UPDATE)
-  const [originalName, setOriginalName] = useState(roomName)
+const GameSessionNameSection = ({ mode = GAME_SESSION_MODE.CREATE, sessionId }: GameSessionNameSectionProps) => {
+  const sessionName = useGameSessionDraftStore((state) => state.sessionName)
+  const setSessionName = useGameSessionDraftStore((state) => state.setSessionName)
+  const updateGameSession = useGameSessionStore((state) => state.updateGameSession)
+  const [isLocked, setIsLocked] = useState(mode === GAME_SESSION_MODE.UPDATE)
+  const [originalName, setOriginalName] = useState(sessionName)
 
   const handleEditClick = () => {
-    setOriginalName(roomName)
+    setOriginalName(sessionName)
     setIsLocked(false)
   }
 
   const handleConfirm = async () => {
-    if (mode === ROOM_MODE.UPDATE && roomId && roomName !== originalName) {
-      await updateRoom(roomId, { name: roomName })
+    if (mode === GAME_SESSION_MODE.UPDATE && sessionId && sessionName !== originalName) {
+      await updateGameSession(sessionId, { name: sessionName })
     }
     
     setIsLocked(true)
-    setOriginalName(roomName)
+    setOriginalName(sessionName)
   }
 
   const handleCancel = () => {
-    setField('roomName', originalName)
+    setSessionName(originalName)
     setIsLocked(true)
   }
 
   return (
     <Box>
       <Typography variant="subtitle2" fontWeight="bold" color="white" mb={1}>
-        Room Name
+        Session Name
       </Typography>
       <TextField
         fullWidth
         size="small"
-        placeholder="Enter room name"
-        value={roomName}
-        onChange={(e) => setField('roomName', e.target.value)}
+        placeholder="Enter session name"
+        value={sessionName}
+        onChange={(e) => setSessionName(e.target.value)}
         disabled={isLocked}
         slotProps={{
           input: {
-            endAdornment: mode === ROOM_MODE.UPDATE ? (
+            endAdornment: mode === GAME_SESSION_MODE.UPDATE ? (
               isLocked ? (
                 <EditButton onClick={handleEditClick} />
               ) : (
@@ -169,5 +169,5 @@ const RoomNameSection = ({ mode = ROOM_MODE.CREATE, roomId }: RoomNameSectionPro
   )
 }
 
-export default RoomNameSection
+export default GameSessionNameSection
 

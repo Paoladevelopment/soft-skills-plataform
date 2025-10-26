@@ -5,19 +5,19 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
-  Grid,
+  Grid2,
   MenuItem,
   Select,
   Typography,
 } from '@mui/material'
-import { useRoomDraftStore } from '../../store/useRoomDraftStore'
-import { AllowedType, RoomDifficulty } from '../../types/room/room.models'
+import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
+import { PromptType, GameSessionDifficulty } from '../../types/game-sessions/gameSession.models'
 
 const ContentSettingsSection = () => {
-  const allowedTypes = useRoomDraftStore((state) => state.allowedTypes)
-  const difficulty = useRoomDraftStore((state) => state.difficulty)
-  const toggleAllowedType = useRoomDraftStore((state) => state.toggleAllowedType)
-  const setField = useRoomDraftStore((state) => state.setField)
+  const allowedTypes = useGameSessionDraftStore((state) => state.allowedTypes)
+  const difficulty = useGameSessionDraftStore((state) => state.difficulty)
+  const togglePromptType = useGameSessionDraftStore((state) => state.togglePromptType)
+  const setDifficulty = useGameSessionDraftStore((state) => state.setDifficulty)
 
   return (
     <Box>
@@ -25,17 +25,29 @@ const ContentSettingsSection = () => {
         Content Settings
       </Typography>
       <FormControl component="fieldset">
-        <FormLabel component="legend" sx={{ color: 'white !important', mb: 1 }}>
+        <FormLabel 
+          component="legend" 
+          sx={{ 
+            color: 'white !important', 
+            mb: 1 
+          }}
+        >
           Allowed Prompt Types (select at least one)
         </FormLabel>
-        <FormGroup sx={{ '& .MuiFormControlLabel-label': { color: 'white !important' } }}>
-          <Grid container spacing={2}>
-            <Grid item xs={6} md={4}>
+        <FormGroup 
+          sx={{ 
+            '& .MuiFormControlLabel-label': { 
+                color: 'white !important' 
+              },
+            }}
+          >
+          <Grid2 container spacing={2}>
+            <Grid2 size={{ xs: 6, md: 4 }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={allowedTypes.includes(AllowedType.DESCRIPTIVE)}
-                    onChange={() => toggleAllowedType(AllowedType.DESCRIPTIVE)}
+                    checked={allowedTypes.includes(PromptType.DESCRIPTIVE)}
+                    onChange={() => togglePromptType(PromptType.DESCRIPTIVE)}
                     sx={{
                       color: 'white',
                       '&.Mui-checked': { color: '#ED8936' },
@@ -45,13 +57,13 @@ const ContentSettingsSection = () => {
                 label="Descriptive"
                 sx={{ alignItems: 'center', margin: 0 }}
               />
-            </Grid>
-            <Grid item xs={6} md={4}>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 4 }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={allowedTypes.includes(AllowedType.CONVERSATIONAL)}
-                    onChange={() => toggleAllowedType(AllowedType.CONVERSATIONAL)}
+                    checked={allowedTypes.includes(PromptType.CONVERSATIONAL)}
+                    onChange={() => togglePromptType(PromptType.CONVERSATIONAL)}
                     sx={{
                       color: 'white',
                       '&.Mui-checked': { color: '#ED8936' },
@@ -61,13 +73,13 @@ const ContentSettingsSection = () => {
                 label="Conversational"
                 sx={{ alignItems: 'center', margin: 0 }}
               />
-            </Grid>
-            <Grid item xs={6} md={4}>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 4 }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={allowedTypes.includes(AllowedType.HISTORICAL_EVENT)}
-                    onChange={() => toggleAllowedType(AllowedType.HISTORICAL_EVENT)}
+                    checked={allowedTypes.includes(PromptType.HISTORICAL_EVENT)}
+                    onChange={() => togglePromptType(PromptType.HISTORICAL_EVENT)}
                     sx={{
                       color: 'white',
                       '&.Mui-checked': { color: '#ED8936' },
@@ -77,13 +89,13 @@ const ContentSettingsSection = () => {
                 label="Historical Event"
                 sx={{ alignItems: 'center', margin: 0 }}
               />
-            </Grid>
-            <Grid item xs={6} md={4}>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 4 }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={allowedTypes.includes(AllowedType.INSTRUCTIONAL)}
-                    onChange={() => toggleAllowedType(AllowedType.INSTRUCTIONAL)}
+                    checked={allowedTypes.includes(PromptType.INSTRUCTIONAL)}
+                    onChange={() => togglePromptType(PromptType.INSTRUCTIONAL)}
                     sx={{
                       color: 'white',
                       '&.Mui-checked': { color: '#ED8936' },
@@ -93,13 +105,13 @@ const ContentSettingsSection = () => {
                 label="Instructional"
                 sx={{ alignItems: 'center', margin: 0 }}
               />
-            </Grid>
-            <Grid item xs={6} md={4}>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 4 }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={allowedTypes.includes(AllowedType.DIALOGUE)}
-                    onChange={() => toggleAllowedType(AllowedType.DIALOGUE)}
+                    checked={allowedTypes.includes(PromptType.DIALOGUE)}
+                    onChange={() => togglePromptType(PromptType.DIALOGUE)}
                     sx={{
                       color: 'white',
                       '&.Mui-checked': { color: '#ED8936' },
@@ -109,13 +121,13 @@ const ContentSettingsSection = () => {
                 label="Dialogue"
                 sx={{ alignItems: 'center', margin: 0 }}
               />
-            </Grid>
-            <Grid item xs={6} md={4}>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 4 }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={allowedTypes.includes(AllowedType.NARRATIVE_DIALOGUE)}
-                    onChange={() => toggleAllowedType(AllowedType.NARRATIVE_DIALOGUE)}
+                    checked={allowedTypes.includes(PromptType.NARRATED_DIALOGUE)}
+                    onChange={() => togglePromptType(PromptType.NARRATED_DIALOGUE)}
                     sx={{
                       color: 'white',
                       '&.Mui-checked': { color: '#ED8936' },
@@ -125,8 +137,8 @@ const ContentSettingsSection = () => {
                 label="Narrated Dialogue"
                 sx={{ alignItems: 'center', margin: 0 }}
               />
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
         </FormGroup>
       </FormControl>
 
@@ -136,7 +148,7 @@ const ContentSettingsSection = () => {
         </Typography>
         <Select
           value={difficulty}
-          onChange={(e) => setField('difficulty', e.target.value as RoomDifficulty)}
+          onChange={(e) => setDifficulty(e.target.value as GameSessionDifficulty)}
           size="small"
           fullWidth
           sx={{
@@ -156,9 +168,9 @@ const ContentSettingsSection = () => {
             },
           }}
         >
-          <MenuItem value={RoomDifficulty.EASY}>Easy</MenuItem>
-          <MenuItem value={RoomDifficulty.INTERMEDIATE}>Intermediate</MenuItem>
-          <MenuItem value={RoomDifficulty.HARD}>Hard</MenuItem>
+          <MenuItem value={GameSessionDifficulty.EASY}>Easy</MenuItem>
+          <MenuItem value={GameSessionDifficulty.INTERMEDIATE}>Intermediate</MenuItem>
+          <MenuItem value={GameSessionDifficulty.HARD}>Hard</MenuItem>
         </Select>
       </Box>
     </Box>

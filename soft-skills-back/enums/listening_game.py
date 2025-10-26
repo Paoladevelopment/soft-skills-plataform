@@ -8,31 +8,16 @@ class PromptType(str, Enum):
     dialogue = "dialogue"
     narrated_dialogue = "narrated_dialogue"
 
-
-class AudioLength(str, Enum):
-    short = "short"
-    medium = "medium"
-    long = "long"
-
-
 class Difficulty(str, Enum):
     easy = "easy"
     intermediate = "intermediate"
     hard = "hard"
-
-
-class PenaltyReason(str, Enum):
-    forbidden_word = "forbidden_word"
-    replay_limit = "replay_limit"
-    timeout = "timeout"
-
 
 class AudioStorage(str, Enum):
     s3 = "s3"
     supabase = "supabase"
     gcs = "gcs"
     none = "none"
-
 
 class PlayMode(str, Enum):
     focus = "focus"
@@ -57,5 +42,6 @@ class AudioEffects(str, Enum):
 class GameStatus(str, Enum):
     pending = "pending"
     active = "active"
-    finished = "finished"
+    paused = "paused"
+    completed = "completed"
     cancelled = "cancelled"

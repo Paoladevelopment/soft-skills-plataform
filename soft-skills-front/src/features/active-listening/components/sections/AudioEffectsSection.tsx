@@ -1,12 +1,14 @@
 import { Box, Checkbox, FormControlLabel, Slider, Stack, Typography } from '@mui/material'
-import { useRoomDraftStore } from '../../store/useRoomDraftStore'
+import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
 
 const AudioEffectsSection = () => {
-  const reverb = useRoomDraftStore((state) => state.reverb)
-  const echo = useRoomDraftStore((state) => state.echo)
-  const noise = useRoomDraftStore((state) => state.noise)
-  const speedVar = useRoomDraftStore((state) => state.speedVar)
-  const setAudio = useRoomDraftStore((state) => state.setAudio)
+  const audioEffects = useGameSessionDraftStore((state) => state.audioEffects)
+  const setAudioEffect = useGameSessionDraftStore((state) => state.setAudioEffect)
+  
+  const reverb = audioEffects.reverb || 0
+  const echo = audioEffects.echo || 0
+  const backgroundNoise = audioEffects.backgroundNoise || 0
+  const speedVariation = audioEffects.speedVariation || 0
 
   return (
     <Box>
@@ -18,7 +20,7 @@ const AudioEffectsSection = () => {
           control={
             <Checkbox
               checked={reverb > 0}
-              onChange={(e) => setAudio('reverb', e.target.checked ? 0.3 : 0)}
+              onChange={(e) => setAudioEffect('reverb', e.target.checked ? 0.3 : 0)}
               sx={{
                 color: 'white',
                 '&.Mui-checked': { color: '#ED8936' },
@@ -36,7 +38,7 @@ const AudioEffectsSection = () => {
           <Box px={2}>
             <Slider
               value={reverb}
-              onChange={(_, value) => setAudio('reverb', value as number)}
+              onChange={(_, value) => setAudioEffect('reverb', value as number)}
               min={0}
               max={1}
               step={0.1}
@@ -65,7 +67,7 @@ const AudioEffectsSection = () => {
           control={
             <Checkbox
               checked={echo > 0}
-              onChange={(e) => setAudio('echo', e.target.checked ? 0.3 : 0)}
+              onChange={(e) => setAudioEffect('echo', e.target.checked ? 0.3 : 0)}
               sx={{
                 color: 'white',
                 '&.Mui-checked': { color: '#ED8936' },
@@ -83,7 +85,7 @@ const AudioEffectsSection = () => {
           <Box px={2}>
             <Slider
               value={echo}
-              onChange={(_, value) => setAudio('echo', value as number)}
+              onChange={(_, value) => setAudioEffect('echo', value as number)}
               min={0}
               max={1}
               step={0.1}
@@ -111,8 +113,8 @@ const AudioEffectsSection = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={noise > 0}
-              onChange={(e) => setAudio('noise', e.target.checked ? 0.3 : 0)}
+              checked={backgroundNoise > 0}
+              onChange={(e) => setAudioEffect('backgroundNoise', e.target.checked ? 0.3 : 0)}
               sx={{
                 color: 'white',
                 '&.Mui-checked': { color: '#ED8936' },
@@ -126,11 +128,11 @@ const AudioEffectsSection = () => {
             alignItems: 'center',
           }}
         />
-        {noise > 0 && (
+        {backgroundNoise > 0 && (
           <Box px={2}>
             <Slider
-              value={noise}
-              onChange={(_, value) => setAudio('noise', value as number)}
+              value={backgroundNoise}
+              onChange={(_, value) => setAudioEffect('backgroundNoise', value as number)}
               min={0}
               max={1}
               step={0.1}
@@ -158,8 +160,8 @@ const AudioEffectsSection = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={speedVar > 0}
-              onChange={(e) => setAudio('speedVar', e.target.checked ? 0.3 : 0)}
+              checked={speedVariation > 0}
+              onChange={(e) => setAudioEffect('speedVariation', e.target.checked ? 0.3 : 0)}
               sx={{
                 color: 'white',
                 '&.Mui-checked': { color: '#ED8936' },
@@ -173,11 +175,11 @@ const AudioEffectsSection = () => {
             alignItems: 'center',
           }}
         />
-        {speedVar > 0 && (
+        {speedVariation > 0 && (
           <Box px={2}>
             <Slider
-              value={speedVar}
-              onChange={(_, value) => setAudio('speedVar', value as number)}
+              value={speedVariation}
+              onChange={(_, value) => setAudioEffect('speedVariation', value as number)}
               min={0}
               max={1}
               step={0.1}

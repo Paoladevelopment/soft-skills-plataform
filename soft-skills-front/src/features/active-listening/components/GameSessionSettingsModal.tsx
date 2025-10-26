@@ -11,16 +11,17 @@ import {
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import { useState } from 'react'
-import RoomForm from './RoomForm'
-import { ROOM_MODE } from '../constants/roomMode'
-import { useRoomStore } from '../store/useRoomStore'
-import { AllowedType, RoomDifficulty, TeamAssignmentMode } from '../types/room/room.models'
+import GameSessionForm from './GameSessionForm'
+import { GAME_SESSION_MODE } from '../constants/gameSessionMode'
+import { useGameSessionStore } from '../store/useGameSessionStore'
+import { PromptType, GameSessionDifficulty, PlayMode } from '../types/game-sessions/gameSession.models'
+import { convertAudioEffectsToSnakeCase } from '../utils/audioEffectsUtils'
 
-interface RoomSettingsModalProps {
+interface GameSessionSettingsModalProps {
   open: boolean
   onClose: () => void
-  roomId: string
-  roomName: string
+  sessionId: string
+  sessionName: string
   isLoading?: boolean
 }
 
@@ -40,47 +41,36 @@ const TabPanel = ({ children, value, index }: TabPanelProps) => (
   </div>
 )
 
-const RoomSettingsModal = ({ open, onClose, roomId, roomName, isLoading = false }: RoomSettingsModalProps) => {
+const GameSessionSettingsModal = ({ open, onClose, sessionId, sessionName, isLoading = false }: GameSessionSettingsModalProps) => {
   const [tabValue, setTabValue] = useState(0)
-  const updateRoomConfig = useRoomStore((state) => state.updateRoomConfig)
-  const selectedRoom = useRoomStore((state) => state.selectedRoom)
+  const updateGameSessionConfig = useGameSessionStore((state) => state.updateGameSessionConfig)
+  const selectedGameSession = useGameSessionStore((state) => state.selectedGameSession)
   
-  const displayRoomName = selectedRoom?.name || roomName
-  const invitationsCount = 2
+  const displaySessionName = selectedGameSession?.name || sessionName
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
   }
 
-  const handleUpdateRoom = async (data: {
-    roomName: string
+  const handleUpdateSession = async (data: {
+    sessionName: string
     totalRounds: number
-    roundTimeLimit: number
-    maxPlaybacks: number
-    allowedTypes: AllowedType[]
-    difficulty: RoomDifficulty
-    reverb: number
-    echo: number
-    noise: number
-    speedVar: number
-    teamAssignmentMode: TeamAssignmentMode
-    teamSize: number
+    maxReplaysPerRound: number
+    difficulty: GameSessionDifficulty
+    responseTimeLimits: { [mode: string]: number }
+    selectedModes: PlayMode[]
+    allowedTypes: PromptType[]
+    audioEffects: { [effect: string]: number }
   }) => {
-    await updateRoomConfig(roomId, {
+    await updateGameSessionConfig(sessionId, {
       config: {
-        rounds_total: data.totalRounds,
-        round_time_limit_sec: data.roundTimeLimit,
-        listener_max_playbacks: data.maxPlaybacks,
-        allowed_types: data.allowedTypes,
+        total_rounds: data.totalRounds,
+        max_replays_per_round: data.maxReplaysPerRound,
         difficulty: data.difficulty,
-        audio_effects: {
-          reverb: data.reverb > 0 ? data.reverb : null,
-          echo: data.echo > 0 ? data.echo : null,
-          noise: data.noise > 0 ? data.noise : null,
-          speed_var: data.speedVar > 0 ? data.speedVar : null,
-        },
-        team_assignment_mode: data.teamAssignmentMode,
-        team_size: data.teamSize,
+        response_time_limits: data.responseTimeLimits,
+        selected_modes: data.selectedModes,
+        allowed_types: data.allowedTypes,
+        audio_effects: convertAudioEffectsToSnakeCase(data.audioEffects),
       },
     })
     onClose()
@@ -114,10 +104,10 @@ const RoomSettingsModal = ({ open, onClose, roomId, roomName, isLoading = false 
       >
         <Box>
           <Typography variant="h6" fontWeight="bold">
-            Room Settings - {displayRoomName}
+            Session Settings - {displaySessionName}
           </Typography>
           <Typography variant="body2" color="rgba(255, 255, 255, 0.6)">
-            Manage room configuration and invitations
+            Manage session configuration
           </Typography>
         </Box>
         <IconButton
@@ -170,37 +160,6 @@ const RoomSettingsModal = ({ open, onClose, roomId, roomName, isLoading = false 
           }}
         >
           <Tab label="Configuration" />
-          <Tab
-            label={
-              <Box
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 1,
-                }}
-              >
-                <span>Invitations</span>
-                <Box
-                  component="span"
-                  sx={{
-                    backgroundColor: '#FFB74D',
-                    color: 'white',
-                    borderRadius: '10px',
-                    minWidth: '20px',
-                    height: '20px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: 'bold',
-                    padding: '0 0.375rem',
-                  }}
-                >
-                  {invitationsCount}
-                </Box>
-              </Box>
-            }
-          />
         </Tabs>
       </Box>
 
@@ -221,19 +180,12 @@ const RoomSettingsModal = ({ open, onClose, roomId, roomName, isLoading = false 
               <CircularProgress sx={{ color: 'white' }} size={48} />
             </Box>
           ) : (
-            <RoomForm mode={ROOM_MODE.UPDATE} roomId={roomId} onSubmit={handleUpdateRoom} />
+            <GameSessionForm mode={GAME_SESSION_MODE.UPDATE} sessionId={sessionId} onSubmit={handleUpdateSession} />
           )}
-        </TabPanel>
-        <TabPanel value={tabValue} index={1}>
-          <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography color="rgba(255, 255, 255, 0.6)">
-              Invitations feature coming soon...
-            </Typography>
-          </Box>
         </TabPanel>
       </DialogContent>
     </Dialog>
   )
 }
 
-export default RoomSettingsModal
+export default GameSessionSettingsModal
