@@ -1,12 +1,16 @@
 from logging.config import fileConfig
 
 from alembic import context
-from model import LearningGoal, Module, Objective, Task, User, PomodoroPreferences
-import model.listening_core  # noqa
-import model.listening_game  # noqa
-import model.listening_actions  # noqa
-import model.listening_scoring  # noqa
-import model.listening_misc  # noqa
+from model import (
+    LearningGoal, 
+    Module, 
+    Objective, 
+    Task, 
+    User, 
+    PomodoroPreferences,
+    GameSession,
+    GameSessionConfig
+)
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 from utils import settings

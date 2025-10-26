@@ -1,38 +1,5 @@
 from enum import Enum
 
-
-class RoomStatus(str, Enum):
-    lobby = "lobby"
-    active = "active"
-    finished = "finished"
-    archived = "archived"
-
-    def __str__(self) -> str:
-        return self.value
-
-
-class GameStatus(str, Enum):
-    active = "active"
-    finished = "finished"
-
-
-class RoundStatus(str, Enum):
-    pending = "pending"
-    in_progress = "in_progress"
-    timeout = "timeout"
-    answered = "answered"
-    scored = "scored"
-    finished = "finished"
-
-
-class RoundTeamStatus(str, Enum):
-    pending = "pending"
-    in_progress = "in_progress"
-    answered = "answered"
-    timeout = "timeout"
-    scored = "scored"
-
-
 class PromptType(str, Enum):
     descriptive = "descriptive"
     conversational = "conversational"
@@ -67,12 +34,28 @@ class AudioStorage(str, Enum):
     none = "none"
 
 
-class VoiceProvider(str, Enum):
-    discord = "discord"
-    jitsi = "jitsi"
-    custom = "custom"
+class PlayMode(str, Enum):
+    focus = "focus"
+    cloze = "cloze"
+    paraphrase = "paraphrase"
+    summarize = "summarize"
+    clarify = "clarify"
+    mixed = "mixed"
 
+    def __str__(self) -> str:
+        return self.value
 
-class TeamAssignmentMode(str, Enum):
-    manual = "manual"
-    random = "random"
+class AudioEffects(str, Enum):
+    reverb = "reverb"
+    echo = "echo"
+    background_noise = "background_noise"
+    speed_variation = "speed_variation"
+
+    def __str__(self) -> str:
+        return self.value
+
+class GameStatus(str, Enum):
+    pending = "pending"
+    active = "active"
+    finished = "finished"
+    cancelled = "cancelled"
