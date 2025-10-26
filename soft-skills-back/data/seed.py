@@ -265,8 +265,6 @@ def create_seed_data(session: Session):
     session.add_all(learning_goals)
     session.commit()
 
-    sync_to_mongodb(users, learning_goals, objectives, tasks)
-
     print("Seed data inserted successfully!")
 
 

@@ -1,135 +1,119 @@
-ROOM_CREATE_EXAMPLE = {
-    "name": "Epic Listening Challenge",
+GAME_SESSION_CREATE_EXAMPLE = {
+    "name": "Morning Listening Practice"
+}
+
+GAME_SESSION_CREATE_FULL_EXAMPLE = {
+    "name": "Advanced Listening Challenge",
     "config": {
-        "rounds_total": 5,
-        "round_time_limit_sec": 90,
-        "listener_max_playbacks": 2,
-        "allowed_types": ["descriptive", "conversational"],
-        "difficulty": "intermediate",
-        "audio_effects": {"reverb": 0.3, "echo": 0.1},
-        "team_assignment_mode": "random",
-        "team_size": 3
+        "total_rounds": 7,
+        "max_replays_per_round": 2,
+        "difficulty": "hard",
+        "selected_modes": ["focus", "cloze", "paraphrase", "summarize"],
+        "allowed_types": ["descriptive", "conversational", "instructional"],
+        "audio_effects": {
+            "reverb": 0.2,
+            "echo": 0.1,
+            "background_noise": 0.05,
+            "speed_variation": 0.1
+        }
     }
 }
 
-ROOM_READ_EXAMPLE = {
+GAME_SESSION_READ_EXAMPLE = {
     "id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
-    "name": "Epic Listening Challenge",
-    "owner_user_id": "123e4567-e89b-12d3-a456-426614174000",
-    "status": "lobby",
-    "created_at": "2025-09-22T10:30:00Z",
+    "name": "Morning Listening Practice",
+    "user_id": "123e4567-e89b-12d3-a456-426614174000",
+    "status": "pending",
+    "current_round": 1,
+    "total_score": 0.0,
+    "created_at": "2025-10-26T08:30:00Z",
     "started_at": None,
     "finished_at": None
 }
 
-ROOM_DETAIL_EXAMPLE = {
+GAME_SESSION_DETAIL_EXAMPLE = {
     "id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
-    "name": "Epic Listening Challenge",
-    "owner_user_id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Morning Listening Practice",
+    "user_id": "123e4567-e89b-12d3-a456-426614174000",
     "status": "active",
-    "created_at": "2025-09-22T10:30:00Z",
-    "started_at": "2025-09-22T10:35:00Z",
+    "current_round": 3,
+    "total_score": 245.5,
+    "created_at": "2025-10-26T08:30:00Z",
+    "started_at": "2025-10-26T08:32:00Z",
     "finished_at": None,
     "config": {
-        "rounds_total": 5,
-        "round_time_limit_sec": 90,
-        "listener_max_playbacks": 2,
-        "allowed_types": ["descriptive", "conversational"],
-        "difficulty": "intermediate",
-        "audio_effects": {}
-    },
-    "teams": [
-        {"id": "team-1", "name": "Alpha Squad", "member_count": 3},
-        {"id": "team-2", "name": "Beta Force", "member_count": 2}
-    ]
-}
-
-ROUND_READ_EXAMPLE = {
-    "id": "round-123",
-    "game_id": "game-456",
-    "round_number": 2,
-    "status": "in_progress",
-    "started_at": "2025-09-22T10:45:00Z",
-    "deadline_at": "2025-09-22T10:46:30Z",
-    "ended_at": None
-}
-
-ROUND_TIMELINE_EXAMPLE = {
-    "round_id": "round-123",
-    "events": [
-        {"timestamp": "2025-09-22T10:45:00Z", "type": "round_started"},
-        {"timestamp": "2025-09-22T10:45:15Z", "type": "audio_generated"},
-        {"timestamp": "2025-09-22T10:45:30Z", "type": "first_message_sent"}
-    ]
-}
-
-ROUND_TEAM_LISTENER_VIEW_EXAMPLE = {
-    "round_team_id": "rt-789",
-    "forbidden_words": ["computer", "technology", "digital"],
-    "remaining_playbacks": 1,
-    "audio": {
-        "url": "https://storage.example.com/audio/clip-123.mp3",
-        "storage": "s3",
-        "voice_id": "voice_sarah_001",
-        "model_id": "tts_model_v2",
-        "output_format": "mp3"
+        "total_rounds": 5,
+        "max_replays_per_round": 2,
+        "difficulty": "easy",
+        "response_time_limits": {
+            "focus": 30,
+            "cloze": 45,
+            "paraphrase": 60,
+            "summarize": 90,
+            "clarify": 45
+        },
+        "selected_modes": ["focus", "cloze", "paraphrase"],
+        "allowed_types": ["descriptive", "conversational", "instructional"],
+        "audio_effects": {
+            "reverb": 0.2,
+            "echo": 0.1,
+            "background_noise": 0.05,
+            "speed_variation": 0.1
+        }
     }
 }
 
-ROUND_TEAM_DECODER_VIEW_EXAMPLE = {
-    "round_team_id": "rt-789",
-    "listener_messages": [
-        {"content": "A device you use every day", "created_at": "2025-09-22T10:45:45Z"},
-        {"content": "Has a screen and keyboard", "created_at": "2025-09-22T10:45:50Z"}
-    ],
-    "answer_choices": ["laptop", "smartphone", "tablet", "desktop"],
-    "time_left_sec": 45,
-    "voice_room_url": "https://meet.jit.si/listening-game-rt789"
+GAME_SESSION_CONFIG_CREATE_EXAMPLE = {
+    "total_rounds": 5,
+    "max_replays_per_round": 2,
+    "difficulty": "intermediate",
+    "selected_modes": ["focus", "cloze", "paraphrase", "summarize"],
+    "allowed_types": ["descriptive", "conversational", "historical_event", "instructional"],
+    "audio_effects": {
+        "reverb": 0.3,
+        "echo": 0.15,
+        "background_noise": 0.1,
+        "speed_variation": 0.15
+    }
 }
 
-LISTENER_MESSAGE_CREATE_EXAMPLE = {
-    "content": "A rectangular device with buttons and a screen"
+GAME_SESSION_CONFIG_READ_EXAMPLE = {
+    "total_rounds": 5,
+    "max_replays_per_round": 2,
+    "difficulty": "intermediate",
+    "response_time_limits": {
+        "focus": 25,
+        "cloze": 40,
+        "paraphrase": 55,
+        "summarize": 85,
+        "clarify": 40
+    },
+    "selected_modes": ["focus", "cloze", "paraphrase", "summarize"],
+    "allowed_types": ["descriptive", "conversational", "historical_event", "instructional"],
+    "audio_effects": {
+        "reverb": 0.3,
+        "echo": 0.15,
+        "background_noise": 0.1,
+        "speed_variation": 0.15
+    }
 }
 
-DECODER_ANSWER_CREATE_EXAMPLE = {
-    "selected_answer": "laptop"
+GAME_SESSION_SUMMARY_EXAMPLE = {
+    "id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
+    "name": "Morning Listening Practice",
+    "status": "finished",
+    "current_round": 5,
+    "total_score": 487.5,
+    "created_at": "2025-10-26T08:30:00Z"
 }
 
-ROUND_TEAM_SCORE_READ_EXAMPLE = {
-    "id": "score-123",
-    "round_team_id": "rt-789",
-    "is_correct": True,
-    "base_points": 100,
-    "speed_bonus": 25,
-    "penalties": -10,
-    "total_points": 115
+GAME_SESSION_UPDATE_EXAMPLE = {
+    "name": "Evening Listening Practice",
+    "status": "active"
 }
 
-LEADERBOARD_READ_EXAMPLE = {
-    "game_id": "game-456",
-    "teams": [
-        {
-            "team_id": "team-1",
-            "team_name": "Alpha Squad",
-            "points_total": 340,
-            "rank": 1
-        },
-        {
-            "team_id": "team-2", 
-            "team_name": "Beta Force",
-            "points_total": 285,
-            "rank": 2
-        }
-    ]
-}
-
-EVENT_LOG_READ_EXAMPLE = {
-    "id": "event-123",
-    "game_id": "game-456",
-    "round_id": "round-123",
-    "round_team_id": "rt-789",
-    "actor_user_id": "123e4567-e89b-12d3-a456-426614174000",
-    "type": "answer_submitted",
-    "payload": {"selected_answer": "laptop", "latency_ms": 2300},
-    "occurred_at": "2025-09-22T10:46:15Z"
+GAME_SESSION_CONFIG_UPDATE_EXAMPLE = {
+    "total_rounds": 7,
+    "difficulty": "hard",
+    "selected_modes": ["focus", "cloze", "paraphrase", "summarize", "clarify"]
 }

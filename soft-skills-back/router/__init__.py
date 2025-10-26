@@ -7,10 +7,7 @@ from router import (
   task, 
   user, 
   roadmap, 
-  room, 
-  room_invite,
-  room_member,
-  team_member
+  game_session
 )
 
 api = APIRouter(
@@ -60,25 +57,7 @@ api.include_router(
 )
 
 api.include_router(
-  room.router,
-  prefix="/rooms",
-  tags=["Listening game rooms"]
-)
-
-api.include_router(
-  room_invite.router,
-  prefix="/rooms",
-  tags=["Room invites"]
-)
-
-api.include_router(
-  room_member.router,
-  prefix="/rooms",
-  tags=["Room members"]
-)
-
-api.include_router(
-  team_member.router,
-  prefix="/rooms",
-  tags=["Team members"]
+  game_session.router,
+  prefix="/game-sessions",
+  tags=["Listening game sessions"]
 )
