@@ -174,7 +174,7 @@ def update_game_session_config(
 @router.delete(
     "/{session_id}",
     summary="Delete a game session by ID",
-    response_model=BaseResponse
+    status_code=status.HTTP_200_OK
 )
 def delete_game_session(
     session_id: UUID,
@@ -182,7 +182,8 @@ def delete_game_session(
     session: Session = Depends(get_session)
 ):
     try:
-        return game_service.delete_game_session(session_id, token_data.user_id, session)
+        result = game_service.delete_game_session(session_id, token_data.user_id, session)
+        return result
     
     except APIException as exc:
         raise_http_exception(exc)

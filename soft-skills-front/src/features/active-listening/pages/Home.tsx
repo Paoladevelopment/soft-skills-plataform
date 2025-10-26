@@ -10,12 +10,12 @@ const Home = () => {
     navigate('/')
   }
 
-  const handleListRooms = () => {
-    navigate('/active-listening/rooms')
+  const handleGameSessions = () => {
+    navigate('/active-listening/game-sessions')
   }
 
-  const handleJoinRoom = () => {
-    navigate('/active-listening/join-room')
+  const handleLeaderboard = () => {
+    navigate('/active-listening/leaderboard')
   }
 
   return (
@@ -101,7 +101,7 @@ const Home = () => {
 
           <Stack spacing={2} alignItems="center">
             <Button
-              onClick={handleListRooms}
+              onClick={handleGameSessions}
               sx={{
                 width: 200,
                 fontSize: '1.2rem',
@@ -122,11 +122,11 @@ const Home = () => {
                 },
               }}
             >
-              My Rooms
+              Game Sessions
             </Button>
 
             <Button
-              onClick={handleJoinRoom}
+              onClick={handleLeaderboard}
               sx={{
                 width: 200,
                 fontSize: '1.2rem',
@@ -147,7 +147,7 @@ const Home = () => {
                 },
               }}
             >
-              Join a Room
+              Leaderboard
             </Button>
           </Stack>
         </Stack>

@@ -1,37 +1,32 @@
 import { Button, Divider, Stack } from '@mui/material'
 import { Save } from '@mui/icons-material'
-import { useRoomDraftStore } from '../store/useRoomDraftStore'
-import { AllowedType, RoomDifficulty, TeamAssignmentMode } from '../types/room/room.models'
-import { ROOM_MODE, RoomMode } from '../constants/roomMode'
-import RoomNameSection from './sections/RoomNameSection'
+import { useGameSessionDraftStore } from '../store/useGameSessionDraftStore'
+import { PromptType, GameSessionDifficulty, PlayMode } from '../types/game-sessions/gameSession.models'
+import { GAME_SESSION_MODE, GameSessionMode } from '../constants/gameSessionMode'
+import GameSessionNameSection from './sections/GameSessionNameSection'
 import GameSettingsSection from './sections/GameSettingsSection'
 import ContentSettingsSection from './sections/ContentSettingsSection'
 import AudioEffectsSection from './sections/AudioEffectsSection'
-import TeamSettingsSection from './sections/TeamSettingsSection'
 
-interface RoomFormData {
-  roomName: string
+interface GameSessionFormData {
+  sessionName: string
   totalRounds: number
-  roundTimeLimit: number
-  maxPlaybacks: number
-  allowedTypes: AllowedType[]
-  difficulty: RoomDifficulty
-  reverb: number
-  echo: number
-  noise: number
-  speedVar: number
-  teamAssignmentMode: TeamAssignmentMode
-  teamSize: number
+  maxReplaysPerRound: number
+  difficulty: GameSessionDifficulty
+  responseTimeLimits: { [mode: string]: number }
+  selectedModes: PlayMode[]
+  allowedTypes: PromptType[]
+  audioEffects: { [effect: string]: number }
 }
 
-interface RoomFormProps {
-  mode?: RoomMode
-  roomId?: string
-  onSubmit?: (data: RoomFormData) => void | Promise<void>
+interface GameSessionFormProps {
+  mode?: GameSessionMode
+  sessionId?: string
+  onSubmit?: (data: GameSessionFormData) => void | Promise<void>
 }
 
-const RoomForm = ({ mode = ROOM_MODE.CREATE, roomId, onSubmit }: RoomFormProps) => {
-  const getSnapshot = useRoomDraftStore((state) => state.getSnapshot)
+const GameSessionForm = ({ mode = GAME_SESSION_MODE.CREATE, sessionId, onSubmit }: GameSessionFormProps) => {
+  const getSnapshot = useGameSessionDraftStore((state) => state.getSnapshot)
 
   const handleSubmit = async () => {
     const draft = getSnapshot()
@@ -43,7 +38,7 @@ const RoomForm = ({ mode = ROOM_MODE.CREATE, roomId, onSubmit }: RoomFormProps) 
 
   return (
     <Stack spacing={3}>
-      <RoomNameSection mode={mode} roomId={roomId} />
+      <GameSessionNameSection mode={mode} sessionId={sessionId} />
 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
@@ -56,10 +51,6 @@ const RoomForm = ({ mode = ROOM_MODE.CREATE, roomId, onSubmit }: RoomFormProps) 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
       <AudioEffectsSection />
-
-      <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
-
-      <TeamSettingsSection />
 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
@@ -81,11 +72,11 @@ const RoomForm = ({ mode = ROOM_MODE.CREATE, roomId, onSubmit }: RoomFormProps) 
           },
         }}
       >
-        {mode === ROOM_MODE.CREATE ? 'Create Room' : 'Update Configuration'}
+        {mode === GAME_SESSION_MODE.CREATE ? 'Create Session' : 'Update Configuration'}
       </Button>
     </Stack>
   )
 }
 
-export default RoomForm
+export default GameSessionForm
 

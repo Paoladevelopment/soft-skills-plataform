@@ -199,8 +199,8 @@ class GameService:
             session.rollback()
             handle_db_error(err, "update_game_session_config", error_type="commit")
     
-    def delete_game_session(self, session_id: UUID, user_id: UUID, session: Session):
-        """Delete a game session."""
+    def delete_game_session(self, session_id: UUID, user_id: UUID, session: Session) -> dict:
+        """Delete a game session and return success message."""
         try:
             game_session = self.get_game_session(session_id, session)
             self.verify_session_ownership(game_session, user_id)
@@ -208,7 +208,10 @@ class GameService:
             session.delete(game_session)
             session.commit()
 
-            return {"message": "Game session deleted successfully", "session_id": session_id}
+            return {
+                "message": "Game session deleted successfully",
+                "data": {"session_id": str(session_id)}
+            }
         
         except APIException:
             raise
