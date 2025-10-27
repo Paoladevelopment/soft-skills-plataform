@@ -1,0 +1,48 @@
+Generate a hard "cloze" listening challenge.
+
+CRITICAL: The audio_text field must contain the COMPLETE text without any blanks (___). 
+Only the text_with_blanks field should contain blanks. The audio_text is what will be spoken aloud.
+
+Create a coherent passage appropriate for {audio_length} with multiple blanks.
+The missing words or short phrases should require careful reasoning and deep context understanding to complete.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Describe a complex environment where several interrelated details (e.g., objects, actions, or conditions) are omitted.
+  Example: "The sophisticated laboratory contained advanced equipment for conducting molecular research experiments."
+
+- If {prompt_type} = "historical_event": Depict a real historical event where several key elements (dates, actions, outcomes) are blanked out, requiring historical or logical inference.
+  Example: "During the Industrial Revolution, technological innovations transformed manufacturing processes and revolutionized economic systems."
+
+- If {prompt_type} = "instructional": Give comprehensive step-by-step instructions for a complex process where multiple steps or dependencies are missing.
+  Example: "To conduct a research study, formulate a hypothesis, design the methodology, collect data systematically, analyze results statistically, and draw evidence-based conclusions."
+
+- If {prompt_type} = "dialogue": Create a multi-turn conversation where the omitted words alter the flow or understanding of what's happening. Follow the dialogue format from system.txt with "Speaker 1" and "Speaker 2".
+  Example: "\"Speaker 1\": I've been working on this project for months. \"Speaker 2\": What kind of challenges have you faced?"
+
+- If {prompt_type} = "narrated_dialogue": Write a complex narration about a conversation (single voice, no "Speaker 1/2" format).
+  Example: "The CEO presented the quarterly results to the board, highlighting the challenges faced during the economic downturn."
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "text_with_blanks": "...",
+  "answers": ["..."]
+}}
+
+Guidelines:
+- audio_text: MUST contain the COMPLETE text without any blanks (___). This is what will be spoken aloud.
+- "text_with_blanks": Replace 3–5 meaningful words or short phrases with "___". This version has the blanks.
+- "answers": List all missing words in correct order.
+- Ambiguity should come from reasoning, not grammar errors.
+- Ensure each blank affects comprehension and forces inference.
+- Keep the text logically coherent and appropriate for educational use.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "\"Speaker 1\": I've been working on this project for months.\n\"Speaker 2\": What kind of challenges have you faced?\n\"Speaker 1\": The main issue was finding reliable suppliers who could meet our quality standards.",
+  "text_with_blanks": "\"Speaker 1\": I've been working on this ___ for months.\n\"Speaker 2\": What kind of ___ have you faced?\n\"Speaker 1\": The main ___ was finding reliable suppliers who could meet our quality ___.",
+  "answers": ["project", "challenges", "issue", "standards"]
+}}
+

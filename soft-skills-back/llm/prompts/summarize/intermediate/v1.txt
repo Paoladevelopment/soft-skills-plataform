@@ -1,0 +1,31 @@
+Generate a medium-difficulty "summarize" listening challenge.
+
+Create a passage (audio_text) that includes several connected ideas, causes, or examples supporting one central theme.  
+Then, provide a concise summary (reference_summary) that combines these elements into one coherent statement.
+
+Adapt the content and structure to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Present multiple related descriptions; summarize what they collectively represent.
+- If {prompt_type} = "historical_event": Describe a real historical event with background and results; summarize what it led to or represented.
+- If {prompt_type} = "instructional": Explain a process with multiple steps; summarize its overall goal or lesson.
+- If {prompt_type} = "dialogue": Use a conversation with multiple turns; summarize what was resolved, decided, or discussed.
+- If {prompt_type} = "narrated_dialogue": Summarize what the narrator conveys about the discussion’s outcome or main idea.
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "reference_summary": "..."
+}}
+
+Guidelines:
+- The summary should condense several related points into one unified idea.
+- Avoid copying sentences from the passage.
+- Summarize meaning, not phrasing.
+- Respect the {audio_length} parameter from the base prompt to determine how long the audio passage should be (short, medium, or long).
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "During the past year, the community organized cleanups, planted trees, and reduced waste. These efforts not only beautified the area but also strengthened residents’ cooperation.",
+  "reference_summary": "Community actions improved both the environment and cooperation among neighbors."
+}}

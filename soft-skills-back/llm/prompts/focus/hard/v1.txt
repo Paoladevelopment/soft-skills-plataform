@@ -1,0 +1,43 @@
+Generate a hard "focus" listening challenge.
+
+Create a detailed passage appropriate for {audio_length} that includes multiple ideas, contrasts, or subtle clues.
+Write a question that requires reasoning or combining multiple pieces of information to select the correct answer.
+Provide exactly five possible answers.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Use a scene with overlapping or conflicting details; ask which description matches best.
+- If {prompt_type} = "historical_event": Describe a complex real historical event with multiple causes, effects, or interpretations; ask about disputed causes, effects, or which historical explanation fits the context.
+- If {prompt_type} = "instructional": Include conditions or exceptions; ask what should be done under a specific circumstance.
+- If {prompt_type} = "dialogue": Include misunderstanding or differing perspectives; ask what each person implied.
+- If {prompt_type} = "narrated_dialogue": Include layered motives or outcomes; ask which interpretation fits best.
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "question": "...",
+  "answer_choices": ["...", "...", "...", "...", "..."],
+  "correct_answer": "..."
+}}
+
+Guidelines:
+- audio_text should be appropriate for {audio_length} and logically complex.
+- The question must require reasoning and understanding relationships.
+- Provide exactly 5 distinct answer choices.
+- Only one answer is correct, but distractors should feel plausible.
+- Keep vocabulary and logic suitable for general audiences.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "When the inventor presented her idea, most investors stayed silent. Later, two approached her privately, offering help only if she agreed to delay the launch.",
+  "question": "Why did the investors approach her privately?",
+  "answer_choices": [
+    "They disagreed about the idea.",
+    "They wanted to delay the project.",
+    "They needed more money.",
+    "They planned to reject her proposal.",
+    "They misunderstood the presentation."
+  ],
+  "correct_answer": "They wanted to delay the project."
+}}

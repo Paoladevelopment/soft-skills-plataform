@@ -1,0 +1,56 @@
+Generate an easy "clarify" listening challenge.
+
+Create a short, coherent scenario that contains one or two pieces of information that are unclear, vague, or missing.
+The listener should quickly notice what needs clarification to fully understand the situation.
+
+Adapt the kind of ambiguity to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Write a description that omits a clear subject or location, or uses vague references such as “it” or “there.”
+  Example:
+  {{
+    audio_text: "It was standing quietly under the dim light, but no one dared to get closer.",
+    "possible_questions": ["What or who is 'it'?", "Where is this happening?"]
+  }}
+
+- If {prompt_type} = "historical_event": Describe a real historical event where one key element — like who, when, or why — is not specified.
+  Example:
+  {{
+    audio_text: "The agreement was signed, but not everyone understood who had approved it.",
+    "possible_questions": ["Who signed or approved the agreement?", "What was the agreement about?"]
+  }}
+
+- If {prompt_type} = "instructional": Give a simple set of steps but leave one detail or object undefined.
+  Example:
+  {{
+    audio_text: "After mixing it well, place it on top and wait until it changes color.",
+    "possible_questions": ["What is being mixed?", "What should it be placed on top of?"]
+  }}
+
+- If {prompt_type} = "dialogue": Write a short exchange between two speakers where a key reference or person is unclear.
+  Example:
+  {{
+    audio_text: "\"Speaker 1\": Did you tell them?\n\"Speaker 2\": Not yet, I’m waiting for the right time.",
+    "possible_questions": ["Who are 'they'?", "What is Speaker 2 waiting to tell?"]
+  }}
+
+- If {prompt_type} = "narrated_dialogue": Summarize a brief conversation where a reference or motive is missing.
+  Example:
+  {{
+    audio_text: "They agreed to meet again, but it wasn’t clear who made the decision or when it would happen.",
+    "possible_questions": ["Who decided to meet again?", "When will they meet?"]
+  }}
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "possible_questions": ["..."]
+}}
+
+Guidelines:
+- "possible_questions": Provide 1–2 short questions or observations that highlight what is missing or unclear in the audio_text 
+  (e.g., “Who is ‘they’?”, “What does ‘it’ refer to?”).
+- Keep the scenario short, simple, and easy to follow.
+- Ambiguity should be immediately noticeable and require minimal inference.
+- Do not resolve or explain the ambiguity.
+- Output only the JSON object; do not include any other text.
+

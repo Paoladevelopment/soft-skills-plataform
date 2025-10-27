@@ -1,0 +1,31 @@
+Generate a hard "summarize" listening challenge.
+
+Create a complex, multi-idea passage (audio_text) where the main theme is implied through multiple events, perspectives, or arguments.  
+Then, provide a concise reference_summary that captures the core idea or conclusion while omitting unnecessary detail.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Describe contrasting scenes or features; summarize their shared theme or key contrast.
+- If {prompt_type} = "historical_event": Depict a multi-stage or debated real historical event; summarize its most significant outcome or implication.
+- If {prompt_type} = "instructional": Present an extended or conditional process; summarize its overall purpose or guiding principle.
+- If {prompt_type} = "dialogue": Include differing viewpoints or misunderstandings; summarize the final insight or unresolved issue.
+- If {prompt_type} = "narrated_dialogue": Describe a conversation rich in subtext or reasoning; summarize what the conversation reveals about the situation.
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "reference_summary": "..."
+}}
+
+Guidelines:
+- The summary should abstract the essential message rather than restating content.
+- The audio_text may include multiple perspectives, causes, or logical connections.
+- Maintain logical coherence in the summary even if the text is nuanced or ambiguous.
+- Respect the {audio_length} parameter from the base prompt to determine passage duration (short, medium, or long).
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "Several scientists presented different explanations for the sudden drop in temperatures. Some blamed solar activity, while others pointed to volcanic eruptions. Despite disagreements, they all emphasized the need for continued research.",
+  "reference_summary": "Experts offered various theories about climate change but agreed on the importance of further study."
+}}

@@ -1,0 +1,33 @@
+Generate a hard "paraphrase" listening challenge.
+
+Create a passage (reference_text) and a paraphrased version (audio_text) that share the same meaning but differ significantly in structure, lexical choice, or emphasis.
+The paraphrase should demonstrate advanced variation while maintaining semantic fidelity.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Reframe the same setting with reordered or restructured imagery.
+- If {prompt_type} = "historical_event": Restate the same real historical situation with perspective or syntax changes while preserving facts.
+- If {prompt_type} = "instructional": Rephrase a complex process logically, varying grammar or connectors.
+- If {prompt_type} = "dialogue": Rewrite a multi-turn exchange with equivalent meaning but more sophisticated phrasing.
+- If {prompt_type} = "narrated_dialogue": Retell the same conversation with stylistic shifts or indirect narration.
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "reference_text": "...",
+  "rubric": ["meaning similarity", "grammar clarity", "style variation", "lexical richness"]
+}}
+
+Guidelines:
+- Preserve full meaning but change form and syntax extensively.
+- Ensure both versions sound fluent when read aloud.
+- Respect the {audio_length} parameter from the base prompt to control passage duration.
+- Avoid introducing or removing factual details.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "Despite the storm, the team continued their journey, trusting that the path ahead would clear by dawn.",
+  "reference_text": "The group decided to move on through the rain, believing the weather would improve by morning.",
+  "rubric": ["meaning similarity", "grammar clarity", "style variation", "lexical richness"]
+}}

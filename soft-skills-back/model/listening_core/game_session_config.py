@@ -15,7 +15,6 @@ ALL_PLAY_MODES: list[PlayMode] = [
 
 ALL_PROMPT_TYPES: list[PromptType] = [
     PromptType.descriptive, 
-    PromptType.conversational, 
     PromptType.historical_event, 
     PromptType.narrated_dialogue, 
     PromptType.dialogue, 
@@ -55,7 +54,7 @@ class GameSessionConfig(GameSessionConfigBase, table=True):
     
     game_session_id: UUID = Field(
         primary_key=True, 
-        foreign_key="listening_game_session.id"
+        foreign_key="listening_game_session.game_session_id"
     )
 
     game_session: "GameSession" = Relationship(

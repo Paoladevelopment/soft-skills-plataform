@@ -1,0 +1,52 @@
+Generate a medium-difficulty "cloze" listening challenge.
+
+CRITICAL OUTPUT RULES:
+- You MUST return a JSON object with exactly these 3 fields: "audio_text", "text_with_blanks", "answers"
+- "audio_text": Complete text WITHOUT any blanks (___). This is what will be spoken aloud.
+- "text_with_blanks": Same text as audio_text but with 2-3 words replaced by "___"
+- "answers": Array with the missing words in order
+- The "audio_text" MUST NEVER contain blanks, underscores, or placeholders
+- Return ONLY the JSON object — no explanations or additional text
+
+Create a passage appropriate for {audio_length} where two or three words are omitted.
+The blanks should require attention to meaning and context to fill correctly.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Describe a place or situation using multiple details, removing 2–3 descriptive words that affect understanding.
+  Example: "The modern office building had large windows overlooking the busy city street."
+
+- If {prompt_type} = "historical_event": Describe a real historical event with 2–3 missing details such as key actions, times, or entities.
+  Example: "During the Renaissance, artists like Leonardo da Vinci created masterpieces that influenced European culture."
+
+- If {prompt_type} = "instructional": Give detailed step-by-step instructions for a moderate task where 2-3 actions or objects are missing.
+  Example: "To prepare for a job interview, research the company background, practice answering common questions, and prepare your professional resume."
+
+- If {prompt_type} = "dialogue": Use a conversation where 2–3 context-dependent words are blanked (e.g., verbs, locations, objects). Follow the dialogue format from system.txt with "Speaker 1" and "Speaker 2".
+  Example: "\"Speaker 1\": I need to buy groceries for dinner. \"Speaker 2\": What ingredients do you need?"
+
+- If {prompt_type} = "narrated_dialogue": Write a narration about a conversation (single voice, no "Speaker 1/2" format).
+  Example: "The manager explained to the team that the project deadline was approaching. She asked everyone to focus on their tasks."
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "text_with_blanks": "...",
+  "answers": ["..."]
+}}
+
+Guidelines:
+- audio_text: MUST contain the COMPLETE text without any blanks (___). This is what will be spoken aloud.
+- "text_with_blanks": Replace 2–3 words with "___". This version has the blanks.
+- "answers": Provide the missing words in order.
+- Choose words that are inferable from context but not too obvious.
+- Keep sentences grammatically sound even with blanks.
+- Avoid proper names, numbers, or jargon.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "\"Speaker 1\": I need to buy groceries for dinner.\n\"Speaker 2\": What ingredients do you need?\n\"Speaker 1\": I need tomatoes, onions, and some fresh herbs.",
+  "text_with_blanks": "\"Speaker 1\": I need to buy ___ for dinner.\n\"Speaker 2\": What ___ do you need?\n\"Speaker 1\": I need tomatoes, onions, and some fresh ___.",
+  "answers": ["groceries", "ingredients", "herbs"]
+}}

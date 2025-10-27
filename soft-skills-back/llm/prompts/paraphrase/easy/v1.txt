@@ -1,0 +1,32 @@
+Generate an easy "paraphrase" listening challenge.
+
+Create an original passage appropriate for {audio_length} (reference_text) and a paraphrased version (audio_text) that keeps the same meaning but uses slightly different words or structure.
+The paraphrase should sound natural when spoken aloud and remain grammatically simple.
+
+Adapt the topic and tone to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Use a brief description of an object or scene, with simple word substitutions.
+- If {prompt_type} = "historical_event": Use a single factual statement about a real historical event, rephrased with basic synonyms.
+- If {prompt_type} = "instructional": Use a short instruction or step, reworded but keeping the same intent.
+- If {prompt_type} = "dialogue": Rephrase a single utterance or short exchange while keeping meaning identical.
+- If {prompt_type} = "narrated_dialogue": Rephrase a short narration of a conversation using alternate phrasing.
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "reference_text": "...",
+  "rubric": ["meaning similarity", "grammar clarity"]
+}}
+
+Guidelines:
+- The paraphrase should preserve meaning and grammatical correctness.
+- Use basic, clear vocabulary appropriate for educational contexts.
+- Respect the {audio_length} parameter from the base prompt to control passage size.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "The boy quickly closed the door.",
+  "reference_text": "The kid shut the door fast.",
+  "rubric": ["meaning similarity", "grammar clarity"]
+}}

@@ -11,6 +11,11 @@ from .game_session_config import (
     GameSessionConfigRead, 
     GameSessionConfigUpdate
 )
+from .challenge import (
+    GenerateChallenge,
+    ChallengeRead,
+    ChallengeResponse
+)
 
 __all__ = [
     "GameSessionCreate", 
@@ -21,5 +26,8 @@ __all__ = [
     "GameSessionPaginatedResponse",
     "GameSessionConfigCreate", 
     "GameSessionConfigRead", 
-    "GameSessionConfigUpdate"
+    "GameSessionConfigUpdate",
+    "GenerateChallenge",
+    "ChallengeRead",
+    "ChallengeResponse"
 ]

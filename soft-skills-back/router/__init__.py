@@ -7,7 +7,8 @@ from router import (
   task, 
   user, 
   roadmap, 
-  game_session
+  game_session,
+  challenge
 )
 
 api = APIRouter(
@@ -60,4 +61,10 @@ api.include_router(
   game_session.router,
   prefix="/game-sessions",
   tags=["Listening game sessions"]
+)
+
+api.include_router(
+  challenge.router,
+  prefix="/challenges",
+  tags=["Listening challenges"]
 )

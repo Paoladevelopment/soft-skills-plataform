@@ -1,0 +1,27 @@
+Generate an easy "focus" listening challenge.
+
+Create a passage appropriate for {audio_length} where a single, clear fact or detail is mentioned explicitly.
+Then, write a simple question about that fact and provide exactly five possible answers — one correct and four clearly incorrect but plausible alternatives.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Focus on a simple physical feature (e.g., color, size, or location).
+- If {prompt_type} = "historical_event": Describe a real historical event focusing on one key action or element; ask about who acted, what occurred, or what tool was used in the historical context.
+- If {prompt_type} = "instructional": Focus on a single step, object, or action.
+- If {prompt_type} = "dialogue": Focus on who said something, or what was mentioned in a simple exchange.
+- If {prompt_type} = "narrated_dialogue": Focus on one clear action or decision summarized by the narrator.
+
+Return a JSON object with:
+{{"audio_text": "...", "question": "...", "answer_choices": ["...", "...", "...", "...", "..."], "correct_answer": "..."}}
+
+Guidelines:
+- The correct answer must appear verbatim in the audio_text.
+- Provide exactly 5 distinct answer choices.
+- Incorrect options must be clearly wrong but contextually reasonable.
+- Avoid repetition or trivial opposites like “Not X.”
+- Keep the scenario short, factual, and suitable for all audiences.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{"audio_text": "The red kite flew higher than any other toy in the park.", "question": "What color was the kite?", "answer_choices": ["Blue", "Green", "Red", "Yellow", "Purple"], "correct_answer": "Red"}}
+

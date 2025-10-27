@@ -1,0 +1,55 @@
+Generate a medium-difficulty "clarify" listening challenge.
+
+Create a coherent and natural scenario where part of the message is incomplete, contradictory, or open to interpretation.
+The ambiguity should come from the wording or reasoning itself — not from tone of voice or emotional delivery.
+
+Adapt the kind of ambiguity to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": The description should leave out one or two crucial details or use vague references that make the listener uncertain about what object, place, or situation is being described.
+  Example:
+  {{
+    audio_text: "The room was filled with the faint scent of paint and the sound of dripping water, but no one could tell where the light was coming from.",
+    "possible_questions": ["What kind of place is being described?", "Why is the light source unclear?"]
+  }}
+
+- If {prompt_type} = "historical_event": Present a real historical moment in time with unclear causes, consequences, or participants — but without naming them directly.
+  Example:
+  {{
+    audio_text: "That morning, the crowd gathered near the station after hearing the news, though no one could say who had started the fire or why.",
+    "possible_questions": ["What event caused the gathering?", "Who started the fire and for what reason?"]
+  }}
+
+- If {prompt_type} = "instructional": Describe a process or set of steps that omits a key action or uses unclear phrasing that could cause confusion.
+  Example:
+  {{
+    audio_text: "After adding the mixture to the container, wait until it feels right before sealing it.",
+    "possible_questions": ["What does 'feels right' mean?", "How long should one wait before sealing?"]
+  }}
+
+- If {prompt_type} = "dialogue": Use an exchange between two speakers where something remains logically or contextually ambiguous.
+  Example:
+  {{
+    audio_text: "\"Speaker 1\": I double-checked the list.\n\"Speaker 2\": Then why is her name missing?\n\"Speaker 1\": I thought you told me not to include her.",
+    "possible_questions": ["Who is 'her'?", "Why was she supposed to be excluded?"]
+  }}
+
+- If {prompt_type} = "narrated_dialogue": Summarize a conversation that leaves out who said what, or why certain actions were taken.
+  Example:
+  {{
+    audio_text: "They discussed the plan again, but one of them refused to change anything, even after the new information came in.",
+    "possible_questions": ["What plan are they referring to?", "Who refused to change it, and why?"]
+  }}
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "possible_questions": ["..."]
+}}
+
+Guidelines:
+- "possible_questions": Provide 1–3 concise questions or observations about what is unclear, incomplete, or logically inconsistent 
+  (e.g., “What does ‘it’ refer to?”, “Why was that step skipped?”, “Who are they talking about?”).
+- Keep the scenario realistic and self-contained. Ambiguity should come from the content itself, not external context or tone.
+- Do not resolve or explain the ambiguity.
+- Output only the JSON object; do not include any other text.
+

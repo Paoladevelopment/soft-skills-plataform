@@ -9,7 +9,7 @@ GAME_SESSION_CREATE_FULL_EXAMPLE = {
         "max_replays_per_round": 2,
         "difficulty": "hard",
         "selected_modes": ["focus", "cloze", "paraphrase", "summarize"],
-        "allowed_types": ["descriptive", "conversational", "instructional"],
+        "allowed_types": ["descriptive", "instructional"],
         "audio_effects": {
             "reverb": 0.2,
             "echo": 0.1,
@@ -53,7 +53,7 @@ GAME_SESSION_DETAIL_EXAMPLE = {
             "clarify": 45
         },
         "selected_modes": ["focus", "cloze", "paraphrase"],
-        "allowed_types": ["descriptive", "conversational", "instructional"],
+        "allowed_types": ["descriptive", "instructional"],
         "audio_effects": {
             "reverb": 0.2,
             "echo": 0.1,
@@ -68,7 +68,7 @@ GAME_SESSION_CONFIG_CREATE_EXAMPLE = {
     "max_replays_per_round": 2,
     "difficulty": "intermediate",
     "selected_modes": ["focus", "cloze", "paraphrase", "summarize"],
-    "allowed_types": ["descriptive", "conversational", "historical_event", "instructional"],
+    "allowed_types": ["descriptive", "historical_event", "instructional"],
     "audio_effects": {
         "reverb": 0.3,
         "echo": 0.15,
@@ -89,7 +89,7 @@ GAME_SESSION_CONFIG_READ_EXAMPLE = {
         "clarify": 40
     },
     "selected_modes": ["focus", "cloze", "paraphrase", "summarize"],
-    "allowed_types": ["descriptive", "conversational", "historical_event", "instructional"],
+    "allowed_types": ["descriptive", "historical_event", "instructional"],
     "audio_effects": {
         "reverb": 0.3,
         "echo": 0.15,
@@ -116,4 +116,23 @@ GAME_SESSION_CONFIG_UPDATE_EXAMPLE = {
     "total_rounds": 7,
     "difficulty": "hard",
     "selected_modes": ["focus", "cloze", "paraphrase", "summarize", "clarify"]
+}
+
+# Challenge payload examples
+CHALLENGE_CREATE_EXAMPLE = {
+    "play_mode": "focus",
+    "prompt_type": "descriptive",
+    "difficulty": "easy",
+    "audio_length": "medium",
+    "locale": "en"
+}
+
+CHALLENGE_READ_EXAMPLE = {
+    "challenge_id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
+    "play_mode": "focus",
+    "prompt_type": "descriptive",
+    "difficulty": "easy",
+    "audio_url": "https://storage.supabase.co/audio/challenge_001.mp3",
+    "audio_text": "Hello, welcome to our conversation about sustainable living. Today we'll discuss practical ways to reduce your environmental footprint.",
+    "created_at": "2025-10-26T08:30:00Z"
 }

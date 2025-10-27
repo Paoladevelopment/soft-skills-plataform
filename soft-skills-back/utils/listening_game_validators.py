@@ -32,7 +32,7 @@ def validate_allowed_types_strict(seq: Sequence[PromptType]) -> List[PromptType]
         if not isinstance(item, PromptType):
             raise ValueError(
                 "allowed_types must contain only PromptType "
-                "(descriptive, conversational, historical_event, instructional, dialogue, narrated_dialogue) values"
+                "(descriptive, historical_event, instructional, dialogue, narrated_dialogue) values"
             )
     
     if len(set(seq)) != len(seq):

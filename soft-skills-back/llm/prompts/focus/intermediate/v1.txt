@@ -1,0 +1,38 @@
+Generate a medium-difficulty "focus" listening challenge.
+
+Create a short passage (2–3 sentences) that contains several related details.
+Write a question that requires the listener to pay attention to relationships, comparisons, or context — not just one word.
+Provide exactly five possible answers, with one correct option.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Include multiple attributes; ask about one less-obvious feature.
+- If {prompt_type} = "historical_event": Describe a real historical event with specific actions and context; ask about the sequence of events, causes, or historical significance.
+- If {prompt_type} = "instructional": Include several steps or materials; ask which step, item, or condition is correct.
+- If {prompt_type} = "dialogue": Include two speakers; ask what one meant or referred to.
+- If {prompt_type} = "narrated_dialogue": Include several characters or motives; ask about what one of them decided or implied.
+
+Return a JSON object with:
+{{
+  audio_text: "...",
+  "question": "...",
+  "answer_choices": ["...", "...", "...", "...", "..."],
+  "correct_answer": "..."
+}}
+
+Guidelines:
+- Always provide exactly 5 options.
+- One must be correct; four must be incorrect but plausible.
+- The question should require comprehension, not guessing.
+- Keep audio_text length appropriate for {audio_length} (see system guidelines).
+- Avoid names, dates, or numeric trivia.
+- Ensure distractors differ semantically, not by minor phrasing.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  audio_text: "Mia finished painting the wall before Alex started cleaning the floor. They both worked until noon.",
+  "question": "Who started their task after the other person finished?",
+  "answer_choices": ["Mia", "Alex", "Both", "Neither", "A friend"],
+  "correct_answer": "Alex"
+}}

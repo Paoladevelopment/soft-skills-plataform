@@ -1,5 +1,5 @@
 from typing import Dict, List
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from pydantic import UUID4
 from sqlmodel import Field, SQLModel
 
@@ -42,11 +42,12 @@ class KanbanMoveRequest(SQLModel):
     new_position: int = Field(ge=0, description="0-based index position in destination column")
     reason: str | None = Field(default=None, description="Required reason for regression moves")
 
-    @validator('reason')
-    def validate_reason_for_regression(cls, v, values):
-        if 'from_column' in values and 'to_column' in values:
-            from_col = values['from_column']
-            to_col = values['to_column']
+    @field_validator('reason')
+    @classmethod
+    def validate_reason_for_regression(cls, v, info):
+        if hasattr(info, 'data') and 'from_column' in info.data and 'to_column' in info.data:
+            from_col = info.data['from_column']
+            to_col = info.data['to_column']
             
             rank_map = {
                 Status.NOT_STARTED: 0,

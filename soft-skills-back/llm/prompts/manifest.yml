@@ -1,0 +1,28 @@
+defaults:
+  version: v1
+  locale: es-CO
+
+focus:
+  easy:    v1
+  intermediate:  v1
+  hard:    v1
+
+cloze:
+  easy:    v1
+  intermediate:  v1
+  hard:    v1
+
+paraphrase:
+  easy:    v1
+  intermediate:  v1
+  hard:    v1
+
+summarize:
+  easy:    v1
+  intermediate:  v1
+  hard:    v1
+
+clarify:
+  easy:    v1
+  intermediate:  v1
+  hard:    v1

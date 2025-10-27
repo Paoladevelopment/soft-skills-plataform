@@ -1,0 +1,44 @@
+Generate an easy "cloze" listening challenge.
+
+CRITICAL OUTPUT RULES:
+- You MUST return a JSON object with exactly these 3 fields: "audio_text", "text_with_blanks", "answers"
+- "audio_text": Complete text WITHOUT any blanks (___). This is what will be spoken aloud.
+- "text_with_blanks": Same text as audio_text but with 1-2 words replaced by "___"
+- "answers": Array with the missing words in order
+- The "audio_text" MUST NEVER contain blanks, underscores, or placeholders
+- Return ONLY the JSON object — no explanations or additional text
+
+Create a coherent scenario appropriate for {audio_length} where one or two simple words are omitted.
+The missing words should be easy to guess from the context.
+
+Adapt the challenge to the current {prompt_type}:
+
+- If {prompt_type} = "descriptive": Describe a scene, object, or moment where one or two basic descriptive words (nouns or adjectives) are missing.
+- If {prompt_type} = "historical_event": Write a short real historical moment where one key name, place, or time reference is blanked out.
+- If {prompt_type} = "instructional": Explain a simple process or task where one action or object is missing.
+- If {prompt_type} = "dialogue": Use a two-person conversation where one everyday noun, verb, or location is blanked out. Follow the dialogue format from system.txt with "Speaker 1" and "Speaker 2".
+- If {prompt_type} = "narrated_dialogue": Summarize a conversation where a missing reference or simple term makes the meaning incomplete.
+
+Return a JSON object with:
+{{
+  "audio_text": "...",
+  "text_with_blanks": "...",
+  "answers": ["..."]
+}}
+
+Guidelines:
+- audio_text: The full text to be spoken.
+- "text_with_blanks": Replace 1–2 easy words with "___".
+- "answers": Provide the correct missing words in order.
+- Use common, high-frequency vocabulary suitable for learners.
+- Keep the scenario appropriate for {audio_length}.
+- Avoid ambiguity or specialized knowledge.
+- Output only the JSON object; do not include any other text.
+
+Example (for reference only):
+{{
+  "audio_text": "\"Speaker 1\": I'm going to the market today.\n\"Speaker 2\": What are you going to buy there?\n\"Speaker 1\": I need some fresh fruit.",
+  "text_with_blanks": "\"Speaker 1\": I'm going to the ___ today.\n\"Speaker 2\": What are you going to buy there?\n\"Speaker 1\": I need some fresh ___.",
+  "answers": ["market", "fruit"]
+}}
+

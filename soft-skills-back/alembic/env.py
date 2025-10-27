@@ -9,7 +9,9 @@ from model import (
     User, 
     PomodoroPreferences,
     GameSession,
-    GameSessionConfig
+    GameSessionConfig,
+    GameRound,
+    Challenge
 )
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
