@@ -1,6 +1,6 @@
 export enum GameSessionStatus {
   PENDING = 'pending',
-  ACTIVE = 'active',
+  IN_PROGRESS = 'in_progress',
   PAUSED = 'paused',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',

@@ -1,0 +1,80 @@
+Generate an easy "cloze" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+CRITICAL OUTPUT RULES:
+- You MUST return a JSON object with exactly these 3 fields: "audio_text", "text_with_blanks", "answers"
+- "audio_text": Complete text WITHOUT any blanks (___). This is what will be spoken aloud.
+- "text_with_blanks": Same text as audio_text but with 1–2 words replaced by "___".
+- "answers": Array with the missing words in order.
+- The "audio_text" MUST NEVER contain blanks, underscores, or placeholders.
+- Return ONLY the JSON object — no explanations or additional text.
+
+OBJECTIVE
+Create a coherent scenario appropriate for {audio_length}, where one or two simple words are omitted.
+The missing words should be easy to guess from context.
+Focus on clarity, everyday vocabulary, and contextual cues that make the blanks predictable.
+
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Describe an object, place, or scene using clear and simple details.
+- Omit one or two descriptive words (nouns or adjectives) that are easy to infer.
+- Keep language natural and fluent for spoken audio.
+
+[historical_event]
+- Depict a real historical event or moment, omitting one common factual element (e.g., a place, time reference, or key object).
+- Avoid names, dates, or numeric data.
+- Ensure the missing word can be inferred naturally from surrounding context.
+
+[instructional]
+- Explain a process or task involving one or two basic steps.
+- Omit a common action or object term that can be easily guessed.
+- Keep the explanation conversational, not a list.
+
+[dialogue]
+- Write a two-person exchange using "Speaker 1" and "Speaker 2" labels.
+- Omit one or two everyday nouns, verbs, or locations that fit naturally within the dialogue.
+- Alternate turns with line breaks ("\n"); avoid narration or commentary.
+
+[narrated_dialogue]
+- Write a third-person narration summarizing a conversation between two people.
+- Omit one simple reference or object that slightly obscures meaning but remains guessable.
+- Do NOT use direct quotes or speaker labels.
+
+OUTPUT FORMAT
+The response must strictly follow this structure:
+- audio_text: Complete text without any blanks, fluent and natural for TTS
+- text_with_blanks: Same text as audio_text but with 1-2 words replaced by "___"
+- answers: Array with the missing words in order
+
+RULES AND VALIDATION
+- audio_text:
+  - Must be complete, fluent, and natural for TTS.
+  - Must not include blanks, underscores, or any placeholders.
+  - Must conform to the ACTIVE PROMPT TYPE’s section.
+  - Must align with {audio_length} as defined in the base system.
+
+- text_with_blanks:
+  - Must be identical to audio_text except for 1–2 words replaced by "___".
+  - Must preserve punctuation, capitalization, and natural rhythm.
+
+- answers:
+  - Must include the missing words in exact order.
+  - Must contain 1 or 2 entries only.
+
+Avoid:
+- Ambiguity or multiple valid answers.
+- Uncommon or technical vocabulary.
+- Emotional or dramatic tone.
+- Metadata, comments, or Markdown formatting.
+
+EXAMPLE (for reference only):
+- audio_text: "\"Speaker 1\": I'm going to the market today.\n\"Speaker 2\": What are you going to buy there?\n\"Speaker 1\": I need some fresh fruit."
+- text_with_blanks: "\"Speaker 1\": I'm going to the ___ today.\n\"Speaker 2\": What are you going to buy there?\n\"Speaker 1\": I need some fresh ___."
+- answers: ["market", "fruit"]
+

@@ -1,0 +1,60 @@
+Generate an easy "clarify" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create a short, coherent scenario that contains one or two pieces of information that are unclear, vague, or missing.
+The listener should quickly notice what needs clarification to fully understand the situation.
+
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Write a description that omits a clear subject or location, or uses vague references such as "it" or "there."
+- Keep vocabulary simple and accessible.
+- Make the ambiguity immediately noticeable.
+
+[historical_event]
+- Describe a real historical event where one key element — like who, when, or why — is not specified.
+- Avoid specific names, dates, or locations.
+- Focus on the missing historical context.
+
+[instructional]
+- Give a simple set of steps but leave one detail or object undefined.
+- Keep instructions clear but incomplete.
+- Focus on the missing procedural element.
+
+[dialogue]
+- Write a short exchange between two speakers where a key reference or person is unclear.
+- Use natural conversational language.
+- Focus on unclear references or missing context.
+
+[narrated_dialogue]
+- Summarize a brief conversation where a reference or motive is missing.
+- Maintain clear narrative structure.
+- Focus on unclear references or missing context.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Short scenario with one or two unclear or missing pieces of information
+- possible_questions: Array with 1-2 short questions highlighting what is missing or unclear
+
+RULES AND VALIDATION
+- audio_text must be complete, fluent, and natural for TTS
+- audio_text must contain one or two pieces of information that are unclear, vague, or missing
+- audio_text length must align with {audio_length} as defined in the base system
+- possible_questions must highlight what is missing or unclear in the audio_text
+- possible_questions must be short and immediately noticeable
+
+Avoid:
+- Overly complex ambiguity that requires extensive inference
+- Resolving or explaining the ambiguity
+- Unclear scenarios that are confusing rather than simply incomplete
+- Metadata, comments, or Markdown formatting
+
+EXAMPLE (for reference only):
+- audio_text: "It was standing quietly under the dim light, but no one dared to get closer."
+- possible_questions: ["What or who is 'it'?", "Where is this happening?"]

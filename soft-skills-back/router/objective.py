@@ -1,5 +1,4 @@
 from typing import List, Optional
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 from enums.common import Status
@@ -14,7 +13,7 @@ from service.kanban import KanbanService
 from service.task import TaskService
 from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import APIException, BadRequest, raise_http_exception, validate_uuid
+from utils.errors import APIException, raise_http_exception, validate_uuid
 
 router = APIRouter()
 

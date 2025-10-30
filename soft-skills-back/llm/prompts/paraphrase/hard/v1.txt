@@ -1,0 +1,97 @@
+Generate a hard "paraphrase" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create TWO texts with advanced complexity:  
+1. **audio_text** → the original passage that will be spoken aloud.  
+2. **reference_text** → a paraphrased version that shares the same meaning but differs significantly in structure, lexical choice, or emphasis.  
+
+Both texts must be appropriate for {audio_length} and written entirely in the language specified by {locale} (e.g., "es" = español).  
+The **audio_text** should sound natural and fluent when read aloud, using sophisticated vocabulary and complex sentence structures suitable for advanced listening comprehension.  
+
+──────────────────────────────
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Write an original description of contrasting scenes, complex environments, or sophisticated settings in the **audio_text**.
+- Include overlapping, conflicting, or contrasting details that require reasoning to interpret.
+- Then write a **reference_text** that expresses the same visual or contextual meaning using significantly different structure, advanced vocabulary variations, and sophisticated paraphrasing techniques.
+- Focus on maintaining the same descriptive complexity while demonstrating advanced rewording skills.
+
+[historical_event]
+- Write an original **audio_text** describing a multi-stage or debated real historical event with multiple causes, effects, or interpretations (without using specific dates or names).
+- Include complex historical context, conflicting perspectives, and nuanced implications.
+- Then create a **reference_text** that conveys the same event with significant structural changes, advanced vocabulary variations, and sophisticated paraphrasing while maintaining historical accuracy.
+- Demonstrate advanced paraphrasing skills with complex historical content.
+
+[instructional]
+- Write an **audio_text** that explains a complex process with conditional cases, dependencies, and exceptional situations (e.g., how to conduct research, manage complex projects, or troubleshoot technical issues).
+- Use sophisticated instructional language with conditional statements, logical connectors, and technical terminology.
+- Then write a **reference_text** that gives the same instructions with significantly different phrasing, varied sentence structures, and advanced vocabulary while maintaining identical meaning and complexity.
+- Ensure both versions maintain logical order, clarity, and educational tone with advanced sophistication.
+
+[dialogue]
+- Write a sophisticated multi-turn conversation labeled exactly as:
+  "Speaker 1": <text>
+  "Speaker 2": <text>
+- Include differing perspectives, subtle implications, misunderstandings, or complex reasoning.
+- The **audio_text** must contain 4-5 turns with meaningful exchanges requiring inference and analysis.
+- Then write a **reference_text** that paraphrases the same conversation with significantly different wording, varied sentence structures, and advanced vocabulary while keeping the same intent and natural flow.
+- Both dialogues must sound realistic and coherent with advanced conversational complexity.
+- Each speaker label ("Speaker 1", "Speaker 2") must appear exactly as shown.
+- Do NOT omit the speaker labels in either audio_text or reference_text.
+
+[narrated_dialogue]
+- Write a sophisticated narration summarizing a conversation involving motives, contrasting opinions, consequences, or multiple layers of reasoning.
+- Include complex subtext, implications, and nuanced understanding.
+- Then create a **reference_text** that rephrases the narration while preserving meaning, context, and narrative sophistication with significant structural and lexical variations.
+- Maintain clear structure and natural spoken tone with advanced complexity.
+
+──────────────────────────────
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Original passage that sounds natural when spoken aloud
+- reference_text: Paraphrased version with significant structural and lexical variation
+- rubric: Array with evaluation criteria for assessing paraphrase quality
+
+──────────────────────────────
+RULES AND VALIDATION
+- audio_text:
+  - Must be the original passage with advanced complexity.
+  - Must sound fluent and natural for TTS.
+  - Must align with the ACTIVE PROMPT TYPE's structure.
+  - Must align with {audio_length} defined in the base system.
+  - Must include multiple ideas, contrasts, or subtle relationships requiring reasoning.
+
+- reference_text:
+  - Must have the same meaning as audio_text.
+  - Must demonstrate significant structural and lexical variation.
+  - Must preserve logical and grammatical clarity while showing advanced paraphrasing skills.
+  - Must not shorten or expand excessively (length within ±15% of original).
+  - Must show sophisticated paraphrasing with varied vocabulary, sentence structures, and emphasis.
+
+- rubric:
+  - Must contain 2-3 string elements describing how the paraphrase can be evaluated.
+  - Example: ["semantic equivalence", "lexical richness", "style variation"]
+
+Avoid:
+- Introducing new facts or altering meaning.
+- Using overly technical vocabulary that sounds unnatural.
+- Changing tone significantly (e.g., from instructional to narrative).
+- Metadata, comments, or Markdown formatting.
+
+──────────────────────────────
+EXAMPLE (for reference only):
+- audio_text: "A pesar de las adversidades económicas, el equipo de investigación persistió en su metodología innovadora, adaptándose constantemente a los desafíos emergentes y manteniendo su compromiso con la excelencia académica."
+- reference_text: "Sin importar las dificultades financieras, los investigadores continuaron aplicando su enfoque creativo, ajustándose continuamente a los obstáculos que surgían y preservando su dedicación hacia la calidad científica."
+- rubric: ["equivalencia de significado", "riqueza léxica", "variación de estilo"]
+
+EXAMPLE (for reference only):
+- audio_text: "\"Speaker 1\": He estado evaluando las implicaciones a largo plazo de esta decisión y me preocupa que no hayamos considerado todas las variables.\n\"Speaker 2\": ¿Qué aspectos específicos crees que hemos pasado por alto?\n\"Speaker 1\": Principalmente las consecuencias indirectas y el impacto en los stakeholders. Además, necesitamos analizar los escenarios alternativos.\n\"Speaker 2\": Tienes razón, deberíamos realizar un análisis más exhaustivo antes de proceder.\n\"Speaker 1\": Exactamente, la prudencia en este caso es fundamental para evitar complicaciones futuras."
+- reference_text: "\"Speaker 1\": Después de examinar las repercusiones futuras de esta elección, me inquieta que no hayamos analizado completamente todos los factores.\n\"Speaker 2\": ¿Cuáles son los elementos particulares que consideras que hemos ignorado?\n\"Speaker 1\": Especialmente los efectos secundarios y la influencia en los grupos de interés. También debemos estudiar las opciones alternativas.\n\"Speaker 2\": Concuerdo contigo, tendríamos que hacer una evaluación más detallada antes de avanzar.\n\"Speaker 1\": Precisamente, la cautela en esta situación es esencial para prevenir problemas posteriores."
+- rubric: ["equivalencia de significado", "fluidez conversacional", "riqueza léxica"]

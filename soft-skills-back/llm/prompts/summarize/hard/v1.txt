@@ -1,0 +1,60 @@
+Generate a hard "summarize" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create a complex, multi-idea passage (audio_text) where the main theme is implied through multiple events, perspectives, or arguments.
+Then, provide a concise reference_summary that captures the core idea or conclusion while omitting unnecessary detail.
+
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Describe contrasting scenes or features with sophisticated vocabulary.
+- Focus on their shared theme or key contrast.
+- Use varied sentence structures and advanced imagery.
+
+[historical_event]
+- Depict a multi-stage or debated real historical event.
+- Focus on its most significant outcome or implication.
+- Avoid specific names, dates, or locations.
+
+[instructional]
+- Present an extended or conditional process with multiple steps.
+- Focus on the overall purpose or guiding principle.
+- Use sophisticated instructional language and logical connections.
+
+[dialogue]
+- Include differing viewpoints or misunderstandings in conversation.
+- Focus on the final insight or unresolved issue.
+- Use natural conversational language with complex interactions.
+
+[narrated_dialogue]
+- Describe a conversation rich in subtext or reasoning.
+- Focus on what the conversation reveals about the situation.
+- Maintain sophisticated narrative structure and perspective.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Complex passage with multiple events, perspectives, or arguments
+- reference_summary: Concise summary that captures the core idea or conclusion
+
+RULES AND VALIDATION
+- audio_text must be complete, fluent, and natural for TTS
+- audio_text must include multiple events, perspectives, or arguments
+- audio_text length must align with {audio_length} as defined in the base system
+- reference_summary must abstract the essential message rather than restating content
+- reference_summary must maintain logical coherence even with nuanced content
+
+Avoid:
+- Oversimplified content that doesn't require complex summarization
+- Summaries that restate content rather than abstract meaning
+- Overly complex vocabulary that sounds unnatural
+- Metadata, comments, or Markdown formatting
+
+EXAMPLE (for reference only):
+- audio_text: "Several scientists presented different explanations for the sudden drop in temperatures. Some blamed solar activity, while others pointed to volcanic eruptions. Despite disagreements, they all emphasized the need for continued research."
+- reference_summary: "Experts offered various theories about climate change but agreed on the importance of further study."

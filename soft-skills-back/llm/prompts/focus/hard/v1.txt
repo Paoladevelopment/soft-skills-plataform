@@ -1,0 +1,84 @@
+Generate a hard "focus" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create an educational listening passage with multiple ideas, contrasts, or subtle relationships that require reasoning or inference.
+The passage must have an audio_text length consistent with the duration specified by {audio_length} (as defined in the base system prompt).
+Then write one question that requires the listener to combine multiple clues or ideas to choose the correct answer.
+Provide exactly five possible answers — one correct and four incorrect but plausible.
+
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Create a scene or object description with overlapping, conflicting, or contrasting details.
+- The question should ask which interpretation or description fits best based on all the information.
+- Avoid single-word recall; the answer should require reasoning from multiple clues.
+
+[historical_event]
+- Describe a real historical event with multiple causes, effects, or interpretations.
+- Include context that allows for subtle inference about motive, cause, or consequence.
+- The question should ask which explanation or interpretation best fits the passage.
+- Avoid explicit names, dates, or numeric trivia.
+
+[instructional]
+- Explain a process that includes conditional or exceptional cases (e.g., “If X happens, then Y must be done.”).
+- The question should require reasoning about which step or condition applies in a specific situation.
+- Avoid simple recall of steps; require logical selection.
+
+[dialogue]
+- Write a realistic conversation between two alternating speakers ("Speaker 1" and "Speaker 2").
+- Include differing perspectives, subtle implications, or misunderstandings.
+- The question should ask about what one person implied, misunderstood, or decided.
+- Alternate lines with "\n". Avoid narration or commentary.
+
+[narrated_dialogue]
+- Write a third-person narration summarizing a conversation or interaction involving motives, contrasting opinions, or consequences.
+- Include multiple layers of reasoning (e.g., why someone changed their mind, what conclusion they reached, or what outcome occurred).
+- The question should ask which interpretation or decision best fits the information.
+- Do NOT use direct quotes or speaker labels.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Complete passage with no blanks or placeholders, fluent and natural for TTS
+- question: Clear question referring directly to one explicit fact in the audio_text
+- answer_choices: Exactly 5 distinct options, one correct and four plausible distractors
+- correct_answer: Must exactly match one of the answer_choices and appear verbatim in audio_text
+
+RULES AND VALIDATION
+- audio_text:
+  - Must be complete, coherent, and natural for TTS.
+  - Must integrate multiple related ideas requiring reasoning or inference.
+  - Must follow the rules of the ACTIVE PROMPT TYPE section.
+  - Must align with {audio_length} as defined in the base system.
+
+- question:
+  - Must require reasoning or combining multiple pieces of information.
+  - Must be unambiguous and tied to the logic of the passage.
+
+- answer_choices:
+  - Exactly 5 distinct options.
+  - One correct (derivable from reasoning based on audio_text).
+  - Four incorrect but contextually plausible distractors.
+  - Avoid trivial opposites or superficial word swaps.
+
+- correct_answer:
+  - Must exactly match one of the answer_choices.
+  - Must be logically deducible from the passage.
+
+Avoid:
+- Ambiguity or emotional dramatization.
+- Names, specific dates, or numerical trivia.
+- Sensory cues unnatural for TTS (e.g., breathing, sounds).
+- Metadata, comments, or Markdown formatting.
+
+EXAMPLE (for reference only):
+- audio_text: "When the inventor presented her idea, most investors stayed silent. Later, two approached her privately, offering help only if she agreed to delay the launch."
+- question: "Why did the investors approach her privately?"
+- answer_choices: ["They disagreed about the idea", "They wanted to delay the project", "They needed more money", "They planned to reject her proposal", "They misunderstood the presentation"]
+- correct_answer: "They wanted to delay the project"
+

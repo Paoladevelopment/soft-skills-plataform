@@ -1,6 +1,6 @@
 import { PromptType, GameSessionDifficulty, PlayMode } from './gameSession.models'
 
-export interface IGameSessionDraftStore {
+export interface GameSessionDraftData {
   sessionName: string
   totalRounds: number
   maxReplaysPerRound: number
@@ -9,7 +9,9 @@ export interface IGameSessionDraftStore {
   selectedModes: PlayMode[]
   allowedTypes: PromptType[]
   audioEffects: { [effect: string]: number }
+}
 
+export interface IGameSessionDraftStore extends GameSessionDraftData {
   setSessionName: (name: string) => void
   setTotalRounds: (rounds: number) => void
   setMaxReplaysPerRound: (replays: number) => void
@@ -19,7 +21,7 @@ export interface IGameSessionDraftStore {
   setResponseTimeLimit: (mode: string, value: number) => void
   setAudioEffect: (effect: string, value: number) => void
   reset: () => void
-  getSnapshot: () => Omit<IGameSessionDraftStore, 'setSessionName' | 'setTotalRounds' | 'setMaxReplaysPerRound' | 'setDifficulty' | 'togglePlayMode' | 'togglePromptType' | 'setResponseTimeLimit' | 'setAudioEffect' | 'reset' | 'getSnapshot' | 'loadGameSession'>
-  loadGameSession: (session: Partial<Omit<IGameSessionDraftStore, 'setSessionName' | 'setTotalRounds' | 'setMaxReplaysPerRound' | 'setDifficulty' | 'togglePlayMode' | 'togglePromptType' | 'setResponseTimeLimit' | 'setAudioEffect' | 'reset' | 'getSnapshot' | 'loadGameSession'>>) => void
+  getSnapshot: () => GameSessionDraftData
+  loadGameSession: (session: Partial<GameSessionDraftData>) => void
 }
 

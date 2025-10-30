@@ -4,7 +4,7 @@ export const getStatusColor = (status: GameSessionStatus) => {
   switch (status) {
     case GameSessionStatus.PENDING:
       return 'warning'
-    case GameSessionStatus.ACTIVE:
+    case GameSessionStatus.IN_PROGRESS:
       return 'info'
     case GameSessionStatus.PAUSED:
       return 'warning'
@@ -20,9 +20,9 @@ export const getStatusColor = (status: GameSessionStatus) => {
 export const getStatusLabel = (status: GameSessionStatus) => {
   switch (status) {
     case GameSessionStatus.PENDING:
-      return 'Pending'
-    case GameSessionStatus.ACTIVE:
-      return 'Active'
+      return 'Not Started'
+    case GameSessionStatus.IN_PROGRESS:
+      return 'In Progress'
     case GameSessionStatus.COMPLETED:
       return 'Completed'
     case GameSessionStatus.PAUSED:

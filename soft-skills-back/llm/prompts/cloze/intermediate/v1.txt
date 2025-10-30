@@ -1,0 +1,79 @@
+Generate a medium-difficulty "cloze" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+CRITICAL OUTPUT RULES:
+- You MUST return a JSON object with exactly these 3 fields: "audio_text", "text_with_blanks", "answers"
+- "audio_text": Complete text WITHOUT any blanks (___). This is what will be spoken aloud.
+- "text_with_blanks": Same text as audio_text but with 2–3 words replaced by "___".
+- "answers": Array with the missing words in order.
+- The "audio_text" MUST NEVER contain blanks, underscores, or placeholders.
+- Return ONLY the JSON object — no explanations or additional text.
+
+OBJECTIVE
+Create a coherent passage appropriate for {audio_length}, where two or three meaningful words are omitted.
+The blanks should require attention to meaning and context to fill correctly.
+The challenge should remain accessible to general learners, encouraging contextual reasoning rather than recall of isolated words.
+
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Describe a place, object, or situation using several interconnected details.
+- Remove 2–3 descriptive words (nouns, adjectives, or adverbs) that influence the listener’s understanding.
+- Maintain grammatical correctness and natural rhythm even with blanks.
+
+[historical_event]
+- Describe a real historical event, omitting 2–3 key elements such as actions, time references, or participants.
+- Ensure the blanks are inferable through logic and context.
+- Avoid explicit names, numeric data, or trivia.
+
+[instructional]
+- Explain a process or task involving several steps or materials.
+- Omit 2–3 verbs or nouns that represent essential but guessable parts of the process.
+- Keep the tone conversational and flowing, without lists.
+
+[dialogue]
+- Write a natural conversation between two speakers labeled "Speaker 1" and "Speaker 2".
+- Omit 2–3 context-dependent words (verbs, objects, or places) that affect meaning but can be inferred.
+- Alternate turns with line breaks ("\n"); avoid narration or commentary.
+
+[narrated_dialogue]
+- Write a third-person narration summarizing a conversation between two or more people.
+- Omit 2–3 references, actions, or decisions that require comprehension of context to restore.
+- Avoid direct quotes or speaker labels.
+
+OUTPUT FORMAT
+The response must strictly follow this structure:
+- audio_text: Complete text without any blanks, fluent and natural for TTS
+- text_with_blanks: Same text as audio_text but with 2–3 words replaced by "___"
+- answers: Array with the missing words in order
+
+RULES AND VALIDATION
+- audio_text:
+  - Must be complete, fluent, and natural for TTS.
+  - Must not include blanks, underscores, or any placeholders.
+  - Must follow the ACTIVE PROMPT TYPE section.
+  - Must align with {audio_length} as defined in the base system.
+
+- text_with_blanks:
+  - Must be identical to audio_text except for 2–3 replaced words.
+  - Must preserve punctuation, capitalization, and rhythm.
+
+- answers:
+  - Must list the missing words in exact order of appearance.
+  - Must contain exactly 2–3 items.
+
+Avoid:
+- Proper names, numbers, or factual trivia.
+- Ambiguous or abstract missing words.
+- Unnatural sensory or emotional phrasing.
+- Metadata, comments, or Markdown formatting.
+
+EXAMPLE (for reference only):
+- audio_text: "\"Speaker 1\": I need to buy groceries for dinner.\n\"Speaker 2\": What ingredients do you need?\n\"Speaker 1\": I need tomatoes, onions, and some fresh herbs."
+- text_with_blanks: "\"Speaker 1\": I need to buy ___ for dinner.\n\"Speaker 2\": What ___ do you need?\n\"Speaker 1\": I need tomatoes, onions, and some fresh ___."
+- answers: ["groceries", "ingredients", "herbs"]

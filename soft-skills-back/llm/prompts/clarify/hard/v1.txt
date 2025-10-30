@@ -1,0 +1,61 @@
+Generate a hard "clarify" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create a coherent and natural scenario that includes multiple layers of uncertainty or conflicting information.
+The ambiguity should arise from how events, descriptions, or reasoning are presented — not from tone of voice or emotional delivery.
+The listener must analyze and infer what is unclear, contradictory, or missing.
+
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Write a description that mixes details or references that could fit more than one possible setting, or that describe features that don't fully align.
+- Use sophisticated vocabulary and complex imagery.
+- Focus on contradictory or conflicting details.
+
+[historical_event]
+- Depict a real historical situation where cause, sequence, or responsibility are ambiguous or disputed.
+- Avoid specific names, dates, or locations.
+- Focus on unclear historical context or conflicting accounts.
+
+[instructional]
+- Present steps that appear logical at first but introduce a contradiction or missing dependency later.
+- Use sophisticated instructional language.
+- Focus on logical inconsistencies or missing dependencies.
+
+[dialogue]
+- Write an exchange between two speakers where their statements appear inconsistent or reveal different understandings of the same situation.
+- Use natural conversational language with complex interactions.
+- Focus on conflicting statements or unclear references.
+
+[narrated_dialogue]
+- Summarize a conversation where each person's account or motivation seems inconsistent or unclear.
+- Maintain sophisticated narrative structure.
+- Focus on conflicting accounts or unclear motivations.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Coherent scenario with multiple layers of uncertainty or conflicting information
+- possible_questions: Array with 2-4 concise questions highlighting logical or contextual inconsistencies
+
+RULES AND VALIDATION
+- audio_text must be complete, fluent, and natural for TTS
+- audio_text must include multiple layers of uncertainty or conflicting information
+- audio_text length must align with {audio_length} as defined in the base system
+- possible_questions must highlight what makes the situation logically or contextually unclear
+- possible_questions must involve multiple possible interpretations or contradictions
+
+Avoid:
+- Ambiguity that comes from external context rather than content
+- Overly complex scenarios that are confusing rather than simply incomplete
+- Resolving or explaining the ambiguity
+- Metadata, comments, or Markdown formatting
+
+EXAMPLE (for reference only):
+- audio_text: "The air smelled of sea salt, but the hum of machinery echoed nearby, and the ground was covered with fine dust instead of sand."
+- possible_questions: ["Where is this place located?", "How can there be sea air with industrial noise and dust?", "What environment is being described?"]

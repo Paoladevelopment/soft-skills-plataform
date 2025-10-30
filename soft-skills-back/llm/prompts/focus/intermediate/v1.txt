@@ -1,0 +1,80 @@
+Generate a medium-difficulty "focus" listening challenge.
+
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create an educational listening passage where multiple related details appear together, requiring comprehension of relationships, comparisons, or context — not just identification of a single word.
+The passage must have an audio_text length consistent with {audio_length} (as defined in the base system prompt).
+Then, write one question that checks for understanding of these relationships and provide exactly five possible answers — one correct and four incorrect but plausible.
+
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
+
+[descriptive]
+- Describe an object, place, or scene with multiple attributes or conditions.
+- The question should ask about a less obvious relationship or comparison (e.g., “Which part was higher?”, “Which area was brighter?”).
+- Avoid trivial recall.
+
+[historical_event]
+- Depict a real historical event with context (actions, sequence, or significance).
+- The question should focus on cause, sequence, or the relationship between two actions — not simple recall.
+- Avoid using specific names or exact dates.
+
+[instructional]
+- Explain a process that includes several related steps, materials, or conditions.
+- The question should ask about the correct order, condition, or dependency between steps.
+- Use flowing prose (no lists or bullet formatting).
+
+[dialogue]
+- Write a natural conversation with two alternating speakers ("Speaker 1" and "Speaker 2").
+- Include several related ideas or comparisons that imply relationships (e.g., who arrived first, whose plan worked better).
+- The question should focus on inference or understanding, not direct recall.
+- Alternate turns using "\n"; avoid narration.
+
+[narrated_dialogue]
+- Write a third-person narration summarizing a conversation between multiple people.
+- Include motives, decisions, or relationships between what they said or decided.
+- The question should ask about what one of them concluded, implied, or preferred.
+- No direct quotes or speaker labels.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Complete passage with no blanks or placeholders, fluent and natural for TTS
+- question: Clear question referring directly to one explicit fact in the audio_text
+- answer_choices: Exactly 5 distinct options, one correct and four plausible distractors
+- correct_answer: Must exactly match one of the answer_choices and appear verbatim in audio_text
+
+RULES AND VALIDATION
+- audio_text:
+  - Complete passage; no blanks or placeholders.
+  - Fluent, coherent, and natural for TTS.
+  - Must follow the ACTIVE PROMPT TYPE section’s rules.
+  - Length must align with {audio_length} (see base system).
+
+- question:
+  - Must test comprehension or relationships, not single-word recall.
+  - Must be clear and unambiguous.
+
+- answer_choices:
+  - Exactly 5 distinct options.
+  - One correct (appears verbatim or inferable directly from audio_text).
+  - Four incorrect but plausible distractors; avoid trivial differences or negations.
+
+- correct_answer:
+  - Must exactly match one of the answer_choices.
+  - Must be logically consistent and derivable from audio_text.
+
+Avoid:
+- Names, dates, or numeric trivia.
+- Ambiguity or emotionally charged tone.
+- Sensory or physical cues unnatural for TTS (e.g., breathing, loud noises).
+- Metadata, commentary, or Markdown formatting.
+
+EXAMPLE (for reference only):
+- audio_text: "Mia finished painting the wall before Alex started cleaning the floor. They both worked until noon."
+- question: "Who started their task after the other person finished?"
+- answer_choices: ["Mia", "Alex", "Both", "Neither", "A friend"]
+- correct_answer: "Alex"

@@ -2,7 +2,7 @@ from uuid import UUID, uuid4
 from datetime import datetime, timezone
 from sqlmodel import SQLModel, Field, TIMESTAMP, Relationship
 from sqlalchemy import Index, Column, String
-
+from typing import List
 from enums.listening_game import GameStatus
 
 
@@ -16,7 +16,7 @@ class GameSessionBase(SQLModel):
 class GameSession(GameSessionBase, table=True):
     __tablename__ = "listening_game_session"
     
-    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    game_session_id: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(sa_column=Column(String(255)))
     user_id: UUID = Field(foreign_key="users.user_id")
     created_at: datetime = Field(
@@ -40,6 +40,11 @@ class GameSession(GameSessionBase, table=True):
     )
     
     config: "GameSessionConfig" = Relationship(
+        back_populates="game_session",
+        sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"}
+    )
+
+    rounds: List["GameRound"] = Relationship(
         back_populates="game_session",
         sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"}
     )

@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from enums.common import Status
 from fastapi import APIRouter, Depends, status
 from schema.task import TaskCreate, TaskRead, TaskResponse, TaskUpdate
@@ -8,7 +6,7 @@ from service.auth_service import decode_jwt_token
 from service.task import TaskService
 from sqlmodel import Session
 from utils.db import get_session
-from utils.errors import APIException, BadRequest, raise_http_exception, validate_uuid
+from utils.errors import APIException, raise_http_exception, validate_uuid
 
 router = APIRouter()
 
