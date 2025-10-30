@@ -1,48 +1,82 @@
 Generate a hard "cloze" listening challenge.
 
-CRITICAL: The audio_text field must contain the COMPLETE text without any blanks (___). 
-Only the text_with_blanks field should contain blanks. The audio_text is what will be spoken aloud.
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
 
-Create a coherent passage appropriate for {audio_length} with multiple blanks.
-The missing words or short phrases should require careful reasoning and deep context understanding to complete.
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
 
-Adapt the challenge to the current {prompt_type}:
+CRITICAL OUTPUT RULES:
+- You MUST return a JSON object with exactly these 3 fields: "audio_text", "text_with_blanks", "answers"
+- "audio_text": Complete text WITHOUT any blanks (___). This is what will be spoken aloud.
+- "text_with_blanks": Same text as audio_text but with 3–5 meaningful words or short phrases replaced by "___".
+- "answers": Array with the missing words or short phrases in order.
+- The "audio_text" MUST NEVER contain blanks, underscores, or placeholders.
+- Return ONLY the JSON object — no explanations or additional text.
 
-- If {prompt_type} = "descriptive": Describe a complex environment where several interrelated details (e.g., objects, actions, or conditions) are omitted.
-  Example: "The sophisticated laboratory contained advanced equipment for conducting molecular research experiments."
+OBJECTIVE
+Create a coherent and detailed passage appropriate for {audio_length}, where multiple words or short phrases are omitted.
+The missing elements should require careful reasoning and deep contextual understanding to complete.
+Ambiguity should come from interpretation and inference — not from grammar or unclear phrasing.
 
-- If {prompt_type} = "historical_event": Depict a real historical event where several key elements (dates, actions, outcomes) are blanked out, requiring historical or logical inference.
-  Example: "During the Industrial Revolution, technological innovations transformed manufacturing processes and revolutionized economic systems."
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
 
-- If {prompt_type} = "instructional": Give comprehensive step-by-step instructions for a complex process where multiple steps or dependencies are missing.
-  Example: "To conduct a research study, formulate a hypothesis, design the methodology, collect data systematically, analyze results statistically, and draw evidence-based conclusions."
+[descriptive]
+- Describe a complex environment, scene, or situation with multiple interrelated details.
+- Remove 3–5 meaningful words or short phrases that affect interpretation or understanding.
+- Maintain clarity and realism, ensuring the blanks challenge comprehension of relationships or conditions.
 
-- If {prompt_type} = "dialogue": Create a multi-turn conversation where the omitted words alter the flow or understanding of what's happening. Follow the dialogue format from system.txt with "Speaker 1" and "Speaker 2".
-  Example: "\"Speaker 1\": I've been working on this project for months. \"Speaker 2\": What kind of challenges have you faced?"
+[historical_event]
+- Depict a real historical event that involves multiple causes, effects, or outcomes.
+- Omit 3–5 essential but inferable elements (e.g., causes, actors, consequences, or technologies).
+- Avoid explicit names, years, or geographic trivia; focus on logical or contextual reasoning.
 
-- If {prompt_type} = "narrated_dialogue": Write a complex narration about a conversation (single voice, no "Speaker 1/2" format).
-  Example: "The CEO presented the quarterly results to the board, highlighting the challenges faced during the economic downturn."
+[instructional]
+- Explain a detailed process or procedure with multiple interconnected steps or dependencies.
+- Omit 3–5 action verbs, materials, or conditions that require the listener to infer meaning from sequence and context.
+- Ensure the flow remains logical and educational.
 
-Return a JSON object with:
-{{
-  audio_text: "...",
-  "text_with_blanks": "...",
-  "answers": ["..."]
-}}
+[dialogue]
+- Write a natural multi-turn exchange labeled "Speaker 1" and "Speaker 2".
+- Omit 3–5 words or phrases (actions, emotions, or key nouns) that change how the dialogue is interpreted.
+- Alternate turns with line breaks ("\n"); avoid narration or stage directions.
+- The blanks should affect comprehension of intent or relationship.
 
-Guidelines:
-- audio_text: MUST contain the COMPLETE text without any blanks (___). This is what will be spoken aloud.
-- "text_with_blanks": Replace 3–5 meaningful words or short phrases with "___". This version has the blanks.
-- "answers": List all missing words in correct order.
-- Ambiguity should come from reasoning, not grammar errors.
-- Ensure each blank affects comprehension and forces inference.
-- Keep the text logically coherent and appropriate for educational use.
-- Output only the JSON object; do not include any other text.
+[narrated_dialogue]
+- Write a third-person narration summarizing a complex conversation between two or more people.
+- Omit 3–5 significant words or short phrases (motives, decisions, or outcomes) that force reasoning to reconstruct meaning.
+- Avoid direct quotes or speaker labels; keep the tone analytical and coherent.
 
-Example (for reference only):
-{{
-  audio_text: "\"Speaker 1\": I've been working on this project for months.\n\"Speaker 2\": What kind of challenges have you faced?\n\"Speaker 1\": The main issue was finding reliable suppliers who could meet our quality standards.",
-  "text_with_blanks": "\"Speaker 1\": I've been working on this ___ for months.\n\"Speaker 2\": What kind of ___ have you faced?\n\"Speaker 1\": The main ___ was finding reliable suppliers who could meet our quality ___.",
-  "answers": ["project", "challenges", "issue", "standards"]
-}}
+OUTPUT FORMAT
+The response must strictly follow this structure:
+- audio_text: Complete text without any blanks, fluent and natural for TTS
+- text_with_blanks: Same text as audio_text but with 3–5 words or short phrases replaced by "___"
+- answers: Array listing all missing words or phrases in order
+
+RULES AND VALIDATION
+- audio_text:
+  - Must be complete, fluent, and natural for TTS.
+  - Must not contain blanks, underscores, or placeholders.
+  - Must conform to the ACTIVE PROMPT TYPE’s section.
+  - Must align with {audio_length} as defined in the base system.
+
+- text_with_blanks:
+  - Must be identical to audio_text except for 3–5 blanks replacing words or short phrases.
+  - Must preserve grammatical correctness, punctuation, and natural rhythm.
+
+- answers:
+  - Must list all missing words or phrases in the same order they appear.
+  - Must contain exactly 3–5 items.
+
+Avoid:
+- Overly specific names, numbers, or factual trivia.
+- Ambiguous or grammatically confusing omissions.
+- Emotionally exaggerated tone or sensory details unnatural for TTS.
+- Metadata, comments, or Markdown formatting.
+
+EXAMPLE (for reference only):
+- audio_text: "\"Speaker 1\": I've been working on this project for months.\n\"Speaker 2\": What kind of challenges have you faced?\n\"Speaker 1\": The main issue was finding reliable suppliers who could meet our quality standards."
+- text_with_blanks: "\"Speaker 1\": I've been working on this ___ for months.\n\"Speaker 2\": What kind of ___ have you faced?\n\"Speaker 1\": The main ___ was finding reliable suppliers who could meet our quality ___."
+- answers: ["project", "challenges", "issue", "standards"]
+
 

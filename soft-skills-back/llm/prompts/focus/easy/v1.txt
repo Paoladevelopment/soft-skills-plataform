@@ -1,27 +1,67 @@
 Generate an easy "focus" listening challenge.
 
-Create a passage appropriate for {audio_length} where a single, clear fact or detail is mentioned explicitly.
-Then, write a simple question about that fact and provide exactly five possible answers — one correct and four clearly incorrect but plausible alternatives.
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
 
-Adapt the challenge to the current {prompt_type}:
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
 
-- If {prompt_type} = "descriptive": Focus on a simple physical feature (e.g., color, size, or location).
-- If {prompt_type} = "historical_event": Describe a real historical event focusing on one key action or element; ask about who acted, what occurred, or what tool was used in the historical context.
-- If {prompt_type} = "instructional": Focus on a single step, object, or action.
-- If {prompt_type} = "dialogue": Focus on who said something, or what was mentioned in a simple exchange.
-- If {prompt_type} = "narrated_dialogue": Focus on one clear action or decision summarized by the narrator.
+OBJECTIVE
+Create an educational listening passage where a single, clear fact or detail is mentioned explicitly.
+The passage must have an audio_text length consistent with the duration specified by {audio_length} (as defined in the base system prompt).
+Then write one simple question about that fact and provide exactly five possible answers — one correct and four clearly incorrect but plausible alternatives.
 
-Return a JSON object with:
-{{"audio_text": "...", "question": "...", "answer_choices": ["...", "...", "...", "...", "..."], "correct_answer": "..."}}
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
 
-Guidelines:
-- The correct answer must appear verbatim in the audio_text.
-- Provide exactly 5 distinct answer choices.
-- Incorrect options must be clearly wrong but contextually reasonable.
-- Avoid repetition or trivial opposites like “Not X.”
-- Keep the scenario short, factual, and suitable for all audiences.
-- Output only the JSON object; do not include any other text.
+[descriptive]
+- Describe an object, place, or scene that includes ONE explicit factual detail (e.g., a color, shape, size, or position).
+- The question must ask directly about that specific detail.
+- No quotes or speaker labels.
 
-Example (for reference only):
-{{"audio_text": "The red kite flew higher than any other toy in the park.", "question": "What color was the kite?", "answer_choices": ["Blue", "Green", "Red", "Yellow", "Purple"], "correct_answer": "Red"}}
+[historical_event]
+- Depict a real historical event focusing on ONE key factual element (e.g., who acted, what occurred, or what tool was used).
+- Avoid exact names, dates, or locations.
+- The question must refer to that factual element.
+- No quotes or speaker labels.
+
+[instructional]
+- Explain a simple, everyday process that involves ONE key object or step in flowing prose (no lists).
+- The question must ask explicitly about that object or step.
+- No quotes or speaker labels.
+
+[dialogue]
+- Write a natural conversation with two alternating speakers labeled "Speaker 1" and "Speaker 2".
+- Include ONE explicit, factual statement that can be questioned (e.g., an object, place, or time).
+- Alternate lines with "\n". No narration or stage directions.
+
+[narrated_dialogue]
+- Write a third-person narration summarizing a conversation between two people.
+- Briefly indicate who they are in generic terms (e.g., two friends, two colleagues) and the topic discussed.
+- Include ONE explicit action or decision that serves as the correct answer.
+- Do NOT use direct quotes or speaker labels.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Complete passage with no blanks or placeholders, fluent and natural for TTS
+- question: Clear question referring directly to one explicit fact in the audio_text
+- answer_choices: Exactly 5 distinct options, one correct and four plausible distractors
+- correct_answer: Must exactly match one of the answer_choices and appear verbatim in audio_text
+
+RULES AND VALIDATION
+- audio_text must be complete, fluent, coherent, and natural for TTS
+- audio_text must conform to the rules of the ACTIVE PROMPT TYPE section
+- audio_text length must align with {audio_length} as defined in the base system
+- question must refer directly to one explicit fact in the audio_text and be clear and unambiguous
+- answer_choices must contain exactly 5 distinct options
+- answer_choices must include one correct answer that appears verbatim in audio_text
+- answer_choices must include four incorrect but contextually reasonable distractors
+- correct_answer must exactly match one of the answer_choices and appear verbatim in audio_text
+
+Avoid:
+- Ambiguity or abstract answers
+- Emotional/dramatic buildup
+- Sensory/physical expressions that sound unnatural in TTS (e.g., breathing, loud noises, tactile sensations)
+- Metadata, comments, or Markdown formatting
+
+
 

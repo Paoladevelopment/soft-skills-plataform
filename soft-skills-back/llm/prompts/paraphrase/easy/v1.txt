@@ -1,32 +1,93 @@
 Generate an easy "paraphrase" listening challenge.
 
-Create an original passage appropriate for {audio_length} (reference_text) and a paraphrased version (audio_text) that keeps the same meaning but uses slightly different words or structure.
-The paraphrase should sound natural when spoken aloud and remain grammatically simple.
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
 
-Adapt the topic and tone to the current {prompt_type}:
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
 
-- If {prompt_type} = "descriptive": Use a brief description of an object or scene, with simple word substitutions.
-- If {prompt_type} = "historical_event": Use a single factual statement about a real historical event, rephrased with basic synonyms.
-- If {prompt_type} = "instructional": Use a short instruction or step, reworded but keeping the same intent.
-- If {prompt_type} = "dialogue": Rephrase a single utterance or short exchange while keeping meaning identical.
-- If {prompt_type} = "narrated_dialogue": Rephrase a short narration of a conversation using alternate phrasing.
+OBJECTIVE
+Create TWO short texts:  
+1. **audio_text** → the original passage that will be spoken aloud.  
+2. **reference_text** → a paraphrased version that keeps the same meaning but changes wording or structure slightly.  
 
-Return a JSON object with:
-{{
-  audio_text: "...",
-  "reference_text": "...",
-  "rubric": ["meaning similarity", "grammar clarity"]
-}}
+Both texts must be appropriate for {audio_length} and written entirely in the language specified by {locale} (e.g., “es” = español).  
+The **audio_text** should sound natural and fluent when read aloud, using simple and clear language suitable for educational listening.  
 
-Guidelines:
-- The paraphrase should preserve meaning and grammatical correctness.
-- Use basic, clear vocabulary appropriate for educational contexts.
-- Respect the {audio_length} parameter from the base prompt to control passage size.
-- Output only the JSON object; do not include any other text.
+──────────────────────────────
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
 
-Example (for reference only):
-{{
-  audio_text: "The boy quickly closed the door.",
-  "reference_text": "The kid shut the door fast.",
-  "rubric": ["meaning similarity", "grammar clarity"]
-}}
+[descriptive]
+- Write an original description of an object, place, or moment in the **audio_text**.
+- Then write a **reference_text** that expresses the same visual or contextual meaning using different but simple words.
+- Avoid poetic or emotional phrasing; focus on clear imagery.
+
+[historical_event]
+- Write an original **audio_text** describing a real historical event or process (without using dates or names).
+- Then create a **reference_text** that conveys the same event with basic rewording.
+- Maintain historical accuracy, sequence, and neutrality.
+
+[instructional]
+- Write an **audio_text** that explains a simple process, procedure, or step-by-step action (e.g., how to plant a seed, cook rice, or clean a room).
+- Use imperative or procedural tone (verbs like “prepare,” “mix,” “open,” “check”).
+- Then write a **reference_text** that gives the same instructions with slightly different phrasing but identical meaning.
+- Ensure both versions maintain logical order, clarity, and educational tone.
+
+[dialogue]
+- Write a short, natural two-speaker exchange labeled exactly as:
+  "Speaker 1": <text>
+  "Speaker 2": <text>
+- Alternate turns clearly with line breaks ("\n").
+- The **audio_text** must contain at least one full exchange (2–3 turns total).
+- Then write a **reference_text** that paraphrases the same conversation with different wording but keeps the same intent and natural flow.
+- Both dialogues must sound like real conversation — friendly, spontaneous, and coherent.
+- Each speaker label ("Speaker 1", "Speaker 2") must appear exactly as shown.
+- Do NOT omit the speaker labels in either audio_text or reference_text.
+
+
+[narrated_dialogue]
+- Write a short narration summarizing a conversation (third-person voice, no "Speaker 1" labels).
+- Then create a **reference_text** that rephrases the narration while preserving meaning and context.
+- Maintain clear structure and natural spoken tone.
+
+──────────────────────────────
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Original passage that sounds natural when spoken aloud
+- reference_text: Paraphrased version with the same meaning
+- rubric: Array with evaluation criteria for assessing paraphrase quality
+
+──────────────────────────────
+RULES AND VALIDATION
+- audio_text:
+  - Must be the original passage.
+  - Must sound fluent and natural for TTS.
+  - Must align with the ACTIVE PROMPT TYPE’s structure.
+  - Must align with {audio_length} defined in the base system.
+
+- reference_text:
+  - Must have the same meaning as audio_text.
+  - Must change some words or phrasing but preserve logical and grammatical clarity.
+  - Must not shorten or expand excessively (length within ±15% of original).
+
+- rubric:
+  - Must contain 2–3 string elements describing how the paraphrase can be evaluated.
+  - Example: ["semantic equivalence", "fluency", "grammar clarity"]
+
+Avoid:
+- Introducing new facts or altering meaning.
+- Using uncommon or technical vocabulary.
+- Changing tone (e.g., from instructional to narrative).
+- Metadata, comments, or Markdown formatting.
+
+──────────────────────────────
+EXAMPLE (for reference only):
+- audio_text: "Para hervir el agua, coloca una olla sobre la estufa y enciende el fuego medio."
+- reference_text: "Pon una cacerola en la estufa y caliéntala a fuego medio para que el agua hierva."
+- rubric: ["equivalencia de significado", "claridad gramatical", "fluidez oral"]
+
+EXAMPLE (for reference only):
+- audio_text: "\"Speaker 1\": Hola, ¿cómo estás?\n\"Speaker 2\": Bien, gracias. He estado pensando en lo que hablamos la última vez sobre ir a la playa.\n\"Speaker 1\": ¡Genial! Podríamos hacerlo este fin de semana y llevar algo de comida."
+- reference_text: "\"Speaker 1\": ¡Qué gusto verte! ¿Cómo te va?\n\"Speaker 2\": Todo bien. Recordé que mencionamos ir a la playa la vez pasada.\n\"Speaker 1\": Me parece una buena idea hacerlo este fin de semana, podríamos llevar algo para comer."
+- rubric: ["equivalencia de significado", "fluidez conversacional", "claridad gramatical"]
+

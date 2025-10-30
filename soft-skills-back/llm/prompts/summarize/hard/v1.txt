@@ -1,31 +1,60 @@
 Generate a hard "summarize" listening challenge.
 
-Create a complex, multi-idea passage (audio_text) where the main theme is implied through multiple events, perspectives, or arguments.  
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create a complex, multi-idea passage (audio_text) where the main theme is implied through multiple events, perspectives, or arguments.
 Then, provide a concise reference_summary that captures the core idea or conclusion while omitting unnecessary detail.
 
-Adapt the challenge to the current {prompt_type}:
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
 
-- If {prompt_type} = "descriptive": Describe contrasting scenes or features; summarize their shared theme or key contrast.
-- If {prompt_type} = "historical_event": Depict a multi-stage or debated real historical event; summarize its most significant outcome or implication.
-- If {prompt_type} = "instructional": Present an extended or conditional process; summarize its overall purpose or guiding principle.
-- If {prompt_type} = "dialogue": Include differing viewpoints or misunderstandings; summarize the final insight or unresolved issue.
-- If {prompt_type} = "narrated_dialogue": Describe a conversation rich in subtext or reasoning; summarize what the conversation reveals about the situation.
+[descriptive]
+- Describe contrasting scenes or features with sophisticated vocabulary.
+- Focus on their shared theme or key contrast.
+- Use varied sentence structures and advanced imagery.
 
-Return a JSON object with:
-{{
-  audio_text: "...",
-  "reference_summary": "..."
-}}
+[historical_event]
+- Depict a multi-stage or debated real historical event.
+- Focus on its most significant outcome or implication.
+- Avoid specific names, dates, or locations.
 
-Guidelines:
-- The summary should abstract the essential message rather than restating content.
-- The audio_text may include multiple perspectives, causes, or logical connections.
-- Maintain logical coherence in the summary even if the text is nuanced or ambiguous.
-- Respect the {audio_length} parameter from the base prompt to determine passage duration (short, medium, or long).
-- Output only the JSON object; do not include any other text.
+[instructional]
+- Present an extended or conditional process with multiple steps.
+- Focus on the overall purpose or guiding principle.
+- Use sophisticated instructional language and logical connections.
 
-Example (for reference only):
-{{
-  audio_text: "Several scientists presented different explanations for the sudden drop in temperatures. Some blamed solar activity, while others pointed to volcanic eruptions. Despite disagreements, they all emphasized the need for continued research.",
-  "reference_summary": "Experts offered various theories about climate change but agreed on the importance of further study."
-}}
+[dialogue]
+- Include differing viewpoints or misunderstandings in conversation.
+- Focus on the final insight or unresolved issue.
+- Use natural conversational language with complex interactions.
+
+[narrated_dialogue]
+- Describe a conversation rich in subtext or reasoning.
+- Focus on what the conversation reveals about the situation.
+- Maintain sophisticated narrative structure and perspective.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Complex passage with multiple events, perspectives, or arguments
+- reference_summary: Concise summary that captures the core idea or conclusion
+
+RULES AND VALIDATION
+- audio_text must be complete, fluent, and natural for TTS
+- audio_text must include multiple events, perspectives, or arguments
+- audio_text length must align with {audio_length} as defined in the base system
+- reference_summary must abstract the essential message rather than restating content
+- reference_summary must maintain logical coherence even with nuanced content
+
+Avoid:
+- Oversimplified content that doesn't require complex summarization
+- Summaries that restate content rather than abstract meaning
+- Overly complex vocabulary that sounds unnatural
+- Metadata, comments, or Markdown formatting
+
+EXAMPLE (for reference only):
+- audio_text: "Several scientists presented different explanations for the sudden drop in temperatures. Some blamed solar activity, while others pointed to volcanic eruptions. Despite disagreements, they all emphasized the need for continued research."
+- reference_summary: "Experts offered various theories about climate change but agreed on the importance of further study."

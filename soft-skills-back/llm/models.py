@@ -1,20 +1,19 @@
 """
 LLM client module for executing prompts with LangChain and OpenAI.
 
-Handles LLM model configuration, execution, and JSON response parsing.
+Handles LLM model configuration, execution, and structured response parsing.
 """
 
-import json
 import os
-from typing import Dict, Any, Optional
+from typing import Optional, Type
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import JsonOutputParser
-from utils.errors import APIException, BadRequest
+from pydantic import BaseModel
+from utils.errors import APIException
 
 
 class LLMClient:
-    """Client for executing LLM prompts and parsing JSON responses."""
+    """Client for executing LLM prompts and parsing structured responses."""
     
     def __init__(
         self, 
@@ -50,59 +49,37 @@ class LLMClient:
             temperature=temperature,
             api_key=api_key
         )
-        
-        self.json_parser = JsonOutputParser()
     
-    def execute_prompt(self, chat_template: ChatPromptTemplate, **kwargs) -> Dict[str, Any]:
+    def execute_prompt(
+        self, 
+        chat_template: ChatPromptTemplate, 
+        response_schema: Type[BaseModel],
+        **kwargs
+    ) -> BaseModel:
         """
-        Execute a chat prompt template and return parsed JSON response.
+        Execute a chat prompt template and return structured response.
         
         Args:
             chat_template: The ChatPromptTemplate to execute.
+            response_schema: Pydantic model class for structured output.
             **kwargs: Parameters for formatting the template.
             
         Returns:
-            Parsed JSON response as dictionary.
+            Structured response as Pydantic model instance.
             
         Raises:
-            APIException: If LLM execution fails or returns invalid JSON.
+            APIException: If LLM execution fails.
         """
         try:
+            structured_llm = self.llm.with_structured_output(response_schema)
+            
             formatted_messages = chat_template.format_messages(**kwargs)
             
-            response = self.llm.invoke(formatted_messages)
+            response = structured_llm.invoke(formatted_messages)
             
-            response_text = response.content.strip()
-            
-            json_data = self._extract_json_from_response(response_text)
-            
-            return json_data
+            return response
             
         except Exception as e:
-            if isinstance(e, APIException):
-                raise e
-            
             raise APIException(
                 f"LLM execution failed: {str(e)}"
             )
-    
-    def _extract_json_from_response(self, response_text: str) -> Dict[str, Any]:
-        """
-        Extract valid JSON from LLM response text.
-        
-        Args:
-            response_text: Raw response text from LLM.
-            
-        Returns:
-            Parsed JSON as dictionary.
-            
-        Raises:
-            BadRequest: If no valid JSON is found in response.
-        """
-        try:
-            return json.loads(response_text)
-        except json.JSONDecodeError as e:
-            raise BadRequest(
-                f"Invalid JSON in LLM response. Raw response: {response_text[:500]}... Error: {str(e)}"
-            )
-    

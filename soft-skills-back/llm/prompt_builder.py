@@ -4,7 +4,7 @@ Prompt builder module for constructing chat prompts with LangChain.
 Handles building of system and user messages using ChatPromptTemplate.
 """
 
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from enums.listening_game import PlayMode, Difficulty
 from .prompt_loader import PromptLoader
 
@@ -37,16 +37,17 @@ class PromptBuilder:
             ChatPromptTemplate ready for LLM execution.
         """
         system_prompt = self.prompt_loader.load_system_base()
-        
         system_prompt = self.prompt_loader.normalize_tokens(system_prompt)
         
         user_prompt = self.prompt_loader.load_mode_prompt(play_mode, difficulty)
-        
         user_prompt = self.prompt_loader.normalize_tokens(user_prompt)
         
+        system_template = SystemMessagePromptTemplate.from_template(system_prompt)
+        user_template = HumanMessagePromptTemplate.from_template(user_prompt)
+        
         chat_template = ChatPromptTemplate.from_messages([
-            ("system", system_prompt),
-            ("user", user_prompt)
+            system_template,
+            user_template
         ])
         
         return chat_template

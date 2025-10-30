@@ -10,6 +10,7 @@ from enums.common.language import Language
 from .prompt_loader import PromptLoader
 from .prompt_builder import PromptBuilder
 from .models import LLMClient
+from .schemas import FocusChallenge, ClozeChallenge, ParaphraseChallenge, SummarizeChallenge, ClarifyChallenge
 from utils.errors import APIException
 
 
@@ -47,14 +48,26 @@ def generate_challenge_json(
             difficulty=difficulty
         )
         
-        json_response = llm_client.execute_prompt(
+        schema_map = {
+            PlayMode.focus: FocusChallenge,
+            PlayMode.cloze: ClozeChallenge,
+            PlayMode.paraphrase: ParaphraseChallenge,
+            PlayMode.summarize: SummarizeChallenge,
+            PlayMode.clarify: ClarifyChallenge
+        }
+        
+        response_schema = schema_map[play_mode]
+        
+        structured_response = llm_client.execute_prompt(
             chat_template,
+            response_schema,
             prompt_type=prompt_type.value,
             audio_length=audio_length.value,
-            locale=locale.value
+            locale=locale.value,
+            difficulty=difficulty.value
         )
         
-        return json_response
+        return structured_response.model_dump()
         
     except FileNotFoundError as e:
         raise APIException(

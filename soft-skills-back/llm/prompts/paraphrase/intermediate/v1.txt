@@ -1,33 +1,97 @@
-Generate a medium-difficulty "paraphrase" listening challenge.
+Generate a medium difficulty "paraphrase" listening challenge.
 
-Create a coherent passage (reference_text) and a paraphrased version (audio_text) that express the same meaning with noticeable rewording, restructuring, or order changes.
-The paraphrase should preserve meaning while varying syntax, connectors, or vocabulary.
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
 
-Adapt the challenge to the current {prompt_type}:
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
 
-- If {prompt_type} = "descriptive": Rephrase details of a scene or object using alternate phrasing and order.
-- If {prompt_type} = "historical_event": Reword details about participants, causes, or outcomes of a real historical event while keeping the same factual meaning.
-- If {prompt_type} = "instructional": Rephrase a short process or explanation using different phrasing or sequencing.
-- If {prompt_type} = "dialogue": Reword a short two-turn exchange naturally, keeping intent unchanged.
-- If {prompt_type} = "narrated_dialogue": Rephrase a short narration of a conversation while maintaining meaning.
+OBJECTIVE
+Create TWO texts with moderate complexity:  
+1. **audio_text** → the original passage that will be spoken aloud.  
+2. **reference_text** → a paraphrased version that keeps the same meaning but uses noticeable rewording, restructuring, or order changes.  
 
-Return a JSON object with:
-{{
-  audio_text: "...",
-  "reference_text": "...",
-  "rubric": ["meaning similarity", "grammar clarity", "style variation"]
-}}
+Both texts must be appropriate for {audio_length} and written entirely in the language specified by {locale} (e.g., "es" = español).  
+The **audio_text** should sound natural and fluent when read aloud, using varied vocabulary and sentence structures suitable for intermediate listening comprehension.  
 
-Guidelines:
-- Maintain full semantic equivalence between both texts.
-- Rephrase with clear grammatical and stylistic differences.
-- Respect the {audio_length} parameter from the base prompt to determine passage size.
-- Keep both versions natural when spoken aloud.
-- Output only the JSON object; do not include any other text.
+──────────────────────────────
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
 
-Example (for reference only):
-{{
-  audio_text: "She realized the bus had already left, so she decided to walk instead.",
-  "reference_text": "When she saw the bus leaving, she chose to go on foot.",
-  "rubric": ["meaning similarity", "grammar clarity", "style variation"]
-}}
+[descriptive]
+- Write an original description of a place, situation, or environment in the **audio_text**.
+- Include multiple related details and attributes.
+- Then write a **reference_text** that expresses the same visual or contextual meaning using different phrasing, varied sentence structures, and alternate vocabulary.
+- Focus on maintaining the same descriptive richness while changing the presentation style.
+
+[historical_event]
+- Write an original **audio_text** describing a real historical event with background context and results (without using specific dates or names).
+- Include cause-and-effect relationships and historical significance.
+- Then create a **reference_text** that conveys the same event with noticeable rewording, different sentence structures, and varied vocabulary.
+- Maintain historical accuracy, sequence, and neutrality while demonstrating clear paraphrasing skills.
+
+[instructional]
+- Write an **audio_text** that explains a moderate process with multiple steps and conditions (e.g., how to prepare a presentation, organize a workspace, or plan an event).
+- Use varied instructional language with conditional statements and logical connectors.
+- Then write a **reference_text** that gives the same instructions with different phrasing, varied sentence structures, and alternate vocabulary while maintaining identical meaning.
+- Ensure both versions maintain logical order, clarity, and educational tone with intermediate complexity.
+
+[dialogue]
+- Write a natural multi-turn conversation labeled exactly as:
+  "Speaker 1": <text>
+  "Speaker 2": <text>
+- Include several related ideas, comparisons, or developments that require comprehension of relationships.
+- The **audio_text** must contain 3-4 turns with meaningful exchanges.
+- Then write a **reference_text** that paraphrases the same conversation with different wording, varied sentence structures, and alternate vocabulary while keeping the same intent and natural flow.
+- Both dialogues must sound realistic and coherent with intermediate conversational complexity.
+- Each speaker label ("Speaker 1", "Speaker 2") must appear exactly as shown.
+- Do NOT omit the speaker labels in either audio_text or reference_text.
+
+[narrated_dialogue]
+- Write a narration summarizing a conversation between multiple people with motives, decisions, or relationships.
+- Include multiple layers of reasoning and context.
+- Then create a **reference_text** that rephrases the narration while preserving meaning, context, and narrative complexity.
+- Maintain clear structure and natural spoken tone with intermediate sophistication.
+
+──────────────────────────────
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Original passage that sounds natural when spoken aloud
+- reference_text: Paraphrased version with noticeable rewording and restructuring
+- rubric: Array with evaluation criteria for assessing paraphrase quality
+
+──────────────────────────────
+RULES AND VALIDATION
+- audio_text:
+  - Must be the original passage with moderate complexity.
+  - Must sound fluent and natural for TTS.
+  - Must align with the ACTIVE PROMPT TYPE's structure.
+  - Must align with {audio_length} defined in the base system.
+  - Must include multiple related ideas or concepts.
+
+- reference_text:
+  - Must have the same meaning as audio_text.
+  - Must demonstrate noticeable rewording, restructuring, or order changes.
+  - Must preserve logical and grammatical clarity while showing variation.
+  - Must not shorten or expand excessively (length within ±15% of original).
+  - Must show clear paraphrasing skills with varied vocabulary and sentence structures.
+
+- rubric:
+  - Must contain 2-3 string elements describing how the paraphrase can be evaluated.
+  - Example: ["semantic equivalence", "style variation", "grammar clarity"]
+
+Avoid:
+- Introducing new facts or altering meaning.
+- Using overly complex or technical vocabulary.
+- Changing tone significantly (e.g., from instructional to narrative).
+- Metadata, comments, or Markdown formatting.
+
+──────────────────────────────
+EXAMPLE (for reference only):
+- audio_text: "Durante el proceso de preparación, los estudiantes organizaron sus materiales y revisaron las instrucciones cuidadosamente. Luego, comenzaron a trabajar en grupos pequeños, compartiendo ideas y colaborando efectivamente."
+- reference_text: "Los alumnos se prepararon meticulosamente, distribuyendo sus recursos y estudiando las directrices con atención. Después, iniciaron su labor en equipos reducidos, intercambiando conceptos y cooperando de manera eficiente."
+- rubric: ["equivalencia de significado", "variación de estilo", "claridad gramatical"]
+
+EXAMPLE (for reference only):
+- audio_text: "\"Speaker 1\": He estado analizando los datos del proyecto y creo que necesitamos cambiar nuestra estrategia.\n\"Speaker 2\": ¿Qué aspectos específicos te preocupan más?\n\"Speaker 1\": Principalmente el presupuesto y los plazos. Creo que deberíamos reconsiderar nuestras prioridades.\n\"Speaker 2\": Tienes razón, vamos a revisar todo el plan esta semana."
+- reference_text: "\"Speaker 1\": Después de examinar la información del proyecto, considero que debemos modificar nuestro enfoque.\n\"Speaker 2\": ¿Cuáles son los puntos que más te inquietan?\n\"Speaker 1\": Sobre todo los recursos económicos y los tiempos. Pienso que tendríamos que reevaluar nuestros objetivos.\n\"Speaker 2\": Estoy de acuerdo, necesitamos actualizar la estrategia completa esta semana."
+- rubric: ["equivalencia de significado", "fluidez conversacional", "variación de estilo"]

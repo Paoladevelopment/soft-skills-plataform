@@ -1,31 +1,60 @@
 Generate an easy "summarize" listening challenge.
 
-Create a simple, clearly structured passage (audio_text) that conveys one main idea and a few supporting details.  
+ACTIVE PROMPT TYPE: {prompt_type}
+ACTIVE AUDIO LENGTH: {audio_length}
+
+Use ONLY the rules in the section whose header exactly matches the ACTIVE PROMPT TYPE.
+Ignore all other sections.
+
+OBJECTIVE
+Create a simple, clearly structured passage (audio_text) that conveys one main idea and a few supporting details.
 Then, provide a short summary (reference_summary) that captures the central point directly.
 
-Adapt the content and tone to the current {prompt_type}:
+SECTIONS BY PROMPT TYPE (pick exactly one based on ACTIVE PROMPT TYPE)
 
-- If {prompt_type} = "descriptive": Describe a single object, place, or scene; summarize what is being described overall.
-- If {prompt_type} = "historical_event": Narrate a short real historical event or moment; summarize what happened and its purpose.
-- If {prompt_type} = "instructional": Explain a short process or routine; summarize the main goal or outcome of the process.
-- If {prompt_type} = "dialogue": Create a short exchange; summarize what the speakers discussed or agreed on.
-- If {prompt_type} = "narrated_dialogue": Write a short narration of a conversation; summarize the topic or outcome.
+[descriptive]
+- Describe a single object, place, or scene with clear details.
+- Focus on one main characteristic or feature.
+- Keep vocabulary simple and accessible.
 
-Return a JSON object with:
-{{
-  audio_text: "...",
-  "reference_summary": "..."
-}}
+[historical_event]
+- Narrate a short real historical event or moment.
+- Focus on what happened and its basic significance.
+- Avoid specific names, dates, or locations.
 
-Guidelines:
-- The summary should capture the main point of the passage in one or two short sentences.
-- Avoid listing every detail; focus on what the passage is primarily about.
-- Keep the summary concise and neutral in tone.
-- Respect the {audio_length} parameter from the base prompt to determine passage duration (short, medium, or long).
-- Output only the JSON object; do not include any other text.
+[instructional]
+- Explain a short process or routine with clear steps.
+- Focus on the main goal or outcome of the process.
+- Keep instructions simple and actionable.
 
-Example (for reference only):
-{{
-  audio_text: "The park was recently renovated with new benches, brighter lights, and a small playground, making it safer and more welcoming to families.",
-  "reference_summary": "The park was improved to make it safer and more family-friendly."
-}}
+[dialogue]
+- Create a short exchange between two speakers.
+- Focus on what the speakers discussed or agreed on.
+- Use natural conversational language.
+
+[narrated_dialogue]
+- Write a short narration of a conversation.
+- Focus on the topic or outcome of the discussion.
+- Maintain clear narrative structure.
+
+OUTPUT REQUIREMENTS
+You must return a structured response with these exact fields:
+- audio_text: Complete passage with one main idea and supporting details
+- reference_summary: Short summary that captures the central point
+
+RULES AND VALIDATION
+- audio_text must be complete, fluent, and natural for TTS
+- audio_text must convey one main idea with a few supporting details
+- audio_text length must align with {audio_length} as defined in the base system
+- reference_summary must capture the main point in one or two short sentences
+- reference_summary must be concise and neutral in tone
+
+Avoid:
+- Overly complex vocabulary or concepts
+- Multiple unrelated ideas in one passage
+- Summaries that list every detail
+- Metadata, comments, or Markdown formatting
+
+EXAMPLE (for reference only):
+- audio_text: "The park was recently renovated with new benches, brighter lights, and a small playground, making it safer and more welcoming to families."
+- reference_summary: "The park was improved to make it safer and more family-friendly."
