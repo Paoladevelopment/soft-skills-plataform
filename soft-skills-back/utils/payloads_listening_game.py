@@ -136,3 +136,7 @@ CHALLENGE_READ_EXAMPLE = {
     "audio_text": "Hello, welcome to our conversation about sustainable living. Today we'll discuss practical ways to reduce your environmental footprint.",
     "created_at": "2025-10-26T08:30:00Z"
 }
+
+CHALLENGE_AUDIO_RESPONSE_EXAMPLE = {
+    "audio_url": "https://cdn.example.com/challenges-audio/123e4567-e89b-12d3-a456-426614174000.mp3"
+}

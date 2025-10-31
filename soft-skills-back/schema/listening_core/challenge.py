@@ -10,7 +10,8 @@ from schema.base import BaseResponse
 from utils.serializers import serialize_datetime_without_microseconds
 from utils.payloads_listening_game import (
     CHALLENGE_CREATE_EXAMPLE,
-    CHALLENGE_READ_EXAMPLE
+    CHALLENGE_READ_EXAMPLE,
+    CHALLENGE_AUDIO_RESPONSE_EXAMPLE
 )
 
 T = TypeVar("T")
@@ -53,3 +54,12 @@ class ChallengeRead(BaseModel):
 class ChallengeResponse(BaseResponse[T]):
     """Generic response wrapper for challenge data."""
     pass
+
+
+class ChallengeAudioResponse(BaseModel):
+    """Response schema for challenge audio endpoint."""
+    audio_url: str
+    
+    model_config = {
+        "json_schema_extra": {"example": CHALLENGE_AUDIO_RESPONSE_EXAMPLE}
+    }

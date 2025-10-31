@@ -33,6 +33,20 @@ class Settings(BaseSettings):
   TOKEN_EXPIRE: str = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
 
   SQLITE_PATH: str = sqlite_db_path
+  
+  ELEVENLABS_API_KEY: str | None = os.getenv('ELEVENLABS_API_KEY')
+  VOICE_SPK1_FEMALE: str | None = os.getenv('VOICE_SPK1_FEMALE')
+  VOICE_SPK2_MALE: str | None = os.getenv('VOICE_SPK2_MALE')
+  VOICE_DEFAULT_SINGLE: str | None = os.getenv('VOICE_DEFAULT_SINGLE')
+  
+  SUPABASE_URL: str | None = os.getenv('SUPABASE_URL')
+  SUPABASE_SERVICE_ROLE_KEY: str | None = os.getenv('SUPABASE_SERVICE_ROLE_KEY')
+  SUPABASE_BUCKET: str = os.getenv('SUPABASE_BUCKET', 'challenges-audio')
+  PUBLIC_BASE_URL: str | None = os.getenv('PUBLIC_BASE_URL')
+  
+  ELEVENLABS_DEFAULT_MODEL: str = os.getenv('ELEVENLABS_DEFAULT_MODEL', 'eleven_multilingual_v2')
+  AUDIO_DEFAULT_FORMAT: str = os.getenv('AUDIO_DEFAULT_FORMAT', 'mp3')
+  AUDIO_STORAGE_TYPE: str = os.getenv('AUDIO_STORAGE_TYPE', 'supabase')
 
   def __is_valid_db_uri(self) -> bool:
     if self.DB_URI:
