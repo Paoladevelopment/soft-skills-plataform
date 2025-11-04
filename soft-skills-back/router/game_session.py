@@ -1,5 +1,5 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, status
 
 from schema.listening_core.game_session import (
     GameSessionCreate, 
@@ -7,20 +7,23 @@ from schema.listening_core.game_session import (
     GameSessionDetail, 
     GameSessionUpdate,
     GameSessionResponse, 
-    GameSessionPaginatedResponse
+    GameSessionPaginatedResponse,
+    GameSessionStartResponse,
 )
 from schema.listening_core.game_session_config import GameSessionConfigRead, GameSessionConfigUpdate
+from schema.listening_core.game_round import GameRoundReadSummary
 from schema.token import TokenData
 from schema.base import BaseResponse
 from service.auth_service import decode_jwt_token
-from service.listening_core.game_service import GameService
+from service.listening_core.game_session import GameSessionService
+from service.listening_core.game_round_prefetch import safe_prefetch_rounds
 from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception
 
 router = APIRouter()
 
-game_service = GameService()
+game_service = GameSessionService()
 
 
 @router.get(
@@ -74,6 +77,38 @@ def create_game_session(
             data=game_read
         )
     
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.post(
+    "/{session_id}/start",
+    summary="Start a game session",
+    response_model=GameSessionStartResponse,
+)
+def start_game_session(
+    session_id: UUID,
+    background_tasks: BackgroundTasks,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        game_session, round_1, is_first_activation = game_service.start_game_session(session_id, token_data.user_id, session)
+        
+        if is_first_activation:
+            background_tasks.add_task(safe_prefetch_rounds, session_id, [1, 2])
+        
+        round_summary = GameRoundReadSummary.model_validate(round_1)
+        
+        response_data = GameSessionStartResponse(
+            session_id=game_session.game_session_id,
+            status=game_session.status,
+            current_round=game_session.current_round,
+            started_at=game_session.started_at,
+            round=round_summary
+        )
+        
+        return response_data
     except APIException as exc:
         raise_http_exception(exc)
 

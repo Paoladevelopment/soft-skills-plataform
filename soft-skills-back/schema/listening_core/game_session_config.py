@@ -64,6 +64,7 @@ class GameSessionConfigUpdate(SQLModel):
     selected_modes: Optional[list[PlayMode]] = None
     allowed_types: Optional[list[PromptType]] = None
     audio_effects: Optional[AudioEffects] = None
+    reuse_existing_challenges: Optional[bool] = None
 
     model_config = {
         "extra": "forbid",

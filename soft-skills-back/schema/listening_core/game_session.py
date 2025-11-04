@@ -2,12 +2,13 @@ from datetime import datetime
 from typing import List, Optional, TypeVar
 from uuid import UUID
 
-from pydantic import field_serializer
+from pydantic import field_serializer, Field
 from sqlmodel import SQLModel
 
 from model.listening_core.game_session import GameSessionBase
 from schema.base import BaseResponse, PaginatedResponse
 from schema.listening_core.game_session_config import GameSessionConfigCreate, GameSessionConfigRead
+from schema.listening_core.game_round import GameRoundReadSummary
 from enums.listening_game import GameStatus
 from utils.serializers import serialize_datetime_without_microseconds
 from utils.payloads_listening_game import (
@@ -20,9 +21,23 @@ from utils.payloads_listening_game import (
 T = TypeVar("T")
 
 
+class GameSessionStartResponse(SQLModel):
+    session_id: UUID
+    status: GameStatus
+    current_round: int
+    started_at: Optional[datetime] = None
+    round: GameRoundReadSummary
+
+    @field_serializer("started_at", when_used="json")
+    def serialize_started_at(self, v: datetime | None) -> str | None:
+        return serialize_datetime_without_microseconds(v)
+
+    model_config = {"from_attributes": True}
+
+
 class GameSessionSummary(GameSessionBase):
     """Summary view of a game session for listing."""
-    id: UUID
+    id: UUID = Field(alias="game_session_id")
     created_at: datetime
 
     @field_serializer("created_at", when_used="json")

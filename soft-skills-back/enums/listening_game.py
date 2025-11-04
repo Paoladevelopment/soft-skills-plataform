@@ -43,19 +43,18 @@ class AudioLength(str, Enum):
     long = "long"           
 
 class GameStatus(str, Enum):
-    pending = "pending"
-    in_progress = "in_progress"
-    paused = "paused"
-    completed = "completed"
-    cancelled = "cancelled"
+    pending = "pending" # Created, not started
+    in_progress = "in_progress"  # Running; /next and /attempts allowed
+    paused = "paused" # Paused by user; only resume/cancel allowed
+    completed = "completed" # All rounds done or ended normally; read-only
+    cancelled = "cancelled" # Ended by user or system; read-only
 
 
 class GameRoundStatus(str, Enum):
-    queued = "queued"
-    processing = "processing"
-    ready = "ready"
-    in_progress = "in_progress"
-    completed = "completed"
-    failed = "failed"
+    queued = "queued" # Round exists, but no challenge assigned yet
+    pending = "pending" # Challenge has been assigned and its audio is confirmed to exist
+    served = "served" # The round has been delivered to the client via /next
+    attempted = "attempted" # The user submitted an attempt and the score is recorded
+
 
 
