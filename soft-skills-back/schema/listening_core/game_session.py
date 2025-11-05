@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import List, Optional, TypeVar
+from typing import List, Optional, TypeVar, Union
 from uuid import UUID
 
-from pydantic import field_serializer, Field
+from pydantic import BaseModel, field_serializer
 from sqlmodel import SQLModel
 
 from model.listening_core.game_session import GameSessionBase
@@ -15,7 +15,10 @@ from utils.payloads_listening_game import (
     GAME_SESSION_CREATE_EXAMPLE,
     GAME_SESSION_READ_EXAMPLE,
     GAME_SESSION_DETAIL_EXAMPLE,
-    GAME_SESSION_UPDATE_EXAMPLE
+    GAME_SESSION_UPDATE_EXAMPLE,
+    GAME_SESSION_SUMMARY_EXAMPLE,
+    ROUND_ADVANCE_RESPONSE_EXAMPLE,
+    SESSION_COMPLETED_RESPONSE_EXAMPLE
 )
 
 T = TypeVar("T")
@@ -37,14 +40,17 @@ class GameSessionStartResponse(SQLModel):
 
 class GameSessionSummary(GameSessionBase):
     """Summary view of a game session for listing."""
-    id: UUID = Field(alias="game_session_id")
+    game_session_id: UUID
     created_at: datetime
 
     @field_serializer("created_at", when_used="json")
     def serialize_created_at(self, v: datetime) -> str:
         return serialize_datetime_without_microseconds(v)
 
-    model_config = {"from_attributes": True}
+    model_config = {
+        "from_attributes": True,
+        "json_schema_extra": {"example": GAME_SESSION_SUMMARY_EXAMPLE}
+    }
 
 
 class GameSessionCreate(SQLModel):
@@ -104,4 +110,26 @@ class GameSessionResponse(BaseResponse[T]):
 class GameSessionPaginatedResponse(PaginatedResponse):
     """Paginated response for game session lists."""
     data: List[GameSessionSummary]
+
+
+class RoundAdvanceResponse(BaseModel):
+    """Response schema for successful round advancement."""
+    current_round: int
+
+    model_config = {
+        "json_schema_extra": {"example": ROUND_ADVANCE_RESPONSE_EXAMPLE}
+    }
+
+
+class SessionCompletedResponse(BaseModel):
+    """Response schema for session completion."""
+    session_completed: bool
+    final_score: float
+
+    model_config = {
+        "json_schema_extra": {"example": SESSION_COMPLETED_RESPONSE_EXAMPLE}
+    }
+
+
+AdvanceNextRoundResponse = Union[RoundAdvanceResponse, SessionCompletedResponse]
 

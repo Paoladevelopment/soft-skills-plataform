@@ -71,8 +71,8 @@ RULES AND VALIDATION
   - Must not shorten or expand excessively (length within ±15% of original).
 
 - rubric:
-  - Must contain 2–3 string elements describing how the paraphrase can be evaluated.
-  - Example: ["semantic equivalence", "fluency", "grammar clarity"]
+  - Must ALWAYS be exactly this array (do not modify wording or order):
+    ["semantic equivalence", "fluency and naturalness", "clarity and simplicity"]
 
 Avoid:
 - Introducing new facts or altering meaning.
@@ -84,10 +84,10 @@ Avoid:
 EXAMPLE (for reference only):
 - audio_text: "Para hervir el agua, coloca una olla sobre la estufa y enciende el fuego medio."
 - reference_text: "Pon una cacerola en la estufa y caliéntala a fuego medio para que el agua hierva."
-- rubric: ["equivalencia de significado", "claridad gramatical", "fluidez oral"]
+- rubric: ["equivalencia semántica", "fluidez y naturalidad", "claridad y simplicidad"]
 
 EXAMPLE (for reference only):
 - audio_text: "\"Speaker 1\": Hola, ¿cómo estás?\n\"Speaker 2\": Bien, gracias. He estado pensando en lo que hablamos la última vez sobre ir a la playa.\n\"Speaker 1\": ¡Genial! Podríamos hacerlo este fin de semana y llevar algo de comida."
 - reference_text: "\"Speaker 1\": ¡Qué gusto verte! ¿Cómo te va?\n\"Speaker 2\": Todo bien. Recordé que mencionamos ir a la playa la vez pasada.\n\"Speaker 1\": Me parece una buena idea hacerlo este fin de semana, podríamos llevar algo para comer."
-- rubric: ["equivalencia de significado", "fluidez conversacional", "claridad gramatical"]
+- rubric: ["equivalencia semántica", "fluidez y naturalidad", "claridad y simplicidad"]
 

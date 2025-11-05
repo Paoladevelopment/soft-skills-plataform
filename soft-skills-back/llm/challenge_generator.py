@@ -11,7 +11,21 @@ from .prompt_loader import PromptLoader
 from .prompt_builder import PromptBuilder
 from .models import LLMClient
 from .schemas import FocusChallenge, ClozeChallenge, ParaphraseChallenge, SummarizeChallenge, ClarifyChallenge
-from utils.errors import APIException
+from utils.errors import APIException, BadRequest
+
+def _validate_combination(play_mode: PlayMode, prompt_type: PromptType) -> None:
+    """Validate that the play mode and prompt type combination is allowed, raising BadRequest if invalid."""
+    if play_mode == PlayMode.paraphrase and prompt_type == PromptType.dialogue:
+        raise BadRequest(
+            "Paraphrase mode is not supported for dialogue prompt type. "
+            "Please use a different play mode or prompt type."
+        )
+    
+    if play_mode == PlayMode.cloze and prompt_type == PromptType.dialogue:
+        raise BadRequest(
+            "Cloze mode is not supported for dialogue prompt type. "
+            "Please use a different play mode or prompt type."
+        )
 
 
 def generate_challenge_json(
@@ -38,6 +52,8 @@ def generate_challenge_json(
     Returns:
         Dictionary containing the generated challenge data in JSON format.
     """
+    _validate_combination(play_mode, prompt_type)
+    
     try:
         prompt_loader = PromptLoader()
         prompt_builder = PromptBuilder(prompt_loader)

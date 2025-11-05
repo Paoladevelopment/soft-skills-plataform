@@ -1,0 +1,20 @@
+Reference text (LLM-generated reference paraphrase):
+{reference_text}
+
+Student paraphrase to grade:
+{player_paraphrase}
+
+Evaluation rubric (three criteria in order):
+{rubric}
+
+Instructions:
+- Follow the GRADING RULES and FINAL SCORE calculation from the system prompt.
+- Compare the student paraphrase to the reference text by semantic meaning, not word overlap. Remember that the reference text is itself a paraphrase (not the original audio), so you are evaluating how well the student's paraphrase matches the semantic meaning of the reference paraphrase.
+- Evaluate based on the THREE criteria provided in the rubric above.
+- Score each criterion independently (0-2) based on how well the paraphrase meets that specific criterion.
+- Map the rubric criteria to the output fields: first criterion → criterion_1_0_2, second → criterion_2_0_2, third → criterion_3_0_2.
+- Check for near-copying (≥8 consecutive identical words) and flag "too_similar" if found.
+- Check for hallucinations (invented facts or contradictions) and flag "meaning_loss" or "too_different" if found.
+- Ensure the paraphrase is in the same language as the reference text.
+- Return only the JSON specified in the OUTPUT JSON SCHEMA.
+

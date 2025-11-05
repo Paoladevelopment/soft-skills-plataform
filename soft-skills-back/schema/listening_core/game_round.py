@@ -5,9 +5,8 @@ from uuid import UUID
 from pydantic import BaseModel, field_serializer, field_validator
 
 from model.listening_core.game_round import GameRoundBase
-from schema.listening_core.game_session_config import GameSessionConfigRead
 from schema.listening_core.audio_effects import AudioEffects
-from enums.listening_game import PlayMode, PromptType
+from enums.listening_game import PlayMode, PromptType, GameRoundStatus
 from utils.serializers import serialize_datetime_without_microseconds
 from utils.listening_game_validators import normalize_audio_effects
 from utils.payloads_listening_game import (
@@ -54,11 +53,15 @@ class CurrentRoundConfig(BaseModel):
 
 class CurrentRoundResponse(BaseModel):
     """Response schema for current round endpoint."""
+    round_id: UUID
     audio_url: Optional[str] = None
     config: CurrentRoundConfig
     current_round: int
+    status: GameRoundStatus
     play_mode: Optional[PlayMode] = None
     prompt_type: Optional[PromptType] = None
+    score: Optional[float] = None
+    max_score: float
     mode_payload: Optional[Dict[str, Any]] = None
 
     model_config = {

@@ -52,3 +52,26 @@ class PromptBuilder:
         
         return chat_template
     
+    def build_evaluation_prompt(self, evaluation_type: str) -> ChatPromptTemplate:
+        """
+        Build a chat prompt template for evaluation tasks.
+        
+        Args:
+            evaluation_type: The evaluation type (e.g., "clarify").
+            
+        Returns:
+            ChatPromptTemplate ready for LLM execution.
+        """
+        system_prompt = self.prompt_loader.load_evaluation_system_prompt(evaluation_type)
+        user_prompt = self.prompt_loader.load_evaluation_user_prompt(evaluation_type)
+        
+        generator_prompt = SystemMessagePromptTemplate.from_template(system_prompt)
+        user_template = HumanMessagePromptTemplate.from_template(user_prompt)
+        
+        generator_chat_prompt = ChatPromptTemplate.from_messages([
+            generator_prompt,
+            user_template
+        ])
+        
+        return generator_chat_prompt
+    

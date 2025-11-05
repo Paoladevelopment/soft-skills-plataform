@@ -31,7 +31,6 @@ def _prefetch_single_round(
     """Prepare a single round. Silently skip on error (non-blocking)."""
     try:
         service.prepare_or_get_round(
-            game_session.game_session_id,
             round_number,
             game_session,
             config,

@@ -9,10 +9,14 @@ from .prompt_loader import PromptLoader
 from .prompt_builder import PromptBuilder
 from .models import LLMClient
 from .challenge_generator import generate_challenge_json
+from .challenge_evaluation import evaluate_clarify_questions, evaluate_summarize_answer, evaluate_paraphrase_answer
 
 __all__ = [
     "PromptLoader",
     "PromptBuilder", 
     "LLMClient",
-    "generate_challenge_json"
+    "generate_challenge_json",
+    "evaluate_clarify_questions",
+    "evaluate_summarize_answer",
+    "evaluate_paraphrase_answer"
 ]

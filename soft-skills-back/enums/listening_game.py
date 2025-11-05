@@ -56,5 +56,8 @@ class GameRoundStatus(str, Enum):
     served = "served" # The round has been delivered to the client via /next
     attempted = "attempted" # The user submitted an attempt and the score is recorded
 
+    def __str__(self) -> str:
+        return self.value
+
 
 

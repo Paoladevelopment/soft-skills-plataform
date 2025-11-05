@@ -76,8 +76,8 @@ RULES AND VALIDATION
   - Must show sophisticated paraphrasing with varied vocabulary, sentence structures, and emphasis.
 
 - rubric:
-  - Must contain 2-3 string elements describing how the paraphrase can be evaluated.
-  - Example: ["semantic equivalence", "lexical richness", "style variation"]
+  - Must ALWAYS be exactly this array (do not modify wording or order):
+    ["semantic equivalence", "lexical richness", "style variation"]
 
 Avoid:
 - Introducing new facts or altering meaning.
@@ -89,9 +89,9 @@ Avoid:
 EXAMPLE (for reference only):
 - audio_text: "A pesar de las adversidades económicas, el equipo de investigación persistió en su metodología innovadora, adaptándose constantemente a los desafíos emergentes y manteniendo su compromiso con la excelencia académica."
 - reference_text: "Sin importar las dificultades financieras, los investigadores continuaron aplicando su enfoque creativo, ajustándose continuamente a los obstáculos que surgían y preservando su dedicación hacia la calidad científica."
-- rubric: ["equivalencia de significado", "riqueza léxica", "variación de estilo"]
+- rubric: ["equivalencia semántica", "riqueza léxica", "variación de estilo"]
 
 EXAMPLE (for reference only):
 - audio_text: "\"Speaker 1\": He estado evaluando las implicaciones a largo plazo de esta decisión y me preocupa que no hayamos considerado todas las variables.\n\"Speaker 2\": ¿Qué aspectos específicos crees que hemos pasado por alto?\n\"Speaker 1\": Principalmente las consecuencias indirectas y el impacto en los stakeholders. Además, necesitamos analizar los escenarios alternativos.\n\"Speaker 2\": Tienes razón, deberíamos realizar un análisis más exhaustivo antes de proceder.\n\"Speaker 1\": Exactamente, la prudencia en este caso es fundamental para evitar complicaciones futuras."
 - reference_text: "\"Speaker 1\": Después de examinar las repercusiones futuras de esta elección, me inquieta que no hayamos analizado completamente todos los factores.\n\"Speaker 2\": ¿Cuáles son los elementos particulares que consideras que hemos ignorado?\n\"Speaker 1\": Especialmente los efectos secundarios y la influencia en los grupos de interés. También debemos estudiar las opciones alternativas.\n\"Speaker 2\": Concuerdo contigo, tendríamos que hacer una evaluación más detallada antes de avanzar.\n\"Speaker 1\": Precisamente, la cautela en esta situación es esencial para prevenir problemas posteriores."
-- rubric: ["equivalencia de significado", "fluidez conversacional", "riqueza léxica"]
+- rubric: ["equivalencia semántica", "riqueza léxica", "variación de estilo"]

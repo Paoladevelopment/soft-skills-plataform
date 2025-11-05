@@ -5,7 +5,7 @@ from .task import Task
 from .user import User
 from .pomodoro_preferences import PomodoroPreferences
 
-from .listening_core import GameSession, GameSessionConfig, GameRound, Challenge
+from .listening_core import GameSession, GameSessionConfig, GameRound, Challenge, RoundSubmission
 
 __all__ = [
     "LearningGoal",
@@ -17,5 +17,6 @@ __all__ = [
     "GameSession",
     "GameSessionConfig",
     "GameRound",
-    "Challenge"
+    "Challenge",
+    "RoundSubmission"
 ]

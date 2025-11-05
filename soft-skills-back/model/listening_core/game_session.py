@@ -49,6 +49,11 @@ class GameSession(GameSessionBase, table=True):
         sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"}
     )
     
+    submissions: List["RoundSubmission"] = Relationship(
+        back_populates="game_session",
+        sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"}
+    )
+    
     __table_args__ = (
         Index("ix_listening_game_session_status_created", "status", "created_at"),
     )

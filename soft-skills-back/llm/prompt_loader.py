@@ -128,3 +128,39 @@ class PromptLoader:
             normalized_text = normalized_text.replace(typo, correct)
         
         return normalized_text
+    
+    def load_evaluation_system_prompt(self, evaluation_type: str) -> str:
+        """
+        Load system prompt for evaluation tasks.
+        
+        Args:
+            evaluation_type: The evaluation type (e.g., "clarify").
+            
+        Returns:
+            System prompt as string.
+        """
+        system_path = self.prompts_dir / "evaluation" / evaluation_type / "system.txt"
+        
+        if not system_path.exists():
+            raise FileNotFoundError(f"Evaluation system prompt not found: {system_path}")
+        
+        with open(system_path, 'r', encoding='utf-8') as f:
+            return f.read().strip()
+    
+    def load_evaluation_user_prompt(self, evaluation_type: str) -> str:
+        """
+        Load user prompt for evaluation tasks.
+        
+        Args:
+            evaluation_type: The evaluation type (e.g., "clarify").
+            
+        Returns:
+            User prompt as string.
+        """
+        user_path = self.prompts_dir / "evaluation" / evaluation_type / "user.txt"
+        
+        if not user_path.exists():
+            raise FileNotFoundError(f"Evaluation user prompt not found: {user_path}")
+        
+        with open(user_path, 'r', encoding='utf-8') as f:
+            return f.read().strip()
