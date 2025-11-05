@@ -1,0 +1,66 @@
+from datetime import datetime
+from typing import Optional, Dict, Any
+from uuid import UUID
+
+from pydantic import BaseModel, field_serializer, field_validator
+
+from model.listening_core.game_round import GameRoundBase
+from schema.listening_core.game_session_config import GameSessionConfigRead
+from schema.listening_core.audio_effects import AudioEffects
+from enums.listening_game import PlayMode, PromptType
+from utils.serializers import serialize_datetime_without_microseconds
+from utils.listening_game_validators import normalize_audio_effects
+from utils.payloads_listening_game import (
+    CURRENT_ROUND_CONFIG_EXAMPLE,
+    CURRENT_ROUND_RESPONSE_EXAMPLE
+)
+
+
+class GameRoundReadSummary(GameRoundBase):
+    game_round_id: UUID
+
+    model_config = {"from_attributes": True}
+
+
+class GameRoundRead(GameRoundBase):
+    game_round_id: UUID
+    challenge_id: Optional[UUID] = None
+    prepared_at: Optional[datetime] = None
+    started_at: Optional[datetime] = None
+    ended_at: Optional[datetime] = None
+
+    @field_serializer("prepared_at", "started_at", "ended_at", when_used="json")
+    def serialize_datetime_fields(self, v: datetime | None) -> str | None:
+        return serialize_datetime_without_microseconds(v)
+
+    model_config = {"from_attributes": True}
+
+
+class CurrentRoundConfig(BaseModel):
+    """Minimal config schema for current round response."""
+    max_replays_per_round: int
+    audio_effects: Optional[AudioEffects] = None
+
+    model_config = {
+        "from_attributes": True,
+        "json_schema_extra": {"example": CURRENT_ROUND_CONFIG_EXAMPLE}
+    }
+
+    @field_validator("audio_effects")
+    @classmethod
+    def _validate_audio_effects(cls, v: AudioEffects | None) -> AudioEffects | None:
+        return normalize_audio_effects(v)
+
+
+class CurrentRoundResponse(BaseModel):
+    """Response schema for current round endpoint."""
+    audio_url: Optional[str] = None
+    config: CurrentRoundConfig
+    current_round: int
+    play_mode: Optional[PlayMode] = None
+    prompt_type: Optional[PromptType] = None
+    mode_payload: Optional[Dict[str, Any]] = None
+
+    model_config = {
+        "json_schema_extra": {"example": CURRENT_ROUND_RESPONSE_EXAMPLE}
+    }

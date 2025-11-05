@@ -1,17 +1,20 @@
-from typing import Tuple, Sequence
+from typing import Tuple, Sequence, Optional, Dict, Any
 from uuid import UUID
 from datetime import datetime, timezone
 
 from sqlmodel import Session, select, func
 from model.listening_core.game_session import GameSession
 from model.listening_core.game_session_config import GameSessionConfig
+from model.listening_core.game_round import GameRound
 from schema.listening_core.game_session import GameSessionCreate, GameSessionSummary
-from enums.listening_game import GameStatus
-from utils.errors import APIException, Missing, BadRequest, Forbidden, handle_db_error
+from enums.listening_game import GameStatus, PlayMode
+from utils.errors import APIException, Missing, BadRequest, Forbidden, Conflict, Locked, handle_db_error
+from service.listening_core.game_round import GameRoundService
 
 
-class GameService:
-    """Service for managing single-player listening game sessions."""
+class GameSessionService:
+    def __init__(self):
+        self.game_round_service = GameRoundService()
 
     def get_game_session(self, session_id: UUID, session: Session) -> GameSession:
         """Get a game session by ID."""
@@ -72,7 +75,7 @@ class GameService:
             )
             
             game_session_config = GameSessionConfig(
-                game_session_id=new_game_session.id,
+                game_session_id=new_game_session.game_session_id,
                 **cfg_payload
             )
             session.add(game_session_config)
@@ -123,7 +126,6 @@ class GameService:
                 game_session.name = name
             
             if new_status is None or new_status == game_session.status:
-                session.add(game_session)
                 session.commit()
                 session.refresh(game_session)
 
@@ -132,9 +134,10 @@ class GameService:
             current_status = game_session.status
 
             ALLOWED_STATUS_TRANSITIONS = {
-                GameStatus.pending: {GameStatus.active, GameStatus.cancelled},
-                GameStatus.active: {GameStatus.finished, GameStatus.cancelled},
-                GameStatus.finished: set(),
+                GameStatus.pending: {GameStatus.in_progress, GameStatus.cancelled},
+                GameStatus.in_progress: {GameStatus.paused, GameStatus.completed, GameStatus.cancelled},
+                GameStatus.paused: {GameStatus.in_progress, GameStatus.cancelled},
+                GameStatus.completed: set(),
                 GameStatus.cancelled: set()
             }
 
@@ -146,8 +149,8 @@ class GameService:
             
             # Update timestamps based on status
             TIMESTAMP_FIELDS_BY_STATUS = {
-                GameStatus.active: "started_at",
-                GameStatus.finished: "finished_at",
+                GameStatus.in_progress: "started_at",
+                GameStatus.completed: "finished_at",
                 GameStatus.cancelled: "finished_at"
             }
 
@@ -155,7 +158,6 @@ class GameService:
             if timestamp_field:
                 setattr(game_session, timestamp_field, datetime.now(timezone.utc))
 
-            session.add(game_session)
             session.commit()
             session.refresh(game_session)
             
@@ -187,7 +189,6 @@ class GameService:
             for field, value in config_updates.items():
                 setattr(config, field, value)
             
-            session.add(config)
             session.commit()
             session.refresh(config)
             
@@ -222,7 +223,7 @@ class GameService:
     def _count_game_sessions(self, user_id: UUID, session: Session) -> int:
         """Count total game sessions for a user."""
         return session.scalar(
-            select(func.count(GameSession.id))
+            select(func.count(GameSession.game_session_id))
             .where(GameSession.user_id == user_id)
         )
     
@@ -269,7 +270,7 @@ class GameService:
             
             game_session_summaries = [
                 GameSessionSummary(
-                    id=gs.id,
+                    id=gs.game_session_id,
                     name=gs.name,
                     status=gs.status,
                     current_round=gs.current_round,
@@ -285,3 +286,134 @@ class GameService:
             raise
         except Exception as err:
             handle_db_error(err, "list_game_sessions", error_type="query")
+    
+    def start_game_session(
+        self, 
+        session_id: UUID, 
+        user_id: UUID, 
+        session: Session
+    ) -> Tuple[GameSession, GameRound, bool]:
+        """
+        Activate a game session and ensure round 1 exists in queued state.
+        Idempotent: returns current state if already active.
+        
+        Returns: (game_session, round_1, is_first_activation)
+        Raises: 404 (not found), 403 (forbidden), 409 (terminal state).
+        """
+        try:
+            game_session = self.get_game_session(session_id, session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            if game_session.status in (GameStatus.completed, GameStatus.cancelled):
+                raise Conflict(f"Cannot start a session that is {game_session.status}")
+            
+            if game_session.status == GameStatus.in_progress:
+                round_1 = self.game_round_service.get_or_create_round_queued(game_session, 1, session)
+                
+                return game_session, round_1, False
+            
+            game_session.status = GameStatus.in_progress
+            game_session.started_at = datetime.now(timezone.utc)
+            game_session.current_round = 1
+            
+            round_1 = self.game_round_service.get_or_create_round_queued(game_session, 1, session)
+            
+            session.commit()
+            
+            return game_session, round_1, True
+            
+        except APIException as api_error:
+            raise api_error
+
+        except Exception as err:
+            session.rollback()
+            handle_db_error(err, "start_game_session", error_type="commit")
+
+    def get_current_round(
+        self,
+        game_session_id: UUID,
+        user_id: UUID,
+        session: Session
+    ) -> Tuple[GameRound, Optional[Any], GameSessionConfig]:
+        """
+        Get and serve the current round of a game session.
+        """
+        try:
+            game_session = self.get_game_session(game_session_id, session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            if game_session.status == GameStatus.paused:
+                raise Locked("Game session is paused")
+            
+            if game_session.status in (GameStatus.completed, GameStatus.cancelled):
+                raise Conflict(f"Cannot get current round for a session that is {game_session.status}")
+            
+            if game_session.status != GameStatus.in_progress:
+                raise BadRequest("Game session must be in progress to get current round")
+            
+            config = self.get_config(game_session_id, session)
+            
+            game_round, challenge = self.game_round_service.get_and_serve_current_round(
+                game_session, config, session
+            )
+            
+            return game_round, challenge, config
+            
+        except APIException:
+            raise
+        except Exception as err:
+            session.rollback()
+            handle_db_error(err, "get_current_round", error_type="query")
+
+    def _filter_challenge_metadata_by_play_mode(
+        self,
+        challenge_metadata: Dict[str, Any],
+        play_mode: Optional[PlayMode]
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Filter challenge metadata based on play_mode.
+        
+        - focus: returns 'question', 'answer_choices', and 'instruction'
+        - cloze: returns 'text_with_blanks' and 'instruction'
+        - other modes (paraphrase, summarize, clarify): returns 'instruction'
+        """
+        if not play_mode:
+            return None
+        
+        instruction_map = {
+            PlayMode.focus: "Listen to the audio and select the correct answer to the question.",
+            PlayMode.cloze: "Listen to the audio and fill in the blanks in the text.",
+            PlayMode.paraphrase: "Paraphrase the audio content in your own words.",
+            PlayMode.summarize: "Summarize the main points of the audio content.",
+            PlayMode.clarify: "Ask clarification questions about the audio content to better understand it."
+        }
+        
+        instruction = instruction_map.get(play_mode)
+        
+        if play_mode == PlayMode.focus:
+            if not challenge_metadata:
+                return None
+            filtered = {}
+            if "question" in challenge_metadata:
+                filtered["question"] = challenge_metadata["question"]
+            if "answer_choices" in challenge_metadata:
+                filtered["answer_choices"] = challenge_metadata["answer_choices"]
+            if instruction:
+                filtered["instruction"] = instruction
+            return filtered if filtered else None
+        
+        elif play_mode == PlayMode.cloze:
+            if not challenge_metadata:
+                return None
+            filtered = {}
+            if "text_with_blanks" in challenge_metadata:
+                filtered["text_with_blanks"] = challenge_metadata["text_with_blanks"]
+            if instruction:
+                filtered["instruction"] = instruction
+            return filtered if filtered else None
+        
+        # For other modes (paraphrase, summarize, clarify)
+        if instruction:
+            return {"instruction": instruction}
+        
+        return None

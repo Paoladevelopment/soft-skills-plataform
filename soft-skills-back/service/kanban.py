@@ -194,7 +194,6 @@ class KanbanService:
             }
             
         except APIException as api_error:
-            session.rollback()
             raise api_error
         
         except Exception as err:
@@ -465,7 +464,6 @@ class KanbanService:
             }
             
         except APIException as api_error:
-            session.rollback()
             raise api_error
         
         except Exception as err:

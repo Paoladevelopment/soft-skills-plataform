@@ -2,7 +2,7 @@ from uuid import UUID, uuid4
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import Index, UniqueConstraint
+from sqlalchemy import Index, UniqueConstraint, func
 from sqlmodel import SQLModel, Field, TIMESTAMP, Relationship
 
 from enums.listening_game import GameRoundStatus, PlayMode, PromptType

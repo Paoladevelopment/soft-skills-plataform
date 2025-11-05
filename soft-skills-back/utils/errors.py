@@ -34,10 +34,20 @@ class Duplicate(APIException):
     status_code = status.HTTP_409_CONFLICT
     error_title = "Conflict"
 
+class Conflict(APIException):
+    """Conflict / State Conflict"""
+    status_code = status.HTTP_409_CONFLICT
+    error_title = "Conflict"
+
 class Forbidden(APIException):
     """Unauthorized Access"""
     status_code = status.HTTP_403_FORBIDDEN
     error_title = "Forbidden"
+
+class Locked(APIException):
+    """Resource Locked"""
+    status_code = status.HTTP_423_LOCKED
+    error_title = "Locked"
 
 class BadRequest(APIException):
     """Bad Request / Invalid Input"""

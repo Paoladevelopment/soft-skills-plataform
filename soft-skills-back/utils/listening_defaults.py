@@ -1,4 +1,4 @@
-from enums.listening_game import PlayMode, Difficulty, AudioEffects
+from enums.listening_game import PlayMode, Difficulty, AudioEffects, AudioLength
 from typing import TypeAlias
 
 ModeTimeLimits: TypeAlias = dict[PlayMode, int]
@@ -63,3 +63,14 @@ DEFAULT_AUDIO_EFFECTS: DifficultyEffectsMap = {
     Difficulty.intermediate: INTERMEDIATE_EFFECTS,
     Difficulty.hard: HARD_EFFECTS,
 }
+
+DEFAULT_AUDIO_LENGTH_BY_DIFFICULTY: dict[Difficulty, AudioLength] = {
+    Difficulty.easy: AudioLength.short,
+    Difficulty.intermediate: AudioLength.medium,
+    Difficulty.hard: AudioLength.long,
+}
+
+
+def get_audio_length_for_difficulty(difficulty: Difficulty) -> AudioLength:
+    """Get audio length recommendation based on difficulty level."""
+    return DEFAULT_AUDIO_LENGTH_BY_DIFFICULTY.get(difficulty, AudioLength.medium)

@@ -27,6 +27,8 @@ class GameSessionConfigBase(SQLModel):
     max_replays_per_round: int = Field(default=2)
 
     difficulty: Difficulty = Field(default=Difficulty.easy)
+    
+    reuse_existing_challenges: bool = Field(default=False)
 
     response_time_limits: dict[str, int] = Field(
         default_factory=lambda: serialize_response_time_limits(
