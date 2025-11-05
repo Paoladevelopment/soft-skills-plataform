@@ -21,6 +21,7 @@ import LearningGoalDetail from '../features/learn-to-learn/pages/LearningGoalDet
 import ObjectiveDetail from '../features/learn-to-learn/pages/ObjectiveDetail'
 import ActiveListeningHome from '../features/active-listening/pages/Home'
 import GameSessions from '../features/active-listening/pages/GameSessions'
+import GamePlay from '../features/active-listening/pages/GamePlay'
 
 
 export const RoutesConfiguration = () => {
@@ -74,6 +75,7 @@ export const RoutesConfiguration = () => {
           <Route path='/active-listening'>
             <Route index element={<ActiveListeningHome/>} />
             <Route path='game-sessions' element={<GameSessions/>} />
+            <Route path='session/:sessionId/play' element={<GamePlay/>} />
           </Route>
         </Route>
         

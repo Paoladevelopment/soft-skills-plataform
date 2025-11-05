@@ -1,5 +1,6 @@
 import { Box, Button, Card, Chip, IconButton, Typography } from '@mui/material'
 import { Settings, PlayArrow, Delete } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 import { GameSessionListItem, GameSessionStatus } from '../types/game-sessions/gameSession.models'
 import { getStatusColor, getStatusLabel } from '../utils/gameSessionsUtils'
 
@@ -11,8 +12,10 @@ interface GameSessionCardProps {
 }
 
 const GameSessionCard = ({ session, onPlay, onSettings, onDelete }: GameSessionCardProps) => {
+  const navigate = useNavigate()
   const isSessionEnded = session.status === GameSessionStatus.COMPLETED || session.status === GameSessionStatus.CANCELLED
   const isPaused = session.status === GameSessionStatus.PAUSED
+
 
   return (
     <Card
@@ -51,7 +54,7 @@ const GameSessionCard = ({ session, onPlay, onSettings, onDelete }: GameSessionC
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {!isSessionEnded && (
           <IconButton
-            onClick={() => onSettings?.(session.id)}
+            onClick={() => onSettings?.(session.gameSessionId)}
             sx={{
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
               color: 'white',
@@ -65,7 +68,7 @@ const GameSessionCard = ({ session, onPlay, onSettings, onDelete }: GameSessionC
         )}
 
         <IconButton
-          onClick={() => onDelete?.(session.id)}
+          onClick={() => onDelete?.(session.gameSessionId)}
           sx={{
             backgroundColor: 'rgba(255, 0, 0, 0.5)',
             color: 'white',
@@ -80,7 +83,10 @@ const GameSessionCard = ({ session, onPlay, onSettings, onDelete }: GameSessionC
         {!isSessionEnded && (
           <Button
             variant="contained"
-            onClick={() => onPlay?.(session.id)}
+            onClick={() => {
+              navigate(`/active-listening/session/${session.gameSessionId}/play`)
+              onPlay?.(session.gameSessionId)
+            }}
             startIcon={<PlayArrow />}
             sx={{
               backgroundColor: 'rgba(0, 0, 0, 0.5)',

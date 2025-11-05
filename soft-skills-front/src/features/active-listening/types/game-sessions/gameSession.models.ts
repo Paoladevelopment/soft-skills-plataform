@@ -64,7 +64,7 @@ export interface GameSessionConfig {
 }
 
 export interface BaseGameSession {
-  id: string
+  gameSessionId: string
   name: string
   status: GameSessionStatus
   createdAt: string
