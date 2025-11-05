@@ -11,7 +11,7 @@ from schema.listening_core.game_session import (
     GameSessionStartResponse,
 )
 from schema.listening_core.game_session_config import GameSessionConfigRead, GameSessionConfigUpdate
-from schema.listening_core.game_round import GameRoundReadSummary
+from schema.listening_core.game_round import GameRoundReadSummary, CurrentRoundResponse, CurrentRoundConfig
 from schema.token import TokenData
 from schema.base import BaseResponse
 from service.auth_service import decode_jwt_token
@@ -219,6 +219,60 @@ def delete_game_session(
     try:
         result = game_service.delete_game_session(session_id, token_data.user_id, session)
         return result
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.get(
+    "/{session_id}/rounds/current",
+    summary="Get the current round of a game session",
+    response_model=BaseResponse[CurrentRoundResponse],
+)
+def get_current_round(
+    session_id: UUID,
+    background_tasks: BackgroundTasks,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        game_round, challenge, config = game_service.get_current_round(
+            game_session_id=session_id, user_id=token_data.user_id, session=session
+        )
+        
+        current_round_number = game_round.round_number
+        next_rounds = []
+        if current_round_number + 1 <= config.total_rounds:
+            next_rounds.append(current_round_number + 1)
+        if current_round_number + 2 <= config.total_rounds:
+            next_rounds.append(current_round_number + 2)
+        
+        if next_rounds:
+            background_tasks.add_task(safe_prefetch_rounds, session_id, next_rounds)
+        
+        config_minimal = CurrentRoundConfig.model_validate(config)
+        audio_url = challenge.audio_url if challenge else None
+        
+        filtered_metadata = None
+        if challenge and game_round.play_mode:
+            filtered_metadata = game_service._filter_challenge_metadata_by_play_mode(
+                challenge.challenge_metadata or {},
+                game_round.play_mode
+            )
+        
+        response_data = CurrentRoundResponse(
+            audio_url=audio_url,
+            config=config_minimal,
+            current_round=current_round_number,
+            play_mode=game_round.play_mode,
+            prompt_type=game_round.prompt_type,
+            mode_payload=filtered_metadata
+        )
+        
+        return BaseResponse(
+            message="Current round retrieved successfully",
+            data=response_data
+        )
     
     except APIException as exc:
         raise_http_exception(exc)

@@ -118,7 +118,6 @@ GAME_SESSION_CONFIG_UPDATE_EXAMPLE = {
     "selected_modes": ["focus", "cloze", "paraphrase", "summarize", "clarify"]
 }
 
-# Challenge payload examples
 CHALLENGE_CREATE_EXAMPLE = {
     "play_mode": "focus",
     "prompt_type": "descriptive",
@@ -139,4 +138,42 @@ CHALLENGE_READ_EXAMPLE = {
 
 CHALLENGE_AUDIO_RESPONSE_EXAMPLE = {
     "audio_url": "https://cdn.example.com/challenges-audio/123e4567-e89b-12d3-a456-426614174000.mp3"
+}
+
+CURRENT_ROUND_CONFIG_EXAMPLE = {
+    "max_replays_per_round": 2,
+    "audio_effects": {
+        "reverb": 0.3,
+        "echo": 0.15,
+        "background_noise": 0.1,
+        "speed_variation": 0.15
+    }
+}
+
+CURRENT_ROUND_RESPONSE_EXAMPLE = {
+    "audio_url": "https://storage.supabase.co/audio/challenge_001.mp3",
+    "config": CURRENT_ROUND_CONFIG_EXAMPLE,
+    "current_round": 1,
+    "play_mode": "focus",
+    "prompt_type": "descriptive",
+    "mode_payload": {
+        "question": "What is the main topic discussed in the audio?",
+        "answer_choices": [
+            "Sustainable living practices",
+            "Environmental policies",
+            "Renewable energy sources",
+            "Climate change effects"
+        ],
+        "instruction": "Listen to the audio and select the correct answer to the question."
+    }
+}
+
+CURRENT_ROUND_RESPONSE_PARAPHRASE_EXAMPLE = {
+    "audio_url": "https://storage.supabase.co/audio/challenge_002.mp3",
+    "config": CURRENT_ROUND_CONFIG_EXAMPLE,
+    "play_mode": "paraphrase",
+    "prompt_type": "instructional",
+    "mode_payload": {
+        "instruction": "Paraphrase the audio content in your own words."
+    }
 }

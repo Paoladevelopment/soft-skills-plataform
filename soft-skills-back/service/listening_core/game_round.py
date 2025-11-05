@@ -1,4 +1,4 @@
-from typing import Tuple, Sequence
+from typing import Tuple, Sequence, Optional
 from uuid import UUID
 from datetime import datetime, timezone
 import random
@@ -290,3 +290,38 @@ class GameRoundService:
             return challenge
         except Exception as err:
             raise InternalError(f"Failed to generate challenge: {str(err)}")
+
+    def mark_round_as_served(self, game_round: GameRound, db_session: Session) -> None:
+        """Mark a round as served. Idempotent."""
+        if game_round.status != GameRoundStatus.served:
+            game_round.status = GameRoundStatus.served
+
+    def get_and_serve_current_round(
+        self,
+        game_session: GameSession,
+        config: GameSessionConfig,
+        db_session: Session
+    ) -> Tuple[GameRound, Optional[Challenge]]:
+        """
+        Get and serve the current round of a game session.
+        """
+        current_round_number = game_session.current_round
+        
+        game_round = self.prepare_or_get_round(
+            game_session.game_session_id,
+            current_round_number,
+            game_session,
+            config,
+            db_session=db_session
+        )
+        
+        if game_round.status != GameRoundStatus.served:
+            self.mark_round_as_served(game_round, db_session)
+            db_session.commit()
+            db_session.refresh(game_round)
+        
+        challenge = None
+        if game_round.challenge_id:
+            challenge = self.challenge_service.get_challenge(game_round.challenge_id, db_session)
+        
+        return game_round, challenge
