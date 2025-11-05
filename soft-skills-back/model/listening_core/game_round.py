@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import Index, UniqueConstraint, func
 from sqlmodel import SQLModel, Field, TIMESTAMP, Relationship
@@ -45,6 +45,10 @@ class GameRound(GameRoundBase, table=True):
     
     game_session: "GameSession" = Relationship(back_populates="rounds")
     challenge: Optional["Challenge"] = Relationship(back_populates="rounds")
+    submissions: List["RoundSubmission"] = Relationship(
+        back_populates="game_round",
+        sa_relationship_kwargs={"cascade": "all, delete"}
+    )
 
     __table_args__ = (
         UniqueConstraint("game_session_id", "round_number", name="uq_round_session_number"),

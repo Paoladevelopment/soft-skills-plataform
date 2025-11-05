@@ -76,8 +76,8 @@ RULES AND VALIDATION
   - Must show clear paraphrasing skills with varied vocabulary and sentence structures.
 
 - rubric:
-  - Must contain 2-3 string elements describing how the paraphrase can be evaluated.
-  - Example: ["semantic equivalence", "style variation", "grammar clarity"]
+  - Must ALWAYS be exactly this array (do not modify wording or order):
+    ["semantic equivalence", "style variation", "grammar clarity"]
 
 Avoid:
 - Introducing new facts or altering meaning.
@@ -89,9 +89,9 @@ Avoid:
 EXAMPLE (for reference only):
 - audio_text: "Durante el proceso de preparación, los estudiantes organizaron sus materiales y revisaron las instrucciones cuidadosamente. Luego, comenzaron a trabajar en grupos pequeños, compartiendo ideas y colaborando efectivamente."
 - reference_text: "Los alumnos se prepararon meticulosamente, distribuyendo sus recursos y estudiando las directrices con atención. Después, iniciaron su labor en equipos reducidos, intercambiando conceptos y cooperando de manera eficiente."
-- rubric: ["equivalencia de significado", "variación de estilo", "claridad gramatical"]
+- rubric: ["equivalencia semántica", "variación de estilo", "claridad gramatical"]
 
 EXAMPLE (for reference only):
 - audio_text: "\"Speaker 1\": He estado analizando los datos del proyecto y creo que necesitamos cambiar nuestra estrategia.\n\"Speaker 2\": ¿Qué aspectos específicos te preocupan más?\n\"Speaker 1\": Principalmente el presupuesto y los plazos. Creo que deberíamos reconsiderar nuestras prioridades.\n\"Speaker 2\": Tienes razón, vamos a revisar todo el plan esta semana."
 - reference_text: "\"Speaker 1\": Después de examinar la información del proyecto, considero que debemos modificar nuestro enfoque.\n\"Speaker 2\": ¿Cuáles son los puntos que más te inquietan?\n\"Speaker 1\": Sobre todo los recursos económicos y los tiempos. Pienso que tendríamos que reevaluar nuestros objetivos.\n\"Speaker 2\": Estoy de acuerdo, necesitamos actualizar la estrategia completa esta semana."
-- rubric: ["equivalencia de significado", "fluidez conversacional", "variación de estilo"]
+- rubric: ["equivalencia semántica", "variación de estilo", "claridad gramatical"]

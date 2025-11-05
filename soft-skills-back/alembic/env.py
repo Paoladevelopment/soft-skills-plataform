@@ -11,7 +11,8 @@ from model import (
     GameSession,
     GameSessionConfig,
     GameRound,
-    Challenge
+    Challenge,
+    RoundSubmission
 )
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel

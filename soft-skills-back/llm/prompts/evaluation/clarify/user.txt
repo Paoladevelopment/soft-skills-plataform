@@ -1,0 +1,14 @@
+Reference clarifying questions (examples, not exhaustive):
+{reference_questions}
+
+Student questions to grade:
+{player_questions}
+
+Instructions:
+- Judge each student question independently.
+- Prefer semantic equivalence, not verbatim matching.
+- If a student question is clearly close to a reference, set best_ref_index accordingly.
+- Otherwise use -1.
+- Enforce the 0–2 rubric strictly.
+- Return only the JSON specified.
+

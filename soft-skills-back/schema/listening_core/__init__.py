@@ -4,7 +4,10 @@ from .game_session import (
     GameSessionDetail, 
     GameSessionUpdate,
     GameSessionResponse, 
-    GameSessionPaginatedResponse
+    GameSessionPaginatedResponse,
+    RoundAdvanceResponse,
+    SessionCompletedResponse,
+    AdvanceNextRoundResponse
 )
 from .game_session_config import (
     GameSessionConfigCreate, 
@@ -16,6 +19,13 @@ from .challenge import (
     ChallengeRead,
     ChallengeResponse
 )
+from .round_submission import (
+    RoundSubmissionCreate,
+    RoundSubmissionRead,
+    RoundSubmissionSummary,
+    AttemptSubmissionRequest,
+    AttemptSubmissionResponse
+)
 
 __all__ = [
     "GameSessionCreate", 
@@ -24,10 +34,18 @@ __all__ = [
     "GameSessionUpdate",
     "GameSessionResponse", 
     "GameSessionPaginatedResponse",
+    "RoundAdvanceResponse",
+    "SessionCompletedResponse",
+    "AdvanceNextRoundResponse",
     "GameSessionConfigCreate", 
     "GameSessionConfigRead", 
     "GameSessionConfigUpdate",
     "GenerateChallenge",
     "ChallengeRead",
-    "ChallengeResponse"
+    "ChallengeResponse",
+    "RoundSubmissionCreate",
+    "RoundSubmissionRead",
+    "RoundSubmissionSummary",
+    "AttemptSubmissionRequest",
+    "AttemptSubmissionResponse"
 ]

@@ -99,7 +99,7 @@ GAME_SESSION_CONFIG_READ_EXAMPLE = {
 }
 
 GAME_SESSION_SUMMARY_EXAMPLE = {
-    "id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
+    "game_session_id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
     "name": "Morning Listening Practice",
     "status": "finished",
     "current_round": 5,
@@ -151,11 +151,15 @@ CURRENT_ROUND_CONFIG_EXAMPLE = {
 }
 
 CURRENT_ROUND_RESPONSE_EXAMPLE = {
+    "round_id": "550e8400-e29b-41d4-a716-446655440000",
     "audio_url": "https://storage.supabase.co/audio/challenge_001.mp3",
     "config": CURRENT_ROUND_CONFIG_EXAMPLE,
     "current_round": 1,
+    "status": "served",
     "play_mode": "focus",
     "prompt_type": "descriptive",
+    "score": None,
+    "max_score": 10.0,
     "mode_payload": {
         "question": "What is the main topic discussed in the audio?",
         "answer_choices": [
@@ -169,11 +173,75 @@ CURRENT_ROUND_RESPONSE_EXAMPLE = {
 }
 
 CURRENT_ROUND_RESPONSE_PARAPHRASE_EXAMPLE = {
+    "round_id": "550e8400-e29b-41d4-a716-446655440001",
     "audio_url": "https://storage.supabase.co/audio/challenge_002.mp3",
     "config": CURRENT_ROUND_CONFIG_EXAMPLE,
+    "current_round": 1,
+    "status": "served",
     "play_mode": "paraphrase",
     "prompt_type": "instructional",
+    "score": None,
+    "max_score": 10.0,
     "mode_payload": {
         "instruction": "Paraphrase the audio content in your own words."
     }
+}
+
+# Answer payload examples for each play mode
+ATTEMPT_SUBMISSION_PARAPHRASE_EXAMPLE = {
+    "answer_payload": {
+        "paraphrase": "The story discusses how ancient civilizations developed advanced agricultural techniques that allowed them to sustain large populations and build complex societies."
+    },
+    "idempotency_key": "unique-key-123",
+    "client_elapsed_ms": 45000
+}
+
+ATTEMPT_SUBMISSION_CLARIFY_EXAMPLE = {
+    "answer_payload": {
+        "questions": ["¿Cuál es el regalo al que hacen referencia?", "¿Cuándo ocurre el evento?"]
+    },
+    "idempotency_key": "unique-key-123",
+    "client_elapsed_ms": 45000
+}
+
+ATTEMPT_SUBMISSION_SUMMARIZE_EXAMPLE = {
+    "answer_payload": {
+        "summary": "The main points of the audio discuss how ancient civilizations developed advanced agricultural techniques that allowed them to sustain large populations and build complex societies."
+    },
+    "idempotency_key": "unique-key-123",
+    "client_elapsed_ms": 45000
+}
+
+ATTEMPT_SUBMISSION_FOCUS_EXAMPLE = {
+    "answer_payload": {
+        "selected_index": 2
+    },
+    "idempotency_key": "unique-key-123",
+    "client_elapsed_ms": 45000
+}
+
+ATTEMPT_SUBMISSION_CLOZE_EXAMPLE = {
+    "answer_payload": {
+        "blanks": ["agriculture", "civilizations", "populations"]
+    },
+    "idempotency_key": "unique-key-123",
+    "client_elapsed_ms": 45000
+}
+
+ATTEMPT_SUBMISSION_RESPONSE_EXAMPLE = {
+    "round_number": 1,
+    "is_correct": True,
+    "score": 8.5,
+    "feedback_short": "Excellent paraphrase!",
+    "client_elapsed_ms": 45000,
+    "can_advance": True
+}
+
+ROUND_ADVANCE_RESPONSE_EXAMPLE = {
+    "current_round": 2
+}
+
+SESSION_COMPLETED_RESPONSE_EXAMPLE = {
+    "session_completed": True,
+    "final_score": 85.5
 }

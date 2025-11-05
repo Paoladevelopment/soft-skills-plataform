@@ -9,9 +9,13 @@ from schema.listening_core.game_session import (
     GameSessionResponse, 
     GameSessionPaginatedResponse,
     GameSessionStartResponse,
+    AdvanceNextRoundResponse,
+    RoundAdvanceResponse,
+    SessionCompletedResponse,
 )
 from schema.listening_core.game_session_config import GameSessionConfigRead, GameSessionConfigUpdate
 from schema.listening_core.game_round import GameRoundReadSummary, CurrentRoundResponse, CurrentRoundConfig
+from schema.listening_core.round_submission import AttemptSubmissionRequest, AttemptSubmissionResponse
 from schema.token import TokenData
 from schema.base import BaseResponse
 from service.auth_service import decode_jwt_token
@@ -261,17 +265,91 @@ def get_current_round(
             )
         
         response_data = CurrentRoundResponse(
+            round_id=game_round.game_round_id,
             audio_url=audio_url,
             config=config_minimal,
             current_round=current_round_number,
+            status=game_round.status,
             play_mode=game_round.play_mode,
             prompt_type=game_round.prompt_type,
+            score=game_round.score,
+            max_score=game_round.max_score,
             mode_payload=filtered_metadata
         )
         
         return BaseResponse(
             message="Current round retrieved successfully",
             data=response_data
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.post(
+    "/{session_id}/rounds/next",
+    summary="Advance to next round (strict: only after attempted)",
+    response_model=BaseResponse[AdvanceNextRoundResponse],
+    status_code=status.HTTP_200_OK
+)
+def advance_to_next_round(
+    session_id: UUID,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        response_data = game_service.advance_to_next_round(
+            session_id=session_id,
+            user_id=token_data.user_id,
+            db_session=session
+        )
+        
+        if response_data.get("session_completed"):
+            validated_data = SessionCompletedResponse.model_validate(response_data)
+            message = "Session completed"
+        else:
+            validated_data = RoundAdvanceResponse.model_validate(response_data)
+            message = "Advanced"
+        
+        return BaseResponse(
+            message=message,
+            data=validated_data
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.post(
+    "/{session_id}/rounds/{round_number}/attempt",
+    summary="Submit an attempt for a game round",
+    response_model=BaseResponse[AttemptSubmissionResponse],
+    status_code=status.HTTP_200_OK
+)
+def submit_round_attempt(
+    session_id: UUID,
+    round_number: int,
+    attempt_request: AttemptSubmissionRequest,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    """
+    Submit an attempt for the specified round.
+    """
+    try:
+        response = game_service.submit_round_attempt(
+            session_id=session_id,
+            round_number=round_number,
+            answer_payload=attempt_request.answer_payload,
+            idempotency_key=attempt_request.idempotency_key,
+            user_id=token_data.user_id,
+            client_elapsed_ms=attempt_request.client_elapsed_ms,
+            session=session
+        )
+        
+        return BaseResponse(
+            message="Attempt submitted successfully",
+            data=response
         )
     
     except APIException as exc:

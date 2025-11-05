@@ -1,0 +1,13 @@
+Reference summary (for comparison):
+{reference_summary}
+
+Student summary to grade:
+{player_summary}
+
+Instructions:
+- Compare the student summary to the reference summary by semantic meaning, not word overlap.
+- Evaluate based on how well the student captured the main idea and key supporting details.
+- Consider clarity, conciseness, and whether it's in the student's own words.
+- Enforce the 0–2 rubric strictly.
+- Return only the JSON specified.
+
