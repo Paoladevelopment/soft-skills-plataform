@@ -7,7 +7,8 @@ import {
   UpdateGameSessionRequest, 
   UpdateGameSessionConfigRequest, 
   CreateGameSessionResponse, 
-  UpdateGameSessionResponse 
+  UpdateGameSessionResponse,
+  StartGameSessionResponse
 } from '../types/game-sessions/gameSession.api'
 
 export async function getUserGameSessions(
@@ -53,6 +54,15 @@ export async function updateGameSessionConfig(id: string, sessionData: UpdateGam
 export async function deleteGameSession(id: string): Promise<{ message: string }> {
   const response = await fetchWithAuth(api.gameSessions.delete(id), {
     method: 'DELETE',
+  })
+  
+  return response
+}
+
+export async function startGameSession(id: string): Promise<StartGameSessionResponse> {
+  const url = api.gameSessions.start(id)
+  const response = await fetchWithAuth(url, {
+    method: 'POST',
   })
   
   return response

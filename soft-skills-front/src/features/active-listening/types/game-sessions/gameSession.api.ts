@@ -56,3 +56,8 @@ export interface UpdateGameSessionResponse {
   data: GameSession
 }
 
+export interface StartGameSessionResponse {
+  message: string
+  data: GameSession
+}
+
