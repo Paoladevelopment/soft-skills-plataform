@@ -18,7 +18,6 @@ export enum PlayMode {
   PARAPHRASE = 'paraphrase',
   SUMMARIZE = 'summarize',
   CLARIFY = 'clarify',
-  MIXED = 'mixed',
 }
 
 export enum PromptType {
@@ -64,7 +63,7 @@ export interface GameSessionConfig {
 }
 
 export interface BaseGameSession {
-  id: string
+  gameSessionId: string
   name: string
   status: GameSessionStatus
   createdAt: string

@@ -72,11 +72,11 @@ const GameSessions = () => {
   }
 
   const handlePlaySession = (sessionId: string) => {
-    console.log('Play session:', sessionId)
+    navigate(`/active-listening/session/${sessionId}/play`)
   }
 
   const handleSettingsSession = async (sessionId: string) => {
-    const session = gameSessions.find((s) => s.id === sessionId)
+    const session = gameSessions.find((s) => s.gameSessionId === sessionId)
     if (!session) return
 
     setSelectedSession(session)
@@ -106,7 +106,7 @@ const GameSessions = () => {
   }
 
   const handleOpenDeleteModal = (sessionId: string) => {
-    const session = gameSessions.find((s) => s.id === sessionId)
+    const session = gameSessions.find((s) => s.gameSessionId === sessionId)
     if (session) {
       setSessionToDelete(session)
       setDeleteModalOpen(true)
@@ -122,7 +122,7 @@ const GameSessions = () => {
     setDeleteModalOpen(false)
 
     if (!sessionToDelete) return
-    await deleteGameSession(sessionToDelete.id)
+    await deleteGameSession(sessionToDelete.gameSessionId)
 
     setSessionToDelete(null)
   }
@@ -235,7 +235,7 @@ const GameSessions = () => {
         <Stack spacing={2}>
           {gameSessions.map((session) => (
             <GameSessionCard
-              key={session.id}
+              key={session.gameSessionId}
               session={session}
               onPlay={handlePlaySession}
               onSettings={handleSettingsSession}
@@ -260,7 +260,7 @@ const GameSessions = () => {
             setSettingsModalOpen(false)
             setIsLoadingSessionData(false)
           }}
-          sessionId={selectedSession.id}
+          sessionId={selectedSession.gameSessionId}
           sessionName={selectedSession.name}
           isLoading={isLoadingSessionData}
         />

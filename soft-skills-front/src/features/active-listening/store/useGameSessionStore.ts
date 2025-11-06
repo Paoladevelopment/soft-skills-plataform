@@ -103,7 +103,7 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           useToastStore.getState().showToast(message || 'Game session created successfully!', 'success')
 
           const newSessionListItem: GameSessionListItem = {
-            id: data.id,
+            gameSessionId: data.gameSessionId,
             name: data.name,
             status: data.status,
             createdAt: data.createdAt,
@@ -138,7 +138,7 @@ export const useGameSessionStore = create<IGameSessionStore>()(
 
           get().fetchGameSessions()
           
-          if (get().selectedGameSession?.id === id) {
+          if (get().selectedGameSession?.gameSessionId === id) {
             await get().getGameSessionById(id)
           }
         } catch (err: unknown) {
@@ -163,7 +163,7 @@ export const useGameSessionStore = create<IGameSessionStore>()(
 
           get().fetchGameSessions()
           
-          if (get().selectedGameSession?.id === id) {
+          if (get().selectedGameSession?.gameSessionId === id) {
             await get().getGameSessionById(id)
           }
         } catch (err: unknown) {
@@ -182,7 +182,7 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           const { message } = await deleteGameSession(id)
 
           set((state) => {
-            state.gameSessions = state.gameSessions.filter(s => s.id !== id)
+            state.gameSessions = state.gameSessions.filter(s => s.gameSessionId !== id)
 
             const { offset, limit, total } = state.gameSessionsPagination
             const remainingItems = total - 1

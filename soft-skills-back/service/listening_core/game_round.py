@@ -336,9 +336,12 @@ class GameRoundService:
         except Exception as err:
             raise InternalError(f"Failed to generate challenge: {str(err)}")
 
-    def mark_round_as_served(self, game_round: GameRound, db_session: Session) -> None:
-        """Mark a round as served. Idempotent."""
+    def mark_round_as_served(self, game_round: GameRound) -> None:
+        """Mark a round as served. Idempotent. Only changes status if not already attempted."""
         if game_round.status == GameRoundStatus.served:
+            return
+        
+        if game_round.status == GameRoundStatus.attempted:
             return
         
         game_round.status = GameRoundStatus.served
@@ -363,10 +366,9 @@ class GameRoundService:
             db_session=db_session
         )
         
-        if game_round.status != GameRoundStatus.served:
-            self.mark_round_as_served(game_round, db_session)
-            db_session.commit()
-            db_session.refresh(game_round)
+        self.mark_round_as_served(game_round)
+        db_session.commit()
+        db_session.refresh(game_round)
         
         challenge = None
         if game_round.challenge_id:
@@ -385,19 +387,22 @@ class GameRoundService:
         Check for existing submission with same idempotency_key.
         
         Returns the existing submission if found and payload matches.
-        Raises Conflict if found but payload differs.
+        Raises Conflict if found but payload differs or idempotency_key differs.
         Returns None if not found.
         """
         existing_submission = db_session.exec(
             select(RoundSubmission)
-            .where(
-                (RoundSubmission.game_round_id == game_round.game_round_id) &
-                (RoundSubmission.idempotency_key == idempotency_key)
-            )
+            .where(RoundSubmission.game_round_id == game_round.game_round_id)
         ).first()
         
         if not existing_submission:
             return None
+        
+        if existing_submission.idempotency_key != idempotency_key:
+            raise Conflict(
+                f"This round already has a submission with a different idempotency_key. "
+                f"Round can only have one submission."
+            )
         
         existing_payload = existing_submission.answer_payload or {}
         
@@ -554,7 +559,6 @@ class GameRoundService:
         game_round.ended_at = now
         
         db_session.commit()
-        db_session.refresh(game_round)
 
     def _build_submission_response(
         self,

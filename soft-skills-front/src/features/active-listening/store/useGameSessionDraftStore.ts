@@ -14,7 +14,6 @@ const initialState = {
     [PlayMode.PARAPHRASE]: 120,
     [PlayMode.SUMMARIZE]: 120,
     [PlayMode.CLARIFY]: 90,
-    [PlayMode.MIXED]: 90,
   },
   selectedModes: [
     PlayMode.FOCUS,
