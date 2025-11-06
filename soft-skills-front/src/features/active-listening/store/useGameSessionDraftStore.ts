@@ -24,7 +24,6 @@ const initialState = {
   ],
   allowedTypes: [
     PromptType.DESCRIPTIVE,
-    PromptType.CONVERSATIONAL,
   ],
   audioEffects: {
     reverb: 0,
@@ -32,6 +31,7 @@ const initialState = {
     backgroundNoise: 0,
     speedVariation: 0,
   },
+  reuseExistingChallenges: false,
 }
 
 export const useGameSessionDraftStore = create<IGameSessionDraftStore>()(
@@ -89,6 +89,10 @@ export const useGameSessionDraftStore = create<IGameSessionDraftStore>()(
         }))
       },
 
+      setReuseExistingChallenges: (reuse) => {
+        set({ reuseExistingChallenges: reuse })
+      },
+
       reset: () => {
         set(initialState)
       },
@@ -111,6 +115,7 @@ export const useGameSessionDraftStore = create<IGameSessionDraftStore>()(
           selectedModes: state.selectedModes,
           allowedTypes: state.allowedTypes,
           audioEffects: state.audioEffects,
+          reuseExistingChallenges: state.reuseExistingChallenges,
         }
       },
     }),
