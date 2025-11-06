@@ -16,6 +16,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
       replayCount: 0,
       elapsedTime: 0,
       timerRunning: false,
+      error: null,
 
       setCurrentRound: (round: CurrentRound | null) => {
         set((state) => {
@@ -33,6 +34,12 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         set((state) => {
           state.isSubmitting = submitting
         }, false, 'GAME_PLAY/SET_IS_SUBMITTING')
+      },
+
+      setError: (error: string | null) => {
+        set((state) => {
+          state.error = error
+        }, false, 'GAME_PLAY/SET_ERROR')
       },
 
       incrementReplayCount: () => {
@@ -61,16 +68,18 @@ export const useGamePlayStore = create<IGamePlayStore>()(
 
       fetchCurrentRound: async (sessionId: string) => {
         get().setIsLoading(true)
+        get().setError(null)
 
         try {
           const response = await getCurrentRound(sessionId)
           get().setCurrentRound(response.data)
           get().resetReplayCount()
           get().setElapsedTime(0)
+          get().setError(null)
         } catch (err: unknown) {
-          if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error fetching current round', 'error')
-          }
+          const errorMessage = err instanceof Error ? err.message : 'Error fetching current round'
+          get().setError(errorMessage)
+          useToastStore.getState().showToast(errorMessage, 'error')
         } finally {
           get().setIsLoading(false)
         }
@@ -139,6 +148,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           state.replayCount = 0
           state.elapsedTime = 0
           state.timerRunning = false
+          state.error = null
         }, false, 'GAME_PLAY/RESET')
       },
     })),

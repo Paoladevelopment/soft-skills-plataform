@@ -2,6 +2,17 @@ import { fetchWithAuth } from '../../../utils/fetchWithAuth'
 import { api } from '../../../config/api'
 import { SubmitAttemptPayloadAPI, GetCurrentRoundResponse, SubmitAttemptResponseAPI, AdvanceRoundResponse } from '../types/game-sessions/gamePlay.api'
 
+export function handleBlankChange(
+  index: number,
+  value: string,
+  filledBlanks: string[],
+  setFilledBlanks: (blanks: string[]) => void
+): void {
+  const newBlanks = [...filledBlanks]
+  newBlanks[index] = value
+  setFilledBlanks(newBlanks)
+}
+
 export async function getCurrentRound(sessionId: string): Promise<GetCurrentRoundResponse> {
   const url = api.gameSessions.rounds.current(sessionId)
 

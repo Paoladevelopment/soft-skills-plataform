@@ -9,7 +9,13 @@ interface FocusModeProps {
 
 const FocusMode = ({ modePayload, selectedIndex, onAnswerChange }: FocusModeProps) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 3 
+      }}
+    >
       <Card
         sx={{
           p: 3,
@@ -18,17 +24,34 @@ const FocusMode = ({ modePayload, selectedIndex, onAnswerChange }: FocusModeProp
           borderLeft: '4px solid #9C27B0',
         }}
       >
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#5E35B1' }}>
+        <Typography 
+          variant="h6" 
+          gutterBottom 
+          sx={{ 
+            fontWeight: 'bold', 
+            color: '#5E35B1' 
+          }}>
           Question
         </Typography>
-        <Typography variant="body1" sx={{ color: '#333', whiteSpace: 'pre-wrap' }}>
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            color: '#333', 
+            whiteSpace: 'pre-wrap' 
+          }}>
           {modePayload.question}
         </Typography>
       </Card>
 
       <FormControl sx={{ width: '100%' }}>
-        <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
-          Select your answer:
+        <Typography 
+          variant="subtitle1" 
+          gutterBottom 
+          sx={{ 
+            fontWeight: 'bold', 
+            mb: 2 
+          }}>
+            Select your answer:
         </Typography>
         <RadioGroup
           value={selectedIndex !== null ? selectedIndex.toString() : ''}

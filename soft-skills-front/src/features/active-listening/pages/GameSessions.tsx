@@ -72,7 +72,7 @@ const GameSessions = () => {
   }
 
   const handlePlaySession = (sessionId: string) => {
-    console.log('Play session:', sessionId)
+    navigate(`/active-listening/session/${sessionId}/play`)
   }
 
   const handleSettingsSession = async (sessionId: string) => {

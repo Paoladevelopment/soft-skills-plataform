@@ -9,7 +9,12 @@ interface ClozeModeProps {
 
 const ClozeMode = ({ modePayload, filledBlanks, onBlankChange }: ClozeModeProps) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 3 
+      }}>
       <Card
         sx={{
           p: 3,
@@ -26,7 +31,13 @@ const ClozeMode = ({ modePayload, filledBlanks, onBlankChange }: ClozeModeProps)
         </Typography>
       </Card>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: 2 
+        }}
+      >
         {modePayload.blanks?.map((placeholder: string, index: number) => (
           <Box
             key={index}
@@ -40,14 +51,26 @@ const ClozeMode = ({ modePayload, filledBlanks, onBlankChange }: ClozeModeProps)
               border: '1px solid #E0E0E0',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 2 
+              }}
+            >
               <Chip
                 label={`Blank #${index + 1}`}
                 size="small"
                 color="primary"
                 variant="outlined"
               />
-              <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic' }}>
+              <Typography 
+                variant="body2" 
+                color="textSecondary" 
+                sx={{ 
+                  fontStyle: 'italic' 
+                }}
+              >
                 {placeholder}
               </Typography>
             </Box>

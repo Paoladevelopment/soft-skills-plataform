@@ -18,7 +18,6 @@ export enum PlayMode {
   PARAPHRASE = 'paraphrase',
   SUMMARIZE = 'summarize',
   CLARIFY = 'clarify',
-  MIXED = 'mixed',
 }
 
 export enum PromptType {

@@ -8,10 +8,12 @@ export interface IGamePlayStore {
   replayCount: number
   elapsedTime: number
   timerRunning: boolean
+  error: string | null
 
   setCurrentRound: (round: CurrentRound | null) => void
   setIsLoading: (loading: boolean) => void
   setIsSubmitting: (submitting: boolean) => void
+  setError: (error: string | null) => void
   incrementReplayCount: () => void
   resetReplayCount: () => void
   setElapsedTime: (time: number) => void
