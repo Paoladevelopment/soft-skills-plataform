@@ -24,6 +24,7 @@ import { useGameSessionStore } from '../store/useGameSessionStore'
 import backgroundImage from '../assets/background_2.png'
 import { validateGamePlayAnswer } from '../utils/validateGamePlayAnswer'
 import { buildAnswerPayload } from '../utils/buildAnswerPayload'
+import { countBlanks } from '../utils/clozeUtils'
 
 const GamePlay = () => {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -56,6 +57,13 @@ const GamePlay = () => {
     setAttemptFeedback(null)
     setShowFeedback(false)
     answerStore.reset()
+
+
+    if (gamePlayStore.currentRound?.playMode === PlayMode.CLOZE) {
+      const modePayload = gamePlayStore.currentRound.modePayload as ClozeModePayload
+      const blankCount = countBlanks(modePayload.textWithBlanks)
+      answerStore.setFilledBlanks(Array(blankCount).fill(''))
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gamePlayStore.currentRound?.roundId])
 
@@ -67,7 +75,7 @@ const GamePlay = () => {
     const answers = answerStore.getSnapshot()
 
     const blankCount = playMode === PlayMode.CLOZE 
-      ? (modePayload as ClozeModePayload).blanks?.length || 0 
+      ? countBlanks((modePayload as ClozeModePayload).textWithBlanks)
       : 0
 
     const validation = validateGamePlayAnswer({

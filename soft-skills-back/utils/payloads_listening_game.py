@@ -245,3 +245,19 @@ SESSION_COMPLETED_RESPONSE_EXAMPLE = {
     "session_completed": True,
     "final_score": 85.5
 }
+
+GAME_SESSION_START_RESPONSE_EXAMPLE = {
+    "session_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "status": "in_progress",
+    "current_round": 1,
+    "started_at": "2025-11-06T22:46:21Z",
+    "round": {
+        "round_number": 1,
+        "status": "queued",
+        "play_mode": None,
+        "prompt_type": None,
+        "score": None,
+        "max_score": 10,
+        "game_round_id": "7996773b-52e0-4e68-9d02-e520f4e34206"
+    }
+}

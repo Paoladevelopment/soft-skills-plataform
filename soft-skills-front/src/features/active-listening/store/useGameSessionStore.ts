@@ -5,7 +5,7 @@ import { IGameSessionStore } from '../types/game-sessions/gameSession.store'
 import { CreateGameSessionRequest, UpdateGameSessionRequest, UpdateGameSessionConfigRequest } from '../types/game-sessions/gameSession.api'
 import { useToastStore } from '../../../store/useToastStore'
 import { GameSessionListItem, GameSession } from '../types/game-sessions/gameSession.models'
-import { getUserGameSessions, getGameSessionById, createGameSession, updateGameSession, updateGameSessionConfig, deleteGameSession } from '../api/GameSessions'
+import { getUserGameSessions, getGameSessionById, createGameSession, updateGameSession, updateGameSessionConfig, deleteGameSession, startGameSession } from '../api/GameSessions'
 
 export const useGameSessionStore = create<IGameSessionStore>()(
   devtools(
@@ -200,6 +200,35 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           if (err instanceof Error) {
             useToastStore.getState().showToast(err.message || 'Error deleting game session', 'error')
           }
+        }
+      },
+
+      startGameSession: async (id: string) => {
+        set((state) => {
+          state.isLoading = true
+        }, false, 'GAME_SESSION/START_REQUEST')
+
+        try {
+          const { data, message } = await startGameSession(id)
+          
+          useToastStore.getState().showToast(message || 'Game session started successfully!', 'success')
+
+          set((state) => {
+            const sessionIndex = state.gameSessions.findIndex(s => s.gameSessionId === id)
+            if (sessionIndex !== -1) {
+              state.gameSessions[sessionIndex].status = data.status
+            }
+          }, false, 'GAME_SESSION/START_UPDATE_LIST')
+
+          return data
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            useToastStore.getState().showToast(err.message || 'Error starting game session', 'error')
+          }
+        } finally {
+          set((state) => {
+            state.isLoading = false
+          }, false, 'GAME_SESSION/START_COMPLETE')
         }
       },
     })),

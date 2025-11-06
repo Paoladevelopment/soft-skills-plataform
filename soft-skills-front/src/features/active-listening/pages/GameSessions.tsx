@@ -37,6 +37,7 @@ const GameSessions = () => {
   const fetchGameSessions = useGameSessionStore((state) => state.fetchGameSessions)
   const createGameSession = useGameSessionStore((state) => state.createGameSession)
   const deleteGameSession = useGameSessionStore((state) => state.deleteGameSession)
+  const startGameSessionAction = useGameSessionStore((state) => state.startGameSession)
 
   const getSnapshot = useGameSessionDraftStore((state) => state.getSnapshot)
   const resetSessionDraft = useGameSessionDraftStore((state) => state.reset)
@@ -126,6 +127,13 @@ const GameSessions = () => {
     await deleteGameSession(sessionToDelete.gameSessionId)
 
     setSessionToDelete(null)
+  }
+
+  const handleStartSession = async (sessionId: string) => {
+    const session = await startGameSessionAction(sessionId)
+    if (!session) return
+
+    navigate(`/active-listening/session/${sessionId}/play`)
   }
 
   return (
@@ -241,6 +249,7 @@ const GameSessions = () => {
               onPlay={handlePlaySession}
               onSettings={handleSettingsSession}
               onDelete={handleOpenDeleteModal}
+              onStart={handleStartSession}
             />
           ))}
         </Stack>

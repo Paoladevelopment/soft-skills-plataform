@@ -5,6 +5,7 @@ from .game_session import (
     GameSessionUpdate,
     GameSessionResponse, 
     GameSessionPaginatedResponse,
+    GameSessionStartResponse,
     RoundAdvanceResponse,
     SessionCompletedResponse,
     AdvanceNextRoundResponse
@@ -34,6 +35,7 @@ __all__ = [
     "GameSessionUpdate",
     "GameSessionResponse", 
     "GameSessionPaginatedResponse",
+    "GameSessionStartResponse",
     "RoundAdvanceResponse",
     "SessionCompletedResponse",
     "AdvanceNextRoundResponse",

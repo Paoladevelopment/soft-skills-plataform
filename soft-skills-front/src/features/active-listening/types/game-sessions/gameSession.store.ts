@@ -25,4 +25,5 @@ export interface IGameSessionStore {
   updateGameSession: (id: string, sessionData: UpdateGameSessionRequest) => Promise<void>
   updateGameSessionConfig: (id: string, sessionData: UpdateGameSessionConfigRequest) => Promise<void>
   deleteGameSession: (id: string) => Promise<void>
+  startGameSession: (id: string) => Promise<GameSession | undefined>
 }

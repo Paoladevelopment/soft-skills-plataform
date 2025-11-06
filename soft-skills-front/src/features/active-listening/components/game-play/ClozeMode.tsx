@@ -1,5 +1,6 @@
-import { Box, TextField, Typography, Card, Chip } from '@mui/material'
+import { Box, TextField, Typography, Card} from '@mui/material'
 import { ClozeModePayload } from '../../types/game-sessions/gamePlay.models'
+import { splitTextByBlanks, getBlankIndices, isBlank } from '../../utils/clozeUtils'
 
 interface ClozeModeProps {
   modePayload: ClozeModePayload
@@ -8,6 +9,9 @@ interface ClozeModeProps {
 }
 
 const ClozeMode = ({ modePayload, filledBlanks, onBlankChange }: ClozeModeProps) => {
+  const parts = splitTextByBlanks(modePayload.textWithBlanks)
+  const blankIndices = getBlankIndices(parts)
+
   return (
     <Box 
       sx={{ 
@@ -31,68 +35,60 @@ const ClozeMode = ({ modePayload, filledBlanks, onBlankChange }: ClozeModeProps)
         </Typography>
       </Card>
 
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: 2 
+      <Card
+        sx={{
+          p: 3,
+          backgroundColor: '#FFFFFF',
+          borderRadius: '8px',
+          border: '1px solid #E0E0E0',
         }}
       >
-        {modePayload.blanks?.map((placeholder: string, index: number) => (
-          <Box
-            key={index}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1,
-              p: 2,
-              borderRadius: '8px',
-              backgroundColor: '#F5F5F5',
-              border: '1px solid #E0E0E0',
+        <Box 
+          sx={{ 
+            mb: 3, 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            alignItems: 'center', 
+            gap: 1, 
+            lineHeight: 1.8 
             }}
-          >
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 2 
-              }}
-            >
-              <Chip
-                label={`Blank #${index + 1}`}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-              <Typography 
-                variant="body2" 
-                color="textSecondary" 
-                sx={{ 
-                  fontStyle: 'italic' 
-                }}
+        >
+          {parts.map((part, index) => {
+            if (isBlank(part)) {
+              const blankIndex = blankIndices.indexOf(index)
+              return (
+                <TextField
+                  key={index}
+                  value={filledBlanks[blankIndex] || ''}
+                  onChange={(e) => onBlankChange(blankIndex, e.target.value)}
+                  placeholder={`Blank ${blankIndex + 1}`}
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    width: '150px',
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: '#FFFACD',
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#2196F3',
+                      },
+                    },
+                  }}
+                />
+              )
+            }
+            return (
+              <Typography
+                key={index}
+                component="span"
+                variant="body1"
+                sx={{ whiteSpace: 'pre-wrap' }}
               >
-                {placeholder}
+                {part}
               </Typography>
-            </Box>
-            <TextField
-              placeholder="Type your answer here..."
-              value={filledBlanks[index] || ''}
-              onChange={(e) => onBlankChange(index, e.target.value)}
-              fullWidth
-              variant="outlined"
-              size="small"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  backgroundColor: '#FFFFFF',
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#2196F3',
-                  },
-                },
-              }}
-            />
-          </Box>
-        ))}
-      </Box>
+            )
+          })}
+        </Box>
+      </Card>
     </Box>
   )
 }

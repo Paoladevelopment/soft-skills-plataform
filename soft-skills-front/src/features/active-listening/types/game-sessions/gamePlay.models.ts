@@ -7,7 +7,7 @@ export interface FocusModePayload {
 }
 
 export interface ClozeModePayload {
-  blanks: string[]
+  textWithBlanks: string
   instruction?: string
 }
 

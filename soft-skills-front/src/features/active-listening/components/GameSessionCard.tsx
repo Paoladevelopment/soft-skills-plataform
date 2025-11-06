@@ -1,6 +1,5 @@
 import { Box, Button, Card, Chip, IconButton, Typography } from '@mui/material'
 import { Settings, PlayArrow, Delete } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
 import { GameSessionListItem, GameSessionStatus } from '../types/game-sessions/gameSession.models'
 import { getStatusColor, getStatusLabel } from '../utils/gameSessionsUtils'
 
@@ -9,12 +8,21 @@ interface GameSessionCardProps {
   onPlay?: (sessionId: string) => void
   onSettings?: (sessionId: string) => void
   onDelete?: (sessionId: string) => void
+  onStart?: (sessionId: string) => void
 }
 
-const GameSessionCard = ({ session, onPlay, onSettings, onDelete }: GameSessionCardProps) => {
-  const navigate = useNavigate()
+const GameSessionCard = ({ session, onPlay, onSettings, onDelete, onStart }: GameSessionCardProps) => {
   const isSessionEnded = session.status === GameSessionStatus.COMPLETED || session.status === GameSessionStatus.CANCELLED
   const isPaused = session.status === GameSessionStatus.PAUSED
+  const isPending = session.status === GameSessionStatus.PENDING
+
+  const handleSessionAction = () => {
+    if (isPending) {
+      return onStart?.(session.gameSessionId)
+    }
+    
+    onPlay?.(session.gameSessionId)
+  }
 
 
   return (
@@ -83,10 +91,7 @@ const GameSessionCard = ({ session, onPlay, onSettings, onDelete }: GameSessionC
         {!isSessionEnded && (
           <Button
             variant="contained"
-            onClick={() => {
-              navigate(`/active-listening/session/${session.gameSessionId}/play`)
-              onPlay?.(session.gameSessionId)
-            }}
+            onClick={handleSessionAction}
             startIcon={<PlayArrow />}
             sx={{
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -101,7 +106,7 @@ const GameSessionCard = ({ session, onPlay, onSettings, onDelete }: GameSessionC
               },
             }}
           >
-            {isPaused ? 'Continue Playing' : 'Play'}
+            {isPending ? 'Start' : isPaused ? 'Continue Playing' : 'Play'}
           </Button>
         )}
       </Box>
