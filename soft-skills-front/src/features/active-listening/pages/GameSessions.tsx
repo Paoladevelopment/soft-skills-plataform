@@ -64,6 +64,7 @@ const GameSessions = () => {
         selected_modes: draft.selectedModes,
         allowed_types: draft.allowedTypes as PromptType[],
         audio_effects: convertAudioEffectsToSnakeCase(draft.audioEffects),
+        reuse_existing_challenges: draft.reuseExistingChallenges,
       },
     }
 

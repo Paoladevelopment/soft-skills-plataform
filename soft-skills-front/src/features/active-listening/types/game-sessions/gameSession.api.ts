@@ -29,6 +29,7 @@ export interface GameSessionConfigPayload {
   selected_modes: PlayMode[]
   allowed_types: PromptType[]
   audio_effects: AudioEffectsPayload
+  reuse_existing_challenges: boolean
 }
 
 export interface CreateGameSessionRequest {

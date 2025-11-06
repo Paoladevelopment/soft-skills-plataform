@@ -17,6 +17,7 @@ interface GameSessionFormData {
   selectedModes: PlayMode[]
   allowedTypes: PromptType[]
   audioEffects: { [effect: string]: number }
+  reuseExistingChallenges: boolean
 }
 
 interface GameSessionFormProps {

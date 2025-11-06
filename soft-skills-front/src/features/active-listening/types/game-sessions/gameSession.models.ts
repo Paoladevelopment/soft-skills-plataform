@@ -22,7 +22,6 @@ export enum PlayMode {
 
 export enum PromptType {
   DESCRIPTIVE = 'descriptive',
-  CONVERSATIONAL = 'conversational',
   HISTORICAL_EVENT = 'historical_event',
   INSTRUCTIONAL = 'instructional',
   DIALOGUE = 'dialogue',

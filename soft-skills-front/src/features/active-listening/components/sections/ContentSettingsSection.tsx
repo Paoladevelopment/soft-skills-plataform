@@ -62,22 +62,6 @@ const ContentSettingsSection = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={allowedTypes.includes(PromptType.CONVERSATIONAL)}
-                    onChange={() => togglePromptType(PromptType.CONVERSATIONAL)}
-                    sx={{
-                      color: 'white',
-                      '&.Mui-checked': { color: '#ED8936' },
-                    }}
-                  />
-                }
-                label="Conversational"
-                sx={{ alignItems: 'center', margin: 0 }}
-              />
-            </Grid2>
-            <Grid2 size={{ xs: 6, md: 4 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
                     checked={allowedTypes.includes(PromptType.HISTORICAL_EVENT)}
                     onChange={() => togglePromptType(PromptType.HISTORICAL_EVENT)}
                     sx={{
