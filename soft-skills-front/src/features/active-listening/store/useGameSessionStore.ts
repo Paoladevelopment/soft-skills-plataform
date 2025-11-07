@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer'
 import { IGameSessionStore } from '../types/game-sessions/gameSession.store'
 import { CreateGameSessionRequest, UpdateGameSessionRequest, UpdateGameSessionConfigRequest } from '../types/game-sessions/gameSession.api'
 import { useToastStore } from '../../../store/useToastStore'
-import { GameSessionListItem, GameSession } from '../types/game-sessions/gameSession.models'
+import { GameSessionListItem, GameSession, GameSessionStatus } from '../types/game-sessions/gameSession.models'
 import { getUserGameSessions, getGameSessionById, createGameSession, updateGameSession, updateGameSessionConfig, deleteGameSession, startGameSession } from '../api/GameSessions'
 
 export const useGameSessionStore = create<IGameSessionStore>()(
@@ -209,22 +209,26 @@ export const useGameSessionStore = create<IGameSessionStore>()(
         }, false, 'GAME_SESSION/START_REQUEST')
 
         try {
-          const { data, message } = await startGameSession(id)
+          const response = await startGameSession(id)
           
-          useToastStore.getState().showToast(message || 'Game session started successfully!', 'success')
+          useToastStore.getState().showToast('Game session started successfully!', 'success')
 
           set((state) => {
-            const sessionIndex = state.gameSessions.findIndex(s => s.gameSessionId === id)
-            if (sessionIndex !== -1) {
-              state.gameSessions[sessionIndex].status = data.status
+            if (response) {
+              const sessionIndex = state.gameSessions.findIndex(s => s.gameSessionId === id)
+              if (sessionIndex !== -1) {
+                state.gameSessions[sessionIndex].status = response.status as GameSessionStatus
+              }
             }
           }, false, 'GAME_SESSION/START_UPDATE_LIST')
 
-          return data
+          return response
         } catch (err: unknown) {
           if (err instanceof Error) {
             useToastStore.getState().showToast(err.message || 'Error starting game session', 'error')
           }
+          
+          return undefined
         } finally {
           set((state) => {
             state.isLoading = false

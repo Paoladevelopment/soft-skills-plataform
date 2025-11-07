@@ -131,6 +131,7 @@ const GameSessions = () => {
 
   const handleStartSession = async (sessionId: string) => {
     const session = await startGameSessionAction(sessionId)
+
     if (!session) return
 
     navigate(`/active-listening/session/${sessionId}/play`)

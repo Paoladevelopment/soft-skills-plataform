@@ -9,11 +9,13 @@ import TextAreaMode from './TextAreaMode'
 interface GameModeContentProps {
   playMode: PlayMode
   modePayload: FocusModePayload | ClozeModePayload | TextModePayload
+  isReadOnly?: boolean
 }
 
 const GameModeContent = ({
   playMode,
   modePayload,
+  isReadOnly = false,
 }: GameModeContentProps) => {
   const { selectedIndex, filledBlanks, textResponse, clarifyQuestions } = useGamePlayAnswerStore()
   const { setSelectedIndex, updateBlank, setTextResponse, setClarifyQuestions } = useGamePlayAnswerStore()
@@ -31,7 +33,8 @@ const GameModeContent = ({
         <FocusMode
           modePayload={modePayload as FocusModePayload}
           selectedIndex={selectedIndex}
-          onAnswerChange={setSelectedIndex}
+          onAnswerChange={isReadOnly ? undefined : setSelectedIndex}
+          disabled={isReadOnly}
         />
       )}
 
@@ -39,7 +42,8 @@ const GameModeContent = ({
         <ClozeMode
           modePayload={modePayload as ClozeModePayload}
           filledBlanks={filledBlanks}
-          onBlankChange={updateBlank}
+          onBlankChange={isReadOnly ? undefined : updateBlank}
+          disabled={isReadOnly}
         />
       )}
 
@@ -50,9 +54,10 @@ const GameModeContent = ({
           playMode={playMode}
           modePayload={modePayload as TextModePayload}
           textResponse={textResponse}
-          onTextChange={setTextResponse}
+          onTextChange={isReadOnly ? undefined : setTextResponse}
           clarifyQuestions={clarifyQuestions}
-          onClarifyQuestionsChange={setClarifyQuestions}
+          onClarifyQuestionsChange={isReadOnly ? undefined : setClarifyQuestions}
+          disabled={isReadOnly}
         />
       )}
     </Card>

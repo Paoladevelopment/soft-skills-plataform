@@ -6,7 +6,9 @@ from sqlmodel import Session, select, func
 from model.listening_core.game_session import GameSession
 from model.listening_core.game_session_config import GameSessionConfig
 from model.listening_core.game_round import GameRound
+from model.listening_core.round_submission import RoundSubmission
 from schema.listening_core.game_session import GameSessionCreate, GameSessionSummary
+from schema.listening_core.game_round import RoundEvaluationResponse
 from enums.listening_game import GameStatus, GameRoundStatus, PlayMode
 from utils.errors import APIException, Missing, BadRequest, Forbidden, Conflict, Locked, handle_db_error
 from service.listening_core.game_round import GameRoundService
@@ -390,9 +392,12 @@ class GameSessionService:
         game_session_id: UUID,
         user_id: UUID,
         session: Session
-    ) -> Tuple[GameRound, Optional[Any], GameSessionConfig]:
+    ) -> Tuple[GameRound, Optional[Any], GameSessionConfig, GameSession]:
         """
         Get and serve the current round of a game session.
+        
+        Returns:
+            Tuple of (GameRound, Challenge, GameSessionConfig, GameSession)
         """
         try:
             game_session = self.get_game_session(game_session_id, session)
@@ -413,7 +418,7 @@ class GameSessionService:
                 game_session, config, session
             )
             
-            return game_round, challenge, config
+            return game_round, challenge, config, game_session
             
         except APIException:
             raise
@@ -506,6 +511,67 @@ class GameSessionService:
         except Exception as err:
             db_session.rollback()
             handle_db_error(err, "advance_to_next_round", error_type="commit")
+
+    def _extract_correct_answer(
+        self,
+        play_mode: PlayMode,
+        challenge_metadata: Dict[str, Any]
+    ) -> Any:
+        """
+        Extract the correct answer from challenge metadata based on play_mode.
+        
+        Returns:
+            - paraphrase: reference_text (str)
+            - focus: correct_answer (str)
+            - cloze: answers (list[str])
+            - summarize: reference_summary (str)
+            - clarify: possible_questions (list[str])
+        """
+        if not challenge_metadata:
+            return None
+        
+        if play_mode == PlayMode.paraphrase:
+            return challenge_metadata.get("reference_text")
+        elif play_mode == PlayMode.focus:
+            return challenge_metadata.get("correct_answer")
+        elif play_mode == PlayMode.cloze:
+            return challenge_metadata.get("answers")
+        elif play_mode == PlayMode.summarize:
+            return challenge_metadata.get("reference_summary")
+        elif play_mode == PlayMode.clarify:
+            return challenge_metadata.get("possible_questions")
+
+    def get_round_evaluation(
+        self,
+        game_round_id: UUID,
+        challenge_metadata: Dict[str, Any],
+        play_mode: Optional[PlayMode],
+        session: Session
+    ) -> Optional[RoundEvaluationResponse]:
+        """
+        Get evaluation data for a round that has been attempted.
+        """
+        if not play_mode:
+            return None
+        
+        submission = session.exec(
+            select(RoundSubmission).where(
+                RoundSubmission.game_round_id == game_round_id
+            )
+        ).first()
+        
+        if not submission:
+            return None
+        
+        correct_answer = self._extract_correct_answer(play_mode, challenge_metadata)
+        
+        return RoundEvaluationResponse(
+            round_submission_id=submission.round_submission_id,
+            is_correct=submission.is_correct,
+            feedback_short=submission.feedback_short,
+            answer_payload=submission.answer_payload or {},
+            correct_answer=correct_answer
+        )
 
     def _filter_challenge_metadata_by_play_mode(
         self,

@@ -5,10 +5,11 @@ import { splitTextByBlanks, getBlankIndices, isBlank } from '../../utils/clozeUt
 interface ClozeModeProps {
   modePayload: ClozeModePayload
   filledBlanks: string[]
-  onBlankChange: (index: number, value: string) => void
+  onBlankChange?: (index: number, value: string) => void
+  disabled?: boolean
 }
 
-const ClozeMode = ({ modePayload, filledBlanks, onBlankChange }: ClozeModeProps) => {
+const ClozeMode = ({ modePayload, filledBlanks, onBlankChange, disabled = false }: ClozeModeProps) => {
   const parts = splitTextByBlanks(modePayload.textWithBlanks)
   const blankIndices = getBlankIndices(parts)
 
@@ -60,10 +61,11 @@ const ClozeMode = ({ modePayload, filledBlanks, onBlankChange }: ClozeModeProps)
                 <TextField
                   key={index}
                   value={filledBlanks[blankIndex] || ''}
-                  onChange={(e) => onBlankChange(blankIndex, e.target.value)}
+                  onChange={(e) => onBlankChange?.(blankIndex, e.target.value)}
                   placeholder={`Blank ${blankIndex + 1}`}
                   variant="outlined"
                   size="small"
+                  disabled={disabled}
                   sx={{
                     width: '150px',
                     '& .MuiOutlinedInput-root': {

@@ -1,5 +1,5 @@
 import { GameSessionListItem, GameSession } from './gameSession.models'
-import { CreateGameSessionRequest, UpdateGameSessionRequest, UpdateGameSessionConfigRequest } from './gameSession.api'
+import { CreateGameSessionRequest, UpdateGameSessionRequest, UpdateGameSessionConfigRequest, StartGameSessionResponse } from './gameSession.api'
 
 export interface GameSessionsPagination {
   total: number
@@ -25,5 +25,5 @@ export interface IGameSessionStore {
   updateGameSession: (id: string, sessionData: UpdateGameSessionRequest) => Promise<void>
   updateGameSessionConfig: (id: string, sessionData: UpdateGameSessionConfigRequest) => Promise<void>
   deleteGameSession: (id: string) => Promise<void>
-  startGameSession: (id: string) => Promise<GameSession | undefined>
+  startGameSession: (id: string) => Promise<StartGameSessionResponse | undefined>
 }

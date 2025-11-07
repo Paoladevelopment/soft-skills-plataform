@@ -37,7 +37,7 @@ const ProgressCard = ({ currentRound, totalRounds = 5 }: ProgressCardProps) => {
             <Typography
                 variant="body2"
                 sx={{
-                    color: '#FFCC80',
+                    color: 'white',
                     fontWeight: '600',
                     fontSize: '0.95rem',
                 }}

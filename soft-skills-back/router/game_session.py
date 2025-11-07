@@ -14,7 +14,8 @@ from schema.listening_core.game_session import (
     SessionCompletedResponse,
 )
 from schema.listening_core.game_session_config import GameSessionConfigRead, GameSessionConfigUpdate
-from schema.listening_core.game_round import GameRoundReadSummary, CurrentRoundResponse, CurrentRoundConfig
+from schema.listening_core.game_round import GameRoundReadSummary, CurrentRoundResponse, CurrentRoundConfig, RoundEvaluationResponse
+from enums.listening_game import GameRoundStatus
 from schema.listening_core.round_submission import AttemptSubmissionRequest, AttemptSubmissionResponse
 from schema.token import TokenData
 from schema.base import BaseResponse
@@ -240,7 +241,7 @@ def get_current_round(
     session: Session = Depends(get_session)
 ):
     try:
-        game_round, challenge, config = game_service.get_current_round(
+        game_round, challenge, config, game_session = game_service.get_current_round(
             game_session_id=session_id, user_id=token_data.user_id, session=session
         )
         
@@ -264,6 +265,15 @@ def get_current_round(
                 game_round.play_mode
             )
         
+        evaluation = None
+        if game_round.status == GameRoundStatus.attempted:
+            evaluation = game_service.get_round_evaluation(
+                game_round.game_round_id,
+                challenge.challenge_metadata or {} if challenge else {},
+                game_round.play_mode,
+                session
+            )
+        
         response_data = CurrentRoundResponse(
             round_id=game_round.game_round_id,
             audio_url=audio_url,
@@ -274,7 +284,10 @@ def get_current_round(
             prompt_type=game_round.prompt_type,
             score=game_round.score,
             max_score=game_round.max_score,
-            mode_payload=filtered_metadata
+            mode_payload=filtered_metadata,
+            evaluation=evaluation,
+            total_rounds=config.total_rounds,
+            name=game_session.name
         )
         
         return BaseResponse(
