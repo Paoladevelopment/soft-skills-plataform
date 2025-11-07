@@ -9,9 +9,10 @@ interface TextAreaModeProps {
   playMode: PlayMode
   modePayload: TextModePayload
   textResponse: string
-  onTextChange: (value: string) => void
+  onTextChange?: (value: string) => void
   clarifyQuestions?: string[]
   onClarifyQuestionsChange?: (questions: string[]) => void
+  disabled?: boolean
 }
 
 const TextAreaMode = ({ 
@@ -20,7 +21,8 @@ const TextAreaMode = ({
   textResponse, 
   onTextChange,
   clarifyQuestions = [],
-  onClarifyQuestionsChange 
+  onClarifyQuestionsChange,
+  disabled = false
 }: TextAreaModeProps) => {
   const info = getModeInfo(playMode)
   const isClarifyMode = playMode === PlayMode.CLARIFY
@@ -89,19 +91,21 @@ const TextAreaMode = ({
       {isClarifyMode ? (
         <ClarifyMode
           clarifyQuestions={clarifyQuestions}
-          onQuestionChange={handleQuestionChange}
-          onAddQuestion={handleAddQuestion}
-          onRemoveQuestion={handleRemoveQuestion}
+          onQuestionChange={!disabled ? handleQuestionChange : undefined}
+          onAddQuestion={!disabled ? handleAddQuestion : undefined}
+          onRemoveQuestion={!disabled ? handleRemoveQuestion : undefined}
           borderColor={info.borderColor}
           backgroundColor={info.color}
           textColor={info.textColor}
+          disabled={disabled}
         />
       ) : (
         <TextInput
           textResponse={textResponse}
-          onTextChange={onTextChange}
+          onTextChange={!disabled ? onTextChange : undefined}
           borderColor={info.borderColor}
           prompt={info.prompt}
+          disabled={disabled}
         />
       )}
     </Box>

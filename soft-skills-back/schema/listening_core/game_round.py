@@ -51,6 +51,17 @@ class CurrentRoundConfig(BaseModel):
         return normalize_audio_effects(v)
 
 
+class RoundEvaluationResponse(BaseModel):
+    """Response schema for round evaluation when round is attempted."""
+    round_submission_id: UUID
+    is_correct: bool
+    feedback_short: Optional[str] = None
+    answer_payload: Dict[str, Any]
+    correct_answer: Any  # Can be str, list[str], etc. depending on play_mode
+
+    model_config = {"from_attributes": True}
+
+
 class CurrentRoundResponse(BaseModel):
     """Response schema for current round endpoint."""
     round_id: UUID
@@ -63,6 +74,9 @@ class CurrentRoundResponse(BaseModel):
     score: Optional[float] = None
     max_score: float
     mode_payload: Optional[Dict[str, Any]] = None
+    evaluation: Optional[RoundEvaluationResponse] = None
+    total_rounds: int
+    name: str
 
     model_config = {
         "json_schema_extra": {"example": CURRENT_ROUND_RESPONSE_EXAMPLE}

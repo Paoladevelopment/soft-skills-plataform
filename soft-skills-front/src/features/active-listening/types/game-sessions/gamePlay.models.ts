@@ -27,17 +27,37 @@ export interface CurrentRoundConfig {
   }
 }
 
+export interface EvaluationAnswer {
+  selectedIndex?: number
+  blanks?: string[]
+  paraphrase?: string
+  summary?: string
+  questions?: string[]
+}
+
+export interface Evaluation {
+  roundSubmissionId: string
+  isCorrect: boolean
+  feedbackShort: string
+  answerPayload: EvaluationAnswer
+  correctAnswer: EvaluationAnswer
+  score: number
+}
+
 export interface CurrentRound {
   roundId: string
   audioUrl: string
   config: CurrentRoundConfig
   currentRound: number
+  totalRounds: number
+  name: string
   status: string
   playMode: PlayMode
   promptType: PromptType
   score: number | null
   maxScore: number
   modePayload: ModePayload
+  evaluation?: Evaluation
 }
 
 export interface SubmitAttemptResponse {
@@ -47,6 +67,13 @@ export interface SubmitAttemptResponse {
   feedbackShort: string
   clientElapsedMs: number
   canAdvance: boolean
+}
+
+export interface AttemptFeedback {
+  isCorrect: boolean
+  feedbackShort: string
+  canAdvance: boolean
+  score?: number
 }
 
 export interface AdvanceRoundResponse {

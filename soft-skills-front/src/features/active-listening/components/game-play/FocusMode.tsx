@@ -4,10 +4,11 @@ import { FocusModePayload } from '../../types/game-sessions/gamePlay.models'
 interface FocusModeProps {
   modePayload: FocusModePayload
   selectedIndex: number | null
-  onAnswerChange: (index: number) => void
+  onAnswerChange?: (index: number) => void
+  disabled?: boolean
 }
 
-const FocusMode = ({ modePayload, selectedIndex, onAnswerChange }: FocusModeProps) => {
+const FocusMode = ({ modePayload, selectedIndex, onAnswerChange, disabled = false }: FocusModeProps) => {
   return (
     <Box 
       sx={{ 
@@ -55,7 +56,7 @@ const FocusMode = ({ modePayload, selectedIndex, onAnswerChange }: FocusModeProp
         </Typography>
         <RadioGroup
           value={selectedIndex !== null ? selectedIndex.toString() : ''}
-          onChange={(e) => onAnswerChange(parseInt(e.target.value))}
+          onChange={(e) => onAnswerChange?.(parseInt(e.target.value))}
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -67,25 +68,27 @@ const FocusMode = ({ modePayload, selectedIndex, onAnswerChange }: FocusModeProp
               key={index}
               sx={{
                 p: 2,
-                cursor: 'pointer',
+                cursor: disabled ? 'not-allowed' : 'pointer',
                 backgroundColor: selectedIndex === index ? '#C8E6C9' : '#FFFFFF',
                 borderRadius: '8px',
                 border: selectedIndex === index ? '2px solid #4CAF50' : '1px solid #E0E0E0',
                 transition: 'all 0.2s ease',
+                opacity: disabled ? 0.6 : 1,
                 '&:hover': {
-                  backgroundColor: selectedIndex === index ? '#C8E6C9' : '#F5F5F5',
-                  borderColor: '#4CAF50',
+                  backgroundColor: selectedIndex === index ? '#C8E6C9' : disabled ? '#FFFFFF' : '#F5F5F5',
+                  borderColor: disabled ? '#E0E0E0' : '#4CAF50',
                 },
               }}
             >
               <FormControlLabel
                 value={index.toString()}
-                control={<Radio />}
+                control={<Radio disabled={disabled} />}
                 label={
                   <Typography variant="body2" sx={{ ml: 1 }}>
                     {choice}
                   </Typography>
                 }
+                disabled={disabled}
                 sx={{ width: '100%', m: 0 }}
               />
             </Card>

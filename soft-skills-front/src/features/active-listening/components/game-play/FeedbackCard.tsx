@@ -1,12 +1,92 @@
 import { Box, Card, Typography } from '@mui/material'
 import { CheckCircle, Cancel } from '@mui/icons-material'
+import { PlayMode } from '../../types/game-sessions/gameSession.models'
 
 interface FeedbackCardProps {
   isCorrect: boolean
   feedbackShort: string
+  score?: number
+  maxScore?: number
+  correctAnswer?: string
+  playMode?: PlayMode
 }
 
-const FeedbackCard = ({ isCorrect, feedbackShort }: FeedbackCardProps) => {
+const FeedbackCard = ({ isCorrect, feedbackShort, score, maxScore, correctAnswer, playMode }: FeedbackCardProps) => {
+  const renderScoreSection = () => {
+    if (score === undefined && maxScore === undefined) return null
+
+    return (
+      <Box 
+        sx={{ 
+          mt: 2, 
+          pt: 2, 
+          borderTop: '1px solid #ccc' 
+          }}
+        >
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            fontWeight: 'bold', 
+            color: '#333' 
+          }}
+        >
+          Score: {score ?? 0} / {maxScore ?? 0}
+        </Typography>
+      </Box>
+    )
+  }
+
+  const getAnswerLabel = () => {
+    switch (playMode) {
+      case PlayMode.CLOZE:
+      case PlayMode.FOCUS:
+        return 'Correct Answer:'
+      case PlayMode.PARAPHRASE:
+        return 'Possible Answer:'
+      case PlayMode.SUMMARIZE:
+        return 'Possible Answer:'
+      case PlayMode.CLARIFY:
+        return 'Possible Questions:'
+      default:
+        return 'Answer:'
+    }
+  }
+
+  const renderCorrectAnswerSection = () => {
+    if (!correctAnswer) return null
+
+    return (
+      <Box 
+        sx={{ 
+          mt: 2 
+        }}
+      >
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            fontWeight: 'bold', 
+            color: '#333' 
+          }}
+        >
+          {getAnswerLabel()}
+        </Typography>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            mt: 0.5,
+            p: 1,
+            backgroundColor: '#f5f5f5',
+            borderRadius: '4px',
+            color: '#333',
+            fontStyle: 'italic'
+          }}
+        >
+          {correctAnswer}
+        </Typography>
+      </Box>
+    )
+  }
+
   return (
     <Card
       sx={{
@@ -52,6 +132,9 @@ const FeedbackCard = ({ isCorrect, feedbackShort }: FeedbackCardProps) => {
           <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
             {feedbackShort}
           </Typography>
+
+          {renderScoreSection()}
+          {renderCorrectAnswerSection()}
         </Box>
       </Box>
     </Card>

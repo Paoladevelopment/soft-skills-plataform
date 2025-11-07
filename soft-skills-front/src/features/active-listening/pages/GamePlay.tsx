@@ -11,7 +11,7 @@ import { ArrowBack } from '@mui/icons-material'
 import { useGamePlayStore } from '../store/useGamePlayStore'
 import { useGamePlayAnswerStore } from '../store/useGamePlayAnswerStore'
 import { PlayMode } from '../types/game-sessions/gameSession.models'
-import { ClozeModePayload } from '../types/game-sessions/gamePlay.models'
+import { ClozeModePayload, AttemptFeedback } from '../types/game-sessions/gamePlay.models'
 import { SubmitAttemptPayloadAPI } from '../types/game-sessions/gamePlay.api'
 import AudioPlayer from '../components/game-play/AudioPlayer'
 import GamePlaySkeleton from '../components/game-play/GamePlaySkeleton'
@@ -20,10 +20,10 @@ import ProgressCard from '../components/game-play/ProgressCard'
 import GameModeContent from '../components/game-play/GameModeContent'
 import FeedbackCard from '../components/game-play/FeedbackCard'
 import GamePlayActions from '../components/game-play/GamePlayActions'
-import { useGameSessionStore } from '../store/useGameSessionStore'
 import backgroundImage from '../assets/background_2.png'
 import { validateGamePlayAnswer } from '../utils/validateGamePlayAnswer'
 import { buildAnswerPayload } from '../utils/buildAnswerPayload'
+import { loadPreviousAnswers } from '../utils/loadPreviousAnswers'
 import { countBlanks } from '../utils/clozeUtils'
 
 const GamePlay = () => {
@@ -31,16 +31,48 @@ const GamePlay = () => {
   const navigate = useNavigate()
 
   const gamePlayStore = useGamePlayStore()
-  const { selectedGameSession } = useGameSessionStore()
   const answerStore = useGamePlayAnswerStore()
 
-  const [attemptFeedback, setAttemptFeedback] = useState<{
-    isCorrect: boolean
-    feedbackShort: string
-    canAdvance: boolean
-  } | null>(null)
+  const [attemptFeedback, setAttemptFeedback] = useState<AttemptFeedback | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
+
+  const resetFeedbackAndAnswers = () => {
+    setAttemptFeedback(null)
+    setShowFeedback(false)
+    answerStore.reset()
+  }
+
+  const loadAnswersForCurrentRound = () => {
+    const currentRound = gamePlayStore.currentRound
+    if (!currentRound) return
+
+    const playMode = currentRound.playMode
+    const modePayload = currentRound.modePayload
+    const evaluation = currentRound.evaluation
+
+    loadPreviousAnswers(evaluation, playMode, modePayload, answerStore)
+  }
+
+  const showEvaluationFeedback = () => {
+    const currentRound = gamePlayStore.currentRound
+    const evaluation = currentRound?.evaluation
+
+    if (evaluation) {
+      const canAdvance = currentRound ? currentRound.currentRound < currentRound.totalRounds : false
+      
+      setAttemptFeedback({
+        isCorrect: evaluation.isCorrect,
+        feedbackShort: evaluation.feedbackShort,
+        canAdvance,
+      })
+      setShowFeedback(true)
+    }
+  }
+
+  const isErrorState = () => showFeedback && !attemptFeedback
+
+  const canShowAdvanceButton = () => attemptFeedback?.canAdvance ?? false
 
   useEffect(() => {
     if (!sessionId) return
@@ -54,16 +86,9 @@ const GamePlay = () => {
   }, [sessionId])
 
   useEffect(() => {
-    setAttemptFeedback(null)
-    setShowFeedback(false)
-    answerStore.reset()
-
-
-    if (gamePlayStore.currentRound?.playMode === PlayMode.CLOZE) {
-      const modePayload = gamePlayStore.currentRound.modePayload as ClozeModePayload
-      const blankCount = countBlanks(modePayload.textWithBlanks)
-      answerStore.setFilledBlanks(Array(blankCount).fill(''))
-    }
+    resetFeedbackAndAnswers()
+    loadAnswersForCurrentRound()
+    showEvaluationFeedback()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gamePlayStore.currentRound?.roundId])
 
@@ -135,6 +160,10 @@ const GamePlay = () => {
     navigate(`/active-listening/game-sessions`)
   }
 
+  const getScore = (): number | undefined => {
+    return attemptFeedback?.score ?? currentRound?.score ?? undefined
+  }
+
   if (gamePlayStore.isLoading && !gamePlayStore.currentRound) {
     return <GamePlaySkeleton />
   }
@@ -182,42 +211,31 @@ const GamePlay = () => {
           <Typography
             fontWeight="bold"
             sx={{
-                background: 'linear-gradient(90deg, #4A8A6F, #26C6DA)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                WebkitTextStroke: '1.5px white',
-                letterSpacing: '0.05em',
-                textShadow: '0px 2px 6px rgba(0,0,0,0.2)',
-                fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' },
-                lineHeight: 1,
+              background: 'linear-gradient(90deg, #4A8A6F, #26C6DA)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              WebkitTextStroke: '1.5px white',
+              letterSpacing: '0.05em',
+              textShadow: '0px 2px 6px rgba(0,0,0,0.2)',
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' },
+              lineHeight: 1,
             }}
           >
-            {selectedGameSession?.name}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-                color: '#4A8A6F',
-                fontWeight: '600',
-                mt: 1,
-                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
-            }}
-          >
-            Round {currentRound.currentRound} / {selectedGameSession?.totalRounds}
+            {currentRound.name}
           </Typography>
         </Box>
 
         <ProgressCard
           currentRound={currentRound.currentRound}
-          totalRounds={selectedGameSession?.totalRounds}
+          totalRounds={currentRound.totalRounds}
         />
 
         <Box 
-            sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                gap: 3 
-            }}
+          sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: 3 
+          }}
         >
           <AudioPlayer
             audioUrl={currentRound.audioUrl}
@@ -235,20 +253,24 @@ const GamePlay = () => {
           <GameModeContent
             playMode={currentRound.playMode}
             modePayload={currentRound.modePayload}
+            isReadOnly={!!currentRound.evaluation}
           />
 
           {showFeedback && attemptFeedback && (
             <FeedbackCard
               isCorrect={attemptFeedback.isCorrect}
               feedbackShort={attemptFeedback.feedbackShort}
+              score={getScore()}
+              maxScore={currentRound.maxScore}
+              correctAnswer={currentRound.evaluation?.correctAnswer ? JSON.stringify(currentRound.evaluation.correctAnswer) : undefined}
+              playMode={currentRound.playMode}
             />
           )}
 
-
           <GamePlayActions
             showFeedback={showFeedback}
-            hasError={showFeedback && !attemptFeedback}
-            canAdvance={attemptFeedback?.canAdvance ?? false}
+            hasError={isErrorState()}
+            canAdvance={canShowAdvanceButton()}
             onSubmit={handleSubmitAttempt}
             onTryAgain={handleTryAgain}
             onAdvance={handleAdvanceRound}

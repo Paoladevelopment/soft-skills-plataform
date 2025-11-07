@@ -57,7 +57,18 @@ export interface UpdateGameSessionResponse {
 }
 
 export interface StartGameSessionResponse {
-  message: string
-  data: GameSession
+  session_id: string
+  status: string
+  current_round: number
+  started_at: string
+  round: {
+    round_number: number
+    status: string
+    play_mode: string
+    prompt_type: string
+    score: number | null
+    max_score: number
+    game_round_id: string
+  }
 }
 

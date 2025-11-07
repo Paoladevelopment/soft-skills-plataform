@@ -108,16 +108,14 @@ export const useGamePlayStore = create<IGamePlayStore>()(
             isCorrect: responseData.isCorrect,
             feedbackShort: responseData.feedbackShort,
             canAdvance: responseData.canAdvance,
+            score: responseData.score,
           }
         } catch (err: unknown) {
           if (err instanceof Error) {
             useToastStore.getState().showToast(err.message || 'Error submitting attempt', 'error')
           }
-          return {
-            isCorrect: false,
-            feedbackShort: 'Error submitting attempt',
-            canAdvance: false,
-          }
+          
+          return null
         } finally {
           get().setIsSubmitting(false)
         }
@@ -127,10 +125,9 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         get().setIsLoading(true)
 
         try {
-          const response = await advanceRound(sessionId)
-          get().setCurrentRound(response.data)
-          get().resetReplayCount()
-          get().setElapsedTime(0)
+          await advanceRound(sessionId)
+
+          await get().fetchCurrentRound(sessionId)
         } catch (err: unknown) {
           if (err instanceof Error) {
             useToastStore.getState().showToast(err.message || 'Error advancing to next round', 'error')

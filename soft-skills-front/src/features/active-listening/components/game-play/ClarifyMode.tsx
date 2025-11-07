@@ -3,12 +3,13 @@ import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 
 interface ClarifyModeProps {
   clarifyQuestions: string[]
-  onQuestionChange: (index: number, value: string) => void
-  onAddQuestion: () => void
-  onRemoveQuestion: (index: number) => void
+  onQuestionChange?: (index: number, value: string) => void
+  onAddQuestion?: () => void
+  onRemoveQuestion?: (index: number) => void
   borderColor: string
   backgroundColor: string
   textColor: string
+  disabled?: boolean
 }
 
 const ClarifyMode = ({
@@ -19,6 +20,7 @@ const ClarifyMode = ({
   borderColor,
   backgroundColor,
   textColor,
+  disabled = false,
 }: ClarifyModeProps) => {
   return (
     <Box 
@@ -46,12 +48,13 @@ const ClarifyMode = ({
         >
           <TextField
             value={question}
-            onChange={(e) => onQuestionChange(index, e.target.value)}
+            onChange={(e) => onQuestionChange?.(index, e.target.value)}
             placeholder={`Question ${index + 1}...`}
             fullWidth
             variant="outlined"
             multiline
             rows={3}
+            disabled={disabled}
             sx={{
               '& .MuiOutlinedInput-root': {
                 backgroundColor: '#FFFFFF',
@@ -64,7 +67,8 @@ const ClarifyMode = ({
           />
           {clarifyQuestions.length > 1 && (
             <IconButton
-              onClick={() => onRemoveQuestion(index)}
+              onClick={() => onRemoveQuestion?.(index)}
+              disabled={disabled}
               sx={{
                 color: '#F44336',
                 mt: 0.5,
@@ -79,6 +83,7 @@ const ClarifyMode = ({
         onClick={onAddQuestion}
         startIcon={<AddIcon />}
         variant="outlined"
+        disabled={disabled}
         sx={{
           color: textColor,
           borderColor: borderColor,

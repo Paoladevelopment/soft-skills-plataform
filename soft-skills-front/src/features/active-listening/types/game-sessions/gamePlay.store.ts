@@ -1,4 +1,4 @@
-import { CurrentRound } from './gamePlay.models'
+import { CurrentRound, AttemptFeedback } from './gamePlay.models'
 import { SubmitAttemptPayloadAPI } from './gamePlay.api'
 
 export interface IGamePlayStore {
@@ -20,7 +20,7 @@ export interface IGamePlayStore {
   setTimerRunning: (running: boolean) => void
 
   fetchCurrentRound: (sessionId: string) => Promise<void>
-  submitAttempt: (sessionId: string, payload: SubmitAttemptPayloadAPI) => Promise<{ isCorrect: boolean; feedbackShort: string; canAdvance: boolean }>
+  submitAttempt: (sessionId: string, payload: SubmitAttemptPayloadAPI) => Promise<AttemptFeedback | null>
   advanceRound: (sessionId: string) => Promise<void>
   reset: () => void
 }
