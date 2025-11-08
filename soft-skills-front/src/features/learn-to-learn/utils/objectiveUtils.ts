@@ -1,5 +1,5 @@
 import { Status } from '../types/common.enums'
-import { calculateElapsedTime } from './timeUtils'
+import { calculateElapsedTime } from '../../../utils/timeUtils'
 import { PRIORITY_COLORS, STATUS_COLORS, PriorityColorValue, StatusColorValue } from '../types/ui/colors'
 
 export interface ObjectiveStatusInfo {

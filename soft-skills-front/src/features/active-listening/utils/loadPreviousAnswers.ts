@@ -13,12 +13,10 @@ export function loadPreviousAnswers(
   answerStore: IGamePlayAnswerStore
 ): void {
   if (!evaluation?.answerPayload) {
-    // Initialize empty state
     initializeEmptyAnswers(playMode, modePayload, answerStore)
     return
   }
 
-  // Load answers from evaluation
   switch (playMode) {
     case PlayMode.FOCUS: {
       loadFocusAnswer(evaluation, answerStore)

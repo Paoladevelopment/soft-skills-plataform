@@ -1,5 +1,6 @@
 import { CurrentRound, AttemptFeedback } from './gamePlay.models'
 import { SubmitAttemptPayloadAPI, ReplayStatus, ReplayAudioResult, FinishSessionResponse } from './gamePlay.api'
+import { GameSessionResult } from '../gameSessionResult'
 
 export interface IGamePlayStore {
   currentRound: CurrentRound | null
@@ -9,6 +10,7 @@ export interface IGamePlayStore {
   elapsedTime: number
   timerRunning: boolean
   error: string | null
+  result: GameSessionResult | null
 
   setCurrentRound: (round: CurrentRound | null) => void
   setIsLoading: (loading: boolean) => void
@@ -17,6 +19,7 @@ export interface IGamePlayStore {
   setError: (error: string | null) => void
   setElapsedTime: (time: number) => void
   setTimerRunning: (running: boolean) => void
+  setResult: (result: GameSessionResult | null) => void
   updateReplayCounters: (replayStatus: ReplayStatus) => void
 
   fetchCurrentRound: (sessionId: string) => Promise<void>
@@ -24,6 +27,7 @@ export interface IGamePlayStore {
   submitAttempt: (sessionId: string, payload: SubmitAttemptPayloadAPI) => Promise<AttemptFeedback | null>
   advanceRound: (sessionId: string) => Promise<void>
   finishSession: (sessionId: string) => Promise<FinishSessionResponse | null>
+  fetchSessionResult: (sessionId: string) => Promise<void>
   reset: () => void
 }
 

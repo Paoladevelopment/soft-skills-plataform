@@ -4,8 +4,10 @@ import { immer } from 'zustand/middleware/immer'
 import { IGamePlayStore } from '../types/game-sessions/gamePlay.store'
 import { CurrentRound } from '../types/game-sessions/gamePlay.models'
 import { SubmitAttemptPayloadAPI, ReplayStatus } from '../types/game-sessions/gamePlay.api'
+import { GameSessionResult } from '../types/gameSessionResult'
 import { useToastStore } from '../../../store/useToastStore'
 import { getCurrentRound, submitAttempt, advanceRound, replayAudio, finishSession } from '../api/GamePlay'
+import { getSessionResult } from '../api/GameSessions'
 
 export const useGamePlayStore = create<IGamePlayStore>()(
   devtools(
@@ -17,6 +19,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
       elapsedTime: 0,
       timerRunning: false,
       error: null,
+      result: null,
 
       setCurrentRound: (round: CurrentRound | null) => {
         set((state) => {
@@ -58,6 +61,12 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         set((state) => {
           state.timerRunning = running
         }, false, 'GAME_PLAY/SET_TIMER_RUNNING')
+      },
+
+      setResult: (result: GameSessionResult | null) => {
+        set((state) => {
+          state.result = result
+        }, false, 'GAME_PLAY/SET_RESULT')
       },
 
       updateReplayCounters: (replayStatus: ReplayStatus) => {
@@ -198,6 +207,24 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         }
       },
 
+      fetchSessionResult: async (sessionId: string) => {
+        get().setIsLoading(true)
+        get().setError(null)
+
+        try {
+          const response = await getSessionResult(sessionId)
+          get().setResult(response.data)
+          get().setError(null)
+        } catch (err: unknown) {
+          const errorMessage = err instanceof Error ? err.message : 'Error fetching session result'
+          
+          get().setResult(null)
+          get().setError(errorMessage)
+        } finally {
+          get().setIsLoading(false)
+        }
+      },
+
       reset: () => {
         set((state) => {
           state.currentRound = null
@@ -207,6 +234,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           state.elapsedTime = 0
           state.timerRunning = false
           state.error = null
+          state.result = null
         }, false, 'GAME_PLAY/RESET')
       },
     })),

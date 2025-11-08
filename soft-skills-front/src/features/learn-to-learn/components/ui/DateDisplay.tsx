@@ -1,6 +1,6 @@
 import { Typography, Stack, Chip, Grid2 } from '@mui/material'
 import { AccessTimeOutlined, Lock } from '@mui/icons-material'
-import { formatTimeAgo, formatDate } from '../../utils/timeUtils'
+import { formatTimeAgo, formatDate } from '../../../../utils/timeUtils'
 
 interface DateItem {
   label: string

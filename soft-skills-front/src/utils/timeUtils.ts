@@ -82,3 +82,4 @@ export function calculateElapsedTime(
   
   return `${diffInHours}h`
 }
+

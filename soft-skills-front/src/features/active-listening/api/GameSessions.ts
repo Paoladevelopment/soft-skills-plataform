@@ -10,6 +10,7 @@ import {
   UpdateGameSessionResponse,
   StartGameSessionResponse
 } from '../types/game-sessions/gameSession.api'
+import { GetSessionResultResponse } from '../types/gameSessionResult'
 
 export async function getUserGameSessions(
   offset: number,
@@ -64,6 +65,13 @@ export async function startGameSession(id: string): Promise<StartGameSessionResp
   const response = await fetchWithAuth(url, {
     method: 'POST',
   })
+  
+  return response
+}
+
+export async function getSessionResult(sessionId: string): Promise<GetSessionResultResponse> {
+  const url = api.gameSessions.result(sessionId)
+  const response = await fetchWithAuth(url)
   
   return response
 }

@@ -57,6 +57,7 @@ export const api = {
     delete: (id: string) => `${BASE_URL}/game-sessions/${id}`,
     start: (id: string) => `${BASE_URL}/game-sessions/${id}/start`,
     finish: (id: string) => `${BASE_URL}/game-sessions/${id}/finish`,
+    result: (id: string) => `${BASE_URL}/game-sessions/${id}/result`,
     rounds: {
       current: (sessionId: string) => `${BASE_URL}/game-sessions/${sessionId}/rounds/current`,
       attempt: (sessionId: string, roundNumber: number) => `${BASE_URL}/game-sessions/${sessionId}/rounds/${roundNumber}/attempt`,
