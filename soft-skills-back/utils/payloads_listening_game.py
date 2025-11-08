@@ -393,6 +393,14 @@ SESSION_COMPLETED_RESPONSE_EXAMPLE = {
     "final_score": 85.5
 }
 
+SESSION_FINISH_RESPONSE_EXAMPLE = {
+    "session_completed": True,
+    "final_score": 85.5,
+    "final_max_score": 100.0,
+    "started_at": "2025-10-26T08:32:00Z",
+    "finished_at": "2025-10-26T09:15:00Z"
+}
+
 GAME_SESSION_START_RESPONSE_EXAMPLE = {
     "session_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "status": "in_progress",

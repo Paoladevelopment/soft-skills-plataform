@@ -18,7 +18,7 @@ from utils.payloads_listening_game import (
     GAME_SESSION_UPDATE_EXAMPLE,
     GAME_SESSION_SUMMARY_EXAMPLE,
     ROUND_ADVANCE_RESPONSE_EXAMPLE,
-    SESSION_COMPLETED_RESPONSE_EXAMPLE
+    SESSION_FINISH_RESPONSE_EXAMPLE
 )
 
 T = TypeVar("T")
@@ -121,15 +121,22 @@ class RoundAdvanceResponse(BaseModel):
     }
 
 
-class SessionCompletedResponse(BaseModel):
-    """Response schema for session completion."""
+class SessionFinishResponse(BaseModel):
+    """Response schema for finishing a game session."""
     session_completed: bool
     final_score: float
+    final_max_score: float
+    started_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
+
+    @field_serializer("started_at", "finished_at", when_used="json")
+    def serialize_datetime_fields(self, v: datetime | None) -> str | None:
+        return serialize_datetime_without_microseconds(v)
 
     model_config = {
-        "json_schema_extra": {"example": SESSION_COMPLETED_RESPONSE_EXAMPLE}
+        "json_schema_extra": {"example": SESSION_FINISH_RESPONSE_EXAMPLE}
     }
 
 
-AdvanceNextRoundResponse = Union[RoundAdvanceResponse, SessionCompletedResponse]
+AdvanceNextRoundResponse = RoundAdvanceResponse
 

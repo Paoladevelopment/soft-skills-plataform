@@ -17,7 +17,7 @@ from service.listening_core.game_round import GameRoundService
 class GameSessionService:
     def __init__(self):
         self.game_round_service = GameRoundService()
-
+    
     def get_game_session(self, session_id: UUID, session: Session) -> GameSession:
         """Get a game session by ID."""
         try:
@@ -74,42 +74,6 @@ class GameSessionService:
         """Verify that the user owns this game session."""
         if game_session.user_id != user_id:
             raise Forbidden("You are not allowed to perform this action")
-    
-    def submit_round_attempt(
-        self,
-        session_id: UUID,
-        round_number: int,
-        answer_payload: Dict[str, Any],
-        idempotency_key: str,
-        user_id: UUID,
-        client_elapsed_ms: Optional[int],
-        session: Session
-    ):
-        """
-        Submit an attempt for a round with all validations.
-        """
-        try:
-            game_session = self.get_game_session(session_id, session)
-            self.verify_session_ownership(game_session, user_id)
-            
-            if game_session.status != GameStatus.in_progress:
-                raise BadRequest(f"Game session must be in progress. Current status: {game_session.status}")
-            
-            return self.game_round_service.submit_attempt(
-                game_session=game_session,
-                round_number=round_number,
-                answer_payload=answer_payload,
-                idempotency_key=idempotency_key,
-                user_id=user_id,
-                client_elapsed_ms=client_elapsed_ms,
-                db_session=session
-            )
-            
-        except APIException:
-            raise
-        except Exception as err:
-            session.rollback()
-            handle_db_error(err, "submit_round_attempt", error_type="commit")
     
     def create_game_session_with_config(
         self, 
@@ -426,51 +390,39 @@ class GameSessionService:
             session.rollback()
             handle_db_error(err, "get_current_round", error_type="query")
 
-    def _validate_session_for_advance(self, game_session: GameSession) -> None:
-        """Validate that the game session is in a valid state to advance to the next round."""
-        if game_session.status == GameStatus.paused:
-            raise Locked("Game session is paused")
-        
-        if game_session.status in (GameStatus.completed, GameStatus.cancelled):
-            raise Conflict(f"Cannot advance round for a session that is {game_session.status}")
-        
-        if game_session.status != GameStatus.in_progress:
-            raise BadRequest(f"Game session must be in progress. Current status: {game_session.status}")
-
-    def _complete_session(
+    def get_round_by_number(
         self,
-        game_session: GameSession,
-        session_id: UUID,
-        db_session: Session
-    ) -> Dict[str, Any]:
-        """Mark session as completed and return completion response."""
-        total_score = self.game_round_service.calculate_total_score(session_id, db_session)
-        
-        game_session.total_score = total_score
-        game_session.status = GameStatus.completed
-        game_session.finished_at = datetime.now(timezone.utc)
-        
-        db_session.commit()
-        
-        return {
-            "session_completed": True,
-            "final_score": total_score
-        }
-
-    def _advance_round_pointer(
-        self,
-        game_session: GameSession,
-        db_session: Session
-    ) -> Dict[str, Any]:
-        """Advance the current_round pointer and return advancement response."""
-        next_round = game_session.current_round + 1
-        game_session.current_round = next_round
-        
-        db_session.commit()
-        
-        return {
-            "current_round": next_round
-        }
+        game_session_id: UUID,
+        round_number: int,
+        user_id: UUID,
+        session: Session
+    ) -> Tuple[GameRound, Optional[Any], GameSessionConfig, GameSession]:
+        """
+        Get a round by round number for a game session.
+        """
+        try:
+            game_session = self.get_game_session(game_session_id, session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            config = self.get_config(game_session_id, session)
+            
+            if round_number < 1 or round_number > config.total_rounds:
+                raise BadRequest(
+                    f"Round number must be between 1 and {config.total_rounds}. "
+                    f"Provided: {round_number}"
+                )
+            
+            game_round, challenge = self.game_round_service.get_round_by_number(
+                game_session, round_number, session
+            )
+            
+            return game_round, challenge, config, game_session
+            
+        except APIException:
+            raise
+        except Exception as err:
+            session.rollback()
+            handle_db_error(err, "get_round_by_number", error_type="query")
 
     def advance_to_next_round(
         self,
@@ -502,7 +454,10 @@ class GameSessionService:
             config = self.get_config(session_id, db_session)
             
             if game_session.current_round >= config.total_rounds:
-                return self._complete_session(game_session, session_id, db_session)
+                raise Conflict(
+                    f"Session is already at the last round ({config.total_rounds}). "
+                    f"Use the /finish endpoint to complete the session."
+                )
             
             return self._advance_round_pointer(game_session, db_session)
             
@@ -512,6 +467,294 @@ class GameSessionService:
             db_session.rollback()
             handle_db_error(err, "advance_to_next_round", error_type="commit")
 
+    def finish_session(
+        self,
+        session_id: UUID,
+        user_id: UUID,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """
+        Finish a game session by marking it as completed.
+        Returns idempotent result if already completed.
+        """
+        try:
+            game_session = self.get_game_session_for_update(session_id, db_session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            if game_session.status == GameStatus.completed:
+                return self._build_completion_response(game_session, session_id, db_session)
+            
+            config = self.get_config(session_id, db_session)
+            
+            if game_session.current_round != config.total_rounds:
+                raise Conflict(
+                    f"Session must be on the last round ({config.total_rounds}) to finish. "
+                    f"Current round: {game_session.current_round}"
+                )
+            
+            self._validate_last_round_for_finish(game_session, session_id, db_session)
+            
+            return self._complete_session(game_session, session_id, db_session)
+            
+        except APIException:
+            raise
+        except Exception as err:
+            db_session.rollback()
+            handle_db_error(err, "finish_session", error_type="commit")
+    
+    def get_completion_result(
+        self,
+        session_id: UUID,
+        user_id: UUID,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """
+        Get completion result for a finished game session.
+        """
+        try:
+            game_session = self.get_game_session(session_id, db_session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            if game_session.status != GameStatus.completed:
+                raise Conflict("Session is not completed yet")
+            
+            return self._build_completion_response(game_session, session_id, db_session)
+            
+        except APIException:
+            raise
+        except Exception as err:
+            handle_db_error(err, "get_completion_result", error_type="query")
+    
+    def _build_replay_response(
+        self,
+        replays_used: int,
+        max_replays_per_round: int
+    ) -> Dict[str, Any]:
+        """Build replay response dictionary."""
+        replays_left = max(0, max_replays_per_round - replays_used)
+        allowed = replays_used < max_replays_per_round
+        
+        return {
+            "allowed": allowed,
+            "replays_used": replays_used,
+            "replays_left": replays_left,
+            "max_replays_per_round": max_replays_per_round
+        }
+    
+    def _increment_and_return_replay_response(
+        self,
+        game_round: GameRound,
+        max_replays_per_round: int,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """Increment replay counter, commit, and return response."""
+        game_round.replays_used = (game_round.replays_used or 0) + 1
+        db_session.commit()
+        
+        return self._build_replay_response(game_round.replays_used, max_replays_per_round)
+    
+    def increment_replay(
+        self,
+        session_id: UUID,
+        round_number: int,
+        user_id: UUID,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """
+        Increment replay counter if under limit.
+        """
+        try:
+            game_session = self.get_game_session(session_id, db_session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            if game_session.status == GameStatus.completed:
+                raise Conflict("Cannot replay audio for a completed session")
+            
+            game_round = self.game_round_service.get_round_for_update(
+                game_session, round_number, db_session
+            )
+            
+            if not game_round:
+                raise Missing(f"Round {round_number} not found for session {session_id}")
+            
+            config = self.get_config(session_id, db_session)
+            
+            if game_round.status not in (GameRoundStatus.served, GameRoundStatus.attempted):
+                raise Conflict(f"Replay not allowed for round with status {game_round.status}")
+            
+            max_replays = config.max_replays_per_round
+            replays_used = game_round.replays_used or 0
+            
+            if replays_used >= max_replays:
+                return self._build_replay_response(replays_used, max_replays)
+            
+            return self._increment_and_return_replay_response(game_round, max_replays, db_session)
+            
+        except APIException:
+            raise
+        except Exception as err:
+            db_session.rollback()
+            handle_db_error(err, "increment_replay", error_type="commit")
+    
+    def can_replay(
+        self,
+        session_id: UUID,
+        round_number: int,
+        user_id: UUID,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """
+        Check if audio replay is allowed for a round.
+        Read-only operation.
+        """
+        try:
+            game_session = self.get_game_session(session_id, db_session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            if game_session.status == GameStatus.completed:
+                raise Conflict("Cannot replay audio for a completed session")
+            
+            game_round = self.game_round_service._get_existing_round(
+                game_session, round_number, use_for_update=False, session=db_session
+            )
+            
+            if not game_round:
+                raise Missing(f"Round {round_number} not found for session {session_id}")
+            
+            config = self.get_config(session_id, db_session)
+            max_replays = config.max_replays_per_round
+            replays_used = game_round.replays_used or 0
+            
+            return self._build_replay_response(replays_used, max_replays)
+            
+        except APIException:
+            raise
+        except Exception as err:
+            handle_db_error(err, "can_replay", error_type="query")
+    
+    def submit_round_attempt(
+        self,
+        session_id: UUID,
+        round_number: int,
+        answer_payload: Dict[str, Any],
+        idempotency_key: str,
+        user_id: UUID,
+        client_elapsed_ms: Optional[int],
+        session: Session
+    ):
+        """
+        Submit an attempt for a round with all validations.
+        """
+        try:
+            game_session = self.get_game_session(session_id, session)
+            self.verify_session_ownership(game_session, user_id)
+            
+            if game_session.status != GameStatus.in_progress:
+                raise BadRequest(f"Game session must be in progress. Current status: {game_session.status}")
+            
+            return self.game_round_service.submit_attempt(
+                game_session=game_session,
+                round_number=round_number,
+                answer_payload=answer_payload,
+                idempotency_key=idempotency_key,
+                user_id=user_id,
+                client_elapsed_ms=client_elapsed_ms,
+                db_session=session
+            )
+            
+        except APIException:
+            raise
+        except Exception as err:
+            session.rollback()
+            handle_db_error(err, "submit_round_attempt", error_type="commit")
+    
+    def _validate_session_for_advance(self, game_session: GameSession) -> None:
+        """Validate that the game session is in a valid state to advance to the next round."""
+        if game_session.status == GameStatus.paused:
+            raise Locked("Game session is paused")
+        
+        if game_session.status in (GameStatus.completed, GameStatus.cancelled):
+            raise Conflict(f"Cannot advance round for a session that is {game_session.status}")
+        
+        if game_session.status != GameStatus.in_progress:
+            raise BadRequest(f"Game session must be in progress. Current status: {game_session.status}")
+
+    def _validate_last_round_for_finish(
+        self,
+        game_session: GameSession,
+        session_id: UUID,
+        db_session: Session
+    ) -> GameRound:
+        """
+        Validate that the last round exists and is attempted.
+        """
+        last_round = self.game_round_service.get_round_for_update(
+            game_session,
+            game_session.current_round,
+            db_session
+        )
+        
+        if not last_round:
+            raise Missing(f"Last round {game_session.current_round} not found for session {session_id}")
+        
+        if last_round.status != GameRoundStatus.attempted:
+            raise Conflict(
+                f"Last round must be attempted before finishing session. "
+                f"Current status: {last_round.status}"
+            )
+        
+        return last_round
+
+    def _build_completion_response(
+        self,
+        game_session: GameSession,
+        session_id: UUID,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """Build completion response with scores and timestamps."""
+        total_score = self.game_round_service.calculate_total_score(session_id, db_session)
+        total_max_score = self.game_round_service.calculate_total_max_score(session_id, db_session)
+        
+        return {
+            "session_completed": True,
+            "final_score": total_score,
+            "final_max_score": total_max_score,
+            "started_at": game_session.started_at,
+            "finished_at": game_session.finished_at
+        }
+
+    def _complete_session(
+        self,
+        game_session: GameSession,
+        session_id: UUID,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """Mark session as completed and return completion response."""
+        total_score = self.game_round_service.calculate_total_score(session_id, db_session)
+        
+        game_session.total_score = total_score
+        game_session.status = GameStatus.completed
+        game_session.finished_at = datetime.now(timezone.utc)
+        
+        db_session.commit()
+        
+        return self._build_completion_response(game_session, session_id, db_session)
+
+    def _advance_round_pointer(
+        self,
+        game_session: GameSession,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """Advance the current_round pointer and return advancement response."""
+        next_round = game_session.current_round + 1
+        game_session.current_round = next_round
+        
+        db_session.commit()
+        
+        return {
+            "current_round": next_round
+        }
+    
     def _extract_correct_answer(
         self,
         play_mode: PlayMode,

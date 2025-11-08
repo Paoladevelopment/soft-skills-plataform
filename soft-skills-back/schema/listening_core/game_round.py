@@ -77,6 +77,9 @@ class CurrentRoundResponse(BaseModel):
     evaluation: Optional[RoundEvaluationResponse] = None
     total_rounds: int
     name: str
+    replays_used: int
+    replays_left: int
+    max_replays_per_round: int
 
     model_config = {
         "json_schema_extra": {"example": CURRENT_ROUND_RESPONSE_EXAMPLE}

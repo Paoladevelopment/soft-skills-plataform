@@ -17,6 +17,7 @@ class GameRoundBase(SQLModel):
 
     score: float | None = Field(default=None)
     max_score: float = Field(default=10.0)
+    replays_used: int = Field(default=0)
 
 
 class GameRound(GameRoundBase, table=True):

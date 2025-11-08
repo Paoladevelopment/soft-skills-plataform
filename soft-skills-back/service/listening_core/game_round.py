@@ -63,6 +63,18 @@ class GameRoundService:
         
         return total_score
 
+    def calculate_total_max_score(self, game_session_id: UUID, session: Session) -> float:
+        """Calculate total max score by summing all round max scores for a game session."""
+        total_max_score = session.scalar(
+            select(func.coalesce(func.sum(GameRound.max_score), 0.0))
+            .where(
+                GameRound.game_session_id == game_session_id,
+                GameRound.status == GameRoundStatus.attempted
+            )
+        ) or 0.0
+        
+        return total_max_score
+
     def _should_prepare_round(self, game_round: GameRound) -> bool:
         """Check if round needs preparation based on its current status."""
         return game_round.status == GameRoundStatus.queued
@@ -369,6 +381,32 @@ class GameRoundService:
         self.mark_round_as_served(game_round)
         db_session.commit()
         db_session.refresh(game_round)
+        
+        challenge = None
+        if game_round.challenge_id:
+            challenge = self.challenge_service.get_challenge(game_round.challenge_id, db_session)
+        
+        return game_round, challenge
+
+    def get_round_by_number(
+        self,
+        game_session: GameSession,
+        round_number: int,
+        db_session: Session
+    ) -> Tuple[GameRound, Optional[Challenge]]:
+        """
+        Get a round by round number without preparing it.
+        Returns the round as-is if it exists.
+        """
+        game_round = self._get_existing_round(
+            game_session,
+            round_number,
+            use_for_update=False,
+            session=db_session
+        )
+        
+        if not game_round:
+            raise Missing(f"Round {round_number} not found for session {game_session.game_session_id}")
         
         challenge = None
         if game_round.challenge_id:
