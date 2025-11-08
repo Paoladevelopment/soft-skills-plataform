@@ -1,5 +1,5 @@
 import { CurrentRound, AttemptFeedback } from './gamePlay.models'
-import { SubmitAttemptPayloadAPI, ReplayStatus, ReplayAudioResult } from './gamePlay.api'
+import { SubmitAttemptPayloadAPI, ReplayStatus, ReplayAudioResult, FinishSessionResponse } from './gamePlay.api'
 
 export interface IGamePlayStore {
   currentRound: CurrentRound | null
@@ -23,6 +23,7 @@ export interface IGamePlayStore {
   replayAudio: (sessionId: string, roundNumber: number) => Promise<ReplayAudioResult>
   submitAttempt: (sessionId: string, payload: SubmitAttemptPayloadAPI) => Promise<AttemptFeedback | null>
   advanceRound: (sessionId: string) => Promise<void>
+  finishSession: (sessionId: string) => Promise<FinishSessionResponse | null>
   reset: () => void
 }
 

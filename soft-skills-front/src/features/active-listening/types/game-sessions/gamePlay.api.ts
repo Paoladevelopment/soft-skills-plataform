@@ -47,3 +47,11 @@ export interface ReplayAudioResult {
   replayStatus: ReplayStatus | null
 }
 
+export interface FinishSessionResponse {
+  sessionCompleted: boolean
+  finalScore: number
+  finalMaxScore: number
+  startedAt: string
+  finishedAt: string
+}
+

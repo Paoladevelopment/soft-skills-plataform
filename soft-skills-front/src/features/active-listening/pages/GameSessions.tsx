@@ -77,6 +77,10 @@ const GameSessions = () => {
     navigate(`/active-listening/session/${sessionId}/play`)
   }
 
+  const handleViewSession = (sessionId: string) => {
+    navigate(`/active-listening/session/${sessionId}/result`)
+  }
+
   const handleSettingsSession = async (sessionId: string) => {
     const session = gameSessions.find((s) => s.gameSessionId === sessionId)
     if (!session) return
@@ -251,6 +255,7 @@ const GameSessions = () => {
               onSettings={handleSettingsSession}
               onDelete={handleOpenDeleteModal}
               onStart={handleStartSession}
+              onView={handleViewSession}
             />
           ))}
         </Stack>

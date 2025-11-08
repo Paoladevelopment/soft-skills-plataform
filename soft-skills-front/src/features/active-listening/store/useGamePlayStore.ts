@@ -5,7 +5,7 @@ import { IGamePlayStore } from '../types/game-sessions/gamePlay.store'
 import { CurrentRound } from '../types/game-sessions/gamePlay.models'
 import { SubmitAttemptPayloadAPI, ReplayStatus } from '../types/game-sessions/gamePlay.api'
 import { useToastStore } from '../../../store/useToastStore'
-import { getCurrentRound, submitAttempt, advanceRound, replayAudio } from '../api/GamePlay'
+import { getCurrentRound, submitAttempt, advanceRound, replayAudio, finishSession } from '../api/GamePlay'
 
 export const useGamePlayStore = create<IGamePlayStore>()(
   devtools(
@@ -174,6 +174,25 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           if (err instanceof Error) {
             useToastStore.getState().showToast(err.message || 'Error advancing to next round', 'error')
           }
+        } finally {
+          get().setIsLoading(false)
+        }
+      },
+
+      finishSession: async (sessionId: string) => {
+        get().setIsLoading(true)
+
+        try {
+          const response = await finishSession(sessionId)
+          useToastStore.getState().showToast('Session finished successfully!', 'success')
+          
+          return response
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            useToastStore.getState().showToast(err.message || 'Error finishing session', 'error')
+          }
+
+          return null
         } finally {
           get().setIsLoading(false)
         }

@@ -164,8 +164,26 @@ const GamePlay = () => {
     return await gamePlayStore.replayAudio(sessionId, roundNumber)
   }
 
+  const handleFinishSession = async () => {
+    if (!sessionId) return
+
+    const result = await gamePlayStore.finishSession(sessionId)
+    
+    if (result) {
+      navigate(`/active-listening/session/${sessionId}/result`)
+    }
+  }
+
   const getScore = (): number | undefined => {
     return attemptFeedback?.score ?? currentRound?.score ?? undefined
+  }
+
+  const isLastRound = (): boolean => {
+    return currentRound ? currentRound.currentRound === currentRound.totalRounds : false
+  }
+
+  const isAttempted = (): boolean => {
+    return !!currentRound?.evaluation
   }
 
   if (gamePlayStore.isLoading && !gamePlayStore.currentRound) {
@@ -279,9 +297,12 @@ const GamePlay = () => {
             showFeedback={showFeedback}
             hasError={isErrorState()}
             canAdvance={canShowAdvanceButton()}
+            isLastRound={isLastRound()}
+            isAttempted={isAttempted()}
             onSubmit={handleSubmitAttempt}
             onTryAgain={handleTryAgain}
             onAdvance={handleAdvanceRound}
+            onFinishSession={handleFinishSession}
           />
         </Box>
       </Container>

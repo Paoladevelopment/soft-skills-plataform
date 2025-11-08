@@ -1,5 +1,5 @@
 import { Box, Button, Card, Chip, IconButton, Typography } from '@mui/material'
-import { Settings, PlayArrow, Delete } from '@mui/icons-material'
+import { Settings, PlayArrow, Delete, Visibility } from '@mui/icons-material'
 import { GameSessionListItem, GameSessionStatus } from '../types/game-sessions/gameSession.models'
 import { getStatusColor, getStatusLabel } from '../utils/gameSessionsUtils'
 
@@ -9,12 +9,14 @@ interface GameSessionCardProps {
   onSettings?: (sessionId: string) => void
   onDelete?: (sessionId: string) => void
   onStart?: (sessionId: string) => void
+  onView?: (sessionId: string) => void
 }
 
-const GameSessionCard = ({ session, onPlay, onSettings, onDelete, onStart }: GameSessionCardProps) => {
+const GameSessionCard = ({ session, onPlay, onSettings, onDelete, onStart, onView }: GameSessionCardProps) => {
   const isSessionEnded = session.status === GameSessionStatus.COMPLETED || session.status === GameSessionStatus.CANCELLED
   const isPaused = session.status === GameSessionStatus.PAUSED
   const isPending = session.status === GameSessionStatus.PENDING
+  const isCompleted = session.status === GameSessionStatus.COMPLETED
 
   const handleSessionAction = () => {
     if (isPending) {
@@ -59,7 +61,28 @@ const GameSessionCard = ({ session, onPlay, onSettings, onDelete, onStart }: Gam
         />
       </Box>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1 
+        }}
+      >
+        {isCompleted && (
+          <IconButton
+            onClick={() => onView?.(session.gameSessionId)}
+            sx={{
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              },
+            }}
+          >
+            <Visibility />
+          </IconButton>
+        )}
+
         {!isSessionEnded && (
           <IconButton
             onClick={() => onSettings?.(session.gameSessionId)}
