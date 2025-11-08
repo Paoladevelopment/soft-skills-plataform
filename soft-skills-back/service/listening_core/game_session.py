@@ -1,4 +1,4 @@
-from typing import Tuple, Sequence, Optional, Dict, Any
+from typing import Tuple, Sequence, Optional, Dict, Any, List
 from uuid import UUID
 from datetime import datetime, timezone
 
@@ -502,6 +502,86 @@ class GameSessionService:
             db_session.rollback()
             handle_db_error(err, "finish_session", error_type="commit")
     
+    def _get_all_rounds_for_session(
+        self,
+        session_id: UUID,
+        db_session: Session
+    ) -> Sequence[GameRound]:
+        """Get all rounds for a session ordered by round_number."""
+        return db_session.exec(
+            select(GameRound)
+            .where(GameRound.game_session_id == session_id)
+            .order_by(GameRound.round_number)
+        ).all()
+    
+    def _build_round_recap(
+        self,
+        game_round: GameRound,
+        challenge: Optional[Any],
+        config: GameSessionConfig,
+        db_session: Session
+    ) -> Dict[str, Any]:
+        """Build round recap dictionary for completion result."""
+        audio_url = challenge.audio_url if challenge else None
+        
+        filtered_metadata = None
+        if challenge and game_round.play_mode:
+            filtered_metadata = self._filter_challenge_metadata_by_play_mode(
+                challenge.challenge_metadata or {},
+                game_round.play_mode
+            )
+        
+        evaluation = None
+        if game_round.status == GameRoundStatus.attempted:
+            evaluation = self.get_round_evaluation(
+                game_round.game_round_id,
+                challenge.challenge_metadata or {} if challenge else {},
+                game_round.play_mode,
+                db_session
+            )
+        
+        replays_used = game_round.replays_used or 0
+        max_replays_per_round = config.max_replays_per_round
+        replays_left = max(0, max_replays_per_round - replays_used)
+        
+        return {
+            "round_id": game_round.game_round_id,
+            "round_number": game_round.round_number,
+            "status": game_round.status,
+            "play_mode": game_round.play_mode,
+            "prompt_type": game_round.prompt_type,
+            "audio_url": audio_url,
+            "score": game_round.score,
+            "max_score": game_round.max_score,
+            "mode_payload": filtered_metadata,
+            "evaluation": evaluation,
+            "replays_used": replays_used,
+            "replays_left": replays_left,
+            "max_replays_per_round": max_replays_per_round
+        }
+    
+    def _build_rounds_recap(
+        self,
+        all_rounds: Sequence[GameRound],
+        config: GameSessionConfig,
+        db_session: Session
+    ) -> List[Dict[str, Any]]:
+        """Build list of round recaps for all rounds."""
+        rounds_recap = []
+        for game_round in all_rounds:
+            challenge = None
+            if game_round.challenge_id:
+                challenge = self.game_round_service.challenge_service.get_challenge(
+                    game_round.challenge_id, db_session
+                )
+            
+            round_recap = self._build_round_recap(
+                game_round, challenge, config, db_session
+            )
+            rounds_recap.append(round_recap)
+        
+        return rounds_recap
+    
     def get_completion_result(
         self,
         session_id: UUID,
@@ -509,7 +589,7 @@ class GameSessionService:
         db_session: Session
     ) -> Dict[str, Any]:
         """
-        Get completion result for a finished game session.
+        Get completion result for a finished game session with full recap.
         """
         try:
             game_session = self.get_game_session(session_id, db_session)
@@ -518,7 +598,18 @@ class GameSessionService:
             if game_session.status != GameStatus.completed:
                 raise Conflict("Session is not completed yet")
             
-            return self._build_completion_response(game_session, session_id, db_session)
+            config = self.get_config(session_id, db_session)
+            base_response = self._build_completion_response(game_session, session_id, db_session)
+            
+            all_rounds = self._get_all_rounds_for_session(session_id, db_session)
+            rounds_recap = self._build_rounds_recap(all_rounds, config, db_session)
+            
+            return {
+                **base_response,
+                "total_rounds": config.total_rounds,
+                "name": game_session.name,
+                "rounds": rounds_recap
+            }
             
         except APIException:
             raise

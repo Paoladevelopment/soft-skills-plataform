@@ -13,6 +13,7 @@ from schema.listening_core.game_session import (
     AdvanceNextRoundResponse,
     RoundAdvanceResponse,
     SessionFinishResponse,
+    SessionResultResponse,
 )
 from schema.listening_core.game_session_config import GameSessionConfigRead, GameSessionConfigUpdate
 from schema.listening_core.game_round import (
@@ -452,7 +453,7 @@ def finish_game_session(
 @router.get(
     "/{session_id}/result",
     summary="Get completion result for a finished game session",
-    response_model=BaseResponse[SessionFinishResponse],
+    response_model=BaseResponse[SessionResultResponse],
 )
 def get_game_session_result(
     session_id: UUID,
@@ -466,7 +467,7 @@ def get_game_session_result(
             db_session=session
         )
         
-        validated_data = SessionFinishResponse.model_validate(response_data)
+        validated_data = SessionResultResponse.model_validate(response_data)
         
         return BaseResponse(
             message="Game session result retrieved successfully",
