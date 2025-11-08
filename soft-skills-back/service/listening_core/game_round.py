@@ -6,6 +6,7 @@ from collections import Counter
 
 from pydantic import BaseModel, ValidationError
 from sqlmodel import Session, select, func
+from sqlalchemy.exc import IntegrityError
 
 from model.listening_core.game_session import GameSession
 from model.listening_core.game_session_config import GameSessionConfig
@@ -256,18 +257,29 @@ class GameRoundService:
     ) -> GameRound:
         """Prepare a round or return if already prepared. Idempotent with retry logic."""
         try:
-            game_round = self._get_existing_round(game_session, round_number, use_for_update=True, session=db_session)
+            game_round = self._get_existing_round(game_session, round_number, use_for_update=False, session=db_session)
             
             if not game_round:
-                game_round = GameRound(
-                    game_session_id=game_session.game_session_id,
-                    round_number=round_number,
-                    status=GameRoundStatus.queued
-                )
-                
-                db_session.add(game_round)
-                db_session.flush()
-            
+                try:
+                    game_round = GameRound(
+                        game_session_id=game_session.game_session_id,
+                        round_number=round_number,
+                        status=GameRoundStatus.queued
+                    )
+                    
+                    db_session.add(game_round)
+                    db_session.flush()
+                except IntegrityError:
+                    db_session.rollback()
+                    
+                    game_round = self._get_existing_round(game_session, round_number, use_for_update=False, session=db_session)
+                    if not game_round:
+                        raise
+            else:
+                locked_round = self._get_existing_round(game_session, round_number, use_for_update=True, session=db_session)
+                if locked_round:
+                    game_round = locked_round
+
             if not self._should_prepare_round(game_round):
                 return game_round
             

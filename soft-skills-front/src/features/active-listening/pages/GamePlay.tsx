@@ -72,7 +72,12 @@ const GamePlay = () => {
 
   const isErrorState = () => showFeedback && !attemptFeedback
 
-  const canShowAdvanceButton = () => attemptFeedback?.canAdvance ?? false
+  const canShowAdvanceButton = () => {
+    if (!attemptFeedback) return false
+    const isLast = isLastRound()
+
+    return attemptFeedback.canAdvance && !isLast
+  }
 
   useEffect(() => {
     if (!sessionId) return
@@ -136,8 +141,16 @@ const GamePlay = () => {
     }
 
     const feedback = await gamePlayStore.submitAttempt(sessionId, payload)
-    setAttemptFeedback(feedback)
-    setShowFeedback(true)
+    if (feedback) {
+      const currentRound = gamePlayStore.currentRound
+      const isLast = currentRound ? currentRound.currentRound === currentRound.totalRounds : false
+      
+      setAttemptFeedback({
+        ...feedback,
+        canAdvance: feedback.canAdvance && !isLast,
+      })
+      setShowFeedback(true)
+    }
   }, [sessionId, gamePlayStore, answerStore])
 
   const handleAdvanceRound = useCallback(async () => {
@@ -183,7 +196,7 @@ const GamePlay = () => {
   }
 
   const isAttempted = (): boolean => {
-    return !!currentRound?.evaluation
+    return !!currentRound?.evaluation || !!attemptFeedback
   }
 
   if (gamePlayStore.isLoading && !gamePlayStore.currentRound) {

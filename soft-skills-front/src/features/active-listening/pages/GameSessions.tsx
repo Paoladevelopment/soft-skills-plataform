@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react'
 import GameSessionCard from '../components/GameSessionCard'
 import GameSessionForm from '../components/GameSessionForm'
 import GameSessionSettingsModal from '../components/GameSessionSettingsModal'
+import PaginationControls from '../components/PaginationControls'
 import { GAME_SESSION_MODE } from '../constants/gameSessionMode'
 import backgroundImage from '../assets/background_2.png'
 import { useGameSessionStore } from '../store/useGameSessionStore'
@@ -34,7 +35,9 @@ const GameSessions = () => {
 
   const gameSessions = useGameSessionStore((state) => state.gameSessions)
   const isLoading = useGameSessionStore((state) => state.isLoading)
+  const pagination = useGameSessionStore((state) => state.gameSessionsPagination)
   const fetchGameSessions = useGameSessionStore((state) => state.fetchGameSessions)
+  const setGameSessionsOffset = useGameSessionStore((state) => state.setGameSessionsOffset)
   const createGameSession = useGameSessionStore((state) => state.createGameSession)
   const deleteGameSession = useGameSessionStore((state) => state.deleteGameSession)
   const startGameSessionAction = useGameSessionStore((state) => state.startGameSession)
@@ -45,8 +48,8 @@ const GameSessions = () => {
   const getGameSessionById = useGameSessionStore((state) => state.getGameSessionById)
 
   useEffect(() => {
-    fetchGameSessions()
-  }, [fetchGameSessions])
+    fetchGameSessions(pagination.offset, pagination.limit)
+  }, [fetchGameSessions, pagination.offset, pagination.limit])
 
   const handleGoBack = () => {
     navigate('/active-listening')
@@ -259,6 +262,15 @@ const GameSessions = () => {
             />
           ))}
         </Stack>
+
+        {pagination.total > 0 && (
+          <PaginationControls
+            total={pagination.total}
+            offset={pagination.offset}
+            limit={pagination.limit}
+            onChangeOffset={setGameSessionsOffset}
+          />
+        )}
       </Container>
 
       <ConfirmDeleteModal

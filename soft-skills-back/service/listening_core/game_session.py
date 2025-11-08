@@ -256,11 +256,11 @@ class GameSessionService:
         limit: int, 
         session: Session
     ) -> Sequence[GameSession]:
-        """Get paginated game sessions for a user."""
+        """Get paginated game sessions for a user, grouped by status."""
         return session.exec(
             select(GameSession)
             .where(GameSession.user_id == user_id)
-            .order_by(GameSession.created_at.desc())
+            .order_by(GameSession.status, GameSession.created_at.desc())
             .offset(offset)
             .limit(limit)
         ).all()
