@@ -528,14 +528,17 @@ class GameSessionService:
     def _build_replay_response(
         self,
         replays_used: int,
-        max_replays_per_round: int
+        max_replays_per_round: int,
+        *,
+        request_accepted: bool
     ) -> Dict[str, Any]:
         """Build replay response dictionary."""
         replays_left = max(0, max_replays_per_round - replays_used)
-        allowed = replays_used < max_replays_per_round
+        can_replay_next = replays_used < max_replays_per_round
         
         return {
-            "allowed": allowed,
+            "request_accepted": request_accepted,
+            "can_replay_next": can_replay_next,
             "replays_used": replays_used,
             "replays_left": replays_left,
             "max_replays_per_round": max_replays_per_round
@@ -551,7 +554,7 @@ class GameSessionService:
         game_round.replays_used = (game_round.replays_used or 0) + 1
         db_session.commit()
         
-        return self._build_replay_response(game_round.replays_used, max_replays_per_round)
+        return self._build_replay_response(game_round.replays_used, max_replays_per_round, request_accepted=True)
     
     def increment_replay(
         self,
@@ -586,7 +589,7 @@ class GameSessionService:
             replays_used = game_round.replays_used or 0
             
             if replays_used >= max_replays:
-                return self._build_replay_response(replays_used, max_replays)
+                return self._build_replay_response(replays_used, max_replays, request_accepted=False)
             
             return self._increment_and_return_replay_response(game_round, max_replays, db_session)
             
@@ -595,42 +598,6 @@ class GameSessionService:
         except Exception as err:
             db_session.rollback()
             handle_db_error(err, "increment_replay", error_type="commit")
-    
-    def can_replay(
-        self,
-        session_id: UUID,
-        round_number: int,
-        user_id: UUID,
-        db_session: Session
-    ) -> Dict[str, Any]:
-        """
-        Check if audio replay is allowed for a round.
-        Read-only operation.
-        """
-        try:
-            game_session = self.get_game_session(session_id, db_session)
-            self.verify_session_ownership(game_session, user_id)
-            
-            if game_session.status == GameStatus.completed:
-                raise Conflict("Cannot replay audio for a completed session")
-            
-            game_round = self.game_round_service._get_existing_round(
-                game_session, round_number, use_for_update=False, session=db_session
-            )
-            
-            if not game_round:
-                raise Missing(f"Round {round_number} not found for session {session_id}")
-            
-            config = self.get_config(session_id, db_session)
-            max_replays = config.max_replays_per_round
-            replays_used = game_round.replays_used or 0
-            
-            return self._build_replay_response(replays_used, max_replays)
-            
-        except APIException:
-            raise
-        except Exception as err:
-            handle_db_error(err, "can_replay", error_type="query")
     
     def submit_round_attempt(
         self,

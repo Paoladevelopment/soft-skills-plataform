@@ -3,9 +3,9 @@ import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { IGamePlayStore } from '../types/game-sessions/gamePlay.store'
 import { CurrentRound } from '../types/game-sessions/gamePlay.models'
-import { SubmitAttemptPayloadAPI } from '../types/game-sessions/gamePlay.api'
+import { SubmitAttemptPayloadAPI, ReplayStatus } from '../types/game-sessions/gamePlay.api'
 import { useToastStore } from '../../../store/useToastStore'
-import { getCurrentRound, submitAttempt, advanceRound } from '../api/GamePlay'
+import { getCurrentRound, submitAttempt, advanceRound, replayAudio } from '../api/GamePlay'
 
 export const useGamePlayStore = create<IGamePlayStore>()(
   devtools(
@@ -13,7 +13,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
       currentRound: null,
       isLoading: false,
       isSubmitting: false,
-      replayCount: 0,
+      isReplaying: false,
       elapsedTime: 0,
       timerRunning: false,
       error: null,
@@ -36,22 +36,16 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         }, false, 'GAME_PLAY/SET_IS_SUBMITTING')
       },
 
+      setIsReplaying: (replaying: boolean) => {
+        set((state) => {
+          state.isReplaying = replaying
+        }, false, 'GAME_PLAY/SET_IS_REPLAYING')
+      },
+
       setError: (error: string | null) => {
         set((state) => {
           state.error = error
         }, false, 'GAME_PLAY/SET_ERROR')
-      },
-
-      incrementReplayCount: () => {
-        set((state) => {
-          state.replayCount += 1
-        }, false, 'GAME_PLAY/INCREMENT_REPLAY_COUNT')
-      },
-
-      resetReplayCount: () => {
-        set((state) => {
-          state.replayCount = 0
-        }, false, 'GAME_PLAY/RESET_REPLAY_COUNT')
       },
 
       setElapsedTime: (time: number) => {
@@ -66,6 +60,16 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         }, false, 'GAME_PLAY/SET_TIMER_RUNNING')
       },
 
+      updateReplayCounters: (replayStatus: ReplayStatus) => {
+        set((state) => {
+          if (state.currentRound) {
+            state.currentRound.replaysUsed = replayStatus.replaysUsed
+            state.currentRound.replaysLeft = replayStatus.replaysLeft
+            state.currentRound.config.maxReplaysPerRound = replayStatus.maxReplaysPerRound
+          }
+        }, false, 'GAME_PLAY/UPDATE_REPLAY_COUNTERS')
+      },
+
       fetchCurrentRound: async (sessionId: string) => {
         get().setIsLoading(true)
         get().setError(null)
@@ -73,7 +77,6 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         try {
           const response = await getCurrentRound(sessionId)
           get().setCurrentRound(response.data)
-          get().resetReplayCount()
           get().setElapsedTime(0)
           get().setError(null)
         } catch (err: unknown) {
@@ -82,6 +85,45 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           useToastStore.getState().showToast(errorMessage, 'error')
         } finally {
           get().setIsLoading(false)
+        }
+      },
+
+      replayAudio: async (sessionId: string, roundNumber: number) => {
+        get().setIsReplaying(true)
+
+        try {
+          const response = await replayAudio(sessionId, roundNumber)
+          const replayStatus = response.data
+
+          if (!replayStatus.requestAccepted) {
+            useToastStore.getState().showToast('Replay limit reached', 'warning')
+            return { 
+              requestAccepted: false,
+              canReplayNext: false, 
+              replayStatus 
+            }
+          }
+
+          get().updateReplayCounters(replayStatus)
+
+          return { 
+            requestAccepted: true,
+            canReplayNext: replayStatus.canReplayNext, 
+            replayStatus 
+          }
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            const errorMessage = err.message || 'Couldn\'t update replay. Try again.'
+            useToastStore.getState().showToast(errorMessage, 'error')
+          }
+
+          return { 
+            requestAccepted: false,
+            canReplayNext: false, 
+            replayStatus: null 
+          }
+        } finally {
+          get().setIsReplaying(false)
         }
       },
 
@@ -142,7 +184,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           state.currentRound = null
           state.isLoading = false
           state.isSubmitting = false
-          state.replayCount = 0
+          state.isReplaying = false
           state.elapsedTime = 0
           state.timerRunning = false
           state.error = null

@@ -60,6 +60,7 @@ export const api = {
       current: (sessionId: string) => `${BASE_URL}/game-sessions/${sessionId}/rounds/current`,
       attempt: (sessionId: string, roundNumber: number) => `${BASE_URL}/game-sessions/${sessionId}/rounds/${roundNumber}/attempt`,
       next: (sessionId: string) => `${BASE_URL}/game-sessions/${sessionId}/rounds/next`,
+      replay: (sessionId: string, roundNumber: number) => `${BASE_URL}/game-sessions/${sessionId}/rounds/${roundNumber}/audio/replay`,
     }
   }
 }

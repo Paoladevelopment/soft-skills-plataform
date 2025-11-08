@@ -28,3 +28,22 @@ export interface AdvanceRoundResponse {
   data: CurrentRound
 }
 
+export interface ReplayStatus {
+  requestAccepted: boolean
+  canReplayNext: boolean
+  replaysUsed: number
+  replaysLeft: number
+  maxReplaysPerRound: number
+}
+
+export interface ReplayResponse {
+  message: string
+  data: ReplayStatus
+}
+
+export interface ReplayAudioResult {
+  requestAccepted: boolean
+  canReplayNext: boolean
+  replayStatus: ReplayStatus | null
+}
+

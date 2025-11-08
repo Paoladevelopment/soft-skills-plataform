@@ -160,6 +160,10 @@ const GamePlay = () => {
     navigate(`/active-listening/game-sessions`)
   }
 
+  const handleReplay = async (sessionId: string, roundNumber: number) => {
+    return await gamePlayStore.replayAudio(sessionId, roundNumber)
+  }
+
   const getScore = (): number | undefined => {
     return attemptFeedback?.score ?? currentRound?.score ?? undefined
   }
@@ -239,9 +243,13 @@ const GamePlay = () => {
         >
           <AudioPlayer
             audioUrl={currentRound.audioUrl}
-            maxReplays={currentRound.config.maxReplaysPerRound}
-            replayCount={gamePlayStore.replayCount}
-            onReplay={() => gamePlayStore.incrementReplayCount()}
+            replaysUsed={currentRound.replaysUsed}
+            replaysLeft={currentRound.replaysLeft}
+            maxReplaysPerRound={currentRound.config.maxReplaysPerRound}
+            isReplaying={gamePlayStore.isReplaying}
+            onReplay={handleReplay}
+            sessionId={sessionId!}
+            roundNumber={currentRound.currentRound}
           />
 
           {validationError && (

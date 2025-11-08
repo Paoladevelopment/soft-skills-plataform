@@ -58,6 +58,8 @@ export interface CurrentRound {
   maxScore: number
   modePayload: ModePayload
   evaluation?: Evaluation
+  replaysUsed: number
+  replaysLeft: number
 }
 
 export interface SubmitAttemptResponse {
