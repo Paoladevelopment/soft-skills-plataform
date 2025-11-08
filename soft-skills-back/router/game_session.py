@@ -1,3 +1,4 @@
+from typing import Optional, Any
 from uuid import UUID
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, status
 
@@ -11,10 +12,18 @@ from schema.listening_core.game_session import (
     GameSessionStartResponse,
     AdvanceNextRoundResponse,
     RoundAdvanceResponse,
-    SessionCompletedResponse,
+    SessionFinishResponse,
 )
 from schema.listening_core.game_session_config import GameSessionConfigRead, GameSessionConfigUpdate
-from schema.listening_core.game_round import GameRoundReadSummary, CurrentRoundResponse, CurrentRoundConfig, RoundEvaluationResponse
+from schema.listening_core.game_round import (
+    GameRoundReadSummary, 
+    CurrentRoundResponse, 
+    CurrentRoundConfig, 
+)
+from schema.listening_core.audio_replay import (
+    AudioReplayCounterResponse,
+    AudioReplayCheckResponse
+)
 from enums.listening_game import GameRoundStatus
 from schema.listening_core.round_submission import AttemptSubmissionRequest, AttemptSubmissionResponse
 from schema.token import TokenData
@@ -29,6 +38,57 @@ from utils.errors import APIException, raise_http_exception
 router = APIRouter()
 
 game_service = GameSessionService()
+
+
+def _build_round_response(
+    game_round: Any,
+    challenge: Optional[Any],
+    config: Any,
+    game_session: Any,
+    session: Session
+) -> CurrentRoundResponse:
+    """Build CurrentRoundResponse from round data."""
+    config_minimal = CurrentRoundConfig.model_validate(config)
+    audio_url = challenge.audio_url if challenge else None
+    
+    filtered_metadata = None
+    if challenge and game_round.play_mode:
+        filtered_metadata = game_service._filter_challenge_metadata_by_play_mode(
+            challenge.challenge_metadata or {},
+            game_round.play_mode
+        )
+    
+    evaluation = None
+    if game_round.status == GameRoundStatus.attempted:
+        evaluation = game_service.get_round_evaluation(
+            game_round.game_round_id,
+            challenge.challenge_metadata or {} if challenge else {},
+            game_round.play_mode,
+            session
+        )
+    
+    replays_used = game_round.replays_used or 0
+    max_replays_per_round = config.max_replays_per_round
+    replays_left = max(0, max_replays_per_round - replays_used)
+    
+    return CurrentRoundResponse(
+        round_id=game_round.game_round_id,
+        audio_url=audio_url,
+        config=config_minimal,
+        current_round=game_round.round_number,
+        status=game_round.status,
+        play_mode=game_round.play_mode,
+        prompt_type=game_round.prompt_type,
+        score=game_round.score,
+        max_score=game_round.max_score,
+        mode_payload=filtered_metadata,
+        evaluation=evaluation,
+        total_rounds=config.total_rounds,
+        name=game_session.name,
+        replays_used=replays_used,
+        replays_left=replays_left,
+        max_replays_per_round=max_replays_per_round
+    )
 
 
 @router.get(
@@ -255,43 +315,40 @@ def get_current_round(
         if next_rounds:
             background_tasks.add_task(safe_prefetch_rounds, session_id, next_rounds)
         
-        config_minimal = CurrentRoundConfig.model_validate(config)
-        audio_url = challenge.audio_url if challenge else None
-        
-        filtered_metadata = None
-        if challenge and game_round.play_mode:
-            filtered_metadata = game_service._filter_challenge_metadata_by_play_mode(
-                challenge.challenge_metadata or {},
-                game_round.play_mode
-            )
-        
-        evaluation = None
-        if game_round.status == GameRoundStatus.attempted:
-            evaluation = game_service.get_round_evaluation(
-                game_round.game_round_id,
-                challenge.challenge_metadata or {} if challenge else {},
-                game_round.play_mode,
-                session
-            )
-        
-        response_data = CurrentRoundResponse(
-            round_id=game_round.game_round_id,
-            audio_url=audio_url,
-            config=config_minimal,
-            current_round=current_round_number,
-            status=game_round.status,
-            play_mode=game_round.play_mode,
-            prompt_type=game_round.prompt_type,
-            score=game_round.score,
-            max_score=game_round.max_score,
-            mode_payload=filtered_metadata,
-            evaluation=evaluation,
-            total_rounds=config.total_rounds,
-            name=game_session.name
-        )
+        response_data = _build_round_response(game_round, challenge, config, game_session, session)
         
         return BaseResponse(
             message="Current round retrieved successfully",
+            data=response_data
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.get(
+    "/{session_id}/rounds/{round_number}",
+    summary="Get a specific round by round number",
+    response_model=BaseResponse[CurrentRoundResponse],
+)
+def get_round_by_number(
+    session_id: UUID,
+    round_number: int,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        game_round, challenge, config, game_session = game_service.get_round_by_number(
+            game_session_id=session_id,
+            round_number=round_number,
+            user_id=token_data.user_id,
+            session=session
+        )
+        
+        response_data = _build_round_response(game_round, challenge, config, game_session, session)
+        
+        return BaseResponse(
+            message="Round retrieved successfully",
             data=response_data
         )
     
@@ -317,15 +374,10 @@ def advance_to_next_round(
             db_session=session
         )
         
-        if response_data.get("session_completed"):
-            validated_data = SessionCompletedResponse.model_validate(response_data)
-            message = "Session completed"
-        else:
-            validated_data = RoundAdvanceResponse.model_validate(response_data)
-            message = "Advanced"
+        validated_data = RoundAdvanceResponse.model_validate(response_data)
         
         return BaseResponse(
-            message=message,
+            message="Advanced",
             data=validated_data
         )
     
@@ -368,3 +420,120 @@ def submit_round_attempt(
     except APIException as exc:
         raise_http_exception(exc)
 
+
+@router.post(
+    "/{session_id}/finish",
+    summary="Finish a game session",
+    response_model=BaseResponse[SessionFinishResponse],
+    status_code=status.HTTP_200_OK
+)
+def finish_game_session(
+    session_id: UUID,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        response_data = game_service.finish_session(
+            session_id=session_id,
+            user_id=token_data.user_id,
+            db_session=session
+        )
+        
+        validated_data = SessionFinishResponse.model_validate(response_data)
+        
+        return BaseResponse(
+            message="Game session completed",
+            data=validated_data
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.get(
+    "/{session_id}/result",
+    summary="Get completion result for a finished game session",
+    response_model=BaseResponse[SessionFinishResponse],
+)
+def get_game_session_result(
+    session_id: UUID,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        response_data = game_service.get_completion_result(
+            session_id=session_id,
+            user_id=token_data.user_id,
+            db_session=session
+        )
+        
+        validated_data = SessionFinishResponse.model_validate(response_data)
+        
+        return BaseResponse(
+            message="Game session result retrieved successfully",
+            data=validated_data
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.post(
+    "/{session_id}/rounds/{round_number}/audio/replay",
+    summary="Increment replay counter if under limit",
+    response_model=BaseResponse[AudioReplayCounterResponse],
+    status_code=status.HTTP_200_OK
+)
+def increment_audio_replay(
+    session_id: UUID,
+    round_number: int,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        response_data = game_service.increment_replay(
+            session_id=session_id,
+            round_number=round_number,
+            user_id=token_data.user_id,
+            db_session=session
+        )
+        
+        validated_data = AudioReplayCounterResponse.model_validate(response_data)
+        
+        return BaseResponse(
+            message="Replay counter updated successfully",
+            data=validated_data
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)
+
+
+@router.get(
+    "/{session_id}/rounds/{round_number}/audio/can-replay",
+    summary="Check if audio replay is allowed",
+    response_model=BaseResponse[AudioReplayCheckResponse],
+)
+def check_audio_replay(
+    session_id: UUID,
+    round_number: int,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session)
+):
+    try:
+        response_data = game_service.can_replay(
+            session_id=session_id,
+            round_number=round_number,
+            user_id=token_data.user_id,
+            db_session=session
+        )
+        
+        validated_data = AudioReplayCheckResponse.model_validate(response_data)
+        
+        return BaseResponse(
+            message="Replay status retrieved successfully",
+            data=validated_data
+        )
+    
+    except APIException as exc:
+        raise_http_exception(exc)

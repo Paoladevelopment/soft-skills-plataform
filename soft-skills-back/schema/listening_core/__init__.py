@@ -7,7 +7,6 @@ from .game_session import (
     GameSessionPaginatedResponse,
     GameSessionStartResponse,
     RoundAdvanceResponse,
-    SessionCompletedResponse,
     AdvanceNextRoundResponse
 )
 from .game_session_config import (
@@ -37,7 +36,6 @@ __all__ = [
     "GameSessionPaginatedResponse",
     "GameSessionStartResponse",
     "RoundAdvanceResponse",
-    "SessionCompletedResponse",
     "AdvanceNextRoundResponse",
     "GameSessionConfigCreate", 
     "GameSessionConfigRead", 
