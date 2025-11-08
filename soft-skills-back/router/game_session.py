@@ -13,6 +13,7 @@ from schema.listening_core.game_session import (
     AdvanceNextRoundResponse,
     RoundAdvanceResponse,
     SessionFinishResponse,
+    SessionResultResponse,
 )
 from schema.listening_core.game_session_config import GameSessionConfigRead, GameSessionConfigUpdate
 from schema.listening_core.game_round import (
@@ -21,8 +22,7 @@ from schema.listening_core.game_round import (
     CurrentRoundConfig, 
 )
 from schema.listening_core.audio_replay import (
-    AudioReplayCounterResponse,
-    AudioReplayCheckResponse
+    AudioReplayCounterResponse
 )
 from enums.listening_game import GameRoundStatus
 from schema.listening_core.round_submission import AttemptSubmissionRequest, AttemptSubmissionResponse
@@ -453,7 +453,7 @@ def finish_game_session(
 @router.get(
     "/{session_id}/result",
     summary="Get completion result for a finished game session",
-    response_model=BaseResponse[SessionFinishResponse],
+    response_model=BaseResponse[SessionResultResponse],
 )
 def get_game_session_result(
     session_id: UUID,
@@ -467,7 +467,7 @@ def get_game_session_result(
             db_session=session
         )
         
-        validated_data = SessionFinishResponse.model_validate(response_data)
+        validated_data = SessionResultResponse.model_validate(response_data)
         
         return BaseResponse(
             message="Game session result retrieved successfully",
@@ -509,31 +509,3 @@ def increment_audio_replay(
         raise_http_exception(exc)
 
 
-@router.get(
-    "/{session_id}/rounds/{round_number}/audio/can-replay",
-    summary="Check if audio replay is allowed",
-    response_model=BaseResponse[AudioReplayCheckResponse],
-)
-def check_audio_replay(
-    session_id: UUID,
-    round_number: int,
-    token_data: TokenData = Depends(decode_jwt_token),
-    session: Session = Depends(get_session)
-):
-    try:
-        response_data = game_service.can_replay(
-            session_id=session_id,
-            round_number=round_number,
-            user_id=token_data.user_id,
-            db_session=session
-        )
-        
-        validated_data = AudioReplayCheckResponse.model_validate(response_data)
-        
-        return BaseResponse(
-            message="Replay status retrieved successfully",
-            data=validated_data
-        )
-    
-    except APIException as exc:
-        raise_http_exception(exc)

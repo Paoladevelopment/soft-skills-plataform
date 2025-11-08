@@ -56,10 +56,13 @@ export const api = {
     updateConfig: (id: string) => `${BASE_URL}/game-sessions/${id}/config`,
     delete: (id: string) => `${BASE_URL}/game-sessions/${id}`,
     start: (id: string) => `${BASE_URL}/game-sessions/${id}/start`,
+    finish: (id: string) => `${BASE_URL}/game-sessions/${id}/finish`,
+    result: (id: string) => `${BASE_URL}/game-sessions/${id}/result`,
     rounds: {
       current: (sessionId: string) => `${BASE_URL}/game-sessions/${sessionId}/rounds/current`,
       attempt: (sessionId: string, roundNumber: number) => `${BASE_URL}/game-sessions/${sessionId}/rounds/${roundNumber}/attempt`,
       next: (sessionId: string) => `${BASE_URL}/game-sessions/${sessionId}/rounds/next`,
+      replay: (sessionId: string, roundNumber: number) => `${BASE_URL}/game-sessions/${sessionId}/rounds/${roundNumber}/audio/replay`,
     }
   }
 }

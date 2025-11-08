@@ -171,7 +171,10 @@ CURRENT_ROUND_RESPONSE_EXAMPLE = {
         "instruction": "Listen to the audio and select the correct answer to the question."
     },
     "total_rounds": 5,
-    "name": "Morning Listening Practice"
+    "name": "Morning Listening Practice",
+    "replays_used": 0,
+    "replays_left": 2,
+    "max_replays_per_round": 2
 }
 
 CURRENT_ROUND_RESPONSE_PARAPHRASE_EXAMPLE = {
@@ -188,7 +191,10 @@ CURRENT_ROUND_RESPONSE_PARAPHRASE_EXAMPLE = {
         "instruction": "Paraphrase the audio content in your own words."
     },
     "total_rounds": 5,
-    "name": "Morning Listening Practice"
+    "name": "Morning Listening Practice",
+    "replays_used": 1,
+    "replays_left": 1,
+    "max_replays_per_round": 2
 }
 
 CURRENT_ROUND_RESPONSE_WITH_EVALUATION_FOCUS_EXAMPLE = {
@@ -221,7 +227,10 @@ CURRENT_ROUND_RESPONSE_WITH_EVALUATION_FOCUS_EXAMPLE = {
         "correct_answer": "Sustainable living practices"
     },
     "total_rounds": 5,
-    "name": "Morning Listening Practice"
+    "name": "Morning Listening Practice",
+    "replays_used": 2,
+    "replays_left": 0,
+    "max_replays_per_round": 2
 }
 
 CURRENT_ROUND_RESPONSE_WITH_EVALUATION_CLOZE_EXAMPLE = {
@@ -248,7 +257,10 @@ CURRENT_ROUND_RESPONSE_WITH_EVALUATION_CLOZE_EXAMPLE = {
         "correct_answer": ["civilizations", "agricultural", "populations"]
     },
     "total_rounds": 5,
-    "name": "Morning Listening Practice"
+    "name": "Morning Listening Practice",
+    "replays_used": 0,
+    "replays_left": 2,
+    "max_replays_per_round": 2
 }
 
 CURRENT_ROUND_RESPONSE_WITH_EVALUATION_PARAPHRASE_EXAMPLE = {
@@ -274,7 +286,10 @@ CURRENT_ROUND_RESPONSE_WITH_EVALUATION_PARAPHRASE_EXAMPLE = {
         "correct_answer": "The narrative explores how early civilizations created sophisticated farming methods enabling them to support extensive communities and construct elaborate social structures."
     },
     "total_rounds": 5,
-    "name": "Morning Listening Practice"
+    "name": "Morning Listening Practice",
+    "replays_used": 1,
+    "replays_left": 1,
+    "max_replays_per_round": 2
 }
 
 CURRENT_ROUND_RESPONSE_WITH_EVALUATION_SUMMARIZE_EXAMPLE = {
@@ -300,7 +315,10 @@ CURRENT_ROUND_RESPONSE_WITH_EVALUATION_SUMMARIZE_EXAMPLE = {
         "correct_answer": "The audio explains how early civilizations created sophisticated agricultural methods that enabled them to support large communities and develop complex social structures."
     },
     "total_rounds": 5,
-    "name": "Morning Listening Practice"
+    "name": "Morning Listening Practice",
+    "replays_used": 0,
+    "replays_left": 2,
+    "max_replays_per_round": 2
 }
 
 CURRENT_ROUND_RESPONSE_WITH_EVALUATION_CLARIFY_EXAMPLE = {
@@ -331,7 +349,10 @@ CURRENT_ROUND_RESPONSE_WITH_EVALUATION_CLARIFY_EXAMPLE = {
         ]
     },
     "total_rounds": 5,
-    "name": "Morning Listening Practice"
+    "name": "Morning Listening Practice",
+    "replays_used": 2,
+    "replays_left": 0,
+    "max_replays_per_round": 2
 }
 
 # Answer payload examples for each play mode
@@ -388,17 +409,163 @@ ROUND_ADVANCE_RESPONSE_EXAMPLE = {
     "current_round": 2
 }
 
-SESSION_COMPLETED_RESPONSE_EXAMPLE = {
-    "session_completed": True,
-    "final_score": 85.5
-}
-
 SESSION_FINISH_RESPONSE_EXAMPLE = {
     "session_completed": True,
     "final_score": 85.5,
     "final_max_score": 100.0,
     "started_at": "2025-10-26T08:32:00Z",
     "finished_at": "2025-10-26T09:15:00Z"
+}
+
+SESSION_RESULT_RESPONSE_EXAMPLE = {
+    "session_completed": True,
+    "final_score": 42.5,
+    "final_max_score": 50.0,
+    "started_at": "2025-10-26T08:32:00Z",
+    "finished_at": "2025-10-26T09:15:00Z",
+    "total_rounds": 5,
+    "name": "Morning Listening Practice",
+    "rounds": [
+        {
+            "round_id": "550e8400-e29b-41d4-a716-446655440000",
+            "round_number": 1,
+            "status": "attempted",
+            "play_mode": "focus",
+            "prompt_type": "descriptive",
+            "audio_url": "https://storage.supabase.co/audio/challenge_001.mp3",
+            "score": 8.5,
+            "max_score": 10.0,
+            "mode_payload": {
+                "question": "¿Cuál es el tema principal discutido en el audio?",
+                "answer_choices": [
+                    "Prácticas de vida sostenible",
+                    "Políticas ambientales",
+                    "Fuentes de energía renovable",
+                    "Efectos del cambio climático"
+                ],
+                "instruction": "Listen to the audio and select the correct answer to the question."
+            },
+            "evaluation": {
+                "round_submission_id": "a1b2c3d4-5678-90ef-gh12-3456789abcd",
+                "is_correct": True,
+                "feedback_short": "Correct! Well done.",
+                "answer_payload": {"selected_index": 0},
+                "correct_answer": "Prácticas de vida sostenible"
+            },
+            "replays_used": 2,
+            "replays_left": 0,
+            "max_replays_per_round": 2
+        },
+        {
+            "round_id": "550e8400-e29b-41d4-a716-446655440001",
+            "round_number": 2,
+            "status": "attempted",
+            "play_mode": "cloze",
+            "prompt_type": "instructional",
+            "audio_url": "https://storage.supabase.co/audio/challenge_002.mp3",
+            "score": 7.0,
+            "max_score": 10.0,
+            "mode_payload": {
+                "text_with_blanks": "The ancient ___ developed advanced ___ techniques that allowed them to sustain large ___ and build complex societies.",
+                "instruction": "Listen to the audio and fill in the blanks in the text."
+            },
+            "evaluation": {
+                "round_submission_id": "b2c3d4e5-6789-01fg-hi23-4567890bcdef",
+                "is_correct": True,
+                "feedback_short": "Good job! All answers are correct.",
+                "answer_payload": {
+                    "blanks": ["civilizations", "agricultural", "populations"]
+                },
+                "correct_answer": ["civilizations", "agricultural", "populations"]
+            },
+            "replays_used": 1,
+            "replays_left": 1,
+            "max_replays_per_round": 2
+        },
+        {
+            "round_id": "550e8400-e29b-41d4-a716-446655440002",
+            "round_number": 3,
+            "status": "attempted",
+            "play_mode": "paraphrase",
+            "prompt_type": "instructional",
+            "audio_url": "https://storage.supabase.co/audio/challenge_003.mp3",
+            "score": 9.0,
+            "max_score": 10.0,
+            "mode_payload": {
+                "instruction": "Paraphrase the audio content in your own words."
+            },
+            "evaluation": {
+                "round_submission_id": "c3d4e5f6-7890-12gh-ij34-5678901cdefg",
+                "is_correct": True,
+                "feedback_short": "Excellent paraphrase! Very well done.",
+                "answer_payload": {
+                    "paraphrase": "La historia describe cómo civilizaciones antiguas desarrollaron técnicas agrícolas que sostuvieron grandes poblaciones y sociedades complejas."
+                },
+                "correct_answer": "El texto de referencia explica que las primeras civilizaciones crearon métodos agrícolas sofisticados que permitieron sostener comunidades extensas y estructuras sociales complejas."
+            },
+            "replays_used": 0,
+            "replays_left": 2,
+            "max_replays_per_round": 2
+        },
+        {
+            "round_id": "550e8400-e29b-41d4-a716-446655440003",
+            "round_number": 4,
+            "status": "attempted",
+            "play_mode": "summarize",
+            "prompt_type": "descriptive",
+            "audio_url": "https://storage.supabase.co/audio/challenge_004.mp3",
+            "score": 8.0,
+            "max_score": 10.0,
+            "mode_payload": {
+                "instruction": "Summarize the main points of the audio content."
+            },
+            "evaluation": {
+                "round_submission_id": "d4e5f6g7-8901-23hi-jk45-6789012defgh",
+                "is_correct": True,
+                "feedback_short": "Good summary covering the main points.",
+                "answer_payload": {
+                    "summary": "El audio trata sobre cómo las civilizaciones antiguas mejoraron sus técnicas agrícolas para sostener poblaciones grandes."
+                },
+                "correct_answer": "El audio explica cómo las primeras civilizaciones desarrollaron métodos agrícolas que posibilitaron comunidades amplias y estructuras sociales complejas."
+            },
+            "replays_used": 0,
+            "replays_left": 2,
+            "max_replays_per_round": 2
+        },
+        {
+            "round_id": "550e8400-e29b-41d4-a716-446655440004",
+            "round_number": 5,
+            "status": "attempted",
+            "play_mode": "clarify",
+            "prompt_type": "dialogue",
+            "audio_url": "https://storage.supabase.co/audio/challenge_005.mp3",
+            "score": 10.0,
+            "max_score": 10.0,
+            "mode_payload": {
+                "instruction": "Ask clarification questions about the audio content to better understand it."
+            },
+            "evaluation": {
+                "round_submission_id": "e5f6g7h8-9012-34ij-kl56-7890123efghi",
+                "is_correct": True,
+                "feedback_short": "Strong set of clarifying questions.",
+                "answer_payload": {
+                    "questions": [
+                        "¿Cuál es el regalo al que se refieren?",
+                        "¿Cuándo ocurre el evento?"
+                    ]
+                },
+                "correct_answer": [
+                    "¿Cuál es el regalo al que se refieren?",
+                    "¿Cuándo ocurre el evento?",
+                    "¿Dónde tiene lugar la conversación?",
+                    "¿Quiénes son los personajes principales?"
+                ]
+            },
+            "replays_used": 2,
+            "replays_left": 0,
+            "max_replays_per_round": 2
+        }
+    ]
 }
 
 GAME_SESSION_START_RESPONSE_EXAMPLE = {

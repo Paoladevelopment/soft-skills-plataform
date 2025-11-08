@@ -160,8 +160,30 @@ const GamePlay = () => {
     navigate(`/active-listening/game-sessions`)
   }
 
+  const handleReplay = async (sessionId: string, roundNumber: number) => {
+    return await gamePlayStore.replayAudio(sessionId, roundNumber)
+  }
+
+  const handleFinishSession = async () => {
+    if (!sessionId) return
+
+    const result = await gamePlayStore.finishSession(sessionId)
+    
+    if (result) {
+      navigate(`/active-listening/session/${sessionId}/result`)
+    }
+  }
+
   const getScore = (): number | undefined => {
     return attemptFeedback?.score ?? currentRound?.score ?? undefined
+  }
+
+  const isLastRound = (): boolean => {
+    return currentRound ? currentRound.currentRound === currentRound.totalRounds : false
+  }
+
+  const isAttempted = (): boolean => {
+    return !!currentRound?.evaluation
   }
 
   if (gamePlayStore.isLoading && !gamePlayStore.currentRound) {
@@ -239,9 +261,13 @@ const GamePlay = () => {
         >
           <AudioPlayer
             audioUrl={currentRound.audioUrl}
-            maxReplays={currentRound.config.maxReplaysPerRound}
-            replayCount={gamePlayStore.replayCount}
-            onReplay={() => gamePlayStore.incrementReplayCount()}
+            replaysUsed={currentRound.replaysUsed}
+            replaysLeft={currentRound.replaysLeft}
+            maxReplaysPerRound={currentRound.config.maxReplaysPerRound}
+            isReplaying={gamePlayStore.isReplaying}
+            onReplay={handleReplay}
+            sessionId={sessionId!}
+            roundNumber={currentRound.currentRound}
           />
 
           {validationError && (
@@ -271,9 +297,12 @@ const GamePlay = () => {
             showFeedback={showFeedback}
             hasError={isErrorState()}
             canAdvance={canShowAdvanceButton()}
+            isLastRound={isLastRound()}
+            isAttempted={isAttempted()}
             onSubmit={handleSubmitAttempt}
             onTryAgain={handleTryAgain}
             onAdvance={handleAdvanceRound}
+            onFinishSession={handleFinishSession}
           />
         </Box>
       </Container>

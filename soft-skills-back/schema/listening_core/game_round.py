@@ -84,3 +84,22 @@ class CurrentRoundResponse(BaseModel):
     model_config = {
         "json_schema_extra": {"example": CURRENT_ROUND_RESPONSE_EXAMPLE}
     }
+
+
+class RoundRecap(BaseModel):
+    """Response schema for a round in the completion recap."""
+    round_id: UUID
+    round_number: int
+    status: GameRoundStatus
+    play_mode: Optional[PlayMode] = None
+    prompt_type: Optional[PromptType] = None
+    audio_url: Optional[str] = None
+    score: Optional[float] = None
+    max_score: float
+    mode_payload: Optional[Dict[str, Any]] = None
+    evaluation: Optional[RoundEvaluationResponse] = None
+    replays_used: int
+    replays_left: int
+    max_replays_per_round: int
+
+    model_config = {"from_attributes": True}

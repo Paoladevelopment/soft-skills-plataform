@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, TypeVar, Union
+from typing import List, Optional, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel, field_serializer
@@ -8,12 +8,13 @@ from sqlmodel import SQLModel
 from model.listening_core.game_session import GameSessionBase
 from schema.base import BaseResponse, PaginatedResponse
 from schema.listening_core.game_session_config import GameSessionConfigCreate, GameSessionConfigRead
-from schema.listening_core.game_round import GameRoundReadSummary
+from schema.listening_core.game_round import GameRoundReadSummary, RoundRecap
 from enums.listening_game import GameStatus
 from utils.serializers import serialize_datetime_without_microseconds
 from utils.payloads_listening_game import (
     GAME_SESSION_CREATE_EXAMPLE,
     GAME_SESSION_READ_EXAMPLE,
+    SESSION_RESULT_RESPONSE_EXAMPLE,
     GAME_SESSION_DETAIL_EXAMPLE,
     GAME_SESSION_UPDATE_EXAMPLE,
     GAME_SESSION_SUMMARY_EXAMPLE,
@@ -135,6 +136,26 @@ class SessionFinishResponse(BaseModel):
 
     model_config = {
         "json_schema_extra": {"example": SESSION_FINISH_RESPONSE_EXAMPLE}
+    }
+
+
+class SessionResultResponse(BaseModel):
+    """Response schema for full post-game recap."""
+    session_completed: bool
+    final_score: float
+    final_max_score: float
+    started_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
+    total_rounds: int
+    name: str
+    rounds: List[RoundRecap]
+
+    @field_serializer("started_at", "finished_at", when_used="json")
+    def serialize_datetime_fields(self, v: datetime | None) -> str | None:
+        return serialize_datetime_without_microseconds(v)
+
+    model_config = {
+        "json_schema_extra": {"example": SESSION_RESULT_RESPONSE_EXAMPLE}
     }
 
 

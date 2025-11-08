@@ -22,6 +22,7 @@ import ObjectiveDetail from '../features/learn-to-learn/pages/ObjectiveDetail'
 import ActiveListeningHome from '../features/active-listening/pages/Home'
 import GameSessions from '../features/active-listening/pages/GameSessions'
 import GamePlay from '../features/active-listening/pages/GamePlay'
+import GameSessionResult from '../features/active-listening/pages/GameSessionResult'
 
 
 export const RoutesConfiguration = () => {
@@ -76,6 +77,7 @@ export const RoutesConfiguration = () => {
             <Route index element={<ActiveListeningHome/>} />
             <Route path='game-sessions' element={<GameSessions/>} />
             <Route path='session/:sessionId/play' element={<GamePlay/>} />
+            <Route path='session/:sessionId/result' element={<GameSessionResult/>} />
           </Route>
         </Route>
         

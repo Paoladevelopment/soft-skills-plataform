@@ -1,4 +1,4 @@
-import { calculateElapsedTime } from './timeUtils'
+import { calculateElapsedTime } from '../../../utils/timeUtils'
 
 export enum LearningGoalStatusEnum {
   COMPLETED = 'Completed',

@@ -172,7 +172,6 @@ const RoadmapEditorContent = () => {
       }
     }
 
-    console.log(newVisibility)
     await updateRoadmapMetadata(selectedRoadmap.roadmapId, {
       title: selectedRoadmap.title,
       description: selectedRoadmap.description || '',

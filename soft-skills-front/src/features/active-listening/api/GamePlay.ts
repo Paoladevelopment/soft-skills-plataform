@@ -1,6 +1,6 @@
 import { fetchWithAuth } from '../../../utils/fetchWithAuth'
 import { api } from '../../../config/api'
-import { SubmitAttemptPayloadAPI, GetCurrentRoundResponse, SubmitAttemptResponseAPI, AdvanceRoundResponse } from '../types/game-sessions/gamePlay.api'
+import { SubmitAttemptPayloadAPI, GetCurrentRoundResponse, SubmitAttemptResponseAPI, AdvanceRoundResponse, ReplayResponse, FinishSessionResponse } from '../types/game-sessions/gamePlay.api'
 
 export async function getCurrentRound(sessionId: string): Promise<GetCurrentRoundResponse> {
   const url = api.gameSessions.rounds.current(sessionId)
@@ -32,6 +32,26 @@ export async function advanceRound(sessionId: string): Promise<AdvanceRoundRespo
     method: 'POST',
   })
   
+  return response
+}
+
+export async function replayAudio(sessionId: string, roundNumber: number): Promise<ReplayResponse> {
+  const url = api.gameSessions.rounds.replay(sessionId, roundNumber)
+
+  const response = await fetchWithAuth(url, {
+    method: 'POST',
+  })
+
+  return response
+}
+
+export async function finishSession(sessionId: string): Promise<FinishSessionResponse> {
+  const url = api.gameSessions.finish(sessionId)
+
+  const response = await fetchWithAuth(url, {
+    method: 'POST',
+  })
+
   return response
 }
 

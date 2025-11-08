@@ -1,15 +1,29 @@
-import { Box, Card, IconButton, Typography, LinearProgress, Paper } from '@mui/material'
+import { Box, Card, IconButton, Typography, LinearProgress, Paper, Tooltip, CircularProgress } from '@mui/material'
 import { PlayArrow, Pause, RotateRight } from '@mui/icons-material'
 import { useRef, useState, useEffect } from 'react'
+import { ReplayAudioResult } from '../../types/game-sessions/gamePlay.api'
 
 interface AudioPlayerProps {
   audioUrl: string
-  maxReplays: number
-  replayCount: number
-  onReplay: () => void
+  replaysUsed: number
+  replaysLeft: number
+  maxReplaysPerRound: number
+  isReplaying: boolean
+  onReplay: (sessionId: string, roundNumber: number) => Promise<ReplayAudioResult>
+  sessionId: string
+  roundNumber: number
 }
 
-const AudioPlayer = ({ audioUrl, maxReplays, replayCount, onReplay }: AudioPlayerProps) => {
+const AudioPlayer = ({ 
+  audioUrl, 
+  replaysUsed, 
+  replaysLeft, 
+  maxReplaysPerRound, 
+  isReplaying,
+  onReplay,
+  sessionId,
+  roundNumber
+}: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -34,29 +48,41 @@ const AudioPlayer = ({ audioUrl, maxReplays, replayCount, onReplay }: AudioPlaye
     }
   }, [])
 
+  const hasAudioEnded = currentTime >= duration && duration > 0
+
   const togglePlayPause = () => {
-    // Only allow play if we haven't reached max replays yet
-    if (!canReplay && !isPlaying) return
-    
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause()
-      } else {
-        audioRef.current.play()
-      }
-      setIsPlaying(!isPlaying)
+    if (!audioRef.current) return
+
+    if (isPlaying) {
+      audioRef.current.pause()
+      setIsPlaying(false)
+      return
     }
+
+    if (hasAudioEnded) return
+
+    if (replaysLeft === 0 && currentTime === 0) return
+
+    audioRef.current.play()
+    setIsPlaying(true)
   }
 
-  const handleReplay = () => {
-    if (replayCount < maxReplays) {
-      onReplay()
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0
-        audioRef.current.play()
-        setIsPlaying(true)
-      }
-    }
+  const startAudio = () => {
+    if (!audioRef.current) return
+    
+    audioRef.current.currentTime = 0
+    audioRef.current.play()
+    setIsPlaying(true)
+  }
+
+  const handleReplay = async () => {
+    if (replaysLeft === 0 || isReplaying) return
+
+    const result = await onReplay(sessionId, roundNumber)
+    
+    if (!result.requestAccepted) return
+
+    startAudio()
   }
 
   const formatTime = (time: number) => {
@@ -66,7 +92,29 @@ const AudioPlayer = ({ audioUrl, maxReplays, replayCount, onReplay }: AudioPlaye
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
-  const canReplay = replayCount < maxReplays
+  const getReplayTooltipTitle = (): string => {
+    if (replaysLeft === 0) return 'No replays left'
+    return 'Replay audio'
+  }
+
+  const getProgressValue = (): number => {
+    return (currentTime / duration) * 100 || 0
+  }
+
+  const getIconButtonStyles = (enabled: boolean) => ({
+    backgroundColor: enabled ? 'rgba(255, 255, 255, 0.2)' : 'rgba(100, 100, 100, 0.3)',
+    color: enabled ? 'white' : 'rgba(150, 150, 150, 0.6)',
+    cursor: enabled ? 'pointer' : 'not-allowed',
+    opacity: enabled ? 1 : 0.5,
+    '&:hover': enabled ? { backgroundColor: 'rgba(255, 255, 255, 0.3)' } : {},
+    '&:disabled': {
+      backgroundColor: 'rgba(100, 100, 100, 0.3)',
+      color: 'rgba(150, 150, 150, 0.6)',
+    },
+  })
+
+  const canReplay = replaysLeft > 0 && !isReplaying
+  const canPlay = isPlaying || (replaysLeft > 0 && !hasAudioEnded) || (replaysLeft === 0 && currentTime > 0 && !hasAudioEnded)
 
   return (
     <Card
@@ -79,27 +127,42 @@ const AudioPlayer = ({ audioUrl, maxReplays, replayCount, onReplay }: AudioPlaye
     >
       <audio ref={audioRef} src={audioUrl} />
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: 2 
+        }}
+      >
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            color: 'white', 
+            fontWeight: 'bold' 
+            }}
+        >
           🎵 Audio Content
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between' 
+          }}
+        >
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1 
+            }}
+          >
             <IconButton
               onClick={togglePlayPause}
-              disabled={!canReplay && !isPlaying}
-              sx={{
-                backgroundColor: canReplay || isPlaying ? 'rgba(255, 255, 255, 0.2)' : 'rgba(100, 100, 100, 0.3)',
-                color: canReplay || isPlaying ? 'white' : 'rgba(150, 150, 150, 0.6)',
-                cursor: canReplay || isPlaying ? 'pointer' : 'not-allowed',
-                opacity: canReplay || isPlaying ? 1 : 0.5,
-                '&:hover': canReplay || isPlaying ? { backgroundColor: 'rgba(255, 255, 255, 0.3)' } : {},
-                '&:disabled': {
-                  backgroundColor: 'rgba(100, 100, 100, 0.3)',
-                  color: 'rgba(150, 150, 150, 0.6)',
-                },
-              }}
+              disabled={!canPlay}
+              aria-disabled={!canPlay}
+              sx={getIconButtonStyles(canPlay)}
             >
               {isPlaying ? <Pause /> : <PlayArrow />}
             </IconButton>
@@ -111,33 +174,44 @@ const AudioPlayer = ({ audioUrl, maxReplays, replayCount, onReplay }: AudioPlaye
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton
-              onClick={handleReplay}
-              disabled={!canReplay}
-              sx={{
-                backgroundColor: canReplay ? 'rgba(255, 255, 255, 0.2)' : 'rgba(100, 100, 100, 0.3)',
-                color: canReplay ? 'white' : 'rgba(150, 150, 150, 0.6)',
-                cursor: canReplay ? 'pointer' : 'not-allowed',
-                opacity: canReplay ? 1 : 0.5,
-                '&:hover': canReplay ? { backgroundColor: 'rgba(255, 255, 255, 0.3)' } : {},
-                '&:disabled': {
-                  backgroundColor: 'rgba(100, 100, 100, 0.3)',
-                  color: 'rgba(150, 150, 150, 0.6)',
-                },
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1 
+            }}
+          >
+            <Tooltip title={getReplayTooltipTitle()}>
+              <span>
+                <IconButton
+                  onClick={handleReplay}
+                  disabled={!canReplay}
+                  aria-disabled={!canReplay}
+                  sx={getIconButtonStyles(canReplay)}
+                >
+                  {isReplaying ? (
+                    <CircularProgress size={20} sx={{ color: 'white' }} />
+                  ) : (
+                    <RotateRight />
+                  )}
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                color: 'rgba(255, 255, 255, 0.8)', 
+                minWidth: '80px' 
               }}
             >
-              <RotateRight />
-            </IconButton>
-            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)', minWidth: '80px' }}>
-              Replays: {replayCount} / {maxReplays}
+              Replays: {replaysUsed} / {maxReplaysPerRound}
             </Typography>
           </Box>
         </Box>
 
         <LinearProgress
           variant="determinate"
-          value={(currentTime / duration) * 100 || 0}
+          value={getProgressValue()}
           sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.2)',
             '& .MuiLinearProgress-bar': {
@@ -148,7 +222,7 @@ const AudioPlayer = ({ audioUrl, maxReplays, replayCount, onReplay }: AudioPlaye
           }}
         />
 
-        {!canReplay && (
+        {replaysLeft === 0 && (
           <Paper
             sx={{
               p: 1.5,
@@ -157,7 +231,13 @@ const AudioPlayer = ({ audioUrl, maxReplays, replayCount, onReplay }: AudioPlaye
               borderRadius: '8px',
             }}
           >
-            <Typography variant="caption" sx={{ color: '#FFECB3', fontWeight: 'bold' }}>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                color: '#FFECB3', 
+                fontWeight: 'bold' 
+              }}
+            >
               ⚠️ Maximum replays reached. Submit your answer now.
             </Typography>
           </Paper>
