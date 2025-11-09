@@ -22,7 +22,7 @@ class SpeakerTurn:
 
 
 _PATTERN = re.compile(
-    r'(?im)^\s*speaker\s+(?P<num>1|2)\s*:\s*(?P<text>.*?)(?=^\s*speaker\s+(?:1|2)\s*:|\Z)'
+    r'(?ims)^\s*speaker\s+(?P<num>1|2)\s*:\s*(?P<text>.*?)(?=^\s*speaker\s+(?:1|2)\s*:|\Z)'
 )
 
 
