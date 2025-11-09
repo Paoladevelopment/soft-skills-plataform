@@ -17,13 +17,15 @@ import LockIcon from '@mui/icons-material/Lock'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { formatDateString } from '../../../utils/formatDate'
 import { useRoadmapStore } from '../store/useRoadmapStore'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import RoadmapFlow from '../components/roadmap/RoadmapFlow'
+import TaskInformationSidebar from '../components/roadmap/TaskInformationSidebar'
 
 const RoadmapDetail = () => {
   const { roadmapId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
 
   const isPublicMode = location.pathname.startsWith('/learn/explore')
 
@@ -154,8 +156,40 @@ const RoadmapDetail = () => {
         </Stack>
       </Stack>
 
-      <Box mt={4} border="1px solid #e0e0e0" borderRadius={2} minHeight="700px">
-        <RoadmapFlow />
+      <Box 
+        mt={4} 
+        border="1px solid #e0e0e0" 
+        borderRadius={2} 
+        minHeight="700px"
+        position="relative"
+      >
+        <RoadmapFlow 
+          onNodeClick={setSelectedNodeId}
+          onPaneClick={() => setSelectedNodeId(null)}
+        />
+        {selectedNodeId && (
+          <>
+            <Box
+              onClick={() => setSelectedNodeId(null)}
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                zIndex: 5,
+                cursor: 'pointer',
+              }}
+            />
+
+            <TaskInformationSidebar
+              selectedNodeId={selectedNodeId}
+              onClose={() => setSelectedNodeId(null)}
+            />
+            
+          </>
+        )}
       </Box>
     </Box>
   )

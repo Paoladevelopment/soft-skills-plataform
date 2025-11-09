@@ -95,7 +95,7 @@ const ObjectiveNode = (
             color: 'text.secondary' 
           }}
         >
-          {data.totalTasks}
+          {data.totalTasks ?? 0}
         </Typography>
       </Box>
     </Box>

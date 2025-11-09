@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from enums.roadmap import Visibility
 from nosql_models.roadmap import Layout
 from schema.base import BaseResponse
-from utils.payloads import (ROADMAP_CREATE_EXAMPLE, ROADMAP_READ_EXAMPLE, ROADMAP_UPDATE_EXAMPLE)
+from utils.payloads import (ROADMAP_CREATE_EXAMPLE, ROADMAP_UPDATE_EXAMPLE)
 
 T = TypeVar("T")
 
