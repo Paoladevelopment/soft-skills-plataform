@@ -1,7 +1,6 @@
 export enum LayoutNodeType {
   Objective = 'objectiveNode',
-  Task = 'taskNode',
-  Title = 'titleNode'
+  Task = 'taskNode'
 }
 
 export enum RoadmapVisibility {

@@ -1,5 +1,5 @@
 import { Box, Typography, Paper } from '@mui/material'
-import { Heading1, Circle, CircleDashed } from 'lucide-react'
+import { Circle, CircleDashed } from 'lucide-react'
 import { LayoutNodeType } from '../../types/roadmap/roadmap.enums'
 import { ReactNode } from 'react'
 
@@ -10,7 +10,6 @@ type SidebarComponent = {
 }
 
 const components: SidebarComponent[] = [
-  { label: 'Title', type: LayoutNodeType.Title, icon: <Heading1 size={18} /> },
   { label: 'Objective', type: LayoutNodeType.Objective, icon: <Circle size={18} /> },
   { label: 'Task', type: LayoutNodeType.Task, icon: <CircleDashed size={18} />},
 ]
