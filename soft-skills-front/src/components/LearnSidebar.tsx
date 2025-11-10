@@ -3,7 +3,6 @@ import {
   CheckCircle,
   Timeline,
   Explore,
-  Dashboard,
   BarChart,
   Home,
   Help
@@ -29,10 +28,9 @@ const LearnSidebar = () => {
   >
     <UserMenu />
 
-    <SidebarIcon icon={<Dashboard />} label="Dashboard" to="/learn/dashboard" />
     <SidebarIcon icon={<CheckCircle />} label="Planner" to="/learn/planner" />
     <SidebarIcon icon={<Explore />} label="Explore" to="/learn/explore" />
-    <SidebarIcon icon={<BarChart />} label="Learning Reports" to="/learn/reports" />
+    <SidebarIcon icon={<BarChart />} label="Learning reports" to="/learn/reports" />
     <SidebarIcon icon={<Timeline />} label="Learning roadmaps" to="/learn/roadmaps" />
 
     <Box sx={{ flexGrow: 1 }} />

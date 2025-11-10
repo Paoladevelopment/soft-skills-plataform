@@ -12,6 +12,7 @@ import Planner from '../features/learn-to-learn/pages/Planner'
 import Dashboard from '../features/learn-to-learn/pages/Dashboard'
 import Explore from '../features/learn-to-learn/pages/Explore'
 import LearningReport from '../features/learn-to-learn/pages/LearningReport'
+import LearningReportDetail from '../features/learn-to-learn/pages/LearningReportDetail'
 import Help from '../features/learn-to-learn/pages/Help'
 import Roadmaps from '../features/learn-to-learn/pages/Roadmaps'
 import RoadmapDetail from '../features/learn-to-learn/pages/RoadmapDetail'
@@ -59,7 +60,10 @@ export const RoutesConfiguration = () => {
               <Route index element={<Explore/>} />
               <Route path=':roadmapId' element={<RoadmapDetail />} />
             </Route>
-            <Route path='reports' element={<LearningReport/>}></Route>
+            <Route path='reports'>
+              <Route index element={<LearningReport/>} />
+              <Route path=':evaluationId' element={<LearningReportDetail />} />
+            </Route>
             
             <Route path='roadmaps'>
               <Route index element={<Roadmaps />} />

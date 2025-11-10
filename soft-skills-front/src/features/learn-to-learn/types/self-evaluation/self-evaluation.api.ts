@@ -50,5 +50,22 @@ export type SelfEvaluationRead = {
   knowledgeConnection: boolean
   learningMethods?: LearningMethod[]
   createdAt: string
+  taskTitle?: string
+}
+
+export type SelfEvaluationReadRaw = {
+  evaluationId: string
+  taskId: string
+  taskTitle?: string
+  createdAt: string
+  perceivedDifficulty: PerceivedDifficulty
+}
+
+export interface FetchSelfEvaluationsApiResponse {
+  message: string
+  data: SelfEvaluationReadRaw[]
+  total: number
+  offset: number
+  limit: number
 }
 
