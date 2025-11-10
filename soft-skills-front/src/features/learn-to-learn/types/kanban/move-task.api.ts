@@ -21,3 +21,10 @@ export interface MoveTaskResponse {
     position: number
   }
 }
+
+export type ApiErrorData = {
+  detail?: {
+    error?: string
+    required_actions?: string[]
+  }
+}

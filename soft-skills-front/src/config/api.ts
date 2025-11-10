@@ -45,6 +45,12 @@ export const api = {
     update: (id: string) => `${BASE_URL}/tasks/${id}`,
     delete: (id: string) => `${BASE_URL}/tasks/${id}`,
   },
+  selfEvaluations: {
+    create: `${BASE_URL}/self-evaluations`,
+    byId: (id: string) => `${BASE_URL}/self-evaluations/${id}`,
+    byUserId: (userId: string) => `${BASE_URL}/self-evaluations/by-user/${userId}`,
+    byTaskId: (taskId: string) => `${BASE_URL}/self-evaluations/by-task/${taskId}`,
+  },
   modules: {
     getAll: `${BASE_URL}/modules`,
   },

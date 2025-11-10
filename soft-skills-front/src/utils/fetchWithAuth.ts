@@ -1,6 +1,11 @@
 import useAuthStore from "../features/authentication/store/useAuthStore"
 import camelcaseKeys from "camelcase-keys"
 
+export type FetchError = Error & { 
+  status?: number
+  data?: unknown
+}
+
 export async function fetchWithAuth(
   url: string,
   options: RequestInit = {}
@@ -21,8 +26,13 @@ export async function fetchWithAuth(
   const data = await response.json()
 
   if (!response.ok) {
-    const message = data?.detail?.message || "Something went wrong"
-    throw new Error(message)
+    const message = data?.detail?.message || data?.error || "Something went wrong"
+    const error = new Error(message) as FetchError
+
+    error.status = response.status
+    error.data = data
+    
+    throw error
   }
 
   return camelcaseKeys(data, { deep: true })

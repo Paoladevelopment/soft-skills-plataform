@@ -54,6 +54,28 @@ class BadRequest(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     error_title = "Bad Request"
 
+class PreconditionRequired(APIException):
+    """Precondition Required - HTTP 428"""
+    status_code = status.HTTP_428_PRECONDITION_REQUIRED
+    error_title = "Precondition Required"
+    
+    def __init__(self, msg: str, error_code: str = None, required_actions: list = None):
+        super().__init__(msg)
+        self.error_code = error_code
+        self.required_actions = required_actions or []
+    
+    def to_http_exception(self):
+        """Convert to FastAPI's HTTPException with custom format for self-evaluation"""
+        if self.error_code and self.required_actions:
+            return HTTPException(
+                status_code=self.status_code,
+                detail={
+                    "error": self.error_code,
+                    "required_actions": self.required_actions
+                }
+            )
+        return super().to_http_exception()
+
 class InternalError(APIException):
     """Internal Server Error"""
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

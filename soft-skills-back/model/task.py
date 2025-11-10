@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 from datetime import datetime, timezone
-from typing import Optional
+from typing import List, Optional
 
 from enums.common import Priority, Status
 from enums.task import TaskType
@@ -70,3 +70,6 @@ class Task(TaskBase, table=True):
   started_at: datetime | None = Field(default=None)
   completed_at: datetime | None = Field(default=None)
   objective: Optional["Objective"] = Relationship(back_populates="tasks")
+  self_evaluations: List["SelfEvaluation"] = Relationship(
+    back_populates="task", sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"}
+  )
