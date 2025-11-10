@@ -22,7 +22,7 @@ class SelfEvaluationCreate(SelfEvaluationBase):
     @classmethod
     def validate_concentration_level(cls, v: int) -> int:
         if not (1 <= v <= 10):
-            raise ValueError("concentration_level must be between 1 and 10")
+            raise ValueError("concentration_level debe estar entre 1 y 10")
         return v
     
     model_config = {

@@ -32,7 +32,7 @@ def create_activity(activity: ActivityCreate, db: Session = Depends(get_session)
     activity_in_db = db.exec(statement).first()
 
     if activity_in_db:
-        raise Duplicate("Esta actividad  ya esta registrada")
+        raise Duplicate("Esta actividad ya está registrada")
 
     db.add(activity_to_db)
     db.commit()

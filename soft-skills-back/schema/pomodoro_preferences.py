@@ -34,9 +34,9 @@ class PomodoroPreferencesResponse(BaseResponse[PomodoroPreferencesRead]):
 
 class PomodoroConfiguration(SQLModel):
     """Response schema for pomodoro preferences configuration"""
-    configured: bool = Field(description="Whether user has configured preferences")
-    effective_pomodoro_length_minutes: int = Field(description="Effective pomodoro length (configured or fallback)")
-    preferences: PomodoroPreferencesRead | None = Field(description="User preferences if configured, null otherwise")
+    configured: bool = Field(description="Si el usuario ha configurado preferencias")
+    effective_pomodoro_length_minutes: int = Field(description="Duración efectiva del pomodoro (configurada o predeterminada)")
+    preferences: PomodoroPreferencesRead | None = Field(description="Preferencias del usuario si están configuradas, null en caso contrario")
 
     model_config = {
         "json_schema_extra": {"example": POMODORO_CONFIGURATION_CONFIGURED_EXAMPLE},
@@ -49,28 +49,28 @@ class PomodoroPreferencesUpdate(PomodoroPreferencesBase):
     @classmethod
     def v_len(cls, v: int) -> int:
         if not (10 <= v <= 120):
-            raise ValueError("pomodoro_length_minutes must be between 10 and 120")
+            raise ValueError("pomodoro_length_minutes debe estar entre 10 y 120")
         return v
 
     @field_validator("short_break_minutes")
     @classmethod
     def v_short(cls, v: int) -> int:
         if not (3 <= v <= 30):
-            raise ValueError("short_break_minutes must be between 3 and 30")
+            raise ValueError("short_break_minutes debe estar entre 3 y 30")
         return v
 
     @field_validator("long_break_minutes")
     @classmethod
     def v_long(cls, v: int) -> int:
         if not (10 <= v <= 60):
-            raise ValueError("long_break_minutes must be between 10 and 60")
+            raise ValueError("long_break_minutes debe estar entre 10 y 60")
         return v
 
     @field_validator("cycles_per_long_break")
     @classmethod
     def v_cycles(cls, v: int) -> int:
         if not (2 <= v <= 8):
-            raise ValueError("cycles_per_long_break must be between 2 and 8")
+            raise ValueError("cycles_per_long_break debe estar entre 2 y 8")
         return v
 
     model_config = {

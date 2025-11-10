@@ -23,8 +23,8 @@ class LearningGoalService:
         self.roadmap_mongo_service = RoadmapMongoService()
 
     def verify_user_ownership(self, learning_goal: LearningGoal, user_id: UUID):
-        if learning_goal.user_id != user_id:
-                raise Forbidden("You are not allowed to perform this action")
+            if learning_goal.user_id != user_id:
+                raise Forbidden("No tiene permiso para realizar esta acción")
         
     def create_learning_goal(self, user_id: UUID, learning_goal: LearningGoalCreate, session: Session) -> LearningGoal:
         try:
@@ -97,7 +97,7 @@ class LearningGoalService:
             learning_goal = session.get(LearningGoal, learning_goal_id)
 
             if not learning_goal:
-                raise Missing("Learning goal not found")
+                raise Missing("Meta de aprendizaje no encontrada")
             
             return learning_goal
         
@@ -266,7 +266,7 @@ class LearningGoalService:
 
             session.commit()
 
-            return {"message": "Learning goal deleted successfully", "learning_goal_id": learning_goal_id}
+            return {"message": "Meta de aprendizaje eliminada correctamente", "learning_goal_id": learning_goal_id}
         
         except APIException as api_error:
             raise api_error
@@ -336,7 +336,7 @@ class LearningGoalService:
             self.roadmap_mongo_service.update_roadmap(roadmap_id, {"objectives": objectives})
             
             return {
-                "message": "Learning goal converted to roadmap successfully",
+                "message": "Meta de aprendizaje convertida a hoja de ruta de aprendizaje correctamente",
                 "roadmap_id": result["roadmap_id"]
             }
             

@@ -36,11 +36,11 @@ class KanbanColumnPaginatedResponse(BaseModel):
 
 class KanbanMoveRequest(SQLModel):
     """Request schema for moving tasks in Kanban board"""
-    task_id: UUID4 = Field(description="ID of the task to move")
-    from_column: Status = Field(description="Current column status")
-    to_column: Status = Field(description="Destination column status")
-    new_position: int = Field(ge=0, description="0-based index position in destination column")
-    reason: str | None = Field(default=None, description="Required reason for regression moves")
+    task_id: UUID4 = Field(description="ID de la tarea a mover")
+    from_column: Status = Field(description="Estado de la columna actual")
+    to_column: Status = Field(description="Estado de la columna destino")
+    new_position: int = Field(ge=0, description="Posición de índice basada en 0 en la columna destino")
+    reason: str | None = Field(default=None, description="Razón requerida para movimientos de regresión")
 
     @field_validator('reason')
     @classmethod
@@ -58,7 +58,7 @@ class KanbanMoveRequest(SQLModel):
             
             if rank_map.get(to_col, 0) < rank_map.get(from_col, 0):
                 if not v or not v.strip():
-                    raise ValueError("Reason is required for regression moves")
+                    raise ValueError("Se requiere una razón para movimientos de regresión")
         
         return v
 
@@ -73,4 +73,4 @@ class TaskMoveInfo(SQLModel):
 
 class KanbanMoveResponse(BaseResponse[TaskMoveInfo]):
     """Response schema for kanban move operation"""
-    old: TaskMoveInfo = Field(description="Previous task position and status")
+    old: TaskMoveInfo = Field(description="Posición y estado previos de la tarea")

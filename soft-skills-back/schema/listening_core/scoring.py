@@ -11,7 +11,7 @@ from utils.payloads_listening_game import (
 
 class FocusAnswerPayload(BaseModel):
     """Payload for focus mode answer submission."""
-    selected_index: int = Field(ge=0, description="Index of the selected answer choice")
+    selected_index: int = Field(ge=0, description="Índice de la opción de respuesta seleccionada")
     
     model_config = {
         "json_schema_extra": {
@@ -23,13 +23,13 @@ class FocusAnswerPayload(BaseModel):
 class FocusMultipleChoice(BaseModel):
     """Multiple choice question data from challenge metadata."""
     question: str
-    answer_choices: list[str] = Field(min_length=1, description="List of answer choices")
+    answer_choices: list[str] = Field(min_length=1, description="Lista de opciones de respuesta")
     correct_answer: str
 
 
 class ClozeAnswerPayload(BaseModel):
     """Payload for cloze mode answer submission."""
-    blanks: list[str] = Field(min_length=1, description="List of user answers for each blank")
+    blanks: list[str] = Field(min_length=1, description="Lista de respuestas del usuario para cada espacio en blanco")
     
     model_config = {
         "json_schema_extra": {
@@ -41,7 +41,7 @@ class ClozeAnswerPayload(BaseModel):
 class ClozeSpec(BaseModel):
     """Cloze mode question data from challenge metadata."""
     text_with_blanks: str
-    answers: list[str] = Field(min_length=1, description="List of correct answers for each blank")
+    answers: list[str] = Field(min_length=1, description="Lista de respuestas correctas para cada espacio en blanco")
 
 
 class ClarifyAnswerPayload(BaseModel):
@@ -49,7 +49,7 @@ class ClarifyAnswerPayload(BaseModel):
     questions: list[str] = Field(
         min_length=1,
         max_length=5,
-        description="List of clarifying questions (1-5 items)"
+        description="Lista de preguntas de clarificación (1-5 elementos)"
     )
     
     model_config = {
@@ -63,13 +63,13 @@ class ClarifySpec(BaseModel):
     """Cloze mode question data from challenge metadata."""
     possible_questions: list[str] = Field(
         min_length=1,
-        description="List of reference clarifying questions"
+        description="Lista de preguntas de clarificación de referencia"
     )
 
 
 class SummarizeAnswerPayload(BaseModel):
     """Payload for summarize mode answer submission."""
-    summary: str = Field(min_length=1, description="Player's summary of the audio content")
+    summary: str = Field(min_length=1, description="Resumen del jugador del contenido de audio")
     
     model_config = {
         "json_schema_extra": {
@@ -80,12 +80,12 @@ class SummarizeAnswerPayload(BaseModel):
 
 class SummarizeSpec(BaseModel):
     """Summarize mode challenge data from challenge metadata."""
-    reference_summary: str = Field(description="Reference summary for comparison")
+    reference_summary: str = Field(description="Resumen de referencia para comparación")
 
 
 class ParaphraseAnswerPayload(BaseModel):
     """Payload for paraphrase mode answer submission."""
-    paraphrase: str = Field(min_length=1, description="Player's paraphrase of the audio content")
+    paraphrase: str = Field(min_length=1, description="Paráfrasis del jugador del contenido de audio")
     
     model_config = {
         "json_schema_extra": {
@@ -96,5 +96,5 @@ class ParaphraseAnswerPayload(BaseModel):
 
 class ParaphraseSpec(BaseModel):
     """Paraphrase mode challenge data from challenge metadata."""
-    reference_text: str = Field(description="Reference text for comparison")
-    rubric: list[str] = Field(min_length=1, description="List of evaluation criteria")
+    reference_text: str = Field(description="Texto de referencia para comparación")
+    rubric: list[str] = Field(min_length=1, description="Lista de criterios de evaluación")

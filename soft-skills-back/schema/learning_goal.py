@@ -48,9 +48,9 @@ class LearningGoalDetail(LearningGoalReadBase):
   model_config={"json_schema_extra": {"example": LEARNING_GOAL_DETAIL_READ_EXAMPLE}}
 
 class LearningGoalUpdate(SQLModel):
-  title: str | None = Field(default=None, description="Updated title of the learning goal")
-  description: str | None = Field(default=None, description="Updated detailed explanation of the goal's purpose")
-  impact: str | None = Field(default=None, description="Updated expected personal or professional benefit")
+  title: str | None = Field(default=None, description="Título actualizado de la meta de aprendizaje")
+  description: str | None = Field(default=None, description="Explicación detallada actualizada del propósito de la meta")
+  impact: str | None = Field(default=None, description="Beneficio personal o profesional esperado actualizado")
 
   model_config={
     "extra": "forbid",

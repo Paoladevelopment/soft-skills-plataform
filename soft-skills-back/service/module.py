@@ -13,7 +13,7 @@ class ModuleService:
         try:
             existing_module = session.exec(select(Module).where(Module.title == module.title)).first()
             if existing_module:
-                raise Duplicate(f"Module with title '{module.title}' already exists.")
+                raise Duplicate(f"Ya existe un módulo con el título '{module.title}'")
         
         except APIException as api_error:
             raise api_error
@@ -56,7 +56,7 @@ class ModuleService:
             module = session.get(Module, id)
 
             if not module:
-                raise Missing("Module not found")
+                raise Missing("Módulo no encontrado")
             return module
         
         except APIException as api_error:
@@ -78,7 +78,7 @@ class ModuleService:
                 module_with_new_name = session.exec(statement).first()
 
                 if module_with_new_name:
-                    raise Duplicate(f"Module title '{module_with_new_name.title}' is already in use.")
+                    raise Duplicate(f"El título de módulo '{module_with_new_name.title}' ya está en uso")
         
             module_data = module.model_dump(exclude_unset=True)
             for key, value in module_data.items():
@@ -103,7 +103,7 @@ class ModuleService:
             session.delete(module)
             session.commit()
 
-            return {"message": "Module deleted successfully", "id": id}
+            return {"message": "Módulo eliminado correctamente", "id": id}
         
         except APIException as api_error:
             raise api_error

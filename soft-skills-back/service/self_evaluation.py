@@ -147,7 +147,7 @@ class SelfEvaluationService:
             result = session.exec(statement).first()
             
             if not result:
-                raise Missing(f"Self-evaluation {evaluation_id} not found")
+                raise Missing(f"Autoevaluación {evaluation_id} no encontrada")
             
             evaluation, task_title = result
             

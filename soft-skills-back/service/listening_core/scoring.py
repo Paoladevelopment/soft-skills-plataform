@@ -79,16 +79,16 @@ def _evaluate_focus_answer(
     try:
         user_answer = FocusAnswerPayload.model_validate(answer_payload)
     except ValidationError as e:
-        raise InvalidPayload(f"Invalid answer payload: {e}")
+        raise InvalidPayload(f"Payload de respuesta inválido: {e}")
     
     try:
         spec = FocusMultipleChoice.model_validate(challenge_metadata)
     except ValidationError as e:
-        raise MisconfiguredChallenge(f"Invalid challenge metadata: {e}")
+        raise MisconfiguredChallenge(f"Metadatos de desafío inválidos: {e}")
     
     if not (0 <= user_answer.selected_index < len(spec.answer_choices)):
         raise InvalidPayload(
-            f"Selected index {user_answer.selected_index} is out of range [0, {len(spec.answer_choices)})"
+            f"El índice seleccionado {user_answer.selected_index} está fuera del rango [0, {len(spec.answer_choices)})"
         )
     
     player_answer = normalize_text(spec.answer_choices[user_answer.selected_index])
@@ -96,7 +96,7 @@ def _evaluate_focus_answer(
     
     is_correct = player_answer == correct_answer
     score_final = max_score if is_correct else 0.0
-    feedback_short = "Correct!" if is_correct else "Incorrect!"
+    feedback_short = "¡Correcto!" if is_correct else "¡Incorrecto!"
     
     return (
         score_final,
@@ -114,16 +114,16 @@ def _evaluate_cloze_answer(
     try:
         user_answer = ClozeAnswerPayload.model_validate(answer_payload)
     except ValidationError as e:
-        raise InvalidPayload(f"Invalid answer payload: {e}")
+        raise InvalidPayload(f"Payload de respuesta inválido: {e}")
     
     try:
         spec = ClozeSpec.model_validate(challenge_metadata)
     except ValidationError as e:
-        raise MisconfiguredChallenge(f"Invalid challenge metadata: {e}")
+        raise MisconfiguredChallenge(f"Metadatos de desafío inválidos: {e}")
     
     if len(user_answer.blanks) != len(spec.answers):
         raise InvalidPayload(
-            f"Expected {len(spec.answers)} blanks, got {len(user_answer.blanks)}"
+            f"Se esperaban {len(spec.answers)} espacios en blanco, se recibieron {len(user_answer.blanks)}"
         )
     
     user_normalized = [normalize_text(blank) for blank in user_answer.blanks]
@@ -137,9 +137,9 @@ def _evaluate_cloze_answer(
     is_correct = (matched == total)
     
     if is_correct:
-        feedback_short = "Perfect!"
+        feedback_short = "¡Perfecto!"
     else:
-        feedback_short = f"{matched}/{total} correct"
+        feedback_short = f"{matched}/{total} correcto"
     
     return (
         score_final,
@@ -180,9 +180,9 @@ def _calculate_clarify_score(
     strong_count = sum(1 for question_eval in evaluation.per_question if question_eval.score_0_2 == 2)
     
     if is_correct:
-        feedback_short = "Great clarifying questions!"
+        feedback_short = "¡Excelentes preguntas de clarificación!"
     else:
-        feedback_short = f"{strong_count}/{total_questions} strong questions"
+        feedback_short = f"{strong_count}/{total_questions} preguntas sólidas"
     
     return (score_final, is_correct, feedback_short)
 
@@ -196,12 +196,12 @@ def _evaluate_clarify_answer(
     try:
         user_answer = ClarifyAnswerPayload.model_validate(answer_payload)
     except ValidationError as e:
-        raise InvalidPayload(f"Invalid answer payload: {e}")
+        raise InvalidPayload(f"Payload de respuesta inválido: {e}")
     
     try:
         spec = ClarifySpec.model_validate(challenge_metadata)
     except ValidationError as e:
-        raise MisconfiguredChallenge(f"Invalid challenge metadata: {e}")
+        raise MisconfiguredChallenge(f"Metadatos de desafío inválidos: {e}")
     
     try:
         evaluation = evaluate_clarify_questions(
@@ -218,7 +218,7 @@ def _evaluate_clarify_answer(
     except APIException:
         raise
     except Exception as e:
-        raise APIException(f"Failed to evaluate clarifying questions: {str(e)}")
+        raise APIException(f"Error al evaluar preguntas de clarificación: {str(e)}")
 
 
 def _calculate_summarize_score(
@@ -246,11 +246,11 @@ def _calculate_summarize_score(
     is_correct = average_score >= 0.8
     
     if is_correct:
-        feedback_short = "Excellent summary!"
+        feedback_short = "¡Excelente resumen!"
     elif evaluation.score_0_2 == 1:
-        feedback_short = "Good summary, but could be more complete."
+        feedback_short = "Buen resumen, pero podría ser más completo."
     else:
-        feedback_short = "Summary needs improvement."
+        feedback_short = "El resumen necesita mejoras."
     
     return (score_final, is_correct, feedback_short)
 
@@ -264,12 +264,12 @@ def _evaluate_summarize_answer(
     try:
         user_answer = SummarizeAnswerPayload.model_validate(answer_payload)
     except ValidationError as e:
-        raise InvalidPayload(f"Invalid answer payload: {e}")
+        raise InvalidPayload(f"Payload de respuesta inválido: {e}")
     
     try:
         spec = SummarizeSpec.model_validate(challenge_metadata)
     except ValidationError as e:
-        raise MisconfiguredChallenge(f"Invalid challenge metadata: {e}")
+        raise MisconfiguredChallenge(f"Metadatos de desafío inválidos: {e}")
     
     try:
         evaluation = evaluate_summarize_answer(
@@ -285,7 +285,7 @@ def _evaluate_summarize_answer(
     except APIException:
         raise
     except Exception as e:
-        raise APIException(f"Failed to evaluate summarize answer: {str(e)}")
+        raise APIException(f"Error al evaluar respuesta de resumen: {str(e)}")
 
 
 def _calculate_paraphrase_score(
@@ -311,11 +311,11 @@ def _calculate_paraphrase_score(
     is_correct = average_score >= 0.8
     
     if is_correct:
-        feedback_short = "Excellent paraphrase!"
+        feedback_short = "¡Excelente paráfrasis!"
     elif evaluation.score_0_2 == 1:
-        feedback_short = "Good paraphrase, but could be improved."
+        feedback_short = "Buena paráfrasis, pero podría mejorarse."
     else:
-        feedback_short = "Paraphrase needs improvement."
+        feedback_short = "La paráfrasis necesita mejoras."
     
     return (score_final, is_correct, feedback_short)
 
@@ -329,12 +329,12 @@ def _evaluate_paraphrase_answer(
     try:
         user_answer = ParaphraseAnswerPayload.model_validate(answer_payload)
     except ValidationError as e:
-        raise InvalidPayload(f"Invalid answer payload: {e}")
+        raise InvalidPayload(f"Payload de respuesta inválido: {e}")
     
     try:
         spec = ParaphraseSpec.model_validate(challenge_metadata)
     except ValidationError as e:
-        raise MisconfiguredChallenge(f"Invalid challenge metadata: {e}")
+        raise MisconfiguredChallenge(f"Metadatos de desafío inválidos: {e}")
     
     try:
         evaluation = evaluate_paraphrase_answer(
@@ -351,5 +351,5 @@ def _evaluate_paraphrase_answer(
     except APIException:
         raise
     except Exception as e:
-        raise APIException(f"Failed to evaluate paraphrase answer: {str(e)}")
+        raise APIException(f"Error al evaluar respuesta de paráfrasis: {str(e)}")
 

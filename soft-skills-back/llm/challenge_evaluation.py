@@ -47,7 +47,7 @@ def evaluate_clarify_questions(
         
         if len(evaluation.per_question) != len(player_questions):
             raise APIException(
-                f"LLM returned {len(evaluation.per_question)} evaluations for {len(player_questions)} questions"
+                f"El LLM devolvió {len(evaluation.per_question)} evaluaciones para {len(player_questions)} preguntas"
             )
         
         return evaluation
@@ -55,7 +55,7 @@ def evaluate_clarify_questions(
     except APIException:
         raise
     except Exception as e:
-        raise APIException(f"Failed to evaluate clarifying questions: {str(e)}")
+        raise APIException(f"Error al evaluar preguntas de clarificación: {str(e)}")
 
 
 def evaluate_summarize_answer(
@@ -94,7 +94,7 @@ def evaluate_summarize_answer(
     except APIException:
         raise
     except Exception as e:
-        raise APIException(f"Failed to evaluate summarize answer: {str(e)}")
+        raise APIException(f"Error al evaluar respuesta de resumen: {str(e)}")
 
 
 def evaluate_paraphrase_answer(
@@ -137,5 +137,5 @@ def evaluate_paraphrase_answer(
     except APIException:
         raise
     except Exception as e:
-        raise APIException(f"Failed to evaluate paraphrase answer: {str(e)}")
+        raise APIException(f"Error al evaluar respuesta de paráfrasis: {str(e)}")
 

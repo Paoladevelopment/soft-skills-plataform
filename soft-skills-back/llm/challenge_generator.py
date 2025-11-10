@@ -17,14 +17,14 @@ def _validate_combination(play_mode: PlayMode, prompt_type: PromptType) -> None:
     """Validate that the play mode and prompt type combination is allowed, raising BadRequest if invalid."""
     if play_mode == PlayMode.paraphrase and prompt_type == PromptType.dialogue:
         raise BadRequest(
-            "Paraphrase mode is not supported for dialogue prompt type. "
-            "Please use a different play mode or prompt type."
+            "El modo paráfrasis no está soportado para el tipo de prompt diálogo. "
+            "Por favor, use un modo de juego o tipo de prompt diferente."
         )
     
     if play_mode == PlayMode.cloze and prompt_type == PromptType.dialogue:
         raise BadRequest(
-            "Cloze mode is not supported for dialogue prompt type. "
-            "Please use a different play mode or prompt type."
+            "El modo cloze no está soportado para el tipo de prompt diálogo. "
+            "Por favor, use un modo de juego o tipo de prompt diferente."
         )
 
 
@@ -87,12 +87,12 @@ def generate_challenge_json(
         
     except FileNotFoundError as e:
         raise APIException(
-            f"Prompt file not found: {str(e)}"
+            f"Archivo de prompt no encontrado: {str(e)}"
         )
 
     except ValueError as e:
         raise APIException(
-            f"Configuration error: {str(e)}"
+            f"Error de configuración: {str(e)}"
         )
         
     except Exception as e:
@@ -100,5 +100,5 @@ def generate_challenge_json(
             raise e
         
         raise APIException(
-            f"Challenge generation failed: {str(e)}"
+            f"Error al generar desafío: {str(e)}"
         )

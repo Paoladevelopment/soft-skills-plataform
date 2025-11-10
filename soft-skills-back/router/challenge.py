@@ -20,7 +20,7 @@ challenge_service = ChallengeService()
 @router.post(
     "/generate",
     response_model=ChallengeResponse,
-    summary="Generate a new listening challenge using LLM",
+    summary="Generar un nuevo desafío de escucha usando LLM",
     status_code=status.HTTP_201_CREATED
 )
 def generate_challenge(
@@ -31,7 +31,7 @@ def generate_challenge(
         challenge = challenge_service.generate_challenge(request, session)
         
         return ChallengeResponse(
-            message="Challenge generated successfully",
+            message="Desafío generado correctamente",
             data=challenge
         )
         
@@ -42,7 +42,7 @@ def generate_challenge(
 @router.get(
     "/{challenge_id}/audio",
     response_model=ChallengeAudioResponse,
-    summary="Get or create audio for a challenge",
+    summary="Obtener o crear audio para un desafío",
     status_code=status.HTTP_200_OK
 )
 def get_or_create_challenge_audio(

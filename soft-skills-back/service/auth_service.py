@@ -28,7 +28,7 @@ user_service = UserService()
 def get_credentials_exception():
     return HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="No se pudieron validar las credenciales",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
@@ -78,7 +78,7 @@ def decode_jwt_token(token: str = Depends(oauth2_scheme)) -> TokenData:
     except JWTError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Token decoding failed: {str(e)}"
+            detail=f"Error al decodificar el token: {str(e)}"
         )
 
 def get_current_admin_user(token: str = Depends(oauth2_scheme)) -> TokenData:
@@ -87,7 +87,7 @@ def get_current_admin_user(token: str = Depends(oauth2_scheme)) -> TokenData:
     if token_data.role != UserRoles.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="You do not have permission to access this resource"
+            detail="No tiene permiso para acceder a este recurso"
         )
 
     return token_data

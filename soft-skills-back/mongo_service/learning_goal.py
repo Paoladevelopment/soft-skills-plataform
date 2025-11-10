@@ -39,7 +39,7 @@ class LearningGoalMongoService:
             )
 
             if not learning_goal:
-                raise Missing("Learning goal not found")
+                raise Missing("Meta de aprendizaje no encontrada")
 
             return learning_goal
 

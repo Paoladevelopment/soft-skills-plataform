@@ -37,7 +37,7 @@ class ObjectiveService:
             objective_owner_id = session.exec(statement).first()
 
             if objective_owner_id != user_id:
-                raise Forbidden("You are not allowed to modify this objective")
+                raise Forbidden("No tiene permiso para modificar este objetivo")
         
         except APIException as api_error:
             raise api_error
@@ -135,7 +135,7 @@ class ObjectiveService:
             objective = session.get(Objective, objective_id)
 
             if not objective:
-                raise Missing("Objective not found")
+                raise Missing("Objetivo no encontrado")
             return objective
         
         except APIException as api_error:
@@ -162,7 +162,7 @@ class ObjectiveService:
             ).first()
 
             if not result:
-                raise Missing(f"No tasks found for Objective ID {objective_id}")
+                raise Missing(f"No se encontraron tareas para el objetivo con ID {objective_id}")
 
             total, completed, in_progress, paused = (result[0] or 0), (result[1] or 0), (result[2] or 0), (result[3] or 0)
             return {
@@ -324,7 +324,7 @@ class ObjectiveService:
             
             session.commit()
 
-            return {"message": "Objective deleted successfully", "objective_id": objective_id}
+            return {"message": "Objetivo eliminado correctamente", "objective_id": objective_id}
         
         except APIException as api_error:
             raise api_error

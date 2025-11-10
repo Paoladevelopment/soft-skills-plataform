@@ -15,7 +15,7 @@ task_service = TaskService()
 @router.post(
 	"",
 	response_model=TaskResponse,
-	summary="Create task",
+	summary="Crear tarea",
 	status_code=status.HTTP_201_CREATED,
 )
 def create_task(
@@ -28,7 +28,7 @@ def create_task(
         task_data = TaskRead.model_validate(created_task)
 
         return TaskResponse(
-            message="Task created successfully",
+            message="Tarea creada correctamente",
             data=task_data
         )
 
@@ -38,7 +38,7 @@ def create_task(
 
 @router.get(
     "/{id}", 
-    summary="Retrieve task by ID", 
+    summary="Obtener tarea por ID", 
     response_model=TaskResponse)
 def get_task(
     id: str, 
@@ -46,13 +46,13 @@ def get_task(
     session: Session = Depends(get_session)
 ):
     try:
-        task_uuid = validate_uuid(id, "task ID")
+        task_uuid = validate_uuid(id, "ID de tarea")
         
         task = task_service.get_task(task_uuid, session)
         task_data = TaskRead.model_validate(task)
 
         return TaskResponse(
-            message="Task retrieved successfully",
+            message="Tarea obtenida correctamente",
             data=task_data
         )
     
@@ -62,7 +62,7 @@ def get_task(
 
 @router.patch(
     "/{id}",
-    summary="Update task details by ID", 
+    summary="Actualizar detalles de tarea por ID", 
     response_model=TaskResponse
 )
 def update_task(
@@ -72,13 +72,13 @@ def update_task(
     session: Session = Depends(get_session),
 ):
     try:
-        task_uuid = validate_uuid(id, "task ID")
+        task_uuid = validate_uuid(id, "ID de tarea")
         
         updated_task = task_service.update_task(task_uuid, task, token_data.user_id, session)
         task_data = TaskRead.model_validate(updated_task)
 
         return TaskResponse(
-            message="Task updated successfully",
+            message="Tarea actualizada correctamente",
             data=task_data
         )
 
@@ -87,7 +87,7 @@ def update_task(
 
 @router.patch(
     "/{id}/status",
-    summary="Update task status",
+    summary="Actualizar estado de tarea",
     response_model=TaskResponse
 )
 def update_task_status(
@@ -97,11 +97,11 @@ def update_task_status(
     session: Session = Depends(get_session),
 ):
     try: 
-        task_uuid = validate_uuid(id, "task ID")
+        task_uuid = validate_uuid(id, "ID de tarea")
         
         updated_task = task_service.update_task_status(task_uuid, new_status, token_data.user_id, session)
         return TaskResponse(
-            message=f"Task status changed to {new_status.value}",
+            message=f"Estado de tarea cambiado a {new_status.value}",
             data=updated_task
         )
     
@@ -111,7 +111,7 @@ def update_task_status(
     
 @router.delete(
     "/{id}",
-    summary="Delete task by ID"
+    summary="Eliminar tarea por ID"
 )
 def delete_objective(
     id: str,
@@ -119,7 +119,7 @@ def delete_objective(
     session: Session = Depends(get_session),
 ):
     try:
-        task_uuid = validate_uuid(id, "task ID")
+        task_uuid = validate_uuid(id, "ID de tarea")
         
         return task_service.delete_task(task_uuid, token_data.user_id, session)
     

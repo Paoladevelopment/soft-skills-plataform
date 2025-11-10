@@ -38,7 +38,7 @@ class TaskService:
             task_owner_id = session.exec(statement).first()
 
             if task_owner_id != user_id:
-                raise Forbidden("You are not allowed to modify this task")
+                raise Forbidden("No tiene permiso para modificar esta tarea")
             
         except APIException as api_error:
             raise api_error
@@ -135,7 +135,7 @@ class TaskService:
             task = session.get(Task, task_id)
 
             if not task:
-                raise Missing("Task not found")
+                raise Missing("Tarea no encontrada")
             return task
         
         except APIException as api_error:
@@ -237,7 +237,7 @@ class TaskService:
             
             session.commit()
 
-            return {"message": "Task deleted successfully", "task_id": task_id}
+            return {"message": "Tarea eliminada correctamente", "task_id": task_id}
         
         except APIException as api_error:
             raise api_error

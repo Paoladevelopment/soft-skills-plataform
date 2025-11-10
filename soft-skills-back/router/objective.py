@@ -24,7 +24,7 @@ task_service = TaskService()
 @router.post(
 	"",
 	response_model=ObjectiveResponse,
-	summary="Create a learning goal objective",
+	summary="Crear objetivo de aprendizaje",
 	status_code=status.HTTP_201_CREATED,
 )
 def create_objective(
@@ -37,7 +37,7 @@ def create_objective(
         objective_data = ObjectiveRead.model_validate(created_objective)
 
         return ObjectiveResponse(
-            message="Objective created successfully",
+            message="Objetivo creado correctamente",
             data=objective_data
         )
 
@@ -47,7 +47,7 @@ def create_objective(
 
 @router.get(
     "/{id}", 
-    summary="Retrieve objective by ID", 
+    summary="Obtener objetivo por ID", 
     response_model=ObjectiveResponse)
 def get_objective(
     id: str, 
@@ -55,12 +55,12 @@ def get_objective(
     session: Session = Depends(get_session)
 ):
     try:
-        objective_uuid = validate_uuid(id, "objective ID")
+        objective_uuid = validate_uuid(id, "ID de objetivo")
         objective = objective_service.get_objective(objective_uuid, session)
         objective_data = ObjectiveRead.model_validate(objective)
 
         return ObjectiveResponse(
-            message="Objective retrieved successfully",
+            message="Objetivo obtenido correctamente",
             data=objective_data
         )
     
@@ -69,16 +69,16 @@ def get_objective(
 
 @router.get(
     "/{id}/tasks",
-    summary="Retrieve tasks for a specific objective with optional filters and sorting",
+    summary="Obtener tareas de un objetivo específico con filtros y ordenamiento opcionales",
     response_model=TaskPaginatedResponse
 )
 def get_tasks_by_objective(
     id: str,
-    offset: int = Query(0, ge=0, description="Number of items to skip"),
-    limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
-    status: Optional[str] = Query(None, description="Filter by status ('completed', 'in_progress', etc.)"),
-    priority: Optional[str] = Query(None, description="Filter by priority ('high', 'medium', 'low')"),
-    order_by: List[str] = Query(None, description="Sorting criteria"),
+    offset: int = Query(0, ge=0, description="Número de elementos a omitir"),
+    limit: int = Query(10, le=100, description="Número máximo de elementos a recuperar (máx. 100)"),
+    status: Optional[str] = Query(None, description="Filtrar por estado ('completed', 'in_progress', etc.)"),
+    priority: Optional[str] = Query(None, description="Filtrar por prioridad ('high', 'medium', 'low')"),
+    order_by: List[str] = Query(None, description="Criterios de ordenamiento"),
     _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
@@ -86,7 +86,7 @@ def get_tasks_by_objective(
         tasks, total_count = task_service.get_tasks_by_objective(id, offset, limit, status, priority, order_by, session)
 
         return TaskPaginatedResponse(
-            message="Tasks retrieved successfully",
+            message="Tareas obtenidas correctamente",
             data=tasks,
             total=total_count,
             offset=offset,
@@ -99,7 +99,7 @@ def get_tasks_by_objective(
 
 @router.patch(
     "/{id}",
-    summary="Update objective details by ID", 
+    summary="Actualizar detalles de objetivo por ID", 
     response_model=ObjectiveResponse
 )
 def update_objective(
@@ -109,12 +109,12 @@ def update_objective(
     session: Session = Depends(get_session),
 ):
     try:
-        objective_uuid = validate_uuid(id, "objective ID")
+        objective_uuid = validate_uuid(id, "ID de objetivo")
         updated_objective = objective_service.update_objective(objective_uuid, objective, token_data.user_id, session)
         objective_data = ObjectiveRead.model_validate(updated_objective)
 
         return ObjectiveResponse(
-            message="Objective updated successfully",
+            message="Objetivo actualizado correctamente",
             data=objective_data
         )
 
@@ -123,7 +123,7 @@ def update_objective(
 
 @router.delete(
     "/{id}",
-    summary="Delete a objective by ID"
+    summary="Eliminar objetivo por ID"
 )
 def delete_objective(
     id: str,
@@ -131,7 +131,7 @@ def delete_objective(
     session: Session = Depends(get_session),
 ):
     try:
-        objective_uuid = validate_uuid(id, "objective ID")
+        objective_uuid = validate_uuid(id, "ID de objetivo")
         return objective_service.delete_objective(objective_uuid, token_data.user_id, session)
     
     except APIException as err:
@@ -140,17 +140,17 @@ def delete_objective(
 
 @router.get(
     "/{id}/kanban",
-    summary="Get Kanban board for an objective with first page of each status",
+    summary="Obtener tablero Kanban de un objetivo con primera página de cada estado",
     response_model=KanbanBoardResponse
 )
 def get_kanban_board(
     id: str,
-    per_page: int = Query(10, ge=1, le=100, description="Items per page for each column (max 100)"),
+    per_page: int = Query(10, ge=1, le=100, description="Elementos por página para cada columna (máx. 100)"),
     _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
     try:
-        objective_uuid = validate_uuid(id, "objective ID")
+        objective_uuid = validate_uuid(id, "ID de objetivo")
         kanban_data = kanban_service.get_kanban_board(objective_uuid, per_page, session)
         return KanbanBoardResponse(**kanban_data)
     
@@ -160,19 +160,19 @@ def get_kanban_board(
 
 @router.get(
     "/{id}/kanban/column",
-    summary="Get paginated tasks for a specific Kanban column",
+    summary="Obtener tareas paginadas para una columna Kanban específica",
     response_model=KanbanColumnPaginatedResponse
 )
 def get_kanban_column(
     id: str,
-    status: Status = Query(..., description="Column status"),
-    page: int = Query(1, ge=1, description="Page number"),
-    per_page: int = Query(20, ge=1, le=100, description="Items per page (max 100)"),
+    status: Status = Query(..., description="Estado de la columna"),
+    page: int = Query(1, ge=1, description="Número de página"),
+    per_page: int = Query(20, ge=1, le=100, description="Elementos por página (máx. 100)"),
     _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
     try:
-        objective_uuid = validate_uuid(id, "objective ID")
+        objective_uuid = validate_uuid(id, "ID de objetivo")
         column_data = kanban_service.get_kanban_column(objective_uuid, status.value, page, per_page, session)
         return KanbanColumnPaginatedResponse(**column_data)
     
@@ -182,7 +182,7 @@ def get_kanban_column(
 
 @router.patch(
     "/{id}/kanban/move",
-    summary="Move a task in the Kanban board",
+    summary="Mover una tarea en el tablero Kanban",
     response_model=KanbanMoveResponse,
     status_code=status.HTTP_200_OK
 )
@@ -193,7 +193,7 @@ def move_kanban_task(
     session: Session = Depends(get_session),
 ):
     try:
-        objective_uuid = validate_uuid(id, "objective ID")
+        objective_uuid = validate_uuid(id, "ID de objetivo")
         result = kanban_service.move_kanban_task(objective_uuid, move_request, token_data.user_id, session)
         
         return KanbanMoveResponse(
@@ -208,7 +208,7 @@ def move_kanban_task(
 
 @router.post(
     "/{id}/kanban/sync",
-    summary="Sync Kanban board with actual task statuses",
+    summary="Sincronizar tablero Kanban con estados reales de tareas",
     status_code=status.HTTP_200_OK
 )
 def sync_kanban_board(
@@ -217,7 +217,7 @@ def sync_kanban_board(
     session: Session = Depends(get_session),
 ):
     try:
-        objective_uuid = validate_uuid(id, "objective ID")
+        objective_uuid = validate_uuid(id, "ID de objetivo")
         result = kanban_service.sync_kanban_with_task_statuses(objective_uuid, session)
         return result
     
