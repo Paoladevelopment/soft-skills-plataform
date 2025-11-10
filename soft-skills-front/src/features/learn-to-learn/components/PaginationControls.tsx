@@ -20,6 +20,7 @@ interface PaginationControlsProps {
   onChangeLimit: (limit: number) => void
   onChangeOffset: (offset: number) => void
   pageSizeOptions?: number[]
+  useLearningGoalStorePagination?: boolean
 }
 
 const PaginationControls = ({
@@ -28,31 +29,33 @@ const PaginationControls = ({
   limit,
   onChangeLimit,
   onChangeOffset,
-  pageSizeOptions = [5, 10]
+  pageSizeOptions = [5, 10],
+  useLearningGoalStorePagination = true
 }: PaginationControlsProps) => {
-  const { setIsPaginating } = useLearningGoalStore()
+  const learningGoalStore = useLearningGoalStore()
+  const setIsPaginating = useLearningGoalStorePagination ? learningGoalStore.setIsPaginating : undefined
 
   const totalPages = Math.ceil(total / limit)
   const start = offset + 1
   const end = Math.min(offset + limit, total)
 
   const handleFirstPage = () => {
-    setIsPaginating(true)
+    setIsPaginating?.(true)
     onChangeOffset(0)
   }
 
   const handlePrevPage = () => {
-    setIsPaginating(true)
+    setIsPaginating?.(true)
     onChangeOffset(Math.max(0, offset - limit))
   }
 
   const handleNextPage = () => {
-    setIsPaginating(true)
+    setIsPaginating?.(true)
     onChangeOffset(Math.min(offset + limit, (totalPages - 1) * limit))
   }
 
   const handleLastPage = () => {
-    setIsPaginating(true)
+    setIsPaginating?.(true)
     onChangeOffset((totalPages - 1) * limit)
   }
 

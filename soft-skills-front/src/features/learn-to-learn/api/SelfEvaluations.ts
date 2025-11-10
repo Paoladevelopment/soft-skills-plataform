@@ -1,6 +1,6 @@
 import { api } from "../../../config/api"
 import { fetchWithAuth } from "../../../utils/fetchWithAuth"
-import { SelfEvaluationCreate, SelfEvaluationCreated, SelfEvaluationRead } from "../types/self-evaluation/self-evaluation.api"
+import { SelfEvaluationCreate, SelfEvaluationCreated, SelfEvaluationRead, FetchSelfEvaluationsApiResponse } from "../types/self-evaluation/self-evaluation.api"
 
 export async function createSelfEvaluation(
   payload: SelfEvaluationCreate
@@ -20,20 +20,32 @@ export async function getSelfEvaluationById(evaluationId: string): Promise<SelfE
   const url = api.selfEvaluations.byId(evaluationId)
 
   const response = await fetchWithAuth(url)
-  return response
+
+  return response.data
 }
 
-export async function getSelfEvaluationsByUserId(userId: string): Promise<SelfEvaluationRead[]> {
-  const url = api.selfEvaluations.byUserId(userId)
+export async function getSelfEvaluationsByUserId(
+  userId: string,
+  offset?: number,
+  limit?: number,
+  sortBy?: string,
+  difficulty?: string,
+  mood?: string
+): Promise<FetchSelfEvaluationsApiResponse> {
+  const params = new URLSearchParams()
+
+  if (offset !== undefined) params.append('offset', offset.toString())
+  if (limit !== undefined) params.append('limit', limit.toString())
+  if (sortBy) params.append('sort_by', sortBy)
+  if (difficulty && difficulty !== 'All') params.append('difficulty', difficulty)
+  if (mood && mood !== 'All') params.append('mood', mood)
+
+  const url = params.toString() 
+    ? `${api.selfEvaluations.byUserId(userId)}?${params.toString()}`
+    : api.selfEvaluations.byUserId(userId)
 
   const response = await fetchWithAuth(url)
-  return response
-}
-
-export async function getSelfEvaluationsByTaskId(taskId: string): Promise<SelfEvaluationRead[]> {
-  const url = api.selfEvaluations.byTaskId(taskId)
-
-  const response = await fetchWithAuth(url)
+  
   return response
 }
 
