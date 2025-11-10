@@ -10,10 +10,11 @@ from mongo_service.objective import ObjectiveMongoService
 from schema.kanban import KanbanMoveRequest
 from service.learning_goal import LearningGoalService
 from service.objective import ObjectiveService
+from service.self_evaluation import SelfEvaluationService
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.sql import case
 from sqlmodel import Session, func, select
-from utils.errors import APIException, BadRequest, Missing, handle_db_error
+from utils.errors import APIException, BadRequest, Missing, PreconditionRequired, handle_db_error
 from utils.mongo_serializers import build_objective_document
 
 
@@ -22,6 +23,7 @@ class KanbanService:
         self.objective_service = ObjectiveService()
         self.learning_goal_service = LearningGoalService()
         self.mongo_service = ObjectiveMongoService()
+        self.self_evaluation_service = SelfEvaluationService()
 
     def get_kanban_board(self, objective_id: UUID, per_page: int, session: Session) -> dict:
         """Get the full Kanban board for an objective with first page of each status"""
@@ -139,6 +141,14 @@ class KanbanService:
             
             if move_request.from_column != task.status:
                 raise BadRequest(f"Task is currently in '{task.status.value}', not '{move_request.from_column.value}'")
+            
+            if move_request.to_column == Status.COMPLETED:
+                if not self.self_evaluation_service.has_evaluation_for_task(move_request.task_id, user_id, session):
+                    raise PreconditionRequired(
+                        "Self-evaluation required before completing task",
+                        error_code="SELF_EVALUATION_REQUIRED",
+                        required_actions=["SELF_EVALUATION"]
+                    )
             
             if not objective.tasks_order_by_status:
                 objective.tasks_order_by_status = default_status_order()

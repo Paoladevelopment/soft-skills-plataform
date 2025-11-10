@@ -8,7 +8,8 @@ from router import (
   user, 
   roadmap, 
   game_session,
-  challenge
+  challenge,
+  self_evaluations
 )
 
 api = APIRouter(
@@ -67,4 +68,10 @@ api.include_router(
   challenge.router,
   prefix="/challenges",
   tags=["Listening challenges"]
+)
+
+api.include_router(
+  self_evaluations.router,
+  prefix="/self-evaluations",
+  tags=["Self evaluations"]
 )

@@ -16,10 +16,13 @@ import { useDebounce } from '../hooks/useDebounce'
 import { Priority } from '../types/common.enums'
 import { formatDateToDateTime, normalizeDate } from '../utils/dateUtils'
 import { useKanbanTasks, useKanbanMoveTasks } from '../hooks/useKanbanTasks'
+import { useQueryClient } from '@tanstack/react-query'
 import { useCreateTask } from '../hooks/useTasks'
 import { CreateTaskPayload } from '../types/planner/task.api'
 import { usePomodoroPreferencesStore } from '../store/usePomodoroPreferencesStore'
 import { AddTaskFields } from '../components/objectives/AddTaskModal'
+import SelfEvaluationModal from '../components/self-evaluation/SelfEvaluationModal'
+import { useRef } from 'react'
 
 const ObjectiveDetail = () => {
   const navigate = useNavigate()
@@ -38,8 +41,17 @@ const ObjectiveDetail = () => {
     dueDate: null as string | null
   })
 
+  const queryClient = useQueryClient()
   const { data: kanbanBoard, isLoading: isKanbanLoading, error: kanbanError } = useKanbanTasks(objectiveId || null, objectiveData.title)
   const { mutate: moveTaskMutation } = useKanbanMoveTasks(objectiveId || null)
+
+  const pendingMoveRef = useRef<{
+    taskId: string
+    fromColumnId: string
+    toColumnId: string
+    newPosition: number
+    reason?: string
+  } | null>(null)
 
   const moveTask = (
     taskId: string,
@@ -48,12 +60,49 @@ const ObjectiveDetail = () => {
     newPosition: number,
     reason?: string
   ) => {
+    pendingMoveRef.current = {
+      taskId,
+      fromColumnId,
+      toColumnId,
+      newPosition,
+      reason
+    }
+    
     moveTaskMutation({
       taskId,
       fromColumnId,
       toColumnId,
       newPosition,
       reason
+    })
+  }
+
+  const handleRetryMove = async () => {
+    if (!pendingMoveRef.current) return
+
+    const { 
+      taskId, 
+      fromColumnId, 
+      toColumnId, 
+      newPosition, 
+      reason 
+    } = pendingMoveRef.current
+
+    moveTaskMutation({
+      taskId,
+      fromColumnId,
+      toColumnId,
+      newPosition,
+      reason
+    })
+
+    pendingMoveRef.current = null
+  }
+
+  const handleCancelSelfEvaluation = () => {
+    pendingMoveRef.current = null
+    queryClient.invalidateQueries({
+      queryKey: ['kanban-tasks', objectiveId]
     })
   }
   
@@ -419,6 +468,11 @@ const ObjectiveDetail = () => {
         open={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleCreateTask}
+      />
+
+      <SelfEvaluationModal 
+        onAfterCreate={handleRetryMove} 
+        onCancel={handleCancelSelfEvaluation}
       />
     </Box>
   )

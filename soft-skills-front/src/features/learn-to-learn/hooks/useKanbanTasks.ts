@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { fetchKanbanTasks } from '../api/KanbanTasks'
-import { moveTaskInKanban } from '../api/MoveTask'
+import { moveTaskInKanban, SelfEvaluationRequiredError } from '../api/MoveTask'
 import { transformKanbanApiResponse, mapColumnIdToApiFormat } from '../utils/kanbanUtils'
 import { useToastStore } from '../../../store/useToastStore'
+import { useSelfEvaluationStore } from '../store/useSelfEvaluationStore'
 
 export const useKanbanTasks = (objectiveId: string | null, objectiveTitle: string = '') => {
   return useQuery({
@@ -23,6 +24,7 @@ export const useKanbanTasks = (objectiveId: string | null, objectiveTitle: strin
 export const useKanbanMoveTasks = (objectiveId: string | null) => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const { open: openSelfEvaluation } = useSelfEvaluationStore()
 
   return useMutation({
     mutationFn: async ({ 
@@ -46,6 +48,15 @@ export const useKanbanMoveTasks = (objectiveId: string | null) => {
         reason
       })
     },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ 
+        queryKey: ['kanban-tasks', objectiveId] 
+      })
+
+      const previousKanbanTasks = queryClient.getQueryData(['kanban-tasks', objectiveId])
+
+      return { previousKanbanTasks }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['kanban-tasks', objectiveId]
@@ -67,7 +78,16 @@ export const useKanbanMoveTasks = (objectiveId: string | null) => {
         queryKey: ['learningGoals', 'detail']
       })
     },
-    onError: () => {
+    onError: (error: unknown, _variables, context) => {
+      if (context?.previousKanbanTasks) {
+        queryClient.setQueryData(['kanban-tasks', objectiveId], context.previousKanbanTasks)
+      }
+
+      if (error instanceof SelfEvaluationRequiredError) {
+        openSelfEvaluation(error.taskId)
+        return
+      }
+      
       showToast('Error moving task. Please try again.', 'error')
     }
   })
