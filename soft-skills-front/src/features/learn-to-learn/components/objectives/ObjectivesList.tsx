@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
   Box,
@@ -25,6 +26,7 @@ interface ObjectivesListProps {
 }
 
 const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
+  const { t } = useTranslation('goals')
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -174,12 +176,12 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
     const baseOptions: FilterOption[] = [
       {
         key: 'priority',
-        label: 'Priority Level',
+        label: t('objectives.filters.priorityLevel'),
         type: 'checkbox',
         values: [
-          { value: Priority.High, label: 'High' },
-          { value: Priority.Medium, label: 'Medium' },
-          { value: Priority.Low, label: 'Low' }
+          { value: Priority.High, label: t('objectives.filters.high') },
+          { value: Priority.Medium, label: t('objectives.filters.medium') },
+          { value: Priority.Low, label: t('objectives.filters.low') }
         ]
       }
     ]
@@ -187,14 +189,14 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
     if (selectedTab === 'all') {
       baseOptions.push({
         key: 'status',
-        label: 'progress status',
-        placeholder: 'Filter by progress',
+        label: t('objectives.filters.progressStatus'),
+        placeholder: t('objectives.filters.filterByProgress'),
         type: 'select',
         values: [
-          { value: Status.NotStarted, label: 'Not started' },
-          { value: Status.InProgress, label: 'In progress' },
-          { value: Status.Completed, label: 'Completed' },
-          { value: Status.Paused, label: 'Paused' }
+          { value: Status.NotStarted, label: t('objectives.filters.notStarted') },
+          { value: Status.InProgress, label: t('objectives.filters.inProgress') },
+          { value: Status.Completed, label: t('objectives.filters.completed') },
+          { value: Status.Paused, label: t('objectives.filters.paused') }
         ]
       })
     }
@@ -210,9 +212,16 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          mb: 2 
+        }}
+      >
         <Typography variant="h6">
-          Objectives
+          {t('objectives.title')}
         </Typography>
         <Button
           variant="contained"
@@ -225,7 +234,7 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
             fontWeight: 500,
           }}
         >
-          Add Objective
+          {t('objectives.addObjective')}
         </Button>
       </Box>
 
@@ -243,27 +252,27 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
           }}
         >
           <Tab 
-            label="All"
+            label={t('objectives.tabs.all')}
             value="all" 
           />
           <Tab 
-            label="Incomplete"
+            label={t('objectives.tabs.incomplete')}
             value="incomplete" 
           />
           <Tab 
-            label="Ongoing"
+            label={t('objectives.tabs.ongoing')}
             value="ongoing" 
           />
           <Tab 
-            label="Finished"
+            label={t('objectives.tabs.finished')}
             value="finished" 
           />
         </Tabs>
       </Box>
 
       <DataFilter
-        searchPlaceholder="Search objectives..."
-        filterButtonText="Filter Column"
+        searchPlaceholder={t('objectives.searchPlaceholder')}
+        filterButtonText={t('objectives.filterColumn')}
         searchValue={searchTerm}
         onSearchChange={handleSearchChange}
         filterOptions={filterOptions}
@@ -295,8 +304,8 @@ const ObjectivesList = ({ learningGoalId }: ObjectivesListProps) => {
         open={deleteModalOpen}
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
-        title="Confirm Deletion"
-        message={`Are you sure you want to delete "${objectiveToDelete?.title}"? This action cannot be undone.`}
+        title={t('objectives.deleteModal.title')}
+        message={t('objectives.deleteModal.message', { title: objectiveToDelete?.title || '' })}
       />
     </Box>
   )

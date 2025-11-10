@@ -1,0 +1,104 @@
+{
+  "language": {
+    "es": "Español",
+    "en": "English",
+    "label": "Idioma"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "clear": "Limpiar",
+    "filter": "Filtrar",
+    "search": "Buscar",
+    "view": "Ver",
+    "loading": "Cargando...",
+    "explore": "Explorar",
+    "signOut": "Cerrar sesión"
+  },
+  "errors": {
+    "generic": "Ha ocurrido un error",
+    "notFound": "No se encontró el recurso",
+    "unauthorized": "No autorizado",
+    "network": "Error de conexión",
+    "required": "Este campo es obligatorio"
+  },
+  "success": {
+    "saved": "Guardado exitosamente",
+    "deleted": "Eliminado exitosamente",
+    "updated": "Actualizado exitosamente"
+  },
+  "toast": {
+    "success": "Éxito",
+    "error": "Algo salió mal",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "enums": {
+    "studyPlace": {
+      "HOME_DESK": "Oficina en casa",
+      "HOME_COMMON_AREA": "Área común del hogar",
+      "OFFICE_DESK": "Escritorio de oficina",
+      "COWORKING": "Espacio de coworking",
+      "LIBRARY": "Biblioteca",
+      "CLASSROOM": "Aula",
+      "UNIVERSITY_CAMPUS": "Campus universitario",
+      "CAFE": "Café",
+      "BOOKSTORE": "Librería",
+      "DORM_ROOM": "Habitación de residencia",
+      "DORM_COMMON_AREA": "Área común de residencia",
+      "OUTDOORS": "Al aire libre",
+      "TRANSIT": "En tránsito",
+      "OTHER": "Otro"
+    },
+    "timeOfDay": {
+      "MORNING": "Mañana",
+      "AFTERNOON": "Tarde",
+      "EVENING": "Noche",
+      "NIGHT": "Noche"
+    },
+    "noiseLevel": {
+      "QUIET": "Silencioso",
+      "MODERATE": "Moderado",
+      "NOISY": "Ruidoso"
+    },
+    "collaborationMode": {
+      "SOLO": "Estudio individual",
+      "PAIR": "Estudio en pareja",
+      "GROUP": "Estudio en grupo"
+    },
+    "perceivedDifficulty": {
+      "EASY": "Fácil",
+      "MODERATE": "Medio",
+      "HARD": "Difícil"
+    },
+    "mood": {
+      "ENERGIZED": "Energizado",
+      "CALM": "Tranquilo",
+      "NEUTRAL": "Neutral",
+      "TIRED": "Cansado",
+      "FRUSTRATED": "Frustrado",
+      "STRESSED": "Estresado",
+      "OTHER": "Otro",
+      "POSITIVE": "Positivo"
+    },
+    "learningMethod": {
+      "PRACTICE": "Práctica aplicada",
+      "NOTE_TAKING": "Tomar notas",
+      "SPACED_REPETITION": "Repetición espaciada",
+      "SUMMARIZATION": "Resumen",
+      "TEACH_BACK": "Enseñar a otros",
+      "FLASHCARDS": "Tarjetas de memoria",
+      "OTHER": "Otro"
+    }
+  }
+}
+

@@ -1,4 +1,5 @@
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, IconButton, Typography, Tooltip } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { Position, NodeProps } from 'reactflow'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CustomHandle from '../roadmap-editor/CustomHandle'
@@ -10,6 +11,7 @@ import { captionFontSizeMap, fontSizeMap } from '../../types/roadmap/roadmap.opt
 const ObjectiveNode = (
   {data, id}: NodeProps<ObjectiveNodeData>
 ) => {
+  const { t } = useTranslation('roadmap')
   const [hovered, setHovered] = useState(false)
   const removeObjectiveNode = useRoadmapStore((state) => state.removeObjectiveNode)
 
@@ -48,23 +50,25 @@ const ObjectiveNode = (
       <CustomHandle  type="source" position={Position.Bottom} id="bottom"/>
 
       {shouldShowDeleteAction && (
-        <IconButton
-          size="small"
-          onClick={handleDelete}
-          sx={{
-            position: 'absolute',
-            top: 4,
-            right: 4,
-            zIndex: 1,
-            backgroundColor: 'white',
-            boxShadow: 1,
-            '&:hover': {
-              backgroundColor: '#f2f2f2',
-            },
-          }}
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
+        <Tooltip title={t('editor.topbar.tooltips.deleteNode')}>
+          <IconButton
+            size="small"
+            onClick={handleDelete}
+            sx={{
+              position: 'absolute',
+              top: 4,
+              right: 4,
+              zIndex: 1,
+              backgroundColor: 'white',
+              boxShadow: 1,
+              '&:hover': {
+                backgroundColor: '#f2f2f2',
+              },
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       )}
 
       <Box sx={{ width: "100%"}}>
@@ -87,7 +91,7 @@ const ObjectiveNode = (
             fontWeight: 500, 
             mr: 0.5 
           }}>
-          Tasks:
+          {t('editor.node.tasks')}
         </Typography>
         <Typography
           sx={{ 

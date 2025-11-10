@@ -1,4 +1,5 @@
 import { Box, Typography, Breadcrumbs, Link, CircularProgress, Stack, Chip, Divider, Button } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLearningGoalStore } from '../store/useLearningGoalStore'
 import { useObjective, useUpdateObjective } from '../hooks/useObjectives'
@@ -11,7 +12,7 @@ import Board from '../components/kanban/Board'
 import AddTaskModal from '../components/objectives/AddTaskModal'
 import { Notes, AccessTime, Flag, CalendarToday, Add as AddIcon } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
-import { getObjectiveStatusInfo, getObjectiveStatusChipColor, getPriorityColor } from '../utils/objectiveUtils'
+import { getObjectiveStatusInfo, getObjectiveStatusChipColor, getPriorityColor, formatStatus } from '../utils/objectiveUtils'
 import { useDebounce } from '../hooks/useDebounce'
 import { Priority } from '../types/common.enums'
 import { formatDateToDateTime, normalizeDate } from '../utils/dateUtils'
@@ -25,6 +26,7 @@ import SelfEvaluationModal from '../components/self-evaluation/SelfEvaluationMod
 import { useRef } from 'react'
 
 const ObjectiveDetail = () => {
+  const { t } = useTranslation('goals')
   const navigate = useNavigate()
   const { goalId, objectiveId } = useParams()
   const selectedGoalTitle = useLearningGoalStore(s => s.selectedGoalTitle)
@@ -117,9 +119,9 @@ const ObjectiveDetail = () => {
   const debouncedDescription = useDebounce(objectiveData.description)
 
   const priorityOptions = [
-    { value: Priority.Low, label: 'low' },
-    { value: Priority.Medium, label: 'medium' },
-    { value: Priority.High, label: 'high' }
+    { value: Priority.Low, label: t('objectives.filters.low') },
+    { value: Priority.Medium, label: t('objectives.filters.medium') },
+    { value: Priority.High, label: t('objectives.filters.high') }
   ]
 
   const saveField = (field: 'title' | 'description', value: string) => {
@@ -252,9 +254,9 @@ const ObjectiveDetail = () => {
   if (error || !objective) {
     return (
       <NoResults
-        title="Objective not found"
-        description="The objective you're looking for doesn't exist or may have been removed."
-        buttonText="Back to Learning Goal"
+        title={t('objectives.detail.notFound.title')}
+        description={t('objectives.detail.notFound.description')}
+        buttonText={t('objectives.detail.notFound.button')}
         onButtonClick={() => navigate(`/learn/planner/goals/${goalId}`)}
       />
     )
@@ -285,7 +287,7 @@ const ObjectiveDetail = () => {
             textAlign: 'left'
           }}
         >
-          Learning Goals
+          {t('breadcrumbs.learningGoals')}
         </Link>
         <Link 
           underline="hover" 
@@ -297,7 +299,7 @@ const ObjectiveDetail = () => {
             textAlign: 'left'
           }}
         >
-          {selectedGoalTitle || 'Learning Goal'}
+          {selectedGoalTitle || t('breadcrumbs.learningGoals')}
         </Link>
         <Typography color="text.primary">{objectiveData.title}</Typography>
       </Breadcrumbs>
@@ -315,7 +317,7 @@ const ObjectiveDetail = () => {
         >
           <Box sx={{ flex: 1 }}>
             <InlineEditableField
-              label="Title"
+              label={t('objectives.detail.title')}
               defaultValue={objectiveData.title}
               onSave={(val) => saveField('title', val)}
               disableDefaultDecoration
@@ -325,7 +327,7 @@ const ObjectiveDetail = () => {
           <Stack direction="row" spacing={2} alignItems="center">
             {isSaving && (
               <Chip
-                label="Saving..."
+                label={t('objectives.detail.saving')}
                 size="small"
                 color="info"
                 variant="outlined"
@@ -333,7 +335,7 @@ const ObjectiveDetail = () => {
             )}
             
             <Chip
-              label={statusInfo.status}
+              label={formatStatus(objective.status)}
               color={getObjectiveStatusChipColor(objective.status)}
               size="small"
             />
@@ -341,7 +343,7 @@ const ObjectiveDetail = () => {
             {statusInfo.elapsedTime && (
               <Chip
                 icon={<AccessTime />}
-                label={`Elapsed: ${statusInfo.elapsedTime}`}
+                label={`${t('objectives.detail.elapsed')} ${statusInfo.elapsedTime}`}
                 variant="outlined"
                 size="small"
               />
@@ -350,7 +352,7 @@ const ObjectiveDetail = () => {
         </Stack>
         
         <InlineEditableField
-          label="Description"
+          label={t('objectives.detail.description')}
           defaultValue={objectiveData.description}
           onSave={(val) => saveField('description', val)}
           multiline
@@ -358,7 +360,7 @@ const ObjectiveDetail = () => {
         />
 
         <InlineEditableSelect
-          label="Priority"
+          label={t('objectives.detail.priority')}
           value={objectiveData.priority}
           options={priorityOptions}
           onSave={savePriority}
@@ -367,7 +369,7 @@ const ObjectiveDetail = () => {
         />
 
         <InlineEditableDate
-          label="Due Date"
+          label={t('objectives.detail.dueDate')}
           value={objectiveData.dueDate}
           onSave={saveDueDate}
           icon={<CalendarToday />}
@@ -376,26 +378,27 @@ const ObjectiveDetail = () => {
         <Divider sx={{ my: 3 }} />
 
         <DateDisplay
-          title="Dates"
+          title={t('objectives.detail.dates.title')}
+          readOnlyLabel={t('goalDetail.dates.readOnly')}
           dates={[
             {
-              label: 'Created at',
+              label: t('objectives.detail.dates.createdAt'),
               value: objective.createdAt
             },
             {
-              label: 'Updated at',
+              label: t('objectives.detail.dates.updatedAt'),
               value: objective.updatedAt
             },
             {
-              label: 'Started at',
+              label: t('objectives.detail.dates.startedAt'),
               value: objective.startedAt
             },
             {
-              label: 'Completed at',
+              label: t('objectives.detail.dates.completedAt'),
               value: objective.completedAt
             },
             {
-              label: 'Due date',
+              label: t('objectives.detail.dates.dueDate'),
               value: objective.dueDate
             }
           ]}
@@ -421,13 +424,13 @@ const ObjectiveDetail = () => {
                   mb: 1
                 }}
               >
-                Task Breakdown
+                {t('objectives.detail.taskBreakdown.title')}
               </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
               >
-                Break down this objective into manageable sub-tasks and track their progress
+                {t('objectives.detail.taskBreakdown.subtitle')}
               </Typography>
             </Box>
             
@@ -442,7 +445,7 @@ const ObjectiveDetail = () => {
                 fontWeight: 500,
               }}
             >
-              Add Task
+              {t('objectives.detail.taskBreakdown.addTask')}
             </Button>
           </Stack>
           
@@ -452,13 +455,13 @@ const ObjectiveDetail = () => {
             </Box>
           ) : kanbanError ? (
             <Typography color="error" variant="body2">
-              Failed to load tasks. Please try again.
+              {t('objectives.detail.taskBreakdown.failedToLoad')}
             </Typography>
           ) : kanbanBoard ? (
             <Board board={kanbanBoard} moveTask={moveTask} />
           ) : (
             <Typography variant="body2" color="text.secondary">
-              No tasks found for this objective.
+              {t('objectives.detail.taskBreakdown.noTasksFound')}
             </Typography>
           )}
         </Box>

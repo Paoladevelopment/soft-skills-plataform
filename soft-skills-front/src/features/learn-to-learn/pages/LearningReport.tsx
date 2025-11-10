@@ -1,5 +1,6 @@
 import { Box, Typography, CircularProgress } from '@mui/material'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelfEvaluations } from '../hooks/useSelfEvaluations'
 import ReportsFilterSection from '../components/learning-reports/ReportsFilterSection'
 import ActiveFiltersDisplay from '../components/learning-reports/ActiveFiltersDisplay'
@@ -10,6 +11,7 @@ import ErrorState from '../components/learning-reports/ErrorState'
 type SortOption = 'date_desc' | 'date_asc'
 
 const LearningReport = () => {
+  const { t } = useTranslation('reports')
   const [offset, setOffset] = useState(0)
   const [limit, setLimit] = useState(10)
   const [sortBy, setSortBy] = useState<SortOption>('date_desc')
@@ -83,10 +85,10 @@ const LearningReport = () => {
         }}
       >
         <Typography variant="h4" component="h1" fontWeight="bold">
-          Learning reports
+          {t('title')}
         </Typography>
         <Typography variant="subtitle1" component="p">
-          Reflect on your completed tasks to strengthen your learning process.
+          {t('subtitle')}
         </Typography>
       </Box>
 

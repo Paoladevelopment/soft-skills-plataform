@@ -1,4 +1,5 @@
 import { Paper, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { SelfEvaluationRead } from '../../types/self-evaluation/self-evaluation.api'
 
 interface LearningPurposeSectionProps {
@@ -6,6 +7,7 @@ interface LearningPurposeSectionProps {
 }
 
 const LearningPurposeSection = ({ report }: LearningPurposeSectionProps) => {
+  const { t } = useTranslation('reports')
   return (
     <Paper 
       elevation={0} 
@@ -22,14 +24,14 @@ const LearningPurposeSection = ({ report }: LearningPurposeSectionProps) => {
         mb={2} 
         fontSize="0.875rem"
       >
-        Learning purpose
+        {t('sections.learningPurpose')}
       </Typography>
       <Typography 
         variant="body2" 
         fontWeight="medium" 
         mb={1}
       >
-        What I intended to learn:
+        {t('fields.whatIIntendedToLearn')}
       </Typography>
        <Typography variant="body2" color="text.secondary">
          {report.learningIntention}

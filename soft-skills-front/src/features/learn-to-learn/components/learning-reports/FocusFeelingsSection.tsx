@@ -1,4 +1,5 @@
 import { Paper, Typography, Grid2, Box } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { SelfEvaluationRead } from '../../types/self-evaluation/self-evaluation.api'
 import { formatDifficulty, getMoodDisplay } from '../../utils/selfEvaluationFormatters'
 
@@ -26,6 +27,7 @@ const renderStars = (level: number, max: number = 10) => {
 }
 
 const FocusFeelingsSection = ({ report }: FocusFeelingsSectionProps) => {
+  const { t } = useTranslation('reports')
   return (
     <Paper 
       elevation={0} 
@@ -42,7 +44,7 @@ const FocusFeelingsSection = ({ report }: FocusFeelingsSectionProps) => {
         mb={2} 
         fontSize="0.875rem"
       >
-        Concentration and mood
+        {t('sections.focusFeelings')}
       </Typography>
       <Grid2 container spacing={2}>
         <Grid2 size={{ xs: 12, sm: 4 }}>
@@ -50,7 +52,7 @@ const FocusFeelingsSection = ({ report }: FocusFeelingsSectionProps) => {
             variant="body2" 
             fontWeight="medium"
           >
-            Difficulty:
+            {t('fields.difficulty')}
           </Typography>
 
           <Typography 
@@ -66,7 +68,7 @@ const FocusFeelingsSection = ({ report }: FocusFeelingsSectionProps) => {
             variant="body2" 
             fontWeight="medium"
           >
-            Overall Mood:
+            {t('fields.overallMood')}
           </Typography>
 
           <Typography 
@@ -82,7 +84,7 @@ const FocusFeelingsSection = ({ report }: FocusFeelingsSectionProps) => {
             fontWeight="medium" 
             mb={0.5}
           >
-            Concentration Level:
+            {t('fields.concentrationLevel')}
           </Typography>
           <Box 
             display="flex" 

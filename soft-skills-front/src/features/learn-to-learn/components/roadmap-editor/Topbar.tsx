@@ -6,6 +6,7 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, SquarePen, Ellipsis, Trash2, Copy } from 'lucide-react'
 import LockIcon from '@mui/icons-material/Lock'
 import PublicIcon from '@mui/icons-material/Public'
@@ -25,6 +26,7 @@ type TopbarProps = {
 }
 
 const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickSharing, onBackClick }: TopbarProps) => {
+  const { t } = useTranslation('roadmap')
   const {
     updateRoadmap,
     selectedRoadmap
@@ -51,22 +53,22 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
       case RoadmapVisibility.Private:
         return {
           icon: <LockIcon fontSize="small" />,
-          label: 'Only visible to me',
+          label: t('editor.topbar.visibility.onlyMe'),
         }
       case RoadmapVisibility.Public:
         return {
           icon: <PublicIcon fontSize="small" />,
-          label: 'Anyone can view',
+          label: t('editor.topbar.visibility.anyoneCanView'),
         }
       case RoadmapVisibility.Unlisted:
         return {
           icon: <PublicIcon fontSize="small" />,
-          label: 'Unlisted access',
+          label: t('editor.topbar.visibility.unlisted'),
         }
       default:
         return {
           icon: <PublicIcon fontSize="small" />,
-          label: 'Anyone can view',
+          label: t('editor.topbar.visibility.anyoneCanView'),
         }
     }
   }
@@ -92,7 +94,7 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
             <ArrowBackIcon fontSize="small" />
           </IconButton>
           <Typography variant="h6" fontWeight="bold">
-            {title || 'Untitled Roadmap'}
+            {title || t('editor.topbar.untitled')}
           </Typography>
 
           <IconButton size="small" onClick={onEditMetaClick}>
@@ -129,7 +131,7 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
           >
             <MenuItem>
               <Copy size={16} strokeWidth={1.5} />
-              Duplicate
+              {t('editor.topbar.menu.duplicate')}
             </MenuItem>
             <MenuItem 
               sx={{ 
@@ -150,7 +152,7 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
                    fontSize: 14
                   }}
                 >
-                  Delete
+                  {t('editor.topbar.menu.delete')}
                 </Typography>
               </Box>
             </MenuItem>
@@ -168,7 +170,7 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
             paddingBottom: 1,
           }}
         >
-          {description || 'No description has been added yet.'}
+          {description || t('editor.topbar.noDescription')}
         </Typography>
       </Box>
 
@@ -208,7 +210,7 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
           }}
           onClick={onSaveRoadmap}
         >
-          Save Roadmap
+          {t('editor.topbar.saveRoadmap')}
         </Button>
       </Box>
     </Box>

@@ -10,6 +10,7 @@ import {
   Divider,
   Box,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import { useState } from 'react'
 import { useSelfEvaluationStore } from '../../store/useSelfEvaluationStore'
@@ -29,6 +30,7 @@ interface SelfEvaluationModalProps {
 }
 
 const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalProps) => {
+  const { t } = useTranslation('reports')
   const { 
     isOpen, 
     close, 
@@ -127,7 +129,7 @@ const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalPro
           alignItems="center"
         >
           <Typography fontWeight="bold">
-            Reflect on your task accomplishment
+            {t('selfEvaluation.title')}
           </Typography>
           <IconButton onClick={handleClose} disabled={submitting}>
             <CloseIcon />
@@ -143,7 +145,7 @@ const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalPro
               gutterBottom
               mb={3}
             >
-              Your environment
+              {t('selfEvaluation.sections.yourEnvironment')}
             </Typography>
             <Stack spacing={2}>
               <LearningEnvironmentSection />
@@ -157,7 +159,7 @@ const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalPro
               variant="h6" 
               gutterBottom
             >
-              Your learning intention *
+              {t('selfEvaluation.sections.yourLearningIntention')}
             </Typography>
             <IntentionSection error={validationErrors['learning_intention']} />
           </Box>
@@ -169,7 +171,7 @@ const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalPro
               variant="h6" 
               gutterBottom
             >
-              Your experience during the task *
+              {t('selfEvaluation.sections.yourExperienceDuringTask')}
             </Typography>
             <ReflectionSection 
               errors={{
@@ -187,7 +189,7 @@ const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalPro
               variant="h6" 
               gutterBottom
             >
-              How was your session?
+              {t('selfEvaluation.sections.howWasYourSession')}
             </Typography>
             <SessionAssessmentSection />
           </Box>
@@ -205,7 +207,7 @@ const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalPro
           onClick={handleClose} 
           disabled={submitting}
         >
-          Cancel
+          {t('selfEvaluation.buttons.cancel')}
         </Button>
         <Button 
           variant="contained" 
@@ -213,7 +215,7 @@ const SelfEvaluationModal = ({ onAfterCreate, onCancel }: SelfEvaluationModalPro
           onClick={handleSubmit} 
           disabled={submitting}
         >
-          {submitting ? 'Saving...' : 'Save'}
+          {submitting ? t('selfEvaluation.buttons.saving') : t('selfEvaluation.buttons.save')}
         </Button>
       </DialogActions>
     </Dialog>

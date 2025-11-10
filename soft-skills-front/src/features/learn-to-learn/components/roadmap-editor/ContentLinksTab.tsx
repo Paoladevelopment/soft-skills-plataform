@@ -7,6 +7,7 @@ import {
   Button,
   InputAdornment,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import { CircleCheck, Link as LinkIcon } from 'lucide-react'
@@ -22,6 +23,7 @@ import {
 import { isObjectiveNode } from '../../utils/roadmap/roadmapNodeTypeUtils'
 
 const ContentAndLinksTab = () => {
+  const { t } = useTranslation('roadmap')
   const {
     selectedNodeId,
     selectedRoadmap,
@@ -91,7 +93,7 @@ const ContentAndLinksTab = () => {
   return (
     <Box>
       <Typography fontWeight="bold" mb={1}>
-        Title
+        {t('editor.contentLinksTab.title')}
       </Typography>
       <TextField
         fullWidth
@@ -101,11 +103,11 @@ const ContentAndLinksTab = () => {
         sx={{ 
           mb: 2 
         }}
-        placeholder="Enter Title"
+        placeholder={t('editor.contentLinksTab.titlePlaceholder')}
       />
 
       <Typography fontWeight="bold" mb={1}>
-        Description
+        {t('editor.contentLinksTab.description')}
       </Typography>
       <TextField
         fullWidth
@@ -117,7 +119,7 @@ const ContentAndLinksTab = () => {
         sx={{
           mb: 3 
         }}
-        placeholder="Enter Description"
+        placeholder={t('editor.contentLinksTab.descriptionPlaceholder')}
       />
 
       {resources.map((res, index) => (
@@ -144,7 +146,7 @@ const ContentAndLinksTab = () => {
                 key={type} 
                 value={type}
               >
-                {type}
+                {t(`editor.contentLinksTab.resourceTypes.${type}`)}
               </MenuItem>
             ))}
           </Select>
@@ -154,7 +156,7 @@ const ContentAndLinksTab = () => {
             size="small"
             value={res.title ?? ''}
             onChange={(e) => handleResourceChange(index, 'title', e.target.value)}
-            placeholder="Resource Title"
+            placeholder={t('editor.contentLinksTab.resourceTitle')}
             sx={{ 
               mb: 1 
             }}
@@ -174,7 +176,7 @@ const ContentAndLinksTab = () => {
             size="small"
             value={res.url ?? ''}
             onChange={(e) => handleResourceChange(index, 'url', e.target.value)}
-            placeholder="Resource URL"
+            placeholder={t('editor.contentLinksTab.resourceUrl')}
             sx={{ 
               mb: 1 
             }}
@@ -196,7 +198,7 @@ const ContentAndLinksTab = () => {
             startIcon={<DeleteIcon />}
             variant="outlined"
           >
-            Remove
+            {t('editor.contentLinksTab.remove')}
           </Button>
         </Box>
       ))}
@@ -207,7 +209,7 @@ const ContentAndLinksTab = () => {
         startIcon={<AddIcon />}
         onClick={handleAddResource}
       >
-        Add Link
+        {t('editor.contentLinksTab.addLink')}
       </Button>
     </Box>
   )

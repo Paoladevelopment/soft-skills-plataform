@@ -1,0 +1,104 @@
+{
+  "language": {
+    "es": "Español",
+    "en": "English",
+    "label": "Language"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "clear": "Clear",
+    "filter": "Filter",
+    "search": "Search",
+    "view": "View",
+    "loading": "Loading...",
+    "explore": "Explore",
+    "signOut": "Sign out"
+  },
+  "errors": {
+    "generic": "An error occurred",
+    "notFound": "Resource not found",
+    "unauthorized": "Unauthorized",
+    "network": "Connection error",
+    "required": "This field is required"
+  },
+  "success": {
+    "saved": "Saved successfully",
+    "deleted": "Deleted successfully",
+    "updated": "Updated successfully"
+  },
+  "toast": {
+    "success": "Success",
+    "error": "Something went wrong",
+    "warning": "Warning",
+    "info": "Info"
+  },
+  "enums": {
+    "studyPlace": {
+      "HOME_DESK": "Home office",
+      "HOME_COMMON_AREA": "Home common area",
+      "OFFICE_DESK": "Office desk",
+      "COWORKING": "Coworking space",
+      "LIBRARY": "Library",
+      "CLASSROOM": "Classroom",
+      "UNIVERSITY_CAMPUS": "University campus",
+      "CAFE": "Cafe",
+      "BOOKSTORE": "Bookstore",
+      "DORM_ROOM": "Dorm room",
+      "DORM_COMMON_AREA": "Dorm common area",
+      "OUTDOORS": "Outdoors",
+      "TRANSIT": "Transit",
+      "OTHER": "Other"
+    },
+    "timeOfDay": {
+      "MORNING": "Morning",
+      "AFTERNOON": "Afternoon",
+      "EVENING": "Evening",
+      "NIGHT": "Night"
+    },
+    "noiseLevel": {
+      "QUIET": "Quiet",
+      "MODERATE": "Moderate",
+      "NOISY": "Noisy"
+    },
+    "collaborationMode": {
+      "SOLO": "Solo study",
+      "PAIR": "Pair study",
+      "GROUP": "Group study"
+    },
+    "perceivedDifficulty": {
+      "EASY": "Easy",
+      "MODERATE": "Medium",
+      "HARD": "Hard"
+    },
+    "mood": {
+      "ENERGIZED": "Energized",
+      "CALM": "Calm",
+      "NEUTRAL": "Neutral",
+      "TIRED": "Tired",
+      "FRUSTRATED": "Frustrated",
+      "STRESSED": "Stressed",
+      "OTHER": "Other",
+      "POSITIVE": "Positive"
+    },
+    "learningMethod": {
+      "PRACTICE": "Hands-on practice",
+      "NOTE_TAKING": "Taking notes",
+      "SPACED_REPETITION": "Spaced repetition",
+      "SUMMARIZATION": "Summarization",
+      "TEACH_BACK": "Teaching others",
+      "FLASHCARDS": "Flashcards",
+      "OTHER": "Other"
+    }
+  }
+}
+

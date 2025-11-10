@@ -1,4 +1,5 @@
 import { TextField } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useSelfEvaluationDraftStore } from '../../../store/useSelfEvaluationDraftStore'
 
 interface IntentionSectionProps {
@@ -6,12 +7,13 @@ interface IntentionSectionProps {
 }
 
 const IntentionSection = ({ error }: IntentionSectionProps) => {
+  const { t } = useTranslation('reports')
   const learningIntention = useSelfEvaluationDraftStore((state) => state.learning_intention)
   const setLearningIntention = useSelfEvaluationDraftStore((state) => state.setLearningIntention)
 
   return (
     <TextField
-      label="What were you trying to get better at?"
+      label={t('selfEvaluation.fields.whatWereYouTryingToGetBetterAt')}
       fullWidth
       multiline
       minRows={3}
@@ -19,7 +21,7 @@ const IntentionSection = ({ error }: IntentionSectionProps) => {
       value={learningIntention}
       onChange={(e) => setLearningIntention(e.target.value)}
       error={!!error}
-      helperText={error || "What did you intend to learn? (max 800 characters)"}
+      helperText={error || t('selfEvaluation.fields.whatWereYouTryingToGetBetterAtHelper')}
     />
   )
 }

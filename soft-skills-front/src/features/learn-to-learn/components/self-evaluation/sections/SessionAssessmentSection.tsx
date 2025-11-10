@@ -10,11 +10,14 @@ import {
   Box,
   Stack,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useSelfEvaluationDraftStore } from '../../../store/useSelfEvaluationDraftStore'
 import { PerceivedDifficulty, Mood } from '../../../types/self-evaluation/self-evaluation.enums'
+import { formatDifficulty, formatMood } from '../../../utils/selfEvaluationFormatters'
 import LearningMethodsSection from './LearningMethodsSection'
 
 const SessionAssessmentSection = () => {
+  const { t } = useTranslation('reports')
   const formData = useSelfEvaluationDraftStore((state) => state)
   const setPerceivedDifficulty = useSelfEvaluationDraftStore((state) => state.setPerceivedDifficulty)
   const setConcentrationLevel = useSelfEvaluationDraftStore((state) => state.setConcentrationLevel)
@@ -24,23 +27,23 @@ const SessionAssessmentSection = () => {
   return (
     <Stack spacing={2}>
       <FormControl fullWidth>
-        <InputLabel id="perceived-difficulty-label">How hard did this feel?</InputLabel>
+        <InputLabel id="perceived-difficulty-label">{t('selfEvaluation.fields.howHardDidThisFeel')}</InputLabel>
         <Select
           labelId="perceived-difficulty-label"
           id="perceived-difficulty"
           value={formData.perceived_difficulty ?? PerceivedDifficulty.MODERATE}
-          label="How hard did this feel?"
+          label={t('selfEvaluation.fields.howHardDidThisFeel')}
           onChange={(e) => setPerceivedDifficulty(e.target.value as PerceivedDifficulty)}
         >
-          <MenuItem value={PerceivedDifficulty.EASY}>Easy</MenuItem>
-          <MenuItem value={PerceivedDifficulty.MODERATE}>Moderate</MenuItem>
-          <MenuItem value={PerceivedDifficulty.HARD}>Hard</MenuItem>
+          <MenuItem value={PerceivedDifficulty.EASY}>{formatDifficulty(PerceivedDifficulty.EASY)}</MenuItem>
+          <MenuItem value={PerceivedDifficulty.MODERATE}>{formatDifficulty(PerceivedDifficulty.MODERATE)}</MenuItem>
+          <MenuItem value={PerceivedDifficulty.HARD}>{formatDifficulty(PerceivedDifficulty.HARD)}</MenuItem>
         </Select>
       </FormControl>
 
       <Box>
         <Typography gutterBottom>
-          Concentration Level: {formData.concentration_level}/10
+          {t('selfEvaluation.fields.concentrationLevel', { level: formData.concentration_level })}
         </Typography>
         <Slider
           value={formData.concentration_level}
@@ -54,21 +57,21 @@ const SessionAssessmentSection = () => {
       </Box>
 
       <FormControl fullWidth>
-        <InputLabel id="mood-label">Mood</InputLabel>
+        <InputLabel id="mood-label">{t('selfEvaluation.fields.mood')}</InputLabel>
         <Select
           labelId="mood-label"
           id="mood"
           value={formData.mood ?? Mood.NEUTRAL}
-          label="Mood"
+          label={t('selfEvaluation.fields.mood')}
           onChange={(e) => setMood(e.target.value as Mood)}
         >
-          <MenuItem value={Mood.ENERGIZED}>Energized</MenuItem>
-          <MenuItem value={Mood.CALM}>Calm</MenuItem>
-          <MenuItem value={Mood.NEUTRAL}>Neutral</MenuItem>
-          <MenuItem value={Mood.TIRED}>Tired</MenuItem>
-          <MenuItem value={Mood.FRUSTRATED}>Frustrated</MenuItem>
-          <MenuItem value={Mood.STRESSED}>Stressed</MenuItem>
-          <MenuItem value={Mood.OTHER}>Other</MenuItem>
+          <MenuItem value={Mood.ENERGIZED}>{formatMood(Mood.ENERGIZED)}</MenuItem>
+          <MenuItem value={Mood.CALM}>{formatMood(Mood.CALM)}</MenuItem>
+          <MenuItem value={Mood.NEUTRAL}>{formatMood(Mood.NEUTRAL)}</MenuItem>
+          <MenuItem value={Mood.TIRED}>{formatMood(Mood.TIRED)}</MenuItem>
+          <MenuItem value={Mood.FRUSTRATED}>{formatMood(Mood.FRUSTRATED)}</MenuItem>
+          <MenuItem value={Mood.STRESSED}>{formatMood(Mood.STRESSED)}</MenuItem>
+          <MenuItem value={Mood.OTHER}>{formatMood(Mood.OTHER)}</MenuItem>
         </Select>
       </FormControl>
 
@@ -79,7 +82,7 @@ const SessionAssessmentSection = () => {
             onChange={(e) => setKnowledgeConnection(e.target.checked)}
           />
         }
-        label="I was able to connect this knowledge with previous learning"
+        label={t('selfEvaluation.fields.knowledgeConnection')}
       />
 
       <LearningMethodsSection />

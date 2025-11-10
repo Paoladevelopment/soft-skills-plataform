@@ -1,0 +1,196 @@
+{
+  "title": "Aprendizaje autorregulado",
+  "subtitle": "Organiza tus metas de aprendizaje, objetivos y tareas como parte de tu viaje de aprendizaje autorregulado.",
+  "breadcrumbs": {
+    "learningGoals": "Metas de aprendizaje"
+  },
+  "addGoal": {
+    "placeholder": "Agregar meta de aprendizaje",
+    "button": "Agregar meta",
+    "modalTitle": "Agregar meta de aprendizaje",
+    "title": "Título",
+    "titlePlaceholder": "Aprender JavaScript",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Dominar JavaScript para construir aplicaciones web interactivas",
+    "personalImpact": "Impacto personal",
+    "personalImpactPlaceholder": "Por qué este objetivo es importante para ti"
+  },
+  "empty": {
+    "title": "Aún no hay metas de aprendizaje",
+    "description": "Agrega tu primer meta de aprendizaje para comenzar tu viaje educativo"
+  },
+  "goalCard": {
+    "started": "Iniciado:",
+    "notStarted": "Aún no iniciado",
+    "objectives": "objetivos",
+    "complete": "completo",
+    "noObjectives": "Aún no hay objetivos. ¡Comienza a desglosar esta meta!"
+  },
+  "goalDetail": {
+    "title": "Título",
+    "description": "Descripción",
+    "impact": "Impacto",
+    "saving": "Guardando...",
+    "elapsed": "Transcurrido:",
+    "dates": {
+      "title": "Fechas",
+      "readOnly": "Solo lectura",
+      "createdAt": "Creado el",
+      "updatedAt": "Actualizado el",
+      "startedAt": "Iniciado el",
+      "completedAt": "Completado el"
+    },
+    "status": {
+      "notStarted": "No iniciado",
+      "inProgress": "En progreso",
+      "completed": "Completado"
+    },
+    "notFound": {
+      "title": "Meta no encontrada",
+      "description": "La meta de aprendizaje que buscas no existe o ha sido eliminada.",
+      "button": "Volver a metas de aprendizaje"
+    }
+  },
+  "objectives": {
+    "title": "Objetivos",
+    "addObjective": "Agregar objetivo",
+    "searchPlaceholder": "Buscar objetivos...",
+    "filterColumn": "Filtrar columna",
+    "tabs": {
+      "all": "Todos",
+      "incomplete": "Incompletos",
+      "ongoing": "En curso",
+      "finished": "Finalizados"
+    },
+    "filters": {
+      "priorityLevel": "Nivel de prioridad",
+      "progressStatus": "Estado de progreso",
+      "filterByProgress": "Filtrar por progreso",
+      "high": "Alta",
+      "medium": "Media",
+      "low": "Baja",
+      "notStarted": "No iniciado",
+      "inProgress": "En progreso",
+      "completed": "Completado",
+      "paused": "Pausado"
+    },
+    "table": {
+      "objective": "Objetivo",
+      "status": "Estado",
+      "priority": "Prioridad",
+      "dueDate": "Fecha límite",
+      "progress": "Progreso",
+      "actions": "Acciones",
+      "noDueDate": "Sin fecha límite",
+      "noObjectivesFound": "No se encontraron objetivos para esta meta de aprendizaje.",
+      "noObjectivesMatchFilters": "No hay objetivos que coincidan con tus filtros actuales.",
+      "errorLoading": "Error al cargar objetivos",
+      "pagination": {
+        "rowsPerPage": "Filas por página:",
+        "displayedRows": "{{from}}-{{to}} de {{count}}"
+      }
+    },
+    "addModal": {
+      "title": "Crear objetivo",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Título del objetivo",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Agregar una breve descripción",
+      "priorityLabel": "Prioridad",
+      "dueDateLabel": "Fecha límite *",
+      "dueDatePlaceholder": "dd/mm/aaaa",
+      "createButton": "Crear",
+      "validation": {
+        "titleRequired": "El título es obligatorio",
+        "descriptionRequired": "La descripción es obligatoria",
+        "priorityRequired": "La prioridad es obligatoria"
+      }
+    },
+    "deleteModal": {
+      "title": "Confirmar eliminación",
+      "message": "¿Estás seguro de que deseas eliminar \"{{title}}\"? Esta acción no se puede deshacer."
+    },
+    "detail": {
+      "title": "Título",
+      "description": "Descripción",
+      "priority": "Prioridad",
+      "dueDate": "Fecha límite",
+      "saving": "Guardando...",
+      "elapsed": "Transcurrido:",
+      "dates": {
+        "title": "Fechas",
+        "createdAt": "Creado el",
+        "updatedAt": "Actualizado el",
+        "startedAt": "Iniciado el",
+        "completedAt": "Completado el",
+        "dueDate": "Fecha límite"
+      },
+      "taskBreakdown": {
+        "title": "Desglose de tareas",
+        "subtitle": "Desglosa este objetivo en sub-tareas manejables y rastrea su progreso",
+        "addTask": "Agregar tarea",
+        "failedToLoad": "Error al cargar las tareas. Por favor, inténtalo de nuevo.",
+        "noTasksFound": "No se encontraron tareas para este objetivo."
+      },
+      "notFound": {
+        "title": "Objetivo no encontrado",
+        "description": "El objetivo que buscas no existe o ha sido eliminado.",
+        "button": "Volver a la meta de aprendizaje"
+      }
+    },
+    "kanban": {
+      "todo": "POR HACER",
+      "inProgress": "EN PROGRESO",
+      "done": "HECHO",
+      "paused": "PAUSADO"
+    },
+    "addTaskModal": {
+      "title": "Crear tarea",
+      "subtitle": "Completa los detalles a continuación para crear tu nueva tarea. Sé específico con tu título y descripción para ayudar a tu yo futuro a entender exactamente qué necesita hacerse.",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Título de la tarea",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Describe qué necesita hacerse",
+      "taskTypeLabel": "Tipo de tarea",
+      "taskTypes": {
+        "reading": "Lectura",
+        "practice": "Práctica",
+        "writing": "Escritura",
+        "research": "Investigación",
+        "listening": "Escucha",
+        "discussion": "Discusión",
+        "problem_solving": "Resolución de problemas",
+        "experimenting": "Experimentación",
+        "teaching": "Enseñanza",
+        "other": "Otro"
+      },
+      "priorityLabel": "Prioridad",
+      "estimatedPomodorosLabel": "Tiempo estimado (pomodoros)",
+      "estimatedPomodorosHelper": "1 pomodoro = {{minutes}} min",
+      "estimatedPomodorosHelperDefault": "Aún no has configurado tu pomodoro. Por ahora, 1 pomodoro = 60 min.",
+      "dueDateLabel": "Fecha límite",
+      "dueDateHelper": "¿Cuándo necesita completarse esto?",
+      "isOptionalLabel": "Esta tarea es opcional",
+      "isOptionalHelper": "Marca como opcional para que no bloquee tu plan.",
+      "createButton": "Crear",
+      "validation": {
+        "titleRequired": "El título es obligatorio",
+        "descriptionRequired": "La descripción es obligatoria",
+        "taskTypeRequired": "El tipo de tarea es obligatorio",
+        "priorityRequired": "La prioridad es obligatoria",
+        "estimatedTimeRequired": "El tiempo estimado es obligatorio"
+      }
+    }
+  },
+  "pagination": {
+    "resultsPerPage": "Resultados por página",
+    "of": "de",
+    "rowsPerPage": "Filas por página:",
+    "displayedRows": "{{from}}-{{to}} de {{count}}"
+  },
+  "validation": {
+    "titleRequired": "El título es obligatorio",
+    "descriptionRequired": "La descripción es obligatoria",
+    "impactRequired": "El impacto es obligatorio"
+  }
+}

@@ -1,4 +1,5 @@
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, IconButton, Typography, Tooltip } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { NodeProps, Position, useStore } from 'reactflow'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CustomHandle from './CustomHandle'
@@ -17,6 +18,7 @@ interface TaskNodeData {
 }
 
 const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
+  const { t } = useTranslation('roadmap')
   const [hovered, setHovered] = useState(false)
   const removeTaskNode = useRoadmapStore((state) => state.removeTaskNode)
 
@@ -108,13 +110,15 @@ const TaskNode = ({ id, data }: NodeProps<TaskNodeData>) => {
       </Typography>
 
       {shouldShowDeleteAction && (
-        <IconButton
-          size="small"
-          onClick={handleDelete}
-          sx={{ padding: 0, ml: 1, alignSelf: "flex-start" }}
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
+        <Tooltip title={t('editor.topbar.tooltips.deleteNode')}>
+          <IconButton
+            size="small"
+            onClick={handleDelete}
+            sx={{ padding: 0, ml: 1, alignSelf: "flex-start" }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       )}
     </Box>
   )

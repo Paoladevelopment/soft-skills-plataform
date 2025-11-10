@@ -9,6 +9,7 @@ import {
   IconButton,
   Typography
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from 'zod'
@@ -16,13 +17,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { CreateLearningGoalPayload } from '../../types/planner/learningGoals.api'
 import { useEffect } from 'react'
 
-const addGoalSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  impact: z.string().min(1, "Impact is required"),
+const createAddGoalSchema = (t: (key: string) => string) => z.object({
+  title: z.string().min(1, t('validation.titleRequired')),
+  description: z.string().min(1, t('validation.descriptionRequired')),
+  impact: z.string().min(1, t('validation.impactRequired')),
 })
 
-type AddGoalFields = z.infer<typeof addGoalSchema>
+type AddGoalFields = z.infer<ReturnType<typeof createAddGoalSchema>>
 
 interface AddGoalModalProps {
   open: boolean
@@ -32,6 +33,9 @@ interface AddGoalModalProps {
 }
 
 const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalProps) => {
+  const { t } = useTranslation('goals')
+  const addGoalSchema = createAddGoalSchema(t)
+  
   const {
     register,
     handleSubmit,
@@ -58,7 +62,7 @@ const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalPr
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography fontWeight="bold">Add learning goal</Typography>
+          <Typography fontWeight="bold">{t('addGoal.modalTitle')}</Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -68,8 +72,8 @@ const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalPr
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField
-            label="Title"
-            placeholder="Learn JavaScript"
+            label={t('addGoal.title')}
+            placeholder={t('addGoal.titlePlaceholder')}
             fullWidth
             autoFocus
             {...register('title')}
@@ -78,8 +82,8 @@ const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalPr
           />
 
           <TextField
-            label="Description"
-            placeholder="Master JavaScript to build interactive web applications"
+            label={t('addGoal.description')}
+            placeholder={t('addGoal.descriptionPlaceholder')}
             fullWidth
             multiline
             minRows={3}
@@ -89,8 +93,8 @@ const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalPr
           />
 
           <TextField
-            label="Personal impact"
-            placeholder="Why this goal matters to you"
+            label={t('addGoal.personalImpact')}
+            placeholder={t('addGoal.personalImpactPlaceholder')}
             fullWidth
             multiline
             minRows={2}
@@ -102,7 +106,7 @@ const AddGoalModal = ({ open, onClose, onSubmit, defaultValues }: AddGoalModalPr
 
         <DialogActions sx={{ px: 3, pb: 3 }}>
           <Button variant="contained" color="secondary" type="submit">
-            Add Goal
+            {t('addGoal.button')}
           </Button>
         </DialogActions>
       </form>

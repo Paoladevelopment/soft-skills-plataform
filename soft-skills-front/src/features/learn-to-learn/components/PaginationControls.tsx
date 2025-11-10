@@ -5,6 +5,7 @@ import {
   Select,
   Typography
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import {
   ChevronLeft,
   ChevronRight,
@@ -32,6 +33,7 @@ const PaginationControls = ({
   pageSizeOptions = [5, 10],
   useLearningGoalStorePagination = true
 }: PaginationControlsProps) => {
+  const { t } = useTranslation('goals')
   const learningGoalStore = useLearningGoalStore()
   const setIsPaginating = useLearningGoalStorePagination ? learningGoalStore.setIsPaginating : undefined
 
@@ -62,7 +64,7 @@ const PaginationControls = ({
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
       <Box display="flex" alignItems="center" gap={1}>
-        <Typography>Results per page</Typography>
+        <Typography>{t('pagination.resultsPerPage')}</Typography>
         <Select
           size="small"
           value={limit}
@@ -75,7 +77,7 @@ const PaginationControls = ({
       </Box>
 
       <Typography>
-        {start}-{end} of {total}
+        {start}-{end} {t('pagination.of')} {total}
       </Typography>
 
       <Box display="flex">

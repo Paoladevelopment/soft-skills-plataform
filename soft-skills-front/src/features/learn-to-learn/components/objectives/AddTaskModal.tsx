@@ -16,6 +16,7 @@ import {
   Select,
   FormHelperText
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import { SubmitHandler, useForm, Controller } from "react-hook-form"
 import { z } from 'zod'
@@ -25,26 +26,26 @@ import { CreateTaskPayload } from '../../types/planner/task.api'
 import { Priority, TaskType } from '../../types/common.enums'
 import { usePomodoroPreferencesStore } from '../../store/usePomodoroPreferencesStore'
 
-const addTaskSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
+const createAddTaskSchema = (t: (key: string) => string) => z.object({
+  title: z.string().min(1, t('objectives.addTaskModal.validation.titleRequired')),
+  description: z.string().min(1, t('objectives.addTaskModal.validation.descriptionRequired')),
   task_type: z.nativeEnum(TaskType, {
-    required_error: "Task type is required",
+    required_error: t('objectives.addTaskModal.validation.taskTypeRequired'),
   }),
   priority: z.nativeEnum(Priority, {
-    required_error: "Priority is required",
+    required_error: t('objectives.addTaskModal.validation.priorityRequired'),
   }),
-  estimated_pomodoros: z.number().min(0.5, "Estimated time is required"),
+  estimated_pomodoros: z.number().min(0.5, t('objectives.addTaskModal.validation.estimatedTimeRequired')),
   due_date: z.string().optional(),
   is_optional: z.boolean().optional(),
 })
 
-export type AddTaskFields = z.infer<typeof addTaskSchema>
+export type AddTaskFields = z.infer<ReturnType<typeof createAddTaskSchema>>
 
-const getPomodoroHelperText = (isConfigured: boolean, effectivePomodoroLengthMinutes: number): string => {
+const getPomodoroHelperText = (isConfigured: boolean, effectivePomodoroLengthMinutes: number, t: (key: string, options?: Record<string, unknown>) => string): string => {
   return isConfigured 
-    ? `1 pomodoro = ${effectivePomodoroLengthMinutes} min` 
-    : "You haven't set your pomodoro yet. For now, 1 pomodoro = 60 min."
+    ? t('objectives.addTaskModal.estimatedPomodorosHelper', { minutes: effectivePomodoroLengthMinutes })
+    : t('objectives.addTaskModal.estimatedPomodorosHelperDefault')
 }
 
 interface AddTaskModalProps {
@@ -55,7 +56,9 @@ interface AddTaskModalProps {
 }
 
 const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalProps) => {
+  const { t } = useTranslation('goals')
   const { isConfigured, effectivePomodoroLengthMinutes, fetchPomodoroPreferences } = usePomodoroPreferencesStore()
+  const addTaskSchema = createAddTaskSchema(t)
   
   const {
     register,
@@ -109,8 +112,14 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
         disableRestoreFocus
     >
       <DialogTitle>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography fontWeight="bold">Create new task</Typography>
+        <Stack 
+          direction="row" 
+          justifyContent="space-between" 
+          alignItems="center"
+        >
+          <Typography fontWeight="bold">
+            {t('objectives.addTaskModal.title')}
+          </Typography>
           <IconButton onClick={onClose} aria-label="close">
             <CloseIcon />
           </IconButton>
@@ -118,32 +127,44 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
       </DialogTitle>
 
       <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            Fill in the details below to create your new task. Be specific with your title and description to help future you understand exactly what needs to be done.
+        <DialogContent 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: 3 
+          }}
+        >
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            sx={{ 
+              mb: 1 
+            }}
+          >
+            {t('objectives.addTaskModal.subtitle')}
           </Typography>
 
           <TextField
             id="task-title"
-            label="Title"
-            placeholder="Enter task title"
+            label={t('objectives.addTaskModal.titleLabel')}
+            placeholder={t('objectives.addTaskModal.titlePlaceholder')}
             fullWidth
             autoFocus
             {...register('title')}
             error={!!errors.title}
-            helperText={errors.title?.message || "Name this task clearly so future you knows what it is."}
+            helperText={errors.title?.message}
           />
 
           <TextField
             id="task-description"
-            label="Description"
-            placeholder="Add context, links, or acceptance criteria..."
+            label={t('objectives.addTaskModal.descriptionLabel')}
+            placeholder={t('objectives.addTaskModal.descriptionPlaceholder')}
             fullWidth
             multiline
             minRows={3}
             {...register('description')}
             error={!!errors.description}
-            helperText={errors.description?.message || "Add context, links, or acceptance criteria."}
+            helperText={errors.description?.message}
           />
 
           <Controller
@@ -151,27 +172,27 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
             control={control}
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.task_type}>
-                <InputLabel id="task-type-label">Task type</InputLabel>
+                <InputLabel id="task-type-label">{t('objectives.addTaskModal.taskTypeLabel')}</InputLabel>
                 <Select
                   labelId="task-type-label"
                   id="task-type"
-                  label="Task type"
+                  label={t('objectives.addTaskModal.taskTypeLabel')}
                   value={field.value ?? TaskType.Other}
                   onChange={field.onChange}
                 >
-                  <MenuItem value={TaskType.Reading}>Reading</MenuItem>
-                  <MenuItem value={TaskType.Practice}>Practice</MenuItem>
-                  <MenuItem value={TaskType.Writing}>Writing</MenuItem>
-                  <MenuItem value={TaskType.Research}>Research</MenuItem>
-                  <MenuItem value={TaskType.Listening}>Listening</MenuItem>
-                  <MenuItem value={TaskType.Discussion}>Discussion</MenuItem>
-                  <MenuItem value={TaskType.ProblemSolving}>Problem Solving</MenuItem>
-                  <MenuItem value={TaskType.Experimenting}>Experimenting</MenuItem>
-                  <MenuItem value={TaskType.Teaching}>Teaching</MenuItem>
-                  <MenuItem value={TaskType.Other}>Other</MenuItem>
+                  <MenuItem value={TaskType.Reading}>{t('objectives.addTaskModal.taskTypes.reading')}</MenuItem>
+                  <MenuItem value={TaskType.Practice}>{t('objectives.addTaskModal.taskTypes.practice')}</MenuItem>
+                  <MenuItem value={TaskType.Writing}>{t('objectives.addTaskModal.taskTypes.writing')}</MenuItem>
+                  <MenuItem value={TaskType.Research}>{t('objectives.addTaskModal.taskTypes.research')}</MenuItem>
+                  <MenuItem value={TaskType.Listening}>{t('objectives.addTaskModal.taskTypes.listening')}</MenuItem>
+                  <MenuItem value={TaskType.Discussion}>{t('objectives.addTaskModal.taskTypes.discussion')}</MenuItem>
+                  <MenuItem value={TaskType.ProblemSolving}>{t('objectives.addTaskModal.taskTypes.problem_solving')}</MenuItem>
+                  <MenuItem value={TaskType.Experimenting}>{t('objectives.addTaskModal.taskTypes.experimenting')}</MenuItem>
+                  <MenuItem value={TaskType.Teaching}>{t('objectives.addTaskModal.taskTypes.teaching')}</MenuItem>
+                  <MenuItem value={TaskType.Other}>{t('objectives.addTaskModal.taskTypes.other')}</MenuItem>
                 </Select>
                 <FormHelperText>
-                  {errors.task_type?.message || "Pick the main activity so we can suggest better tips later."}
+                  {errors.task_type?.message}
                 </FormHelperText>
               </FormControl>
             )}
@@ -182,20 +203,20 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
             control={control}
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.priority}>
-                <InputLabel id="task-priority-label">Priority</InputLabel>
+                <InputLabel id="task-priority-label">{t('objectives.addTaskModal.priorityLabel')}</InputLabel>
                 <Select
                   labelId="task-priority-label"
                   id="task-priority"
-                  label="Priority"
+                  label={t('objectives.addTaskModal.priorityLabel')}
                   value={field.value ?? Priority.Medium}
                   onChange={field.onChange}
                 >
-                  <MenuItem value={Priority.Low}>Low</MenuItem>
-                  <MenuItem value={Priority.Medium}>Medium</MenuItem>
-                  <MenuItem value={Priority.High}>High</MenuItem>
+                  <MenuItem value={Priority.Low}>{t('objectives.filters.low')}</MenuItem>
+                  <MenuItem value={Priority.Medium}>{t('objectives.filters.medium')}</MenuItem>
+                  <MenuItem value={Priority.High}>{t('objectives.filters.high')}</MenuItem>
                 </Select>
                 <FormHelperText>
-                  {errors.priority?.message || "How important is this compared to everything else?"}
+                  {errors.priority?.message}
                 </FormHelperText>
               </FormControl>
             )}
@@ -203,7 +224,7 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
 
           <TextField
             id="task-estimated-time"
-            label="Estimated time (in pomodoros)"
+            label={t('objectives.addTaskModal.estimatedPomodorosLabel')}
             type="number"
             fullWidth
             slotProps={{ 
@@ -214,12 +235,12 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
             }}
             {...register('estimated_pomodoros', { valueAsNumber: true })}
             error={!!errors.estimated_pomodoros}
-            helperText={errors.estimated_pomodoros?.message || getPomodoroHelperText(isConfigured, effectivePomodoroLengthMinutes)}
+            helperText={errors.estimated_pomodoros?.message || getPomodoroHelperText(isConfigured, effectivePomodoroLengthMinutes, t)}
           />
 
           <TextField
             id="task-due-date"
-            label="Due date"
+            label={t('objectives.addTaskModal.dueDateLabel')}
             type="date"
             fullWidth
             slotProps={{
@@ -229,7 +250,7 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
             }}
             {...register('due_date')}
             error={!!errors.due_date}
-            helperText={errors.due_date?.message || "When does this need to be done?"}
+            helperText={errors.due_date?.message || t('objectives.addTaskModal.dueDateHelper')}
           />
 
           <Controller
@@ -244,21 +265,33 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
                     onChange={field.onChange}
                   />
                 }
-                label="Optional task"
+                label={t('objectives.addTaskModal.isOptionalLabel')}
               />
             )}
           />
-          <Typography variant="body2" color="text.secondary" sx={{ mt: -2 }}>
-            Mark as optional so it won't block your plan.
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            sx={{ 
+              mt: -2 
+            }}
+          >
+            {t('objectives.addTaskModal.isOptionalHelper')}
           </Typography>
         </DialogContent>
 
-        <DialogActions sx={{ px: 3, pb: 3 }}>
+        <DialogActions 
+          sx={{ 
+            px: 3, 
+            pb: 3 
+          }}
+        >
           <Button variant="outlined" onClick={onClose}>
-            Cancel
+            {t('actions.cancel', { ns: 'common' })}
           </Button>
+
           <Button variant="contained" color="secondary" type="submit">
-            Create
+            {t('objectives.addTaskModal.createButton')}
           </Button>
         </DialogActions>
       </form>

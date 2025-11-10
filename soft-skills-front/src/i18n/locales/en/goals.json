@@ -1,0 +1,196 @@
+{
+  "title": "Self-regulated learning",
+  "subtitle": "Organize your learning goals, objectives, and tasks as part of your self-regulated learning journey.",
+  "breadcrumbs": {
+    "learningGoals": "Learning goals"
+  },
+  "addGoal": {
+    "placeholder": "Add learning goal",
+    "button": "Add Goal",
+    "modalTitle": "Add learning goal",
+    "title": "Title",
+    "titlePlaceholder": "Learn JavaScript",
+    "description": "Description",
+    "descriptionPlaceholder": "Master JavaScript to build interactive web applications",
+    "personalImpact": "Personal impact",
+    "personalImpactPlaceholder": "Why this goal matters to you"
+  },
+  "empty": {
+    "title": "No learning goals yet",
+    "description": "Add your first learning goal to get started on your educational journey"
+  },
+  "goalCard": {
+    "started": "Started:",
+    "notStarted": "Not started yet",
+    "objectives": "objectives",
+    "complete": "complete",
+    "noObjectives": "No objectives yet. Start breaking down this goal!"
+  },
+  "goalDetail": {
+    "title": "Title",
+    "description": "Description",
+    "impact": "Impact",
+    "saving": "Saving...",
+    "elapsed": "Elapsed:",
+    "dates": {
+      "title": "Dates",
+      "readOnly": "Read-only",
+      "createdAt": "Created at",
+      "updatedAt": "Updated at",
+      "startedAt": "Started at",
+      "completedAt": "Completed at"
+    },
+    "status": {
+      "notStarted": "Not started",
+      "inProgress": "In progress",
+      "completed": "Completed"
+    },
+    "notFound": {
+      "title": "Goal not found",
+      "description": "The learning goal you're looking for doesn't exist or may have been removed.",
+      "button": "Back to Learning Goals"
+    }
+  },
+  "objectives": {
+    "title": "Objectives",
+    "addObjective": "Add Objective",
+    "searchPlaceholder": "Search objectives...",
+    "filterColumn": "Filter Column",
+    "tabs": {
+      "all": "All",
+      "incomplete": "Incomplete",
+      "ongoing": "Ongoing",
+      "finished": "Finished"
+    },
+    "filters": {
+      "priorityLevel": "Priority Level",
+      "progressStatus": "progress status",
+      "filterByProgress": "Filter by progress",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "notStarted": "Not started",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "paused": "Paused"
+    },
+    "table": {
+      "objective": "Objective",
+      "status": "Status",
+      "priority": "Priority",
+      "dueDate": "Due Date",
+      "progress": "Progress",
+      "actions": "Actions",
+      "noDueDate": "No due date",
+      "noObjectivesFound": "No objectives found for this learning goal.",
+      "noObjectivesMatchFilters": "No objectives match your current filters.",
+      "errorLoading": "Error loading objectives",
+      "pagination": {
+        "rowsPerPage": "Rows per page:",
+        "displayedRows": "{{from}}-{{to}} of {{count}}"
+      }
+    },
+    "addModal": {
+      "title": "Create objective",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Objective title",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Add a short description",
+      "priorityLabel": "Priority",
+      "dueDateLabel": "Due date *",
+      "dueDatePlaceholder": "dd/mm/aaaa",
+      "createButton": "Create",
+      "validation": {
+        "titleRequired": "Title is required",
+        "descriptionRequired": "Description is required",
+        "priorityRequired": "Priority is required"
+      }
+    },
+    "deleteModal": {
+      "title": "Confirm Deletion",
+      "message": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone."
+    },
+    "detail": {
+      "title": "Title",
+      "description": "Description",
+      "priority": "Priority",
+      "dueDate": "Due Date",
+      "saving": "Saving...",
+      "elapsed": "Elapsed:",
+      "dates": {
+        "title": "Dates",
+        "createdAt": "Created at",
+        "updatedAt": "Updated at",
+        "startedAt": "Started at",
+        "completedAt": "Completed at",
+        "dueDate": "Due date"
+      },
+      "taskBreakdown": {
+        "title": "Task Breakdown",
+        "subtitle": "Break down this objective into manageable sub-tasks and track their progress",
+        "addTask": "Add Task",
+        "failedToLoad": "Failed to load tasks. Please try again.",
+        "noTasksFound": "No tasks found for this objective."
+      },
+      "notFound": {
+        "title": "Objective not found",
+        "description": "The objective you're looking for doesn't exist or may have been removed.",
+        "button": "Back to Learning Goal"
+      }
+    },
+    "kanban": {
+      "todo": "TO DO",
+      "inProgress": "IN PROGRESS",
+      "done": "DONE",
+      "paused": "PAUSED"
+    },
+    "addTaskModal": {
+      "title": "Create task",
+      "subtitle": "Fill in the details below to create your new task. Be specific with your title and description to help future you understand exactly what needs to be done.",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Task title",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe what needs to be done",
+      "taskTypeLabel": "Task type",
+      "taskTypes": {
+        "reading": "Reading",
+        "practice": "Practice",
+        "writing": "Writing",
+        "research": "Research",
+        "listening": "Listening",
+        "discussion": "Discussion",
+        "problem_solving": "Problem Solving",
+        "experimenting": "Experimenting",
+        "teaching": "Teaching",
+        "other": "Other"
+      },
+      "priorityLabel": "Priority",
+      "estimatedPomodorosLabel": "Estimated time (pomodoros)",
+      "estimatedPomodorosHelper": "1 pomodoro = {{minutes}} min",
+      "estimatedPomodorosHelperDefault": "You haven't set your pomodoro yet. For now, 1 pomodoro = 60 min.",
+      "dueDateLabel": "Due date",
+      "dueDateHelper": "When does this need to be done?",
+      "isOptionalLabel": "This task is optional",
+      "isOptionalHelper": "Mark as optional so it won't block your plan.",
+      "createButton": "Create",
+      "validation": {
+        "titleRequired": "Title is required",
+        "descriptionRequired": "Description is required",
+        "taskTypeRequired": "Task type is required",
+        "priorityRequired": "Priority is required",
+        "estimatedTimeRequired": "Estimated time is required"
+      }
+    }
+  },
+  "pagination": {
+    "resultsPerPage": "Results per page",
+    "of": "of",
+    "rowsPerPage": "Rows per page:",
+    "displayedRows": "{{from}}-{{to}} of {{count}}"
+  },
+  "validation": {
+    "titleRequired": "Title is required",
+    "descriptionRequired": "Description is required",
+    "impactRequired": "Impact is required"
+  }
+}

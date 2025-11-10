@@ -1,4 +1,5 @@
 import { TextField, Stack } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useSelfEvaluationDraftStore } from '../../../store/useSelfEvaluationDraftStore'
 
 interface ReflectionSectionProps {
@@ -10,6 +11,7 @@ interface ReflectionSectionProps {
 }
 
 const ReflectionSection = ({ errors }: ReflectionSectionProps) => {
+  const { t } = useTranslation('reports')
   const formData = useSelfEvaluationDraftStore((state) => state)
   const setWhatWentWell = useSelfEvaluationDraftStore((state) => state.setWhatWentWell)
   const setChallengesEncountered = useSelfEvaluationDraftStore((state) => state.setChallengesEncountered)
@@ -18,8 +20,8 @@ const ReflectionSection = ({ errors }: ReflectionSectionProps) => {
   return (
     <Stack spacing={2}>
       <TextField
-        label="What worked well this time? *"
-        placeholder="What aspects of your learning went well?"
+        label={t('selfEvaluation.fields.whatWorkedWellThisTime')}
+        placeholder={t('selfEvaluation.fields.whatWorkedWellThisTimePlaceholder')}
         fullWidth
         multiline
         minRows={3}
@@ -27,12 +29,12 @@ const ReflectionSection = ({ errors }: ReflectionSectionProps) => {
         value={formData.what_went_well}
         onChange={(e) => setWhatWentWell(e.target.value)}
         error={!!errors?.what_went_well}
-        helperText={errors?.what_went_well || "What went well? (max 2000 characters)"}
+        helperText={errors?.what_went_well || t('selfEvaluation.fields.whatWorkedWellHelper')}
       />
 
       <TextField
-        label="What was difficult? *"
-        placeholder="What challenges did you face?"
+        label={t('selfEvaluation.fields.whatWasDifficult')}
+        placeholder={t('selfEvaluation.fields.whatWasDifficultPlaceholder')}
         fullWidth
         multiline
         minRows={3}
@@ -40,12 +42,12 @@ const ReflectionSection = ({ errors }: ReflectionSectionProps) => {
         value={formData.challenges_encountered}
         onChange={(e) => setChallengesEncountered(e.target.value)}
         error={!!errors?.challenges_encountered}
-        helperText={errors?.challenges_encountered || "Challenges encountered (max 2000 characters)"}
+        helperText={errors?.challenges_encountered || t('selfEvaluation.fields.challengesEncounteredHelper')}
       />
 
       <TextField
-        label="What would you do differently next time? *"
-        placeholder="How do you plan to improve next time?"
+        label={t('selfEvaluation.fields.whatWouldYouDoDifferently')}
+        placeholder={t('selfEvaluation.fields.whatWouldYouDoDifferentlyPlaceholder')}
         fullWidth
         multiline
         minRows={3}
@@ -53,7 +55,7 @@ const ReflectionSection = ({ errors }: ReflectionSectionProps) => {
         value={formData.improvement_plan}
         onChange={(e) => setImprovementPlan(e.target.value)}
         error={!!errors?.improvement_plan}
-        helperText={errors?.improvement_plan || "Improvement plan (max 2000 characters)"}
+        helperText={errors?.improvement_plan || t('selfEvaluation.fields.improvementPlanHelper')}
       />
     </Stack>
   )

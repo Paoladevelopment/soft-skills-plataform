@@ -7,6 +7,7 @@ import {
   Paper,
   CircularProgress
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -25,6 +26,7 @@ interface GoalCardProps {
 }
 
 const GoalCard = ({ goal, onDeleteClick, onCreateRoadmapClick, isConverting }: GoalCardProps) => {
+  const { t } = useTranslation('goals')
   const setSelectedGoalId = useLearningGoalStore(state => state.setSelectedGoalId)
   const navigate = useNavigate()
   const [hovered, setHovered] = useState(false)
@@ -67,7 +69,7 @@ const GoalCard = ({ goal, onDeleteClick, onCreateRoadmapClick, isConverting }: G
           <Stack direction="row" alignItems="center" spacing={0.5} mt={1}>
             <CalendarTodayIcon fontSize="small" sx={{ color: "text.secondary" }} />
             <Typography variant="body2" color="text.secondary" mt={1}>
-              {formatDateString(goal.startedAt)}
+              {formatDateString(goal.startedAt, t('goalCard.notStarted', { defaultValue: 'Not started yet' }), t('goalCard.started'))}
             </Typography>
           </Stack>
         </Box>
@@ -104,9 +106,9 @@ const GoalCard = ({ goal, onDeleteClick, onCreateRoadmapClick, isConverting }: G
         <Box mt={2}>
           <LinearProgress variant="determinate" value={percentComplete} sx={{ height: 6, borderRadius: 3 }} />
           <Stack direction="row" justifyContent="space-between" mt={1}>
-            <Typography variant="caption">{`${completed}/${total} objectives`}</Typography>
+            <Typography variant="caption">{`${completed}/${total} ${t('goalCard.objectives')}`}</Typography>
             <Typography variant="caption" color="text.secondary">
-              {percentComplete}% complete
+              {percentComplete}% {t('goalCard.complete')}
             </Typography>
           </Stack>
         </Box>
@@ -123,7 +125,7 @@ const GoalCard = ({ goal, onDeleteClick, onCreateRoadmapClick, isConverting }: G
           }}
         >
           <Typography variant="body2" color="text.secondary">
-            No objectives yet. Start breaking down this goal!
+            {t('goalCard.noObjectives')}
           </Typography>
         </Box>
       )

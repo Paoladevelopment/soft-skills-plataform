@@ -1,6 +1,8 @@
 import { Paper, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 const EmptyState = () => {
+  const { t } = useTranslation('reports')
   return (
     <Paper
       elevation={0}
@@ -13,10 +15,10 @@ const EmptyState = () => {
       }}
     >
       <Typography variant="subtitle1" fontWeight="medium">
-        No learning reports yet
+        {t('empty.title')}
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        Complete tasks and reflect on them to see your learning reports here
+        {t('empty.description')}
       </Typography>
     </Paper>
   )

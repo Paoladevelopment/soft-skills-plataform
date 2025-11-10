@@ -1,4 +1,5 @@
 import { Paper, Typography, Grid2 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { SelfEvaluationRead } from '../../types/self-evaluation/self-evaluation.api'
 import {
   formatStudyPlace,
@@ -12,6 +13,7 @@ interface LearningEnvironmentSectionProps {
 }
 
 const LearningEnvironmentSection = ({ report }: LearningEnvironmentSectionProps) => {
+  const { t } = useTranslation('reports')
   return (
     <Paper 
       elevation={0} 
@@ -27,12 +29,12 @@ const LearningEnvironmentSection = ({ report }: LearningEnvironmentSectionProps)
         mb={2} 
         fontSize="0.875rem"
       >
-        Learning environment
+        {t('sections.learningEnvironment')}
       </Typography>
       <Grid2 container spacing={2}>
         <Grid2 size={{ xs: 12, sm: 6 }}>
           <Typography variant="body2" fontWeight="medium">
-            Study Place:
+            {t('fields.studyPlace')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {formatStudyPlace(report.studyPlace)}
@@ -41,28 +43,28 @@ const LearningEnvironmentSection = ({ report }: LearningEnvironmentSectionProps)
 
         <Grid2 size={{ xs: 12, sm: 6 }}>
           <Typography variant="body2" fontWeight="medium">
-            Noise Level:
+            {t('fields.noiseLevel')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {report.noiseLevel ? formatNoiseLevel(report.noiseLevel) : 'Not specified'}
+            {report.noiseLevel ? formatNoiseLevel(report.noiseLevel) : t('notSpecified')}
           </Typography>
         </Grid2>
 
         <Grid2 size={{ xs: 12, sm: 6 }}>
           <Typography variant="body2" fontWeight="medium">
-            Time of Day:
+            {t('fields.timeOfDay')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {report.timeOfDay ? formatTimeOfDay(report.timeOfDay) : 'Not specified'}
+            {report.timeOfDay ? formatTimeOfDay(report.timeOfDay) : t('notSpecified')}
           </Typography>
         </Grid2>
         
         <Grid2 size={{ xs: 12, sm: 6 }}>
           <Typography variant="body2" fontWeight="medium">
-            Collaboration Mode:
+            {t('fields.collaborationMode')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {report.collaborationMode ? formatCollaborationMode(report.collaborationMode) : 'Not specified'}
+            {report.collaborationMode ? formatCollaborationMode(report.collaborationMode) : t('notSpecified')}
           </Typography>
         </Grid2>
       </Grid2>

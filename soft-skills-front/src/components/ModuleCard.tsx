@@ -6,6 +6,7 @@ import {
   CardContent,
   CardActions,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -16,6 +17,7 @@ interface ModuleCardProps {
 }
 
 const ModuleCard = ({ module }: ModuleCardProps) => {
+  const { t } = useTranslation('common')
   const [hovered, setHovered] = useState(false)
   const navigate = useNavigate()
 
@@ -103,7 +105,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
             fontWeight: 500,
           }}
         >
-          Explore
+          {t('actions.explore')}
         </Button>
       </CardActions>
     </Card>

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import i18n from '../../../../i18n/config'
 import { 
   StudyPlace, 
   TimeOfDay, 
@@ -12,21 +13,21 @@ import {
 export const selfEvaluationSchema = z.object({
   task_id: z.string().uuid('Task ID must be a valid UUID'),
   study_place: z.nativeEnum(StudyPlace, {
-    required_error: 'Study place is required',
+    required_error: i18n.t('reports:selfEvaluation.validation.studyPlaceRequired'),
   }),
   time_of_day: z.nativeEnum(TimeOfDay).nullable().optional(),
   noise_level: z.nativeEnum(NoiseLevel).nullable().optional(),
   collaboration_mode: z.nativeEnum(CollaborationMode).nullable().optional(),
-  learning_intention: z.string().min(1, 'What were you trying to get better at? is required').max(800, 'What were you trying to get better at? must be 800 characters or less'),
-  what_went_well: z.string().min(1, 'What worked well this time? is required').max(2000, 'What worked well this time? must be 2000 characters or less'),
-  challenges_encountered: z.string().min(1, 'What was difficult? is required').max(2000, 'What was difficult? must be 2000 characters or less'),
-  improvement_plan: z.string().min(1, 'What would you do differently next time? is required').max(2000, 'What would you do differently next time? must be 2000 characters or less'),
+  learning_intention: z.string().min(1, i18n.t('reports:selfEvaluation.validation.learningIntentionRequired')).max(800, i18n.t('reports:selfEvaluation.validation.learningIntentionMaxLength')),
+  what_went_well: z.string().min(1, i18n.t('reports:selfEvaluation.validation.whatWentWellRequired')).max(2000, i18n.t('reports:selfEvaluation.validation.whatWentWellMaxLength')),
+  challenges_encountered: z.string().min(1, i18n.t('reports:selfEvaluation.validation.challengesEncounteredRequired')).max(2000, i18n.t('reports:selfEvaluation.validation.challengesEncounteredMaxLength')),
+  improvement_plan: z.string().min(1, i18n.t('reports:selfEvaluation.validation.improvementPlanRequired')).max(2000, i18n.t('reports:selfEvaluation.validation.improvementPlanMaxLength')),
   perceived_difficulty: z.nativeEnum(PerceivedDifficulty, {
-    required_error: 'Perceived difficulty is required',
+    required_error: i18n.t('reports:selfEvaluation.validation.perceivedDifficultyRequired'),
   }),
-  concentration_level: z.number().int().min(1, 'Concentration level must be between 1 and 10').max(10, 'Concentration level must be between 1 and 10'),
+  concentration_level: z.number().int().min(1, i18n.t('reports:selfEvaluation.validation.concentrationLevelRange')).max(10, i18n.t('reports:selfEvaluation.validation.concentrationLevelRange')),
   mood: z.nativeEnum(Mood, {
-    required_error: 'Mood is required',
+    required_error: i18n.t('reports:selfEvaluation.validation.moodRequired'),
   }),
   knowledge_connection: z.boolean(),
   learning_methods: z.array(z.nativeEnum(LearningMethod)).optional(),

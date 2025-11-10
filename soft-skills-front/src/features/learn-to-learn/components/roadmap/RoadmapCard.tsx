@@ -11,6 +11,7 @@ import {
   SxProps,
   Theme
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@mui/icons-material/Delete'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import PublicIcon from '@mui/icons-material/Public'
@@ -68,25 +69,27 @@ const getConditionalStyles = (isPublicMode: boolean): {
   }
 })
 
-const getStepsText = (stepsCount: number): string => {
-  return `${stepsCount} ${stepsCount === 1 ? 'step' : 'steps'}`
+const getStepsText = (stepsCount: number, t: (key: string) => string): string => {
+  const stepKey = stepsCount === 1 ? 'myRoadmaps.card.step' : 'myRoadmaps.card.steps'
+  return `${stepsCount} ${t(stepKey)}`
 }
 
-const getConditionalContent = (isPublicMode: boolean, roadmapSummary: RoadmapSummary) => ({
-  descriptionText: roadmapSummary.description || (isPublicMode ? 'No description available' : ''),
-  dateFormat: isPublicMode ? "Created" : "Created:",
+const getConditionalContent = (isPublicMode: boolean, roadmapSummary: RoadmapSummary, t: (key: string) => string) => ({
+  descriptionText: roadmapSummary.description || (isPublicMode ? t('myRoadmaps.card.noDescription') : ''),
+  dateFormat: isPublicMode ? t('myRoadmaps.card.createdPublic') : t('myRoadmaps.card.created'),
   showAuthor: isPublicMode,
   showVisibilityIcon: !isPublicMode,
   showDeleteAction: !isPublicMode
 })
 
 const RoadmapCard = ({ roadmapSummary, onDeleteClick, onViewClick, mode = 'private' }: RoadmapCardProps) => {
+  const { t } = useTranslation('roadmap')
   const [hovered, setHovered] = useState(false)
 
   const stepsCount = roadmapSummary.stepsCount || 0
   const isPublicMode = mode === 'public'
   const styles = getConditionalStyles(isPublicMode)
-  const content = getConditionalContent(isPublicMode, roadmapSummary)
+  const content = getConditionalContent(isPublicMode, roadmapSummary, t)
 
   return (
     <Card 
@@ -162,12 +165,12 @@ const RoadmapCard = ({ roadmapSummary, onDeleteClick, onViewClick, mode = 'priva
 
         <Stack direction="row" justifyContent="space-between" alignItems="center" mb={isPublicMode ? 2 : 0}>
           <Typography variant="caption" color="text.secondary">
-            {formatDateString(roadmapSummary.createdAt, "Not defined", content.dateFormat)}
+            {formatDateString(roadmapSummary.createdAt, t('myRoadmaps.card.notDefined'), content.dateFormat)}
           </Typography>
 
           {isPublicMode ? (
             <Chip 
-              label={getStepsText(stepsCount)}
+              label={getStepsText(stepsCount, t)}
               size="small"
               variant="outlined"
               sx={{ 
@@ -177,7 +180,7 @@ const RoadmapCard = ({ roadmapSummary, onDeleteClick, onViewClick, mode = 'priva
             />
           ) : (
             <Typography variant="caption" color="text.secondary">
-              {getStepsText(stepsCount)}
+              {getStepsText(stepsCount, t)}
             </Typography>
           )}
         </Stack>
@@ -197,7 +200,7 @@ const RoadmapCard = ({ roadmapSummary, onDeleteClick, onViewClick, mode = 'priva
             fontWeight: 500,
           }}
         >
-          View Roadmap
+          {t('myRoadmaps.card.viewRoadmap')}
         </Button>
       </CardActions>
     </Card>

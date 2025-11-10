@@ -1,0 +1,174 @@
+{
+  "title": "Roadmaps",
+  "placeholder": "Roadmap placeholder text",
+  "myRoadmaps": {
+    "title": "Your learning roadmaps",
+    "subtitle": "View and manage your personalized learning paths",
+    "createNew": "Create new roadmap",
+    "empty": {
+      "title": "No roadmaps yet",
+      "description": "Start your learning journey by creating your first personalized roadmap. Build structured paths to achieve your goals.",
+      "button": "Create your first roadmap"
+    },
+    "card": {
+      "viewRoadmap": "View Roadmap",
+      "created": "Created:",
+      "createdPublic": "Created",
+      "step": "step",
+      "steps": "steps",
+      "noDescription": "No description available",
+      "notDefined": "Not defined"
+    }
+  },
+  "createModal": {
+    "title": "New Roadmap",
+    "question": "How would you like to create your roadmap?",
+    "options": {
+      "chatbot": {
+        "title": "Guided by Aithena",
+        "description": "Let our AI tutor guide you through a personalized roadmap creation conversation."
+      },
+      "manual": {
+        "title": "Start from scratch",
+        "description": "Build your roadmap manually using our visual editor."
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "getStarted": "Get started"
+    }
+  },
+  "detail": {
+    "backToRoadmaps": "Back to roadmaps",
+    "backToExplore": "Back to explore",
+    "editRoadmap": "Edit Roadmap",
+    "copyRoadmap": "Copy Roadmap",
+    "createdBy": "Created by",
+    "unknownAuthor": "Unknown Author",
+    "learningSteps": "learning steps",
+    "created": "Created:",
+    "notDefined": "Not defined"
+  },
+  "editor": {
+    "sidebar": {
+      "title": "Components",
+      "dragDrop": "Drag & drop onto the canvas",
+      "objective": "Objective",
+      "task": "Task"
+    },
+    "node": {
+      "tasks": "Tasks:"
+    },
+    "sidebarEditor": {
+      "properties": "Properties",
+      "contentLinks": "Content & Links"
+    },
+    "propertiesTab": {
+      "label": "Label",
+      "labelPlaceholder": "Enter label",
+      "x": "X",
+      "y": "Y",
+      "w": "W",
+      "h": "H",
+      "auto": "Auto",
+      "fontSize": "Font Size",
+      "nodeColor": "Node Color"
+    },
+    "contentLinksTab": {
+      "title": "Title",
+      "titlePlaceholder": "Enter Title",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter Description",
+      "resourceTitle": "Resource Title",
+      "resourceUrl": "Resource URL",
+      "remove": "Remove",
+      "addLink": "Add Link",
+      "resourceTypes": {
+        "article": "Article",
+        "book": "Book",
+        "video": "Video",
+        "web": "Web",
+        "other": "Other"
+      }
+    },
+    "topbar": {
+      "untitled": "Untitled Roadmap",
+      "saveRoadmap": "Save Roadmap",
+      "noDescription": "No description has been added yet.",
+      "visibility": {
+        "onlyMe": "Only visible to me",
+        "anyoneCanView": "Anyone can view",
+        "unlisted": "Unlisted access"
+      },
+      "menu": {
+        "duplicate": "Duplicate",
+        "delete": "Delete"
+      },
+      "tooltips": {
+        "back": "Back",
+        "edit": "Edit roadmap",
+        "menu": "More options",
+        "sharing": "Sharing settings",
+        "save": "Save roadmap",
+        "deleteNode": "Delete node"
+      }
+    },
+    "form": {
+      "newRoadmap": "New Roadmap",
+      "editRoadmap": "Edit Roadmap",
+      "createRoadmap": "Create Roadmap",
+      "saveChanges": "Save Changes",
+      "instruction": "Add a title and description to your roadmap.",
+      "titleLabel": "Roadmap Title",
+      "titlePlaceholder": "Enter Title",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Enter Description",
+      "validation": {
+        "titleRequired": "Title is required",
+        "descriptionRequired": "Description is required",
+        "maxCharacters": "Max 450 characters allowed"
+      }
+    },
+    "sharing": {
+      "title": "Update Sharing Settings",
+      "instruction": "Pick and modify who can access this roadmap.",
+      "onlyMe": "Only me",
+      "public": "Public",
+      "onlyYouAccess": "Only you will be able to access.",
+      "anyoneWithLink": "Anyone with the link can access.",
+      "close": "Close",
+      "update": "Update Sharing Settings"
+    }
+  },
+  "explore": {
+    "title": "Explore public roadmaps",
+    "subtitle": "Discover learning paths created by the community",
+    "searchPlaceholder": "Search public roadmaps...",
+    "filterButton": "Filter Roadmaps",
+    "applyFilters": "Apply filters",
+    "clearFilters": "Clear Filters",
+    "activeFilters": "Active filters:",
+    "clearAllFilters": "Clear all filters",
+    "filters": {
+      "author": "Author",
+      "authorPlaceholder": "Enter author name",
+      "stepsRange": "Steps Range",
+      "minSteps": "min steps",
+      "maxSteps": "max steps"
+    },
+    "empty": {
+      "title": "No public roadmaps found",
+      "description": "Try adjusting your search terms or filters to find more roadmaps."
+    },
+    "showingResults": "Showing {{count}} of {{total}} roadmaps",
+    "errors": {
+      "loadFailed": "Failed to load roadmaps. Please try again.",
+      "retry": "Retry",
+      "rangeError": "Max value cannot be less than min value"
+    },
+    "range": {
+      "to": "to"
+    }
+  }
+}
+

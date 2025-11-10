@@ -2,6 +2,7 @@ import {
   Box,
   Button,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
 import { EditorTab } from '../../types/roadmap/roadmap.options'
@@ -9,6 +10,7 @@ import PropertiesTab from './PropertiesTab'
 import ContentAndLinksTab from './ContentLinksTab'
 
 const SidebarEditor = () => {
+  const { t } = useTranslation('roadmap')
   const [tab, setTab] = useState<EditorTab>('properties')
 
   const {
@@ -69,7 +71,7 @@ const SidebarEditor = () => {
           disableRipple
           sx={getTabButtonStyles('properties')}
         >
-          Properties
+          {t('editor.sidebarEditor.properties')}
         </Button>
 
         <Button
@@ -77,7 +79,7 @@ const SidebarEditor = () => {
           disableRipple
           sx={getTabButtonStyles('content')}
         >
-          Content & Links
+          {t('editor.sidebarEditor.contentLinks')}
         </Button>
       </Box>
 

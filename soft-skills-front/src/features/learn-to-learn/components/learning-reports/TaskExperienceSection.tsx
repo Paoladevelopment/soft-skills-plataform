@@ -1,4 +1,5 @@
 import { Paper, Typography, Box, Divider } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { SelfEvaluationRead } from '../../types/self-evaluation/self-evaluation.api'
 
 interface TaskExperienceSectionProps {
@@ -6,6 +7,7 @@ interface TaskExperienceSectionProps {
 }
 
 const TaskExperienceSection = ({ report }: TaskExperienceSectionProps) => {
+  const { t } = useTranslation('reports')
   return (
     <Paper 
       elevation={0} 
@@ -22,7 +24,7 @@ const TaskExperienceSection = ({ report }: TaskExperienceSectionProps) => {
         mb={2} 
         fontSize="0.875rem"
       >
-        Experience during the task
+        {t('sections.taskExperience')}
       </Typography>
       <Box mb={2}>
         <Typography 
@@ -30,7 +32,7 @@ const TaskExperienceSection = ({ report }: TaskExperienceSectionProps) => {
           fontWeight="medium" 
           mb={1}
         >
-          What went well:
+          {t('fields.whatWentWell')}
         </Typography>
         <Typography 
           variant="body2" 
@@ -48,7 +50,7 @@ const TaskExperienceSection = ({ report }: TaskExperienceSectionProps) => {
           fontWeight="medium" 
           mb={1}
         >
-          Challenges I faced:
+          {t('fields.challengesIFaced')}
         </Typography>
         <Typography 
           variant="body2" 
@@ -66,7 +68,7 @@ const TaskExperienceSection = ({ report }: TaskExperienceSectionProps) => {
           fontWeight="medium" 
           mb={1}
         >
-          Improvement plan:
+          {t('fields.improvementPlan')}
         </Typography>
         
         <Typography variant="body2" color="text.secondary">

@@ -1,4 +1,5 @@
 import { Paper, Typography, Grid2, Checkbox, FormControlLabel } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { SelfEvaluationRead } from '../../types/self-evaluation/self-evaluation.api'
 import { LearningMethod } from '../../types/self-evaluation/self-evaluation.enums'
 import { formatLearningMethod } from '../../utils/selfEvaluationFormatters'
@@ -8,6 +9,7 @@ interface LearningMethodsSectionProps {
 }
 
 const LearningMethodsSection = ({ report }: LearningMethodsSectionProps) => {
+  const { t } = useTranslation('reports')
   return (
     <Paper 
       elevation={0} 
@@ -24,7 +26,7 @@ const LearningMethodsSection = ({ report }: LearningMethodsSectionProps) => {
         mb={2} 
         fontSize="0.875rem"
       >
-        Learning methods used
+        {t('sections.learningMethodsUsed')}
       </Typography>
       <Grid2 container spacing={1}>
         {Object.values(LearningMethod).map((method) => {

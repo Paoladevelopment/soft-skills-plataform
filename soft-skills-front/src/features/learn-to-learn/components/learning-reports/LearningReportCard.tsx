@@ -5,12 +5,14 @@ import {
   Stack,
   IconButton,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useNavigate } from 'react-router-dom'
 import { SelfEvaluationReadRaw } from '../../types/self-evaluation/self-evaluation.api'
 import { PerceivedDifficulty } from '../../types/self-evaluation/self-evaluation.enums'
 import { formatDateString } from '../../../../utils/formatDate'
+import { formatDifficulty } from '../../utils/selfEvaluationFormatters'
 import { useState } from 'react'
 
 interface LearningReportCardProps {
@@ -30,26 +32,14 @@ const getDifficultyColor = (difficulty: PerceivedDifficulty): string => {
   }
 }
 
-const getDifficultyLabel = (difficulty: PerceivedDifficulty): string => {
-  switch (difficulty) {
-    case PerceivedDifficulty.EASY:
-      return 'Easy'
-    case PerceivedDifficulty.MODERATE:
-      return 'Medium'
-    case PerceivedDifficulty.HARD:
-      return 'Hard'
-    default:
-      return difficulty
-  }
-}
-
 const LearningReportCard = ({ report }: LearningReportCardProps) => {
+  const { t } = useTranslation('reports')
   const navigate = useNavigate()
   const [hovered, setHovered] = useState(false)
 
-  const taskTitle = report.taskTitle || 'Completed task'
+  const taskTitle = report.taskTitle || t('completedTask')
   const difficultyColor = getDifficultyColor(report.perceivedDifficulty)
-  const difficultyLabel = getDifficultyLabel(report.perceivedDifficulty)
+  const difficultyLabel = formatDifficulty(report.perceivedDifficulty)
 
   const handleViewClick = () => {
     navigate(`/learn/reports/${report.evaluationId}`)
@@ -97,7 +87,7 @@ const LearningReportCard = ({ report }: LearningReportCardProps) => {
               }} 
             />
             <Typography variant="body2" color="text.secondary">
-              {formatDateString(report.createdAt, "Not submitted yet", "Submitted on")}
+              {formatDateString(report.createdAt, t('notSubmittedYet'), t('submittedOn'))}
             </Typography>
           </Stack>
 

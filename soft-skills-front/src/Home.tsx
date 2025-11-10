@@ -1,9 +1,11 @@
 import { Container, Typography, Paper, Grid2, CircularProgress, Box, Alert } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 import useAuthStore from "./features/authentication/store/useAuthStore";
 import { useModules } from "./hooks/useModules";
 import ModuleCard from "./components/ModuleCard";
 
 const Home = () => {
+  const { t } = useTranslation('dashboard')
   const user = useAuthStore(state => state.user)
   const { data: modulesResponse, isLoading, error } = useModules(0, 10)
 
@@ -21,7 +23,7 @@ const Home = () => {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
         <Alert severity="error">
-          Failed to load modules. Please try again later.
+          {t('errors.loadFailed')}
         </Alert>
       </Container>
     )
@@ -48,7 +50,7 @@ const Home = () => {
             letterSpacing: "0.05em",
           }}
         >
-          Welcome back, {user?.name} 🤗
+          {t('welcomeBack', { name: user?.name || '' })}
         </Typography>
 
         <Typography 
@@ -58,13 +60,13 @@ const Home = () => {
             fontWeight: 300
           }}
         >
-          Choose a module below to continue developing your soft skills.
+          {t('chooseModulePrompt')}
         </Typography>
       </Paper>
 
       {modules.length === 0 ? (
         <Alert severity="info">
-          No modules available at the moment.
+          {t('empty.noModules')}
         </Alert>
       ) : (
         <Grid2 
