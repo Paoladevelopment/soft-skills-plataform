@@ -1,0 +1,178 @@
+{
+  "title": "Hojas de ruta de aprendizaje",
+  "placeholder": "Texto de placeholder para roadmap",
+  "myRoadmaps": {
+    "title": "Tus hojas de ruta de aprendizaje",
+    "subtitle": "Visualiza y gestiona tus rutas de aprendizaje personalizadas",
+    "createNew": "Crear nueva hoja de ruta de aprendizaje",
+    "empty": {
+      "title": "Aún no hay hojas de ruta de aprendizaje",
+      "description": "Comienza tu viaje de aprendizaje creando tu primera hoja de ruta de aprendizaje personalizada. Construye rutas estructuradas para alcanzar tus objetivos.",
+      "button": "Crea tu primera hoja de ruta de aprendizaje"
+    },
+    "card": {
+      "viewRoadmap": "Ver hoja de ruta de aprendizaje",
+      "created": "Creado:",
+      "createdPublic": "Creado",
+      "step": "paso",
+      "steps": "pasos",
+      "noDescription": "No hay descripción disponible",
+      "notDefined": "No definido"
+    }
+  },
+  "createModal": {
+    "title": "Nueva hoja de ruta de aprendizaje",
+    "question": "¿Cómo te gustaría crear tu hoja de ruta de aprendizaje?",
+    "options": {
+      "chatbot": {
+        "title": "Guiado por Aithena",
+        "description": "Deja que nuestro tutor de IA te guíe a través de una conversación personalizada para crear tu hoja de ruta de aprendizaje."
+      },
+      "manual": {
+        "title": "Empezar desde cero",
+        "description": "Construye tu hoja de ruta de aprendizaje manualmente usando nuestro editor visual."
+      }
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "getStarted": "Comenzar"
+    }
+  },
+  "detail": {
+    "backToRoadmaps": "Volver a hojas de ruta de aprendizaje",
+    "backToExplore": "Volver a explorar",
+    "editRoadmap": "Editar hoja de ruta de aprendizaje",
+    "copyRoadmap": "Copiar hoja de ruta de aprendizaje",
+    "createdBy": "Creado por",
+    "unknownAuthor": "Autor desconocido",
+    "learningSteps": "pasos de aprendizaje",
+    "created": "Creado:",
+    "notDefined": "No definido"
+  },
+  "editor": {
+    "sidebar": {
+      "title": "Componentes",
+      "dragDrop": "Arrastra y suelta en el lienzo",
+      "objective": "Objetivo",
+      "task": "Tarea"
+    },
+    "node": {
+      "tasks": "Tareas:"
+    },
+    "sidebarEditor": {
+      "properties": "Propiedades",
+      "contentLinks": "Contenido y Enlaces"
+    },
+    "propertiesTab": {
+      "label": "Etiqueta",
+      "labelPlaceholder": "Ingresar etiqueta",
+      "x": "X",
+      "y": "Y",
+      "w": "W",
+      "h": "H",
+      "auto": "Auto",
+      "fontSize": "Tamaño de fuente",
+      "nodeColor": "Color del nodo"
+    },
+    "contentLinksTab": {
+      "title": "Título",
+      "titlePlaceholder": "Ingresar título",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Ingresar descripción",
+      "resourceTitle": "Título del recurso",
+      "resourceUrl": "URL del recurso",
+      "remove": "Eliminar",
+      "addLink": "Agregar enlace",
+      "resourceTypes": {
+        "article": "Artículo",
+        "book": "Libro",
+        "video": "Video",
+        "web": "Web",
+        "other": "Otro"
+      }
+    },
+    "topbar": {
+      "untitled": "Hoja de ruta sin título",
+      "saveRoadmap": "Guardar hoja de ruta",
+      "noDescription": "Aún no se ha agregado una descripción.",
+      "visibility": {
+        "onlyMe": "Solo visible para mí",
+        "anyoneCanView": "Cualquiera puede ver",
+        "unlisted": "Acceso no listado"
+      },
+      "menu": {
+        "duplicate": "Duplicar",
+        "delete": "Eliminar"
+      },
+      "tooltips": {
+        "back": "Volver",
+        "edit": "Editar hoja de ruta de aprendizaje",
+        "menu": "Más opciones",
+        "sharing": "Configurar compartir",
+        "save": "Guardar hoja de ruta de aprendizaje",
+        "deleteNode": "Eliminar nodo"
+      }
+    },
+    "form": {
+      "newRoadmap": "Nueva hoja de ruta de aprendizaje",
+      "editRoadmap": "Editar hoja de ruta de aprendizaje",
+      "createRoadmap": "Crear hoja de ruta de aprendizaje",
+      "saveChanges": "Guardar cambios",
+      "instruction": "Agrega un título y descripción a tu hoja de ruta de aprendizaje.",
+      "titleLabel": "Título de la hoja de ruta",
+      "titlePlaceholder": "Ingresar título",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Ingresar descripción",
+      "validation": {
+        "titleRequired": "El título es obligatorio",
+        "descriptionRequired": "La descripción es obligatoria",
+        "maxCharacters": "Máximo 450 caracteres permitidos"
+      }
+    },
+    "sharing": {
+      "title": "Actualizar configuración de compartir",
+      "instruction": "Elige y modifica quién puede acceder a esta hoja de ruta de aprendizaje.",
+      "onlyMe": "Solo yo",
+      "public": "Público",
+      "onlyYouAccess": "Solo tú podrás acceder.",
+      "anyoneWithLink": "Cualquiera con el enlace puede acceder.",
+      "close": "Cerrar",
+      "update": "Actualizar configuración de compartir"
+    }
+  },
+  "explore": {
+    "title": "Explorar hojas de ruta de aprendizaje públicas",
+    "subtitle": "Descubre rutas de aprendizaje creadas por la comunidad",
+    "searchPlaceholder": "Buscar hojas de ruta de aprendizaje públicas...",
+    "filterButton": "Filtrar hojas de ruta de aprendizaje",
+    "applyFilters": "Aplicar filtros",
+    "clearFilters": "Limpiar filtros",
+    "activeFilters": "Filtros activos:",
+    "clearAllFilters": "Limpiar todos los filtros",
+    "filters": {
+      "author": "Autor",
+      "authorPlaceholder": "Ingresar nombre del autor",
+      "stepsRange": "Rango de pasos",
+      "minSteps": "pasos mín",
+      "maxSteps": "pasos máx"
+    },
+    "empty": {
+      "title": "No se encontraron hojas de ruta de aprendizaje públicas",
+      "description": "Intenta ajustar tus términos de búsqueda o filtros para encontrar más hojas de ruta de aprendizaje."
+    },
+    "showingResults": "Mostrando {{count}} de {{total}} hojas de ruta de aprendizaje",
+    "errors": {
+      "loadFailed": "Error al cargar las hojas de ruta de aprendizaje. Por favor, inténtalo de nuevo.",
+      "retry": "Reintentar",
+      "rangeError": "El valor máximo no puede ser menor que el valor mínimo"
+    },
+    "range": {
+      "to": "a"
+    }
+  },
+  "taskInformation": {
+    "visitResources": "Visita los siguientes recursos para aprender más:",
+    "noResources": "No hay recursos disponibles"
+  }
+}
+

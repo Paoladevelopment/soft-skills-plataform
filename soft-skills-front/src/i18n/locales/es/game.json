@@ -1,0 +1,149 @@
+{
+  "home": {
+    "gameSessions": "Sesiones de juego",
+    "leaderboard": "Tabla de clasificación"
+  },
+  "sessions": {
+    "title": {
+      "part1": "Tus sesiones",
+      "part2": "de juego"
+    },
+    "createNew": "Crear nueva sesión",
+    "createDescription": "Configura y crea tu propia sesión de juego",
+    "deleteTitle": "Eliminar sesión",
+    "deleteMessage": "¿Estás seguro de que deseas eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+    "status": {
+      "notStarted": "No iniciado",
+      "inProgress": "En progreso",
+      "completed": "Completado",
+      "paused": "Pausado",
+      "cancelled": "Cancelado"
+    },
+    "actions": {
+      "start": "Iniciar",
+      "play": "Jugar",
+      "continuePlaying": "Continuar jugando"
+    }
+  },
+  "result": {
+    "retry": "Reintentar",
+    "started": "Iniciado",
+    "finished": "Finalizado",
+    "overallPerformance": "Rendimiento general",
+    "totalRounds": "Rondas totales",
+    "totalScore": "Puntuación total",
+    "correct": "Correcto",
+    "incorrect": "Incorrecto",
+    "noRounds": "No hay rondas disponibles",
+    "round": "Ronda",
+    "audioContent": "Contenido de audio",
+    "score": "Puntuación: {{score}} / {{maxScore}}",
+    "evaluation": {
+      "questionAsked": "Pregunta realizada",
+      "yourAnswer": "Tu respuesta:",
+      "correctAnswer": "Respuesta correcta:",
+      "filledBlanks": "Espacios completados",
+      "yourResponses": "Tus respuestas:",
+      "correctResponses": "Respuestas correctas:",
+      "yourParaphrase": "Tu paráfrasis",
+      "yourWording": "Tu redacción:",
+      "referenceParaphrase": "Paráfrasis de referencia:",
+      "summary": "Resumen",
+      "yourSummary": "Tu resumen:",
+      "referenceSummary": "Resumen de referencia:",
+      "clarifyingQuestions": "Preguntas de aclaración",
+      "questionsYouAsked": "Preguntas que realizaste:",
+      "referenceQuestions": "Preguntas de referencia:",
+      "question": "Pregunta:"
+    },
+    "pagination": {
+      "of": "de"
+    },
+    "blank": "Espacio"
+  },
+  "play": {
+    "audioContent": "Contenido de audio",
+    "replayAudio": "Reproducir audio",
+    "noReplaysLeft": "No quedan repeticiones",
+    "replays": "Repeticiones",
+    "maxReplaysReached": "⚠️ Se alcanzó el máximo de repeticiones. Envía tu respuesta ahora.",
+    "question": "Pregunta",
+    "selectAnswer": "Selecciona tu respuesta:",
+    "submitAnswer": "Enviar respuesta",
+    "tryAgain": "Intentar de nuevo",
+    "finishSession": "Finalizar sesión",
+    "nextRound": "Siguiente ronda →",
+    "progress": "Progreso",
+    "round": "Ronda",
+    "correct": "✓ ¡Correcto!",
+    "incorrect": "✗ Incorrecto",
+    "score": "Puntuación",
+    "correctAnswer": "Respuesta correcta:",
+    "possibleAnswer": "Respuesta posible:",
+    "possibleQuestions": "Preguntas posibles:",
+    "answer": "Respuesta:",
+    "error": {
+      "title": "¡Ups! Algo salió mal",
+      "loadFailed": "Error al cargar la ronda del juego. Por favor, inténtalo de nuevo.",
+      "goBack": "Volver"
+    },
+    "settings": {
+      "title": "Configuración de juego",
+      "allowedModes": "Modos de juego permitidos (selecciona al menos uno)",
+      "focus": "Enfoque",
+      "cloze": "Completar espacios",
+      "paraphrase": "Paráfrasis",
+      "summarize": "Resumir",
+      "clarify": "Aclarar"
+    },
+    "form": {
+      "createSession": "Crear sesión",
+      "updateConfiguration": "Actualizar configuración"
+    },
+    "validation": {
+      "failed": "Error de validación"
+    },
+    "sessionForm": {
+      "sessionName": {
+        "label": "Nombre de sesión",
+        "placeholder": "Ingresa el nombre de la sesión"
+      },
+      "gameSettings": {
+        "title": "Configuración de juego",
+        "totalRounds": "Rondas totales (1-10)",
+        "maxReplaysPerRound": "Máximo de repeticiones por ronda (0-5)",
+        "reuseExistingChallenges": "Reutilizar desafíos existentes"
+      },
+      "contentSettings": {
+        "title": "Configuración de contenido",
+        "allowedPromptTypes": "Tipos de prompts permitidos (selecciona al menos uno)",
+        "promptTypes": {
+          "descriptive": "Descriptivo",
+          "historicalEvent": "Evento histórico",
+          "instructional": "Instructivo",
+          "dialogue": "Diálogo",
+          "narratedDialogue": "Diálogo narrado"
+        },
+        "difficultyLevel": "Nivel de dificultad",
+        "difficulty": {
+          "easy": "Fácil",
+          "intermediate": "Intermedio",
+          "hard": "Difícil"
+        }
+      },
+      "audioEffects": {
+        "title": "Efectos de audio (Opcional)",
+        "reverb": "Reverb (0.0 - 1.0)",
+        "echo": "Eco (0.0 - 1.0)",
+        "backgroundNoise": "Ruido de fondo (0.0 - 1.0)",
+        "speedVariation": "Variación de velocidad (0.0 - 1.0)"
+      }
+    },
+    "settingsModal": {
+      "title": "Configuración de sesión - {{name}}",
+      "subtitle": "Gestiona la configuración de la sesión",
+      "configurationTab": "Configuración"
+    }
+  }
+}
+

@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import GameSessionForm from './GameSessionForm'
 import { GAME_SESSION_MODE } from '../constants/gameSessionMode'
@@ -42,6 +43,8 @@ const TabPanel = ({ children, value, index }: TabPanelProps) => (
 )
 
 const GameSessionSettingsModal = ({ open, onClose, sessionId, sessionName, isLoading = false }: GameSessionSettingsModalProps) => {
+  const { t } = useTranslation('game')
+  
   const [tabValue, setTabValue] = useState(0)
   const updateGameSessionConfig = useGameSessionStore((state) => state.updateGameSessionConfig)
   const selectedGameSession = useGameSessionStore((state) => state.selectedGameSession)
@@ -103,11 +106,17 @@ const GameSessionSettingsModal = ({ open, onClose, sessionId, sessionName, isLoa
         }}
       >
         <Box>
-          <Typography variant="h6" fontWeight="bold">
-            Session Settings - {displaySessionName}
+          <Typography 
+            variant="h6" 
+            fontWeight="bold"
+          >
+            {t('play.settingsModal.title', { name: displaySessionName })}
           </Typography>
-          <Typography variant="body2" color="rgba(255, 255, 255, 0.6)">
-            Manage session configuration
+          <Typography 
+            variant="body2" 
+            color="rgba(255, 255, 255, 0.6)"
+          >
+            {t('play.settingsModal.subtitle')}
           </Typography>
         </Box>
         <IconButton
@@ -159,7 +168,7 @@ const GameSessionSettingsModal = ({ open, onClose, sessionId, sessionName, isLoa
             },
           }}
         >
-          <Tab label="Configuration" />
+          <Tab label={t('play.settingsModal.configurationTab')} />
         </Tabs>
       </Box>
 
@@ -177,10 +186,19 @@ const GameSessionSettingsModal = ({ open, onClose, sessionId, sessionName, isLoa
                 py: 8 
               }}
             >
-              <CircularProgress sx={{ color: 'white' }} size={48} />
+              <CircularProgress 
+                sx={{ 
+                  color: 'white' 
+                }} 
+                size={48} 
+              />
             </Box>
           ) : (
-            <GameSessionForm mode={GAME_SESSION_MODE.UPDATE} sessionId={sessionId} onSubmit={handleUpdateSession} />
+            <GameSessionForm 
+              mode={GAME_SESSION_MODE.UPDATE} 
+              sessionId={sessionId} 
+              onSubmit={handleUpdateSession} 
+            />
           )}
         </TabPanel>
       </DialogContent>

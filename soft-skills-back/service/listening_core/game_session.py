@@ -24,7 +24,7 @@ class GameSessionService:
             game_session = session.get(GameSession, session_id)
 
             if not game_session:
-                raise Missing(f"Game session with ID {session_id} not found")
+                raise Missing(f"Sesión de juego con ID {session_id} no encontrada")
 
             return game_session
         
@@ -44,7 +44,7 @@ class GameSessionService:
             ).first()
 
             if not game_session:
-                raise Missing(f"Game session with ID {session_id} not found")
+                raise Missing(f"Sesión de juego con ID {session_id} no encontrada")
 
             return game_session
         
@@ -60,7 +60,7 @@ class GameSessionService:
             config = session.get(GameSessionConfig, session_id)
 
             if not config:
-                raise Missing(f"Game session config for session {session_id} not found")
+                raise Missing(f"Configuración de sesión de juego para la sesión {session_id} no encontrada")
 
             return config
             
@@ -73,7 +73,7 @@ class GameSessionService:
     def verify_session_ownership(self, game_session: GameSession, user_id: UUID):
         """Verify that the user owns this game session."""
         if game_session.user_id != user_id:
-            raise Forbidden("You are not allowed to perform this action")
+            raise Forbidden("No tiene permiso para realizar esta acción")
     
     def create_game_session_with_config(
         self, 
@@ -165,7 +165,7 @@ class GameSessionService:
 
             allowed_transitions = ALLOWED_STATUS_TRANSITIONS.get(current_status, set())
             if new_status not in allowed_transitions:
-                raise BadRequest(f"Invalid status transition from {current_status} to {new_status}")
+                raise BadRequest(f"Transición de estado inválida de {current_status} a {new_status}")
 
             game_session.status = new_status
             
@@ -204,7 +204,7 @@ class GameSessionService:
             self.verify_session_ownership(game_session, user_id)
             
             if game_session.status != GameStatus.pending:
-                raise BadRequest("Game session configuration can only be updated when status is pending")
+                raise BadRequest("La configuración de sesión de juego solo puede actualizarse cuando el estado es pendiente")
 
             config = self.get_config(session_id, session)
             
@@ -232,7 +232,7 @@ class GameSessionService:
             session.commit()
 
             return {
-                "message": "Game session deleted successfully",
+                "message": "Sesión de juego eliminada correctamente",
                 "data": {"session_id": str(session_id)}
             }
         
@@ -327,7 +327,7 @@ class GameSessionService:
             self.verify_session_ownership(game_session, user_id)
             
             if game_session.status in (GameStatus.completed, GameStatus.cancelled):
-                raise Conflict(f"Cannot start a session that is {game_session.status}")
+                raise Conflict(f"No se puede iniciar una sesión que está {game_session.status}")
             
             if game_session.status == GameStatus.in_progress:
                 round_1 = self.game_round_service.get_or_create_round_queued(game_session, 1, session)
@@ -368,13 +368,13 @@ class GameSessionService:
             self.verify_session_ownership(game_session, user_id)
             
             if game_session.status == GameStatus.paused:
-                raise Locked("Game session is paused")
+                raise Locked("La sesión de juego está en pausa")
             
             if game_session.status in (GameStatus.completed, GameStatus.cancelled):
-                raise Conflict(f"Cannot get current round for a session that is {game_session.status}")
+                raise Conflict(f"No se puede obtener la ronda actual para una sesión que está {game_session.status}")
             
             if game_session.status != GameStatus.in_progress:
-                raise BadRequest("Game session must be in progress to get current round")
+                raise BadRequest("La sesión de juego debe estar en progreso para obtener la ronda actual")
             
             config = self.get_config(game_session_id, session)
             
@@ -408,8 +408,8 @@ class GameSessionService:
             
             if round_number < 1 or round_number > config.total_rounds:
                 raise BadRequest(
-                    f"Round number must be between 1 and {config.total_rounds}. "
-                    f"Provided: {round_number}"
+                    f"El número de ronda debe estar entre 1 y {config.total_rounds}. "
+                    f"Proporcionado: {round_number}"
                 )
             
             game_round, challenge = self.game_round_service.get_round_by_number(
@@ -446,17 +446,17 @@ class GameSessionService:
             )
             
             if not current_round:
-                raise Missing(f"Current round {game_session.current_round} not found for session {session_id}")
+                raise Missing(f"Ronda actual {game_session.current_round} no encontrada para la sesión {session_id}")
             
             if current_round.status != GameRoundStatus.attempted:
-                raise Conflict("Current round must be attempted before advancing")
+                raise Conflict("La ronda actual debe ser intentada antes de avanzar")
             
             config = self.get_config(session_id, db_session)
             
             if game_session.current_round >= config.total_rounds:
                 raise Conflict(
-                    f"Session is already at the last round ({config.total_rounds}). "
-                    f"Use the /finish endpoint to complete the session."
+                    f"La sesión ya está en la última ronda ({config.total_rounds}). "
+                    f"Use el endpoint /finish para completar la sesión."
                 )
             
             return self._advance_round_pointer(game_session, db_session)
@@ -488,8 +488,8 @@ class GameSessionService:
             
             if game_session.current_round != config.total_rounds:
                 raise Conflict(
-                    f"Session must be on the last round ({config.total_rounds}) to finish. "
-                    f"Current round: {game_session.current_round}"
+                    f"La sesión debe estar en la última ronda ({config.total_rounds}) para finalizar. "
+                    f"Ronda actual: {game_session.current_round}"
                 )
             
             self._validate_last_round_for_finish(game_session, session_id, db_session)
@@ -596,7 +596,7 @@ class GameSessionService:
             self.verify_session_ownership(game_session, user_id)
             
             if game_session.status != GameStatus.completed:
-                raise Conflict("Session is not completed yet")
+                raise Conflict("La sesión aún no está completada")
             
             config = self.get_config(session_id, db_session)
             base_response = self._build_completion_response(game_session, session_id, db_session)
@@ -662,19 +662,19 @@ class GameSessionService:
             self.verify_session_ownership(game_session, user_id)
             
             if game_session.status == GameStatus.completed:
-                raise Conflict("Cannot replay audio for a completed session")
+                raise Conflict("No se puede reproducir audio para una sesión completada")
             
             game_round = self.game_round_service.get_round_for_update(
                 game_session, round_number, db_session
             )
             
             if not game_round:
-                raise Missing(f"Round {round_number} not found for session {session_id}")
+                raise Missing(f"Ronda {round_number} no encontrada para la sesión {session_id}")
             
             config = self.get_config(session_id, db_session)
             
             if game_round.status not in (GameRoundStatus.served, GameRoundStatus.attempted):
-                raise Conflict(f"Replay not allowed for round with status {game_round.status}")
+                raise Conflict(f"Repetición no permitida para ronda con estado {game_round.status}")
             
             max_replays = config.max_replays_per_round
             replays_used = game_round.replays_used or 0
@@ -708,7 +708,7 @@ class GameSessionService:
             self.verify_session_ownership(game_session, user_id)
             
             if game_session.status != GameStatus.in_progress:
-                raise BadRequest(f"Game session must be in progress. Current status: {game_session.status}")
+                raise BadRequest(f"La sesión de juego debe estar en progreso. Estado actual: {game_session.status}")
             
             return self.game_round_service.submit_attempt(
                 game_session=game_session,
@@ -729,13 +729,13 @@ class GameSessionService:
     def _validate_session_for_advance(self, game_session: GameSession) -> None:
         """Validate that the game session is in a valid state to advance to the next round."""
         if game_session.status == GameStatus.paused:
-            raise Locked("Game session is paused")
+            raise Locked("La sesión de juego está en pausa")
         
         if game_session.status in (GameStatus.completed, GameStatus.cancelled):
-            raise Conflict(f"Cannot advance round for a session that is {game_session.status}")
+            raise Conflict(f"No se puede avanzar ronda para una sesión que está {game_session.status}")
         
         if game_session.status != GameStatus.in_progress:
-            raise BadRequest(f"Game session must be in progress. Current status: {game_session.status}")
+            raise BadRequest(f"La sesión de juego debe estar en progreso. Estado actual: {game_session.status}")
 
     def _validate_last_round_for_finish(
         self,
@@ -753,12 +753,12 @@ class GameSessionService:
         )
         
         if not last_round:
-            raise Missing(f"Last round {game_session.current_round} not found for session {session_id}")
+            raise Missing(f"Última ronda {game_session.current_round} no encontrada para la sesión {session_id}")
         
         if last_round.status != GameRoundStatus.attempted:
             raise Conflict(
-                f"Last round must be attempted before finishing session. "
-                f"Current status: {last_round.status}"
+                f"La última ronda debe ser intentada antes de finalizar la sesión. "
+                f"Estado actual: {last_round.status}"
             )
         
         return last_round
@@ -890,11 +890,11 @@ class GameSessionService:
             return None
         
         instruction_map = {
-            PlayMode.focus: "Listen to the audio and select the correct answer to the question.",
-            PlayMode.cloze: "Listen to the audio and fill in the blanks in the text.",
-            PlayMode.paraphrase: "Paraphrase the audio content in your own words.",
-            PlayMode.summarize: "Summarize the main points of the audio content.",
-            PlayMode.clarify: "Ask clarification questions about the audio content to better understand it."
+            PlayMode.focus: "Escucha el audio y selecciona la respuesta correcta a la pregunta.",
+            PlayMode.cloze: "Escucha el audio y completa los espacios en blanco en el texto.",
+            PlayMode.paraphrase: "Parafrasea el contenido del audio con tus propias palabras.",
+            PlayMode.summarize: "Resume los puntos principales del contenido del audio.",
+            PlayMode.clarify: "Haz preguntas de clarificación sobre el contenido del audio para entenderlo mejor."
         }
         
         instruction = instruction_map.get(play_mode)

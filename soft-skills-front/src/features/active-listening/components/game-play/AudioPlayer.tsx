@@ -1,4 +1,5 @@
 import { Box, Card, IconButton, Typography, LinearProgress, Paper, Tooltip, CircularProgress } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { PlayArrow, Pause, RotateRight } from '@mui/icons-material'
 import { useRef, useState, useEffect } from 'react'
 import { ReplayAudioResult } from '../../types/game-sessions/gamePlay.api'
@@ -24,6 +25,7 @@ const AudioPlayer = ({
   sessionId,
   roundNumber
 }: AudioPlayerProps) => {
+  const { t } = useTranslation('game')
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -93,8 +95,8 @@ const AudioPlayer = ({
   }
 
   const getReplayTooltipTitle = (): string => {
-    if (replaysLeft === 0) return 'No replays left'
-    return 'Replay audio'
+    if (replaysLeft === 0) return t('play.noReplaysLeft')
+    return t('play.replayAudio')
   }
 
   const getProgressValue = (): number => {
@@ -141,7 +143,7 @@ const AudioPlayer = ({
             fontWeight: 'bold' 
             }}
         >
-          🎵 Audio Content
+          🎵 {t('play.audioContent')}
         </Typography>
 
         <Box 
@@ -204,7 +206,7 @@ const AudioPlayer = ({
                 minWidth: '80px' 
               }}
             >
-              Replays: {replaysUsed} / {maxReplaysPerRound}
+              {t('play.replays')}: {replaysUsed} / {maxReplaysPerRound}
             </Typography>
           </Box>
         </Box>
@@ -238,7 +240,7 @@ const AudioPlayer = ({
                 fontWeight: 'bold' 
               }}
             >
-              ⚠️ Maximum replays reached. Submit your answer now.
+              {t('play.maxReplaysReached')}
             </Typography>
           </Paper>
         )}

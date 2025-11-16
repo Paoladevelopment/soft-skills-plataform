@@ -1,8 +1,10 @@
 import { Stack, IconButton, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const BackToReportsButton = () => {
+  const { t } = useTranslation('reports')
   const navigate = useNavigate()
 
   return (
@@ -22,7 +24,7 @@ const BackToReportsButton = () => {
         fontWeight={500}
         color="text.secondary"
       >
-        Back to Reports
+        {t('backToReports')}
       </Typography>
     </Stack>
   )

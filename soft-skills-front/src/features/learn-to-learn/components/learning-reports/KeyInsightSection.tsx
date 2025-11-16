@@ -1,4 +1,5 @@
 import { Paper, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { SelfEvaluationRead } from '../../types/self-evaluation/self-evaluation.api'
 
 interface KeyInsightSectionProps {
@@ -6,7 +7,8 @@ interface KeyInsightSectionProps {
 }
 
 const KeyInsightSection = ({ report }: KeyInsightSectionProps) => {
-  const keyInsight = report.learningIntention || 'No insight available'
+  const { t } = useTranslation('reports')
+  const keyInsight = report.learningIntention || t('noInsightAvailable')
 
   return (
     <Paper
@@ -25,7 +27,7 @@ const KeyInsightSection = ({ report }: KeyInsightSectionProps) => {
           color: '#FFFFFF' 
         }}
       >
-        What i learned
+        {t('sections.whatILearned')}
       </Typography>
       
       <Typography 

@@ -6,6 +6,7 @@ import {
   IconButton,
   CircularProgress
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
@@ -22,6 +23,7 @@ import RoadmapFlow from '../components/roadmap/RoadmapFlow'
 import TaskInformationSidebar from '../components/roadmap/TaskInformationSidebar'
 
 const RoadmapDetail = () => {
+  const { t } = useTranslation('roadmap')
   const { roadmapId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -84,7 +86,7 @@ const RoadmapDetail = () => {
             <ArrowBackIcon fontSize="small" />
           </IconButton>
           <Typography variant="body2" fontWeight="medium" color="text.secondary">
-            {isPublicMode ? 'Back to explore' : 'Back to roadmaps'}
+            {isPublicMode ? t('detail.backToExplore') : t('detail.backToRoadmaps')}
           </Typography>
         </Stack>
 
@@ -94,7 +96,7 @@ const RoadmapDetail = () => {
             startIcon={<ContentCopyIcon />}
             onClick={handleCopyRoadmap}
           >
-            Copy Roadmap
+            {t('detail.copyRoadmap')}
           </Button>
         ) : (
           <Button
@@ -102,7 +104,7 @@ const RoadmapDetail = () => {
             startIcon={<EditIcon />}
             onClick={() => navigate(`/learn/roadmaps/${roadmapId}/edit`)}
           >
-            Edit Roadmap
+            {t('detail.editRoadmap')}
           </Button>
         )}
       </Stack>
@@ -132,7 +134,7 @@ const RoadmapDetail = () => {
             }} 
           />
           <Typography variant="body1" color="text.secondary">
-            Created by <strong>{selectedRoadmap.username || 'Unknown Author'}</strong>
+            {t('detail.createdBy')} <strong>{selectedRoadmap.username || t('detail.unknownAuthor')}</strong>
           </Typography>
         </Stack>
       )}
@@ -145,13 +147,13 @@ const RoadmapDetail = () => {
         <Stack direction="row" alignItems="center" spacing={0.5} mt={1}>
           <CalendarTodayIcon fontSize="small" sx={{ color: "text.secondary" }} />
           <Typography variant="body2" color="text.secondary">
-            {formatDateString(selectedRoadmap.createdAt, "Not defined", "Created:")}
+            {formatDateString(selectedRoadmap.createdAt, t('detail.notDefined'), t('detail.created'))}
           </Typography>
         </Stack>
         <Stack direction="row" alignItems="center" spacing={0.5} mt={1}>
           <MenuBookIcon fontSize="small" sx={{ color: "text.secondary" }} />
           <Typography variant="body2" color="text.secondary">
-            {selectedRoadmapSteps} learning steps
+            {selectedRoadmapSteps} {t('detail.learningSteps')}
           </Typography>
         </Stack>
       </Stack>

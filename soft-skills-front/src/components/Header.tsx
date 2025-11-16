@@ -8,13 +8,16 @@ import {
 	Toolbar,
 	Typography
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import PsychologyOutlinedIcon from '@mui/icons-material/PsychologyOutlined'
 import Logout from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../features/authentication/store/useAuthStore'
+import LanguageSelector from './LanguageSelector'
 import React from 'react'
   
 const Header = () => {
+    const { t } = useTranslation('common')
     const navigate = useNavigate()
     const logout = useAuthStore(state => state.logout)
     const user = useAuthStore(state => state.user)
@@ -60,7 +63,14 @@ const Header = () => {
 				</Typography>
 				</Box>
 
-				<Box>
+				<Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 2 
+          }}
+        >
+					<LanguageSelector />
 					<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 						<Avatar 
 							alt={user?.name || 'user'} 
@@ -94,7 +104,7 @@ const Header = () => {
 					>
 						<MenuItem onClick={handleLogout}>
 							<Logout fontSize="small" sx={{ mr: 1 }} />
-							<Typography textAlign="center">	Sign out </Typography>
+							<Typography textAlign="center">{t('actions.signOut')}</Typography>
 						</MenuItem>
 					</Menu>
 				</Box>

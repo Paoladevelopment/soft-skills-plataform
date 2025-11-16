@@ -10,10 +10,13 @@ import {
   Select,
   Typography,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
 import { PromptType, GameSessionDifficulty } from '../../types/game-sessions/gameSession.models'
 
 const ContentSettingsSection = () => {
+  const { t } = useTranslation('game')
+  
   const allowedTypes = useGameSessionDraftStore((state) => state.allowedTypes)
   const difficulty = useGameSessionDraftStore((state) => state.difficulty)
   const togglePromptType = useGameSessionDraftStore((state) => state.togglePromptType)
@@ -21,8 +24,13 @@ const ContentSettingsSection = () => {
 
   return (
     <Box>
-      <Typography variant="h6" fontWeight="bold" color="white" mb={2}>
-        Content Settings
+      <Typography 
+        variant="h6" 
+        fontWeight="bold" 
+        color="white" 
+        mb={2}
+      >
+        {t('play.sessionForm.contentSettings.title')}
       </Typography>
       <FormControl component="fieldset">
         <FormLabel 
@@ -32,7 +40,7 @@ const ContentSettingsSection = () => {
             mb: 1 
           }}
         >
-          Allowed Prompt Types (select at least one)
+          {t('play.sessionForm.contentSettings.allowedPromptTypes')}
         </FormLabel>
         <FormGroup 
           sx={{ 
@@ -42,7 +50,12 @@ const ContentSettingsSection = () => {
             }}
           >
           <Grid2 container spacing={2}>
-            <Grid2 size={{ xs: 6, md: 4 }}>
+            <Grid2 
+              size={{ 
+                xs: 6, 
+                md: 4 
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -54,11 +67,16 @@ const ContentSettingsSection = () => {
                     }}
                   />
                 }
-                label="Descriptive"
+                label={t('play.sessionForm.contentSettings.promptTypes.descriptive')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
-            <Grid2 size={{ xs: 6, md: 4 }}>
+            <Grid2 
+              size={{ 
+                xs: 6, 
+                md: 4 
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -70,11 +88,16 @@ const ContentSettingsSection = () => {
                     }}
                   />
                 }
-                label="Historical Event"
+                label={t('play.sessionForm.contentSettings.promptTypes.historicalEvent')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
-            <Grid2 size={{ xs: 6, md: 4 }}>
+            <Grid2 
+              size={{ 
+                xs: 6, 
+                md: 4 
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -86,11 +109,16 @@ const ContentSettingsSection = () => {
                     }}
                   />
                 }
-                label="Instructional"
+                label={t('play.sessionForm.contentSettings.promptTypes.instructional')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
-            <Grid2 size={{ xs: 6, md: 4 }}>
+            <Grid2 
+              size={{ 
+                xs: 6, 
+                md: 4 
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -102,11 +130,16 @@ const ContentSettingsSection = () => {
                     }}
                   />
                 }
-                label="Dialogue"
+                label={t('play.sessionForm.contentSettings.promptTypes.dialogue')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
-            <Grid2 size={{ xs: 6, md: 4 }}>
+            <Grid2 
+              size={{
+                xs: 6, 
+                md: 4 
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -118,7 +151,7 @@ const ContentSettingsSection = () => {
                     }}
                   />
                 }
-                label="Narrated Dialogue"
+                label={t('play.sessionForm.contentSettings.promptTypes.narratedDialogue')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
@@ -127,8 +160,12 @@ const ContentSettingsSection = () => {
       </FormControl>
 
       <Box mt={2}>
-        <Typography variant="body2" color="white" mb={1}>
-          Difficulty Level
+        <Typography 
+          variant="body2" 
+          color="white" 
+          mb={1}
+        >
+          {t('play.sessionForm.contentSettings.difficultyLevel')}
         </Typography>
         <Select
           value={difficulty}
@@ -152,9 +189,21 @@ const ContentSettingsSection = () => {
             },
           }}
         >
-          <MenuItem value={GameSessionDifficulty.EASY}>Easy</MenuItem>
-          <MenuItem value={GameSessionDifficulty.INTERMEDIATE}>Intermediate</MenuItem>
-          <MenuItem value={GameSessionDifficulty.HARD}>Hard</MenuItem>
+          <MenuItem 
+            value={GameSessionDifficulty.EASY}
+          >
+            {t('play.sessionForm.contentSettings.difficulty.easy')}
+          </MenuItem>
+          <MenuItem 
+            value={GameSessionDifficulty.INTERMEDIATE}
+          >
+            {t('play.sessionForm.contentSettings.difficulty.intermediate')}
+          </MenuItem>
+          <MenuItem 
+            value={GameSessionDifficulty.HARD}
+          >
+            {t('play.sessionForm.contentSettings.difficulty.hard')}
+          </MenuItem>
         </Select>
       </Box>
     </Box>

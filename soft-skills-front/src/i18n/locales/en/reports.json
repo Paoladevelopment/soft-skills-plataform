@@ -1,0 +1,101 @@
+{
+  "title": "Learning Reports",
+  "subtitle": "Reflect on your completed tasks to strengthen your learning process.",
+  "backToReports": "Back to Reports",
+  "learningReport": "Learning report",
+  "notSubmittedYet": "Not submitted yet",
+  "submittedOn": "Submitted on",
+  "completedTask": "Completed task",
+  "sections": {
+    "whatILearned": "What I learned",
+    "learningEnvironment": "Learning environment",
+    "learningPurpose": "Learning purpose",
+    "taskExperience": "Experience during the task",
+    "focusFeelings": "Focus & Feelings",
+    "learningMethodsUsed": "Learning methods used"
+  },
+  "fields": {
+    "studyPlace": "Study Place:",
+    "noiseLevel": "Noise Level:",
+    "timeOfDay": "Time of Day:",
+    "collaborationMode": "Collaboration Mode:",
+    "whatIIntendedToLearn": "What I intended to learn:",
+    "whatWentWell": "What went well:",
+    "challengesIFaced": "Challenges I faced:",
+    "improvementPlan": "Improvement plan:",
+    "difficulty": "Difficulty:",
+    "overallMood": "Overall Mood:",
+    "concentrationLevel": "Concentration Level:"
+  },
+  "filters": {
+    "sortBy": "Sort by",
+    "difficulty": "Difficulty",
+    "mood": "Mood",
+    "all": "All",
+    "dateDesc": "Date (newest)",
+    "dateAsc": "Date (oldest)",
+    "clearAll": "Clear all",
+    "activeFilters": "Active filters:"
+  },
+  "empty": {
+    "title": "No reports available",
+    "description": "Complete tasks and create self-evaluations to see your learning reports here."
+  },
+  "errors": {
+    "loadError": "Error loading reports",
+    "notFound": "Report not found"
+  },
+  "notSpecified": "Not specified",
+  "noInsightAvailable": "No insight available",
+  "selfEvaluation": {
+    "title": "Reflect on your task accomplishment",
+    "sections": {
+      "yourEnvironment": "Your environment",
+      "yourLearningIntention": "Your learning intention *",
+      "yourExperienceDuringTask": "Your experience during the task *",
+      "howWasYourSession": "How was your session?"
+    },
+    "fields": {
+      "studyPlace": "Study Place",
+      "timeOfDay": "Time of Day",
+      "noiseLevel": "Noise Level",
+      "collaborationMode": "Collaboration Mode",
+      "whatWereYouTryingToGetBetterAt": "What were you trying to get better at?",
+      "whatWereYouTryingToGetBetterAtHelper": "What did you intend to learn? (max 800 characters)",
+      "whatWorkedWellThisTime": "What worked well this time? *",
+      "whatWorkedWellThisTimePlaceholder": "What aspects of your learning went well?",
+      "whatWorkedWellHelper": "What went well? (max 2000 characters)",
+      "whatWasDifficult": "What was difficult? *",
+      "whatWasDifficultPlaceholder": "What challenges did you face?",
+      "challengesEncounteredHelper": "Challenges encountered (max 2000 characters)",
+      "whatWouldYouDoDifferently": "What would you do differently next time? *",
+      "whatWouldYouDoDifferentlyPlaceholder": "How do you plan to improve next time?",
+      "improvementPlanHelper": "Improvement plan (max 2000 characters)",
+      "howHardDidThisFeel": "How hard did this feel?",
+      "concentrationLevel": "Concentration Level: {{level}}/10",
+      "mood": "Mood",
+      "knowledgeConnection": "I was able to connect this knowledge with previous learning",
+      "whatStrategiesDidYouUse": "What strategies did you use?"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "validation": {
+      "studyPlaceRequired": "Study place is required",
+      "learningIntentionRequired": "What were you trying to get better at? is required",
+      "learningIntentionMaxLength": "What were you trying to get better at? must be 800 characters or less",
+      "whatWentWellRequired": "What worked well this time? is required",
+      "whatWentWellMaxLength": "What worked well this time? must be 2000 characters or less",
+      "challengesEncounteredRequired": "What was difficult? is required",
+      "challengesEncounteredMaxLength": "What was difficult? must be 2000 characters or less",
+      "improvementPlanRequired": "What would you do differently next time? is required",
+      "improvementPlanMaxLength": "What would you do differently next time? must be 2000 characters or less",
+      "perceivedDifficultyRequired": "Perceived difficulty is required",
+      "concentrationLevelRange": "Concentration level must be between 1 and 10",
+      "moodRequired": "Mood is required"
+    }
+  }
+}
+

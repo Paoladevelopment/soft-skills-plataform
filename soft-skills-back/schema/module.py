@@ -16,17 +16,17 @@ class ModuleRead(ModuleBase):
   model_config = {"json_schema_extra": {"example": MODULE_READ_EXAMPLE}}
 
 class ModuleUpdate(SQLModel):
-  title:  str | None = Field(default=None, description="Updated title of the module")
-  category:  str | None = Field(default=None, description="Updated category of the module. Must be one of the predefined categories.")
-  status:  str | None = Field(default=None, description="Updated status of the module. Can be 'active' or 'archived'")
-  description:  str | None = Field(default=None, description="Updated description of the module, explaining its content and purpose.")
-  image_url:  str | None = Field(default=None, description="Updated URL of the module's cover image.")
-  objective:  str | None = Field(default=None, description="Updated objective of the module, describing what the user will achieve")
+  title:  str | None = Field(default=None, description="Título actualizado del módulo")
+  category:  str | None = Field(default=None, description="Categoría actualizada del módulo. Debe ser una de las categorías predefinidas.")
+  status:  str | None = Field(default=None, description="Estado actualizado del módulo. Puede ser 'active' o 'archived'")
+  description:  str | None = Field(default=None, description="Descripción actualizada del módulo, explicando su contenido y propósito.")
+  image_url:  str | None = Field(default=None, description="URL actualizada de la imagen de portada del módulo.")
+  objective:  str | None = Field(default=None, description="Objetivo actualizado del módulo, describiendo lo que el usuario logrará")
   tags: List[str] | None = Field(
     default=None, 
-    description="Updated list of tags. If omitted, tags remain unchanged. If an empty list is sent, tags will be removed."
+    description="Lista actualizada de etiquetas. Si se omite, las etiquetas permanecen sin cambios. Si se envía una lista vacía, las etiquetas se eliminarán."
   )
-  route_path: str | None = Field(default=None, description="Updated route path of the module.")
+  route_path: str | None = Field(default=None, description="Ruta actualizada del módulo.")
 
   model_config = {"json_schema_extra": {"example": MODULE_UPDATE_EXAMPLE}}
 

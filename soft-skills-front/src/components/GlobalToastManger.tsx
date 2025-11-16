@@ -1,23 +1,25 @@
 import { Snackbar, Alert, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useToastStore } from '../store/useToastStore'
 import { ToastType } from '../types/toast.types'
 
-const getTitleForToast = (type: ToastType): string => {
+const getTitleForToast = (type: ToastType, t: (key: string) => string): string => {
   switch (type) {
     case 'success':
-      return 'Success'
+      return t('toast.success', { ns: 'common' })
     case 'error':
-      return 'Something went wrong'
+      return t('toast.error', { ns: 'common' })
     case 'warning':
-      return 'Warning'
+      return t('toast.warning', { ns: 'common' })
     case 'info':
-      return 'Info'
+      return t('toast.info', { ns: 'common' })
     default:
       return ''
   }
 }
 
 const GlobalToastManager = () => {
+  const { t } = useTranslation('common')
   const { 
     open, 
     message, 
@@ -45,7 +47,7 @@ const GlobalToastManager = () => {
           }}
         >
         <Typography fontWeight="bold">
-          {getTitleForToast(type)}
+          {getTitleForToast(type, t)}
         </Typography>
         <Typography>
           {message}

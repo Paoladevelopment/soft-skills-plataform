@@ -1,5 +1,7 @@
 import { Box, Typography, Chip, Button } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { PerceivedDifficulty, Mood } from '../../types/self-evaluation/self-evaluation.enums'
+import { formatDifficulty, formatMood } from '../../utils/selfEvaluationFormatters'
 
 interface ActiveFilter {
   key: string
@@ -17,11 +19,11 @@ interface ActiveFiltersDisplayProps {
 const getDifficultyLabel = (value: string): string => {
   switch (value) {
     case PerceivedDifficulty.EASY:
-      return 'Easy'
+      return formatDifficulty(PerceivedDifficulty.EASY)
     case PerceivedDifficulty.MODERATE:
-      return 'Medium'
+      return formatDifficulty(PerceivedDifficulty.MODERATE)
     case PerceivedDifficulty.HARD:
-      return 'Hard'
+      return formatDifficulty(PerceivedDifficulty.HARD)
     default:
       return value
   }
@@ -30,19 +32,19 @@ const getDifficultyLabel = (value: string): string => {
 const getMoodLabel = (value: string): string => {
   switch (value) {
     case Mood.ENERGIZED:
-      return 'Energized'
+      return formatMood(Mood.ENERGIZED)
     case Mood.CALM:
-      return 'Calm'
+      return formatMood(Mood.CALM)
     case Mood.NEUTRAL:
-      return 'Neutral'
+      return formatMood(Mood.NEUTRAL)
     case Mood.TIRED:
-      return 'Tired'
+      return formatMood(Mood.TIRED)
     case Mood.FRUSTRATED:
-      return 'Frustrated'
+      return formatMood(Mood.FRUSTRATED)
     case Mood.STRESSED:
-      return 'Stressed'
+      return formatMood(Mood.STRESSED)
     case Mood.OTHER:
-      return 'Other'
+      return formatMood(Mood.OTHER)
     default:
       return value
   }
@@ -54,12 +56,13 @@ const ActiveFiltersDisplay = ({
   onRemoveFilter,
   onClearAllFilters,
 }: ActiveFiltersDisplayProps) => {
+  const { t } = useTranslation('reports')
   const activeFilters: ActiveFilter[] = []
 
   if (difficultyFilter !== 'All') {
     activeFilters.push({
       key: 'difficulty',
-      label: `Difficulty: ${getDifficultyLabel(difficultyFilter)}`,
+      label: `${t('filters.difficulty')}: ${getDifficultyLabel(difficultyFilter)}`,
       type: 'difficulty'
     })
   }
@@ -67,7 +70,7 @@ const ActiveFiltersDisplay = ({
   if (moodFilter !== 'All') {
     activeFilters.push({
       key: 'mood',
-      label: `Mood: ${getMoodLabel(moodFilter)}`,
+      label: `${t('filters.mood')}: ${getMoodLabel(moodFilter)}`,
       type: 'mood'
     })
   }
@@ -93,7 +96,7 @@ const ActiveFiltersDisplay = ({
           mr: 1 
         }}
       >
-        Active filters:
+        {t('filters.activeFilters', { defaultValue: 'Active filters:' })}
       </Typography>
       
       {activeFilters.map(filter => (
@@ -132,7 +135,7 @@ const ActiveFiltersDisplay = ({
           ml: 1
         }}
       >
-        Clear all filters
+        {t('filters.clearAll')}
       </Button>
     </Box>
   )

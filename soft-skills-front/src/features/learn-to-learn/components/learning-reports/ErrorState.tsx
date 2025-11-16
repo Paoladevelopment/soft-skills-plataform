@@ -1,10 +1,12 @@
 import { Paper, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 interface ErrorStateProps {
   error: Error | unknown
 }
 
 const ErrorState = ({ error }: ErrorStateProps) => {
+  const { t } = useTranslation('reports')
   return (
     <Paper
       elevation={0}
@@ -18,10 +20,10 @@ const ErrorState = ({ error }: ErrorStateProps) => {
       }}
     >
       <Typography variant="subtitle1" fontWeight="medium" color="error">
-        Error loading learning reports
+        {t('errors.loadError')}
       </Typography>
       <Typography variant="body2" color="error" mt={1}>
-        {error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.'}
+        {error instanceof Error ? error.message : t('errors.generic', { ns: 'common' })}
       </Typography>
     </Paper>
   )

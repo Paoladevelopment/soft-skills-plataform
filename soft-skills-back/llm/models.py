@@ -37,8 +37,8 @@ class LLMClient:
         
         if not api_key:
             raise ValueError(
-                "OpenAI API key not provided. Set OPENAI_API_KEY environment variable "
-                "or pass api_key parameter."
+                "Clave API de OpenAI no proporcionada. Configure la variable de entorno OPENAI_API_KEY "
+                "o pase el parámetro api_key."
             )
         
         self.model_name = model_name
@@ -81,5 +81,5 @@ class LLMClient:
             
         except Exception as e:
             raise APIException(
-                f"LLM execution failed: {str(e)}"
+                f"Error en la ejecución del LLM: {str(e)}"
             )

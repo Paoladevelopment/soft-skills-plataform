@@ -1,4 +1,5 @@
 import { Box, Typography, Stack } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import { formatDateString } from '../../../../utils/formatDate'
 import { SelfEvaluationRead } from '../../types/self-evaluation/self-evaluation.api'
@@ -8,7 +9,8 @@ interface ReportHeaderProps {
 }
 
 const ReportHeader = ({ report }: ReportHeaderProps) => {
-  const taskTitle = report.taskTitle || 'Learning report'
+  const { t } = useTranslation('reports')
+  const taskTitle = report.taskTitle || t('learningReport')
 
   return (
     <Box>
@@ -32,7 +34,7 @@ const ReportHeader = ({ report }: ReportHeaderProps) => {
           }} 
         />
         <Typography variant="body2" color="text.secondary">
-          {formatDateString(report.createdAt, 'Not submitted yet', 'Submitted on')}
+          {formatDateString(report.createdAt, t('notSubmittedYet'), t('submittedOn'))}
         </Typography>
       </Stack>
     </Box>

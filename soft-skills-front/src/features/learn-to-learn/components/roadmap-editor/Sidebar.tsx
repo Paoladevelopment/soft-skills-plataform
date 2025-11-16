@@ -1,4 +1,5 @@
 import { Box, Typography, Paper } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { Circle, CircleDashed } from 'lucide-react'
 import { LayoutNodeType } from '../../types/roadmap/roadmap.enums'
 import { ReactNode } from 'react'
@@ -9,12 +10,13 @@ type SidebarComponent = {
   icon?: ReactNode
 }
 
-const components: SidebarComponent[] = [
-  { label: 'Objective', type: LayoutNodeType.Objective, icon: <Circle size={18} /> },
-  { label: 'Task', type: LayoutNodeType.Task, icon: <CircleDashed size={18} />},
-]
-
 const Sidebar = () => {
+  const { t } = useTranslation('roadmap')
+  
+  const components: SidebarComponent[] = [
+    { label: t('editor.sidebar.objective'), type: LayoutNodeType.Objective, icon: <Circle size={18} /> },
+    { label: t('editor.sidebar.task'), type: LayoutNodeType.Task, icon: <CircleDashed size={18} />},
+  ]
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
     nodeType: string
@@ -32,11 +34,11 @@ const Sidebar = () => {
       }}
     >
       <Typography variant="h6" gutterBottom fontWeight="bold">
-        Components
+        {t('editor.sidebar.title')}
       </Typography>
 
       <Typography variant="caption" color="text.secondary" display="block" mb={2}>
-        Drag & drop onto the canvas
+        {t('editor.sidebar.dragDrop')}
       </Typography>
 
       {components.map((item) => (

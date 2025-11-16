@@ -6,6 +6,7 @@ import {
   Stack,
   CircularProgress
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import AddIcon from '@mui/icons-material/Add'
 import RoadmapCard from '../components/roadmap/RoadmapCard'
 import { useRoadmapStore } from '../store/useRoadmapStore'
@@ -18,6 +19,7 @@ import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
 import EmptyState from '../components/ui/EmptyState'
 
 const Roadmaps = () => {
+  const { t } = useTranslation('roadmap')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [roadmapToDelete, setRoadmapToDelete] = useState<RoadmapSummary | null>(null)
@@ -69,10 +71,10 @@ const Roadmaps = () => {
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
         <Box>
           <Typography variant="h4" fontWeight="bold">
-            Your learning roadmaps
+            {t('myRoadmaps.title')}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            View and manage your personalized learning paths
+            {t('myRoadmaps.subtitle')}
           </Typography>
         </Box>
 
@@ -86,7 +88,7 @@ const Roadmaps = () => {
             }}
             onClick={() => setShowCreateModal(true)}
           >
-            Create new roadmap
+            {t('myRoadmaps.createNew')}
           </Button>
         )}
       </Stack>
@@ -121,9 +123,9 @@ const Roadmaps = () => {
 
         {isEmpty && (
           <EmptyState
-            title="No roadmaps yet"
-            description="Start your learning journey by creating your first personalized roadmap. Build structured paths to achieve your goals."
-            buttonText="Create your first roadmap"
+            title={t('myRoadmaps.empty.title')}
+            description={t('myRoadmaps.empty.description')}
+            buttonText={t('myRoadmaps.empty.button')}
             onButtonClick={() => setShowCreateModal(true)}
             fullHeight
           />

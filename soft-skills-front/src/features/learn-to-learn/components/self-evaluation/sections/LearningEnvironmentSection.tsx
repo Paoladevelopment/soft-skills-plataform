@@ -4,8 +4,10 @@ import {
   Select,
   MenuItem,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useSelfEvaluationDraftStore } from '../../../store/useSelfEvaluationDraftStore'
 import { StudyPlace, TimeOfDay, NoiseLevel, CollaborationMode } from '../../../types/self-evaluation/self-evaluation.enums'
+import { formatStudyPlace, formatTimeOfDay, formatNoiseLevel, formatCollaborationMode } from '../../../utils/selfEvaluationFormatters'
 
 type SelectChangeEvent = {
   target: {
@@ -14,6 +16,7 @@ type SelectChangeEvent = {
 }
 
 const LearningEnvironmentSection = () => {
+  const { t } = useTranslation('reports')
   const formData = useSelfEvaluationDraftStore((state) => state)
   const setStudyPlace = useSelfEvaluationDraftStore((state) => state.setStudyPlace)
   const setTimeOfDay = useSelfEvaluationDraftStore((state) => state.setTimeOfDay)
@@ -43,74 +46,74 @@ const LearningEnvironmentSection = () => {
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel id="study-place-label">Study Place</InputLabel>
+        <InputLabel id="study-place-label">{t('selfEvaluation.fields.studyPlace')}</InputLabel>
         <Select
           labelId="study-place-label"
           id="study-place"
           value={formData.study_place || ''}
-          label="Study place"
+          label={t('selfEvaluation.fields.studyPlace')}
           onChange={handleStudyPlaceChange}
         >
-          <MenuItem value={StudyPlace.HOME_DESK}>Home Desk</MenuItem>
-          <MenuItem value={StudyPlace.HOME_COMMON_AREA}>Home Common Area</MenuItem>
-          <MenuItem value={StudyPlace.OFFICE_DESK}>Office Desk</MenuItem>
-          <MenuItem value={StudyPlace.COWORKING}>Coworking</MenuItem>
-          <MenuItem value={StudyPlace.LIBRARY}>Library</MenuItem>
-          <MenuItem value={StudyPlace.CLASSROOM}>Classroom</MenuItem>
-          <MenuItem value={StudyPlace.UNIVERSITY_CAMPUS}>University Campus</MenuItem>
-          <MenuItem value={StudyPlace.CAFE}>Cafe</MenuItem>
-          <MenuItem value={StudyPlace.BOOKSTORE}>Bookstore</MenuItem>
-          <MenuItem value={StudyPlace.DORM_ROOM}>Dorm Room</MenuItem>
-          <MenuItem value={StudyPlace.DORM_COMMON_AREA}>Dorm Common Area</MenuItem>
-          <MenuItem value={StudyPlace.OUTDOORS}>Outdoors</MenuItem>
-          <MenuItem value={StudyPlace.TRANSIT}>Transit</MenuItem>
-          <MenuItem value={StudyPlace.OTHER}>Other</MenuItem>
+          <MenuItem value={StudyPlace.HOME_DESK}>{formatStudyPlace(StudyPlace.HOME_DESK)}</MenuItem>
+          <MenuItem value={StudyPlace.HOME_COMMON_AREA}>{formatStudyPlace(StudyPlace.HOME_COMMON_AREA)}</MenuItem>
+          <MenuItem value={StudyPlace.OFFICE_DESK}>{formatStudyPlace(StudyPlace.OFFICE_DESK)}</MenuItem>
+          <MenuItem value={StudyPlace.COWORKING}>{formatStudyPlace(StudyPlace.COWORKING)}</MenuItem>
+          <MenuItem value={StudyPlace.LIBRARY}>{formatStudyPlace(StudyPlace.LIBRARY)}</MenuItem>
+          <MenuItem value={StudyPlace.CLASSROOM}>{formatStudyPlace(StudyPlace.CLASSROOM)}</MenuItem>
+          <MenuItem value={StudyPlace.UNIVERSITY_CAMPUS}>{formatStudyPlace(StudyPlace.UNIVERSITY_CAMPUS)}</MenuItem>
+          <MenuItem value={StudyPlace.CAFE}>{formatStudyPlace(StudyPlace.CAFE)}</MenuItem>
+          <MenuItem value={StudyPlace.BOOKSTORE}>{formatStudyPlace(StudyPlace.BOOKSTORE)}</MenuItem>
+          <MenuItem value={StudyPlace.DORM_ROOM}>{formatStudyPlace(StudyPlace.DORM_ROOM)}</MenuItem>
+          <MenuItem value={StudyPlace.DORM_COMMON_AREA}>{formatStudyPlace(StudyPlace.DORM_COMMON_AREA)}</MenuItem>
+          <MenuItem value={StudyPlace.OUTDOORS}>{formatStudyPlace(StudyPlace.OUTDOORS)}</MenuItem>
+          <MenuItem value={StudyPlace.TRANSIT}>{formatStudyPlace(StudyPlace.TRANSIT)}</MenuItem>
+          <MenuItem value={StudyPlace.OTHER}>{formatStudyPlace(StudyPlace.OTHER)}</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel id="time-of-day-label">Time of Day</InputLabel>
+        <InputLabel id="time-of-day-label">{t('selfEvaluation.fields.timeOfDay')}</InputLabel>
         <Select
           labelId="time-of-day-label"
           id="time-of-day"
           value={formData.time_of_day ?? TimeOfDay.MORNING}
-          label="Time of day"
+          label={t('selfEvaluation.fields.timeOfDay')}
           onChange={handleTimeOfDayChange}
         >
-          <MenuItem value={TimeOfDay.MORNING}>Morning</MenuItem>
-          <MenuItem value={TimeOfDay.AFTERNOON}>Afternoon</MenuItem>
-          <MenuItem value={TimeOfDay.EVENING}>Evening</MenuItem>
-          <MenuItem value={TimeOfDay.NIGHT}>Night</MenuItem>
+          <MenuItem value={TimeOfDay.MORNING}>{formatTimeOfDay(TimeOfDay.MORNING)}</MenuItem>
+          <MenuItem value={TimeOfDay.AFTERNOON}>{formatTimeOfDay(TimeOfDay.AFTERNOON)}</MenuItem>
+          <MenuItem value={TimeOfDay.EVENING}>{formatTimeOfDay(TimeOfDay.EVENING)}</MenuItem>
+          <MenuItem value={TimeOfDay.NIGHT}>{formatTimeOfDay(TimeOfDay.NIGHT)}</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel id="noise-level-label">Noise Level</InputLabel>
+        <InputLabel id="noise-level-label">{t('selfEvaluation.fields.noiseLevel')}</InputLabel>
         <Select
           labelId="noise-level-label"
           id="noise-level"
           value={formData.noise_level ?? NoiseLevel.QUIET}
-          label="Noise level"
+          label={t('selfEvaluation.fields.noiseLevel')}
           onChange={handleNoiseLevelChange}
         >
-          <MenuItem value={NoiseLevel.QUIET}>Quiet</MenuItem>
-          <MenuItem value={NoiseLevel.MODERATE}>Moderate</MenuItem>
-          <MenuItem value={NoiseLevel.NOISY}>Noisy</MenuItem>
+          <MenuItem value={NoiseLevel.QUIET}>{formatNoiseLevel(NoiseLevel.QUIET)}</MenuItem>
+          <MenuItem value={NoiseLevel.MODERATE}>{formatNoiseLevel(NoiseLevel.MODERATE)}</MenuItem>
+          <MenuItem value={NoiseLevel.NOISY}>{formatNoiseLevel(NoiseLevel.NOISY)}</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel id="collaboration-mode-label">Collaboration Mode</InputLabel>
+        <InputLabel id="collaboration-mode-label">{t('selfEvaluation.fields.collaborationMode')}</InputLabel>
         <Select
           labelId="collaboration-mode-label"
           id="collaboration-mode"
           value={formData.collaboration_mode ?? CollaborationMode.SOLO}
-          label="Collaboration mode"
+          label={t('selfEvaluation.fields.collaborationMode')}
           onChange={handleCollaborationModeChange}
         >
-          <MenuItem value={CollaborationMode.SOLO}>Solo</MenuItem>
-          <MenuItem value={CollaborationMode.PAIR}>Pair</MenuItem>
-          <MenuItem value={CollaborationMode.GROUP}>Group</MenuItem>
+          <MenuItem value={CollaborationMode.SOLO}>{formatCollaborationMode(CollaborationMode.SOLO)}</MenuItem>
+          <MenuItem value={CollaborationMode.PAIR}>{formatCollaborationMode(CollaborationMode.PAIR)}</MenuItem>
+          <MenuItem value={CollaborationMode.GROUP}>{formatCollaborationMode(CollaborationMode.GROUP)}</MenuItem>
         </Select>
       </FormControl>
     </>

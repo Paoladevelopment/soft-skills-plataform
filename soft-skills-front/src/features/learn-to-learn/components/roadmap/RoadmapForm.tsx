@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Typography,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
@@ -17,12 +18,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
 import { useEffect } from 'react'
 
-const roadmapSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().min(1, 'Description is required').max(450, 'Max 450 characters allowed'),
+const createRoadmapSchema = (t: (key: string) => string) => z.object({
+  title: z.string().min(1, t('editor.form.validation.titleRequired')),
+  description: z.string().min(1, t('editor.form.validation.descriptionRequired')).max(450, t('editor.form.validation.maxCharacters')),
 })
 
-type RoadmapFields = z.infer<typeof roadmapSchema>
+type RoadmapFields = z.infer<ReturnType<typeof createRoadmapSchema>>
 
 interface Props {
   open: boolean
@@ -35,14 +36,16 @@ interface Props {
   }
 }
 
-function getRoadmapFormLabels(mode: 'create' | 'edit') {
+function getRoadmapFormLabels(mode: 'create' | 'edit', t: (key: string) => string) {
   return {
-    dialogTitle: mode === 'create' ? 'New Roadmap' : 'Edit Roadmap',
-    submitButton: mode === 'create' ? 'Create Roadmap' : 'Save Changes',
+    dialogTitle: mode === 'create' ? t('editor.form.newRoadmap') : t('editor.form.editRoadmap'),
+    submitButton: mode === 'create' ? t('editor.form.createRoadmap') : t('editor.form.saveChanges'),
   }
 }
 
 const RoadmapForm = ({ open, onClose, onSubmit, mode, initialValues }: Props) => {
+  const { t } = useTranslation('roadmap')
+  const roadmapSchema = createRoadmapSchema(t)
   const isLoading = useRoadmapStore((state) => state.isLoading)
 
   const {
@@ -62,7 +65,7 @@ const RoadmapForm = ({ open, onClose, onSubmit, mode, initialValues }: Props) =>
     onSubmit(title.trim(), description.trim())
   }
 
-  const { dialogTitle, submitButton } = getRoadmapFormLabels(mode)
+  const { dialogTitle, submitButton } = getRoadmapFormLabels(mode, t)
 
   useEffect(() => {
     if (open && initialValues) {
@@ -88,23 +91,23 @@ const RoadmapForm = ({ open, onClose, onSubmit, mode, initialValues }: Props) =>
           }}
         >
           <Typography variant="body2" color="text.secondary" mb={2}>
-            Add a title and description to your roadmap.
+            {t('editor.form.instruction')}
           </Typography>
           <Stack spacing={2} mt={1}>
             <TextField
-              label="Roadmap Title"
+              label={t('editor.form.titleLabel')}
               fullWidth
-              placeholder="Enter Title"
+              placeholder={t('editor.form.titlePlaceholder')}
               {...register('title')}
               error={!!errors.title}
               helperText={errors.title?.message}
             />
             <TextField
-              label="Description"
+              label={t('editor.form.descriptionLabel')}
               fullWidth
               multiline
               rows={3}
-              placeholder="Enter Description"
+              placeholder={t('editor.form.descriptionPlaceholder')}
               slotProps={{
                 input: {
                   inputProps: {
@@ -126,7 +129,7 @@ const RoadmapForm = ({ open, onClose, onSubmit, mode, initialValues }: Props) =>
             }}
           >
           <Button onClick={onClose} variant="text" color="inherit" disabled={isLoading}>
-            Cancel
+            {t('actions.cancel', { ns: 'common' })}
           </Button>
           <Button type="submit" color="secondary" variant="contained" disabled={isLoading}>
             {isLoading ? <CircularProgress size={20} /> : submitButton}

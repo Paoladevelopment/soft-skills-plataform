@@ -130,22 +130,22 @@ class KanbanService:
             
             objective = session.get(Objective, objective_id, with_for_update=True)
             if not objective:
-                raise Missing("Objective not found")
+                raise Missing("Objetivo no encontrado")
             
             task = session.get(Task, move_request.task_id, with_for_update=True)
             if not task:
-                raise Missing("Task not found")
+                raise Missing("Tarea no encontrada")
             
             if task.objective_id != objective_id:
-                raise BadRequest("Task does not belong to this objective")
+                raise BadRequest("La tarea no pertenece a este objetivo")
             
             if move_request.from_column != task.status:
-                raise BadRequest(f"Task is currently in '{task.status.value}', not '{move_request.from_column.value}'")
+                raise BadRequest(f"La tarea está actualmente en '{task.status.value}', no en '{move_request.from_column.value}'")
             
             if move_request.to_column == Status.COMPLETED:
                 if not self.self_evaluation_service.has_evaluation_for_task(move_request.task_id, user_id, session):
                     raise PreconditionRequired(
-                        "Self-evaluation required before completing task",
+                        "Se requiere autoevaluación antes de completar la tarea",
                         error_code="SELF_EVALUATION_REQUIRED",
                         required_actions=["SELF_EVALUATION"]
                     )
@@ -161,11 +161,11 @@ class KanbanService:
             if move_request.from_column == move_request.to_column:
                 max_position = len(from_column_tasks) - 1
                 if move_request.new_position > max_position:
-                    raise BadRequest(f"Position {move_request.new_position} is out of bounds. Max position after removal: {max_position}")
+                    raise BadRequest(f"La posición {move_request.new_position} está fuera de rango. Posición máxima después de la eliminación: {max_position}")
             else:
                 max_position = len(to_column_tasks)
                 if move_request.new_position > max_position:
-                    raise BadRequest(f"Position {move_request.new_position} is out of bounds. Max position: {max_position}")
+                    raise BadRequest(f"La posición {move_request.new_position} está fuera de rango. Posición máxima: {max_position}")
             
             old_position = from_column_tasks.index(task_id_str) if task_id_str in from_column_tasks else 0
             
@@ -188,7 +188,7 @@ class KanbanService:
             session.commit()
             
             return {
-                "message": "Task moved successfully",
+                "message": "Tarea movida correctamente",
                 "task": {
                     "id": str(move_request.task_id),
                     "status": move_request.to_column.value,
@@ -468,7 +468,7 @@ class KanbanService:
             session.commit()
             
             return {
-                "message": "Kanban board synced with task statuses",
+                "message": "Tablero Kanban sincronizado con estados de tareas",
                 "synced_tasks": len(tasks),
                 "new_ordering": new_ordering
             }

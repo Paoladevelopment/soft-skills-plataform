@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import TealBorderedCard from './TealBorderedCard'
 
 interface QuestionDisplayProps {
@@ -6,6 +7,7 @@ interface QuestionDisplayProps {
 }
 
 const QuestionDisplay = ({ question }: QuestionDisplayProps) => {
+  const { t } = useTranslation('game')
   return (
     <TealBorderedCard borderLeftColor="#F8B5CB">
       <Typography
@@ -15,7 +17,7 @@ const QuestionDisplay = ({ question }: QuestionDisplayProps) => {
           fontWeight: 600,
         }}
       >
-        Question:
+        {t('result.evaluation.question')}
       </Typography>
       <Typography
         variant="body1"

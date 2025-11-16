@@ -7,6 +7,7 @@ import {
   Button,
   CircularProgress,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import AddIcon from '@mui/icons-material/Add';
 import { useLearningGoalStore } from '../../store/useLearningGoalStore'
 import { useLearningGoals, useCreateLearningGoal, useDeleteLearningGoal, useConvertLearningGoalToRoadmap } from '../../hooks/useLearningGoals'
@@ -20,6 +21,7 @@ import { LearningGoal } from '../../types/planner/planner.models'
 import ConfirmDeleteModal from '../../../../components/ConfirmDeleteModal'
 
 const GoalsSection = () => {
+  const { t } = useTranslation('goals')
   const navigate = useNavigate()
   const [addModalOpen, setAddModalOpen] = useState(false)
   const [inputTitle, setInputTitle] = useState('')
@@ -118,7 +120,7 @@ const GoalsSection = () => {
         >
           <TextField
             variant="standard"
-            placeholder="Add learning goal"
+            placeholder={t('addGoal.placeholder')}
             value={inputTitle}
             onChange={(e) => setInputTitle(e.target.value)}
             fullWidth
@@ -144,7 +146,7 @@ const GoalsSection = () => {
               fontWeight: 500,
             }}
           >
-            Add Goal
+            {t('addGoal.button')}
           </Button>
         </Stack>
         <Box 
@@ -168,10 +170,10 @@ const GoalsSection = () => {
               }}
             >
               <Typography variant="subtitle1" fontWeight="medium">
-                No learning goals yet
+                {t('empty.title')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Add your first learning goal to get started on your educational journey
+                {t('empty.description')}
               </Typography>
             </Paper>
           )}

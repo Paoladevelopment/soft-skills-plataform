@@ -23,7 +23,7 @@ pomodoro_service = PomodoroPreferencesService()
 
 @router.patch(
     "/me", 
-    summary="Updates user data by ID", 
+    summary="Actualizar datos de usuario por ID", 
     response_model=UserResponse
 )
 def update_user(
@@ -34,7 +34,7 @@ def update_user(
     try:
         updated_user = user_service.update_user(token_data.user_id, user, session)
         return UserResponse(
-            message="User updated successfully",
+            message="Usuario actualizado correctamente",
             data=updated_user
         )
     
@@ -44,7 +44,7 @@ def update_user(
 
 @router.delete(
     "/me", 
-    summary="Deletes the authenticated user"
+    summary="Eliminar usuario autenticado"
 )
 def delete_user(
     token_data: TokenData = Depends(decode_jwt_token),
@@ -58,11 +58,11 @@ def delete_user(
 
 @router.get(
     "/me/learning-goals",
-    summary="Retrieve the learning goals of the authenticated user"
+    summary="Obtener metas de aprendizaje del usuario autenticado"
 )
 def get_my_learning_goals(
-    offset: int = Query(0, ge=0, description="Number of items to skip"),
-    limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
+    offset: int = Query(0, ge=0, description="Número de elementos a omitir"),
+    limit: int = Query(10, le=100, description="Número máximo de elementos a recuperar (máx. 100)"),
     token_data: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
@@ -70,7 +70,7 @@ def get_my_learning_goals(
         learning_goals, total_count = learning_goal_service.get_all_user_learning_goals(token_data.user_id, offset, limit, session)
         
         return LearningGoalPaginatedResponse(
-            message="Learning goals retrieved successfully",
+            message="Metas de aprendizaje obtenidas correctamente",
             data=learning_goals,
             total=total_count,
             offset=offset,
@@ -83,7 +83,7 @@ def get_my_learning_goals(
 
 @router.get(
     "/me/pomodoro-preferences",
-    summary="Get user's pomodoro preferences configuration",
+    summary="Obtener configuración de preferencias pomodoro del usuario",
     response_model=PomodoroConfiguration,
     status_code=status.HTTP_200_OK,
     tags=["Pomodoro Preferences"]
@@ -93,11 +93,11 @@ def get_pomodoro_preferences(
     session: Session = Depends(get_session),
 ):
     """
-    Get user's pomodoro preferences configuration.
+    Obtener configuración de preferencias pomodoro del usuario.
     
-    Returns:
-    - If configured: configured=true with user's preferences
-    - If not configured: configured=false with fallback values and preferences=null
+    Retorna:
+    - Si está configurado: configured=true con las preferencias del usuario
+    - Si no está configurado: configured=false con valores predeterminados y preferences=null
     """
     try:
         return pomodoro_service.get_user_preferences_status(token_data.user_id, session)
@@ -108,12 +108,12 @@ def get_pomodoro_preferences(
 
 @router.put(
     "/me/pomodoro-preferences",
-    summary="Create or update user's pomodoro preferences",
+    summary="Crear o actualizar preferencias pomodoro del usuario",
     response_model=PomodoroPreferencesResponse,
     responses={
-        201: {"description": "Preferences created successfully"},
-        200: {"description": "Preferences updated successfully"},
-        422: {"description": "Validation error"}
+        201: {"description": "Preferencias creadas correctamente"},
+        200: {"description": "Preferencias actualizadas correctamente"},
+        422: {"description": "Error de validación"}
     },
     tags=["Pomodoro Preferences"]
 )
@@ -124,12 +124,12 @@ def create_or_update_pomodoro_preferences(
     session: Session = Depends(get_session),
 ):
     """
-    Create or update user's pomodoro preferences.
+    Crear o actualizar preferencias pomodoro del usuario.
     
-    Behavior:
-    - If preferences don't exist: creates new record and returns 201 Created
-    - If preferences exist: updates existing record and returns 200 OK
-    - Validates all fields according to business rules
+    Comportamiento:
+    - Si las preferencias no existen: crea un nuevo registro y retorna 201 Created
+    - Si las preferencias existen: actualiza el registro existente y retorna 200 OK
+    - Valida todos los campos según las reglas de negocio
     """
     try:
         preferences, is_created = pomodoro_service.create_or_update_preferences(
@@ -139,10 +139,10 @@ def create_or_update_pomodoro_preferences(
         # Set appropriate status code
         if is_created:
             response.status_code = status.HTTP_201_CREATED
-            message = "Pomodoro preferences created successfully"
+            message = "Preferencias pomodoro creadas correctamente"
         else:
             response.status_code = status.HTTP_200_OK
-            message = "Pomodoro preferences updated successfully"
+            message = "Preferencias pomodoro actualizadas correctamente"
             
         return PomodoroPreferencesResponse(
             message=message,

@@ -1,0 +1,11 @@
+{
+  "welcomeBack": "¡Bienvenida de nuevo, {{name}} 🤗",
+  "chooseModulePrompt": "Elige un módulo a continuación para seguir desarrollando tus habilidades blandas.",
+  "errors": {
+    "loadFailed": "Error al cargar los módulos. Por favor, inténtalo de nuevo más tarde."
+  },
+  "empty": {
+    "noModules": "No hay módulos disponibles en este momento."
+  }
+}
+

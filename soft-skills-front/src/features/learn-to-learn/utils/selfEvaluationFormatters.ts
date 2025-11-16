@@ -7,94 +7,60 @@ import {
   Mood,
   LearningMethod,
 } from '../types/self-evaluation/self-evaluation.enums'
+import i18n from '../../../i18n/config'
 
 export const formatStudyPlace = (place: StudyPlace): string => {
-  const map: Record<StudyPlace, string> = {
-    [StudyPlace.HOME_DESK]: 'Home office',
-    [StudyPlace.HOME_COMMON_AREA]: 'Home common area',
-    [StudyPlace.OFFICE_DESK]: 'Office desk',
-    [StudyPlace.COWORKING]: 'Coworking space',
-    [StudyPlace.LIBRARY]: 'Library',
-    [StudyPlace.CLASSROOM]: 'Classroom',
-    [StudyPlace.UNIVERSITY_CAMPUS]: 'University campus',
-    [StudyPlace.CAFE]: 'Cafe',
-    [StudyPlace.BOOKSTORE]: 'Bookstore',
-    [StudyPlace.DORM_ROOM]: 'Dorm room',
-    [StudyPlace.DORM_COMMON_AREA]: 'Dorm common area',
-    [StudyPlace.OUTDOORS]: 'Outdoors',
-    [StudyPlace.TRANSIT]: 'Transit',
-    [StudyPlace.OTHER]: 'Other',
-  }
-  return map[place] || place
+  const key = `common:enums.studyPlace.${place}`
+  const translated = i18n.t(key)
+  
+  return translated !== key ? translated : place
 }
 
 export const formatTimeOfDay = (time: TimeOfDay): string => {
-  const map: Record<TimeOfDay, string> = {
-    [TimeOfDay.MORNING]: 'Morning',
-    [TimeOfDay.AFTERNOON]: 'Afternoon',
-    [TimeOfDay.EVENING]: 'Evening',
-    [TimeOfDay.NIGHT]: 'Night',
-  }
-  return map[time] || time
+  const key = `common:enums.timeOfDay.${time}`
+  const translated = i18n.t(key)
+
+  return translated !== key ? translated : time
 }
 
 export const formatNoiseLevel = (level: NoiseLevel): string => {
-  const map: Record<NoiseLevel, string> = {
-    [NoiseLevel.QUIET]: 'Quiet',
-    [NoiseLevel.MODERATE]: 'Moderate',
-    [NoiseLevel.NOISY]: 'Noisy',
-  }
-  return map[level] || level
+  const key = `common:enums.noiseLevel.${level}`
+  const translated = i18n.t(key)
+
+  return translated !== key ? translated : level
 }
 
 export const formatCollaborationMode = (mode: CollaborationMode): string => {
-  const map: Record<CollaborationMode, string> = {
-    [CollaborationMode.SOLO]: 'Solo study',
-    [CollaborationMode.PAIR]: 'Pair study',
-    [CollaborationMode.GROUP]: 'Group study',
-  }
-  return map[mode] || mode
+  const key = `common:enums.collaborationMode.${mode}`
+  const translated = i18n.t(key)
+
+  return translated !== key ? translated : mode
 }
 
 export const formatDifficulty = (difficulty: PerceivedDifficulty): string => {
-  const map: Record<PerceivedDifficulty, string> = {
-    [PerceivedDifficulty.EASY]: 'Easy',
-    [PerceivedDifficulty.MODERATE]: 'Medium',
-    [PerceivedDifficulty.HARD]: 'Hard',
-  }
-  return map[difficulty] || difficulty
+  const key = `common:enums.perceivedDifficulty.${difficulty}`
+  const translated = i18n.t(key)
+
+  return translated !== key ? translated : difficulty
 }
 
 export const formatMood = (mood: Mood): string => {
-  const map: Record<Mood, string> = {
-    [Mood.ENERGIZED]: 'Energized',
-    [Mood.CALM]: 'Calm',
-    [Mood.NEUTRAL]: 'Neutral',
-    [Mood.TIRED]: 'Tired',
-    [Mood.FRUSTRATED]: 'Frustrated',
-    [Mood.STRESSED]: 'Stressed',
-    [Mood.OTHER]: 'Other',
-  }
-  return map[mood] || mood
+  const key = `common:enums.mood.${mood}`
+  const translated = i18n.t(key)
+
+  return translated !== key ? translated : mood
 }
 
 export const formatLearningMethod = (method: LearningMethod): string => {
-  const map: Record<LearningMethod, string> = {
-    [LearningMethod.PRACTICE]: 'Hands-on practice',
-    [LearningMethod.NOTE_TAKING]: 'Taking notes',
-    [LearningMethod.SPACED_REPETITION]: 'Spaced repetition',
-    [LearningMethod.SUMMARIZATION]: 'Summarization',
-    [LearningMethod.TEACH_BACK]: 'Teaching others',
-    [LearningMethod.FLASHCARDS]: 'Flashcards',
-    [LearningMethod.OTHER]: 'Other',
-  }
-  return map[method] || method
+  const key = `common:enums.learningMethod.${method}`
+  const translated = i18n.t(key)
+  return translated !== key ? translated : method
 }
 
 export const getMoodDisplay = (mood: Mood): string => {
   const positiveMoods = [Mood.ENERGIZED, Mood.CALM]
   if (positiveMoods.includes(mood)) {
-    return 'Positive'
+    return i18n.t('common:enums.mood.POSITIVE')
   }
 
   return formatMood(mood)

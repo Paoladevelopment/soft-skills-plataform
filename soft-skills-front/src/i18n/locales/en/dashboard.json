@@ -1,0 +1,11 @@
+{
+  "welcomeBack": "Welcome back, {{name}} 👋",
+  "chooseModulePrompt": "Choose a module below to continue developing your soft skills.",
+  "errors": {
+    "loadFailed": "Failed to load modules. Please try again later."
+  },
+  "empty": {
+    "noModules": "No modules available at the moment."
+  }
+}
+

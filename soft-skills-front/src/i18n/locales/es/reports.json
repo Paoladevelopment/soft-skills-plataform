@@ -1,0 +1,101 @@
+{
+  "title": "Informes de aprendizaje",
+  "subtitle": "Reflexiona sobre tus tareas completadas para fortalecer tu proceso de aprendizaje.",
+  "backToReports": "Volver a informes",
+  "learningReport": "Informe de aprendizaje",
+  "notSubmittedYet": "Aún no enviado",
+  "submittedOn": "Enviado el",
+  "completedTask": "Tarea completada",
+  "sections": {
+    "whatILearned": "Lo que aprendí",
+    "learningEnvironment": "Entorno de aprendizaje",
+    "learningPurpose": "Propósito de aprendizaje",
+    "taskExperience": "Experiencia durante la tarea",
+    "focusFeelings": "Enfoque y sentimientos",
+    "learningMethodsUsed": "Métodos de aprendizaje utilizados"
+  },
+  "fields": {
+    "studyPlace": "Lugar de estudio:",
+    "noiseLevel": "Nivel de ruido:",
+    "timeOfDay": "Hora del día:",
+    "collaborationMode": "Modo de colaboración:",
+    "whatIIntendedToLearn": "Lo que pretendía aprender:",
+    "whatWentWell": "Lo que salió bien:",
+    "challengesIFaced": "Desafíos que enfrenté:",
+    "improvementPlan": "Plan de mejora:",
+    "difficulty": "Dificultad:",
+    "overallMood": "Estado de ánimo general:",
+    "concentrationLevel": "Nivel de concentración:"
+  },
+  "filters": {
+    "sortBy": "Ordenar por",
+    "difficulty": "Dificultad",
+    "mood": "Estado de ánimo",
+    "all": "Todos",
+    "dateDesc": "Fecha (más reciente)",
+    "dateAsc": "Fecha (más antiguo)",
+    "clearAll": "Limpiar todos",
+    "activeFilters": "Filtros activos:"
+  },
+  "empty": {
+    "title": "No hay informes disponibles",
+    "description": "Completa tareas y crea autoevaluaciones para ver tus informes de aprendizaje aquí."
+  },
+  "errors": {
+    "loadError": "Error al cargar los informes",
+    "notFound": "Informe no encontrado"
+  },
+  "notSpecified": "No especificado",
+  "noInsightAvailable": "No hay información disponible",
+  "selfEvaluation": {
+    "title": "Reflexiona sobre tu logro de tarea",
+    "sections": {
+      "yourEnvironment": "Tu entorno",
+      "yourLearningIntention": "Tu intención de aprendizaje *",
+      "yourExperienceDuringTask": "Tu experiencia durante la tarea *",
+      "howWasYourSession": "¿Cómo fue tu sesión?"
+    },
+    "fields": {
+      "studyPlace": "Lugar de estudio",
+      "timeOfDay": "Hora del día",
+      "noiseLevel": "Nivel de ruido",
+      "collaborationMode": "Modo de colaboración",
+      "whatWereYouTryingToGetBetterAt": "¿En qué estabas tratando de mejorar?",
+      "whatWereYouTryingToGetBetterAtHelper": "¿Qué pretendías aprender? (máx. 800 caracteres)",
+      "whatWorkedWellThisTime": "¿Qué salió bien esta vez? *",
+      "whatWorkedWellThisTimePlaceholder": "¿Qué aspectos de tu aprendizaje salieron bien?",
+      "whatWorkedWellHelper": "¿Qué salió bien? (máx. 2000 caracteres)",
+      "whatWasDifficult": "¿Qué fue difícil? *",
+      "whatWasDifficultPlaceholder": "¿Qué desafíos enfrentaste?",
+      "challengesEncounteredHelper": "Desafíos encontrados (máx. 2000 caracteres)",
+      "whatWouldYouDoDifferently": "¿Qué harías diferente la próxima vez? *",
+      "whatWouldYouDoDifferentlyPlaceholder": "¿Cómo planeas mejorar la próxima vez?",
+      "improvementPlanHelper": "Plan de mejora (máx. 2000 caracteres)",
+      "howHardDidThisFeel": "¿Qué tan difícil se sintió esto?",
+      "concentrationLevel": "Nivel de concentración: {{level}}/10",
+      "mood": "Estado de ánimo",
+      "knowledgeConnection": "Pude conectar este conocimiento con aprendizajes previos",
+      "whatStrategiesDidYouUse": "¿Qué estrategias utilizaste?"
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando..."
+    },
+    "validation": {
+      "studyPlaceRequired": "El lugar de estudio es obligatorio",
+      "learningIntentionRequired": "¿En qué estabas tratando de mejorar? es obligatorio",
+      "learningIntentionMaxLength": "¿En qué estabas tratando de mejorar? debe tener 800 caracteres o menos",
+      "whatWentWellRequired": "¿Qué salió bien esta vez? es obligatorio",
+      "whatWentWellMaxLength": "¿Qué salió bien esta vez? debe tener 2000 caracteres o menos",
+      "challengesEncounteredRequired": "¿Qué fue difícil? es obligatorio",
+      "challengesEncounteredMaxLength": "¿Qué fue difícil? debe tener 2000 caracteres o menos",
+      "improvementPlanRequired": "¿Qué harías diferente la próxima vez? es obligatorio",
+      "improvementPlanMaxLength": "¿Qué harías diferente la próxima vez? debe tener 2000 caracteres o menos",
+      "perceivedDifficultyRequired": "La dificultad percibida es obligatoria",
+      "concentrationLevelRange": "El nivel de concentración debe estar entre 1 y 10",
+      "moodRequired": "El estado de ánimo es obligatorio"
+    }
+  }
+}
+

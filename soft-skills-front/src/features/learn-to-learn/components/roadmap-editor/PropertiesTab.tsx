@@ -7,11 +7,13 @@ import {
   ToggleButton,
   Divider,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
 import { findNodeById, getNodeTitle } from '../../utils/roadmap/roadmapGraphHelpers'
 import { colorOptions, FontSizeOption, fontSizeOptions } from '../../types/roadmap/roadmap.options'
 
 const PropertiesTab = () => {
+  const { t } = useTranslation('roadmap')
   const {
     selectedNodeId,
     editorNodes,
@@ -88,7 +90,7 @@ const PropertiesTab = () => {
   return (
     <Box>
       <Typography fontWeight="bold" mb={1}>
-        Label
+        {t('editor.propertiesTab.label')}
       </Typography>
       <TextField
         size="small"
@@ -98,13 +100,13 @@ const PropertiesTab = () => {
         sx={{ 
           mb: 4
         }}
-        placeholder="Enter label"
+        placeholder={t('editor.propertiesTab.labelPlaceholder')}
       />
 
       <Grid2 container spacing={1} sx={{ mb: 2 }}>
         <Grid2 size={{xs: 6}}> 
           <TextField
-            label="X"
+            label={t('editor.propertiesTab.x')}
             size="small"
             fullWidth
             type="number"
@@ -114,7 +116,7 @@ const PropertiesTab = () => {
         </Grid2>
         <Grid2 size={{xs: 6}}>
           <TextField
-            label="Y"
+            label={t('editor.propertiesTab.y')}
             size="small"
             fullWidth
             type="number"
@@ -127,24 +129,24 @@ const PropertiesTab = () => {
       <Grid2 container spacing={1} sx={{ mb: 2 }}>
         <Grid2 size={{xs: 6}}>
           <TextField
-            label="W"
+            label={t('editor.propertiesTab.w')}
             size="small"
             fullWidth
             type="number"
             value={width}
             onChange={handleChangeWidth}
-            placeholder="Auto"
+            placeholder={t('editor.propertiesTab.auto')}
           />
         </Grid2>
         <Grid2 size={{xs: 6}}>
           <TextField
-            label="H"
+            label={t('editor.propertiesTab.h')}
             size="small"
             fullWidth
             type="number"
             value={height}
             onChange={handleChangeHeight}
-            placeholder="Auto"
+            placeholder={t('editor.propertiesTab.auto')}
           />
         </Grid2>
       </Grid2>
@@ -152,7 +154,7 @@ const PropertiesTab = () => {
       <Divider sx={{ my: 2 }} />
 
       <Typography fontWeight="bold" mb={1}>
-        Font Size
+        {t('editor.propertiesTab.fontSize')}
       </Typography>
       <ToggleButtonGroup
         value={fontSize}
@@ -169,7 +171,7 @@ const PropertiesTab = () => {
       </ToggleButtonGroup>
 
       <Typography fontWeight="bold" mb={1}>
-        Node Color
+        {t('editor.propertiesTab.nodeColor')}
       </Typography>
       <Box display="flex" flexWrap="wrap" gap={1}>
         {colorOptions.map((color) => (

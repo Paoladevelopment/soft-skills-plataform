@@ -23,16 +23,16 @@ def login_for_access_token(
     session: Session = Depends(get_session)
 ):
     """
-    ### Login for access token
+    ### Iniciar sesión para obtener token de acceso
 
     #### Args:
-    The app receives the following fields via form data:
-    - **`username` (str)**: Your **email address** (OAuth2PasswordRequestForm uses `username`, but in this API, it represents the user's email).
-    - **`password` (str)**: Your account password.
+    La aplicación recibe los siguientes campos mediante form data:
+    - **`username` (str)**: Su **dirección de correo electrónico** (OAuth2PasswordRequestForm usa `username`, pero en esta API, representa el correo electrónico del usuario).
+    - **`password` (str)**: Su contraseña de cuenta.
 
     #### Returns:
-    - **`access_token` (str)**: A JWT token to authenticate future requests.
-    - **`token_type` (str)**: `"bearer"` (OAuth2-compatible).
+    - **`access_token` (str)**: Un token JWT para autenticar solicitudes futuras.
+    - **`token_type` (str)**: `"bearer"` (compatible con OAuth2).
     """
     try:
         user: User = authenticate_user(form_data.username, form_data.password, session)
@@ -40,7 +40,7 @@ def login_for_access_token(
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password"
+                detail="Correo electrónico o contraseña incorrectos"
             )
         
         user_service.update_last_login_from_user(user, session)
@@ -61,7 +61,7 @@ def login_for_access_token(
 @router.post(
     "/register",
     status_code=status.HTTP_201_CREATED,
-    summary="Creates a new user account",
+    summary="Crear una nueva cuenta de usuario",
 )
 def create_user(
     user: UserCreate, 
@@ -71,7 +71,7 @@ def create_user(
         _ = user_service.create_user(user, session)
 
         return {
-            "message": "User successfully created",
+            "message": "Usuario creado correctamente",
         }
     
     except APIException as exc:

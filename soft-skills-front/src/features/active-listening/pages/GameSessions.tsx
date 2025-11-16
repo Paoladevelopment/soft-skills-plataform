@@ -9,6 +9,7 @@ import {
   Stack,
   CircularProgress,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ExpandMore, ArrowBack } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -26,6 +27,7 @@ import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
 import { convertAudioEffectsToSnakeCase } from '../utils/audioEffectsUtils'
 
 const GameSessions = () => {
+  const { t } = useTranslation('game')
   const navigate = useNavigate()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [sessionToDelete, setSessionToDelete] = useState<GameSessionListItem | null>(null)
@@ -190,7 +192,7 @@ const GameSessions = () => {
                 mb: '-0.2em',
               }}
             >
-              Your Game
+              {t('sessions.title.part1')}
             </Typography>
             <Typography
               fontWeight="bold"
@@ -205,7 +207,7 @@ const GameSessions = () => {
                 lineHeight: 1,
               }}
             >
-              Sessions
+              {t('sessions.title.part2')}
             </Typography>
           </Box>
         </Box>
@@ -232,10 +234,10 @@ const GameSessions = () => {
             }}
           >
             <Typography variant="h6" fontWeight="bold">
-              Create New Session
+              {t('sessions.createNew')}
             </Typography>
             <Typography variant="body2" color="white">
-              Configure and create your own game session
+              {t('sessions.createDescription')}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -277,8 +279,8 @@ const GameSessions = () => {
         open={deleteModalOpen}
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
-        title="Delete Session"
-        message={`Are you sure you want to delete "${sessionToDelete?.name}"? This action cannot be undone.`}
+        title={t('sessions.deleteTitle')}
+        message={t('sessions.deleteMessage', { name: sessionToDelete?.name || '' })}
       />
 
       {selectedSession && (

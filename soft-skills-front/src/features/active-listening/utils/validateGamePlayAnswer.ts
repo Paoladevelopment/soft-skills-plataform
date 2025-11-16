@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { PlayMode } from '../types/game-sessions/gameSession.models'
+import i18n from '../../../i18n/config'
 
 type SupportedPlayMode = PlayMode.FOCUS | PlayMode.CLOZE | PlayMode.PARAPHRASE | PlayMode.SUMMARIZE | PlayMode.CLARIFY
 
@@ -84,12 +85,12 @@ export function validateGamePlayAnswer(params: ValidateAnswerParams): {
     if (error instanceof z.ZodError) {
         return { 
             isValid: false, 
-            error: error.errors[0]?.message || 'Validation failed' 
+            error: error.errors[0]?.message || i18n.t('play.validation.failed', { ns: 'game' })
         }
     }
     return { 
         isValid: false, 
-        error: 'Validation failed' 
+        error: i18n.t('play.validation.failed', { ns: 'game' })
     }
   }
 }

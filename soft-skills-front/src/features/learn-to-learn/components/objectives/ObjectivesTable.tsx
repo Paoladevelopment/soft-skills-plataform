@@ -13,12 +13,13 @@ import {
   TablePagination,
   IconButton
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Objective } from '../../types/planner/planner.models'
 import { formatDateString } from '../../../../utils/formatDate'
-import { getPriorityColor, getStatusChipColor, formatStatus } from '../../utils/objectiveUtils'
+import { getPriorityColor, getStatusChipColor, formatStatus, formatPriority } from '../../utils/objectiveUtils'
 
 
 
@@ -53,6 +54,8 @@ const ObjectivesTable = ({
   onDeleteClick,
   onViewClick
 }: ObjectivesTableProps) => {
+  const { t } = useTranslation('goals')
+  
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" py={4}>
@@ -65,7 +68,7 @@ const ObjectivesTable = ({
     return (
       <Box>
         <Typography color="error">
-          Error loading objectives: {error.message}
+          {t('objectives.table.errorLoading')}: {error.message}
         </Typography>
       </Box>
     )
@@ -86,8 +89,8 @@ const ObjectivesTable = ({
       >
         <Typography variant="body2" color="text.secondary">
           {hasFiltersApplied
-            ? 'No objectives match your current filters.'
-            : 'No objectives found for this learning goal.'}
+            ? t('objectives.table.noObjectivesMatchFilters')
+            : t('objectives.table.noObjectivesFound')}
         </Typography>
       </Paper>
     )
@@ -125,42 +128,42 @@ const ObjectivesTable = ({
                   fontWeight: 'semibold', color: 'text.primary' 
                 }}
               >
-                Objective
+                {t('objectives.table.objective')}
               </TableCell>
               <TableCell 
                 sx={{ 
                   fontWeight: 'semibold', color: 'text.primary' 
                 }}
               >
-                Status
+                {t('objectives.table.status')}
               </TableCell>
               <TableCell 
                 sx={{ 
                   fontWeight: 'semibold', color: 'text.primary' 
                 }}
               >
-                Priority
+                {t('objectives.table.priority')}
               </TableCell>
               <TableCell 
                 sx={{ 
                   fontWeight: 'semibold', color: 'text.primary' 
                 }}
               >
-                Due Date
+                {t('objectives.table.dueDate')}
               </TableCell>
               <TableCell 
                 sx={{ 
                   fontWeight: 'semibold', color: 'text.primary' 
                 }}
               >
-                Progress
+                {t('objectives.table.progress')}
               </TableCell>
               <TableCell 
                 sx={{ 
                   fontWeight: 'semibold', color: 'text.primary' 
                 }}
               >
-                Actions
+                {t('objectives.table.actions')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -213,7 +216,7 @@ const ObjectivesTable = ({
                 </TableCell>
                 <TableCell>
                   <Chip 
-                    label={objective.priority} 
+                    label={formatPriority(objective.priority)} 
                     size="small" 
                     color={getPriorityColor(objective.priority)}
                   />
@@ -228,7 +231,7 @@ const ObjectivesTable = ({
                   >
                     <CalendarTodayIcon fontSize="small" sx={{ color: "text.secondary" }} />
                     <Typography variant="body2" color="text.secondary">
-                      {formatDateString(objective.dueDate, "No due date", "")}
+                      {formatDateString(objective.dueDate, t('objectives.table.noDueDate'), "")}
                     </Typography>
                   </Box>
                 </TableCell>
@@ -320,6 +323,10 @@ const ObjectivesTable = ({
         page={page}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
+        labelRowsPerPage={t('objectives.table.pagination.rowsPerPage')}
+        labelDisplayedRows={({ from, to, count }) => 
+          t('objectives.table.pagination.displayedRows', { from, to, count })
+        }
         sx={{
           border: '1px solid #d1d1d1',
           borderTop: 'none',

@@ -23,9 +23,9 @@ class UserService:
 
             if existing_user:
                 if existing_user.username == username:
-                    raise Duplicate("Username already exists")
+                    raise Duplicate("El nombre de usuario ya existe")
                 if existing_user.email == email:
-                    raise Duplicate("Email already exists.")
+                    raise Duplicate("El correo electrónico ya existe")
         
         except APIException as api_error:
             raise api_error
@@ -64,7 +64,7 @@ class UserService:
             user = session.exec(query).first()
 
             if not user:
-                raise Missing("User not found")
+                raise Missing("Usuario no encontrado")
             return user
         
         except APIException as api_error:
@@ -79,7 +79,7 @@ class UserService:
             user = session.exec(query).first()
 
             if not user:
-                raise Missing("User not found")
+                raise Missing("Usuario no encontrado")
             return user
         
         except APIException as api_error:
@@ -124,12 +124,12 @@ class UserService:
             existing_user = self.get_user(user_id, session)
 
             if existing_user.disabled:
-                return {"message": "User is already deactivated"}
+                return {"message": "El usuario ya está desactivado"}
             
             existing_user.disabled = True
             session.commit()
 
-            return {"message": "User deactivated successfully"}
+            return {"message": "Usuario desactivado correctamente"}
         
         except Exception as err:
             session.rollback()

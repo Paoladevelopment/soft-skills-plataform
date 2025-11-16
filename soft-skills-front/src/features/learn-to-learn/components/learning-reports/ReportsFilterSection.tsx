@@ -1,5 +1,7 @@
 import { Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { PerceivedDifficulty, Mood } from '../../types/self-evaluation/self-evaluation.enums'
+import { formatDifficulty, formatMood } from '../../utils/selfEvaluationFormatters'
 
 type SortOption = 'date_desc' | 'date_asc'
 
@@ -20,6 +22,7 @@ const ReportsFilterSection = ({
   onDifficultyChange,
   onMoodChange,
 }: ReportsFilterSectionProps) => {
+  const { t } = useTranslation('reports')
   return (
     <Stack
       direction="row"
@@ -36,16 +39,16 @@ const ReportsFilterSection = ({
             minWidth: 200 
         }}
       >
-        <InputLabel id="sort-by-label">Sort by</InputLabel>
+        <InputLabel id="sort-by-label">{t('filters.sortBy')}</InputLabel>
         <Select
           labelId="sort-by-label"
           id="sort-by"
           value={sortBy}
-          label="Sort by"
+          label={t('filters.sortBy')}
           onChange={(e) => onSortChange(e.target.value as SortOption)}
         >
-          <MenuItem value="date_desc">Date (Newest first)</MenuItem>
-          <MenuItem value="date_asc">Date (Oldest first)</MenuItem>
+          <MenuItem value="date_desc">{t('filters.dateDesc')}</MenuItem>
+          <MenuItem value="date_asc">{t('filters.dateAsc')}</MenuItem>
         </Select>
       </FormControl>
 
@@ -55,18 +58,18 @@ const ReportsFilterSection = ({
           minWidth: 150 
         }}
       >
-        <InputLabel id="difficulty-label">Difficulty</InputLabel>
+        <InputLabel id="difficulty-label">{t('filters.difficulty')}</InputLabel>
         <Select
           labelId="difficulty-label"
           id="difficulty"
           value={difficultyFilter}
-          label="Difficulty"
+          label={t('filters.difficulty')}
           onChange={(e) => onDifficultyChange(e.target.value)}
         >
-          <MenuItem value="All">All</MenuItem>
-          <MenuItem value={PerceivedDifficulty.EASY}>Easy</MenuItem>
-          <MenuItem value={PerceivedDifficulty.MODERATE}>Medium</MenuItem>
-          <MenuItem value={PerceivedDifficulty.HARD}>Hard</MenuItem>
+          <MenuItem value="All">{t('filters.all')}</MenuItem>
+          <MenuItem value={PerceivedDifficulty.EASY}>{formatDifficulty(PerceivedDifficulty.EASY)}</MenuItem>
+          <MenuItem value={PerceivedDifficulty.MODERATE}>{formatDifficulty(PerceivedDifficulty.MODERATE)}</MenuItem>
+          <MenuItem value={PerceivedDifficulty.HARD}>{formatDifficulty(PerceivedDifficulty.HARD)}</MenuItem>
         </Select>
       </FormControl>
 
@@ -76,22 +79,22 @@ const ReportsFilterSection = ({
           minWidth: 150 
         }}
       >
-        <InputLabel id="mood-label">Mood</InputLabel>
+        <InputLabel id="mood-label">{t('filters.mood')}</InputLabel>
         <Select
           labelId="mood-label"
           id="mood"
           value={moodFilter}
-          label="Mood"
+          label={t('filters.mood')}
           onChange={(e) => onMoodChange(e.target.value)}
         >
-          <MenuItem value="All">All</MenuItem>
-          <MenuItem value={Mood.ENERGIZED}>Energized</MenuItem>
-          <MenuItem value={Mood.CALM}>Calm</MenuItem>
-          <MenuItem value={Mood.NEUTRAL}>Neutral</MenuItem>
-          <MenuItem value={Mood.TIRED}>Tired</MenuItem>
-          <MenuItem value={Mood.FRUSTRATED}>Frustrated</MenuItem>
-          <MenuItem value={Mood.STRESSED}>Stressed</MenuItem>
-          <MenuItem value={Mood.OTHER}>Other</MenuItem>
+          <MenuItem value="All">{t('filters.all')}</MenuItem>
+          <MenuItem value={Mood.ENERGIZED}>{formatMood(Mood.ENERGIZED)}</MenuItem>
+          <MenuItem value={Mood.CALM}>{formatMood(Mood.CALM)}</MenuItem>
+          <MenuItem value={Mood.NEUTRAL}>{formatMood(Mood.NEUTRAL)}</MenuItem>
+          <MenuItem value={Mood.TIRED}>{formatMood(Mood.TIRED)}</MenuItem>
+          <MenuItem value={Mood.FRUSTRATED}>{formatMood(Mood.FRUSTRATED)}</MenuItem>
+          <MenuItem value={Mood.STRESSED}>{formatMood(Mood.STRESSED)}</MenuItem>
+          <MenuItem value={Mood.OTHER}>{formatMood(Mood.OTHER)}</MenuItem>
         </Select>
       </FormControl>
     </Stack>

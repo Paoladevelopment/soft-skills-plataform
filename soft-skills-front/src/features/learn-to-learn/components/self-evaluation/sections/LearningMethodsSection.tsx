@@ -6,10 +6,13 @@ import {
   Checkbox,
   Grid2,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useSelfEvaluationDraftStore } from '../../../store/useSelfEvaluationDraftStore'
 import { LearningMethod } from '../../../types/self-evaluation/self-evaluation.enums'
+import { formatLearningMethod } from '../../../utils/selfEvaluationFormatters'
 
 const LearningMethodsSection = () => {
+  const { t } = useTranslation('reports')
   const learningMethods = useSelfEvaluationDraftStore((state) => state.learning_methods)
   const toggleLearningMethod = useSelfEvaluationDraftStore((state) => state.toggleLearningMethod)
 
@@ -22,7 +25,7 @@ const LearningMethodsSection = () => {
           color: 'text.primary' 
         }}
       >
-        What strategies did you use?
+        {t('selfEvaluation.fields.whatStrategiesDidYouUse')}
       </FormLabel>
       <FormGroup>
         <Grid2 container spacing={2}>
@@ -34,7 +37,7 @@ const LearningMethodsSection = () => {
                   onChange={() => toggleLearningMethod(LearningMethod.PRACTICE)}
                 />
               }
-              label="Practice"
+              label={formatLearningMethod(LearningMethod.PRACTICE)}
               sx={{ alignItems: 'center', margin: 0 }}
             />
           </Grid2>
@@ -46,7 +49,7 @@ const LearningMethodsSection = () => {
                   onChange={() => toggleLearningMethod(LearningMethod.NOTE_TAKING)}
                 />
               }
-              label="Note Taking"
+              label={formatLearningMethod(LearningMethod.NOTE_TAKING)}
               sx={{ alignItems: 'center', margin: 0 }}
             />
           </Grid2>
@@ -58,7 +61,7 @@ const LearningMethodsSection = () => {
                   onChange={() => toggleLearningMethod(LearningMethod.SPACED_REPETITION)}
                 />
               }
-              label="Spaced Repetition"
+              label={formatLearningMethod(LearningMethod.SPACED_REPETITION)}
               sx={{ alignItems: 'center', margin: 0 }}
             />
           </Grid2>
@@ -70,7 +73,7 @@ const LearningMethodsSection = () => {
                   onChange={() => toggleLearningMethod(LearningMethod.SUMMARIZATION)}
                 />
               }
-              label="Summarization"
+              label={formatLearningMethod(LearningMethod.SUMMARIZATION)}
               sx={{ alignItems: 'center', margin: 0 }}
             />
           </Grid2>
@@ -82,7 +85,7 @@ const LearningMethodsSection = () => {
                   onChange={() => toggleLearningMethod(LearningMethod.TEACH_BACK)}
                 />
               }
-              label="Teach Back"
+              label={formatLearningMethod(LearningMethod.TEACH_BACK)}
               sx={{ alignItems: 'center', margin: 0 }}
             />
           </Grid2>
@@ -94,7 +97,7 @@ const LearningMethodsSection = () => {
                   onChange={() => toggleLearningMethod(LearningMethod.FLASHCARDS)}
                 />
               }
-              label="Flashcards"
+              label={formatLearningMethod(LearningMethod.FLASHCARDS)}
               sx={{ alignItems: 'center', margin: 0 }}
             />
           </Grid2>
@@ -106,7 +109,7 @@ const LearningMethodsSection = () => {
                   onChange={() => toggleLearningMethod(LearningMethod.OTHER)}
                 />
               }
-              label="Other"
+              label={formatLearningMethod(LearningMethod.OTHER)}
               sx={{ alignItems: 'center', margin: 0 }}
             />
           </Grid2>

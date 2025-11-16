@@ -1,4 +1,5 @@
 import { Box, FormControl, FormControlLabel, RadioGroup, Radio, Typography, Card } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { FocusModePayload } from '../../types/game-sessions/gamePlay.models'
 
 interface FocusModeProps {
@@ -9,6 +10,7 @@ interface FocusModeProps {
 }
 
 const FocusMode = ({ modePayload, selectedIndex, onAnswerChange, disabled = false }: FocusModeProps) => {
+  const { t } = useTranslation('game')
   return (
     <Box 
       sx={{ 
@@ -32,7 +34,7 @@ const FocusMode = ({ modePayload, selectedIndex, onAnswerChange, disabled = fals
             fontWeight: 'bold', 
             color: '#5E35B1' 
           }}>
-          Question
+          {t('play.question')}
         </Typography>
         <Typography 
           variant="body1" 
@@ -52,7 +54,7 @@ const FocusMode = ({ modePayload, selectedIndex, onAnswerChange, disabled = fals
             fontWeight: 'bold', 
             mb: 2 
           }}>
-            Select your answer:
+            {t('play.selectAnswer')}
         </Typography>
         <RadioGroup
           value={selectedIndex !== null ? selectedIndex.toString() : ''}

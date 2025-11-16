@@ -53,10 +53,10 @@ class ObjectiveSummary(SQLModel):
     }
 
 class ObjectiveUpdate(SQLModel):
-    title: str | None = Field(default=None, description="Updated title of the objective")
-    description: str | None = Field(default=None, description="Updated detailed explanation of the objective's purpose")
-    priority: Priority | None = Field(default=None, description="Updated priority level of the objective (low, medium, high)")
-    due_date: datetime | None = Field(default=None, description="Updated deadline for completing the objective (ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ)")
+    title: str | None = Field(default=None, description="Título actualizado del objetivo")
+    description: str | None = Field(default=None, description="Explicación detallada actualizada del propósito del objetivo")
+    priority: Priority | None = Field(default=None, description="Nivel de prioridad actualizado del objetivo (low, medium, high)")
+    due_date: datetime | None = Field(default=None, description="Fecha límite actualizada para completar el objetivo (formato ISO 8601: YYYY-MM-DDTHH:MM:SSZ)")
 
     @field_serializer("due_date", when_used="json")
     def serialize_due_date(self, v: datetime | None) -> str | None:

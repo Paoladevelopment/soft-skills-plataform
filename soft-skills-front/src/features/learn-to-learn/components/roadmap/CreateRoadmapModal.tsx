@@ -10,6 +10,7 @@ import {
   IconButton,
   useTheme
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import ChatIcon from '@mui/icons-material/SmartToy'
 import FlowChartIcon from '@mui/icons-material/AccountTree'
@@ -26,6 +27,7 @@ interface Props {
 }
 
 const CreateRoadmapModal = ({ open, onClose }: Props) => {
+  const { t } = useTranslation('roadmap')
   const theme = useTheme()
   const navigate = useNavigate()
   const [selected, setSelected] = useState<RoadmapCreationOption>('chatbot')
@@ -70,7 +72,7 @@ const CreateRoadmapModal = ({ open, onClose }: Props) => {
             alignItems: 'center' 
           }}
         >
-          New Roadmap
+          {t('createModal.title')}
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -78,7 +80,7 @@ const CreateRoadmapModal = ({ open, onClose }: Props) => {
 
         <DialogContent>
           <Typography mb={2}>
-            How would you like to create your roadmap?
+            {t('createModal.question')}
           </Typography>
 
           <Stack direction="row" spacing={2}>
@@ -106,10 +108,10 @@ const CreateRoadmapModal = ({ open, onClose }: Props) => {
               <Stack direction="column" alignItems="center" spacing={1}>
                 <ChatIcon fontSize="large" />
                 <Typography variant="subtitle1" fontWeight="medium">
-                  Guided by Aithena
+                  {t('createModal.options.chatbot.title')}
                 </Typography>
                 <Typography variant="body2" textAlign="center" color="text.secondary">
-                  Let our AI tutor guide you through a personalized roadmap creation conversation.
+                  {t('createModal.options.chatbot.description')}
                 </Typography>
               </Stack>
             </Box>
@@ -138,10 +140,10 @@ const CreateRoadmapModal = ({ open, onClose }: Props) => {
               <Stack direction="column" alignItems="center" spacing={1}>
                 <FlowChartIcon fontSize="large" />
                 <Typography variant="subtitle1" fontWeight="medium">
-                  Start from scratch
+                  {t('createModal.options.manual.title')}
                 </Typography>
                 <Typography variant="body2" textAlign="center" color="text.secondary">
-                  Build your roadmap manually using our visual editor.
+                  {t('createModal.options.manual.description')}
                 </Typography>
               </Stack>
             </Box>
@@ -150,14 +152,14 @@ const CreateRoadmapModal = ({ open, onClose }: Props) => {
 
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={onClose} variant="text" color="inherit">
-            Cancel
+            {t('createModal.buttons.cancel')}
           </Button>
           <Button
             onClick={handleGetStarted}
             variant="contained"
             color="secondary"
           >
-            Get started
+            {t('createModal.buttons.getStarted')}
           </Button>
         </DialogActions>
       </Dialog>

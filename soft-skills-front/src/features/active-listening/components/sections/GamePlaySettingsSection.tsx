@@ -8,17 +8,19 @@ import {
   Grid2,
   Typography,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
 import { PlayMode } from '../../types/game-sessions/gameSession.models'
 
 const GamePlaySettingsSection = () => {
+  const { t } = useTranslation('game')
   const selectedModes = useGameSessionDraftStore((state) => state.selectedModes)
   const togglePlayMode = useGameSessionDraftStore((state) => state.togglePlayMode)
 
   return (
     <Box>
       <Typography variant="h6" fontWeight="bold" color="white" mb={2}>
-        Game Play Settings
+        {t('play.settings.title')}
       </Typography>
       <FormControl component="fieldset">
         <FormLabel 
@@ -28,7 +30,7 @@ const GamePlaySettingsSection = () => {
             mb: 1 
           }}
         >
-          Allowed Play Modes (select at least one)
+          {t('play.settings.allowedModes')}
         </FormLabel>
         <FormGroup 
           sx={{ 
@@ -50,7 +52,7 @@ const GamePlaySettingsSection = () => {
                     }}
                   />
                 }
-                label="Focus"
+                label={t('play.settings.focus')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
@@ -66,7 +68,7 @@ const GamePlaySettingsSection = () => {
                     }}
                   />
                 }
-                label="Cloze"
+                label={t('play.settings.cloze')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
@@ -82,7 +84,7 @@ const GamePlaySettingsSection = () => {
                     }}
                   />
                 }
-                label="Paraphrase"
+                label={t('play.settings.paraphrase')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
@@ -98,7 +100,7 @@ const GamePlaySettingsSection = () => {
                     }}
                   />
                 }
-                label="Summarize"
+                label={t('play.settings.summarize')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>
@@ -114,7 +116,7 @@ const GamePlaySettingsSection = () => {
                     }}
                   />
                 }
-                label="Clarify"
+                label={t('play.settings.clarify')}
                 sx={{ alignItems: 'center', margin: 0 }}
               />
             </Grid2>

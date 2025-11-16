@@ -1,4 +1,5 @@
 import { Box, Typography, Card } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { CheckCircle, Cancel } from '@mui/icons-material'
 
 interface ScoreFeedbackProps {
@@ -8,6 +9,7 @@ interface ScoreFeedbackProps {
 }
 
 const ScoreFeedback = ({ isCorrect, score, maxScore }: ScoreFeedbackProps) => {
+  const { t } = useTranslation('game')
   return (
     <Card
       sx={{
@@ -64,7 +66,7 @@ const ScoreFeedback = ({ isCorrect, score, maxScore }: ScoreFeedbackProps) => {
             fontSize: '1.125rem',
           }}
         >
-          {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+          {isCorrect ? `✓ ${t('result.correct')}` : `✗ ${t('result.incorrect')}`}
         </Typography>
       </Box>
       <Box 
@@ -89,7 +91,7 @@ const ScoreFeedback = ({ isCorrect, score, maxScore }: ScoreFeedbackProps) => {
               fontWeight: 600,
             }}
           >
-            Score: {score} / {maxScore}
+            {t('result.score', { score, maxScore })}
           </Typography>
       </Box>
     </Card>

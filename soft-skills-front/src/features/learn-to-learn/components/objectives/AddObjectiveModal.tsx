@@ -14,6 +14,7 @@ import {
   Select,
   FormHelperText
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import { SubmitHandler, useForm, Controller } from "react-hook-form"
 import { z } from 'zod'
@@ -22,16 +23,16 @@ import { useEffect } from 'react'
 import { CreateObjectivePayload } from '../../types/planner/objectives.api'
 import { Priority } from '../../types/common.enums'
 
-const addObjectiveSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
+const createAddObjectiveSchema = (t: (key: string) => string) => z.object({
+  title: z.string().min(1, t('objectives.addModal.validation.titleRequired')),
+  description: z.string().min(1, t('objectives.addModal.validation.descriptionRequired')),
   priority: z.nativeEnum(Priority, {
-    required_error: "Priority is required",
+    required_error: t('objectives.addModal.validation.priorityRequired'),
   }),
   due_date: z.string().optional(),
 })
 
-type AddObjectiveFields = z.infer<typeof addObjectiveSchema>
+type AddObjectiveFields = z.infer<ReturnType<typeof createAddObjectiveSchema>>
 
 interface AddObjectiveModalProps {
   open: boolean
@@ -41,6 +42,9 @@ interface AddObjectiveModalProps {
 }
 
 const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObjectiveModalProps) => {
+  const { t } = useTranslation('goals')
+  const addObjectiveSchema = createAddObjectiveSchema(t)
+  
   const {
     register,
     handleSubmit,
@@ -86,7 +90,7 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
     >
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography fontWeight="bold">Create objective</Typography>
+          <Typography fontWeight="bold">{t('objectives.addModal.title')}</Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -97,8 +101,8 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField
             id="objective-title"
-            label="Title"
-            placeholder="Objective title"
+            label={t('objectives.addModal.titleLabel')}
+            placeholder={t('objectives.addModal.titlePlaceholder')}
             fullWidth
             autoFocus
             {...register('title')}
@@ -108,8 +112,8 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
 
           <TextField
             id="objective-description"
-            label="Description"
-            placeholder="Add a short description"
+            label={t('objectives.addModal.descriptionLabel')}
+            placeholder={t('objectives.addModal.descriptionPlaceholder')}
             fullWidth
             multiline
             minRows={3}
@@ -123,17 +127,17 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
             control={control}
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.priority}>
-                <InputLabel id="objective-priority-label">Priority</InputLabel>
+                <InputLabel id="objective-priority-label">{t('objectives.addModal.priorityLabel')}</InputLabel>
                 <Select
                   labelId="objective-priority-label"
                   id="objective-priority"
-                  label="Priority"
+                  label={t('objectives.addModal.priorityLabel')}
                   value={field.value ?? Priority.Medium}
                   onChange={field.onChange}
                 >
-                  <MenuItem value={Priority.Low}>Low</MenuItem>
-                  <MenuItem value={Priority.Medium}>Medium</MenuItem>
-                  <MenuItem value={Priority.High}>High</MenuItem>
+                  <MenuItem value={Priority.Low}>{t('objectives.filters.low')}</MenuItem>
+                  <MenuItem value={Priority.Medium}>{t('objectives.filters.medium')}</MenuItem>
+                  <MenuItem value={Priority.High}>{t('objectives.filters.high')}</MenuItem>
                 </Select>
 
                 <FormHelperText>
@@ -145,7 +149,7 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
 
           <TextField
             id="objective-due-date"
-            label="Due date *"
+            label={t('objectives.addModal.dueDateLabel')}
             type="date"
             fullWidth
             slotProps={{
@@ -153,7 +157,7 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
                 shrink: true,
               },
             }}
-            placeholder="dd/mm/aaaa"
+            placeholder={t('objectives.addModal.dueDatePlaceholder')}
             {...register('due_date')}
             error={!!errors.due_date}
             helperText={errors.due_date?.message}
@@ -162,7 +166,7 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
 
         <DialogActions sx={{ px: 3, pb: 3 }}>
           <Button variant="contained" color="secondary" type="submit">
-            Create
+            {t('objectives.addModal.createButton')}
           </Button>
         </DialogActions>
       </form>

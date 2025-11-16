@@ -1,5 +1,6 @@
 import { Box, TextField, Typography, IconButton, InputAdornment } from '@mui/material'
 import { Edit, Check, Close } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
 import { useGameSessionStore } from '../../store/useGameSessionStore'
 import { useState } from 'react'
@@ -79,6 +80,8 @@ const ActionButtons = ({ onConfirm, onCancel }: ActionButtonsProps) => (
 )
 
 const GameSessionNameSection = ({ mode = GAME_SESSION_MODE.CREATE, sessionId }: GameSessionNameSectionProps) => {
+  const { t } = useTranslation('game')
+  
   const sessionName = useGameSessionDraftStore((state) => state.sessionName)
   const setSessionName = useGameSessionDraftStore((state) => state.setSessionName)
   const updateGameSession = useGameSessionStore((state) => state.updateGameSession)
@@ -107,12 +110,12 @@ const GameSessionNameSection = ({ mode = GAME_SESSION_MODE.CREATE, sessionId }: 
   return (
     <Box>
       <Typography variant="subtitle2" fontWeight="bold" color="white" mb={1}>
-        Session Name
+        {t('play.sessionForm.sessionName.label')}
       </Typography>
       <TextField
         fullWidth
         size="small"
-        placeholder="Enter session name"
+        placeholder={t('play.sessionForm.sessionName.placeholder')}
         value={sessionName}
         onChange={(e) => setSessionName(e.target.value)}
         disabled={isLocked}

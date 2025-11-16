@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Box, Container, Typography, Alert, Button, IconButton } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ArrowBack } from '@mui/icons-material'
 import { useGamePlayStore } from '../store/useGamePlayStore'
 import ResultHeader from '../components/game-result/ResultHeader'
@@ -11,6 +12,7 @@ import ScoreSummarySkeleton from '../components/game-result/skeletons/ScoreSumma
 import RoundsTimelineSkeleton from '../components/game-result/skeletons/RoundsTimelineSkeleton'
 
 const GameSessionResult = () => {
+  const { t } = useTranslation('game')
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
   const { result, isLoading, error, fetchSessionResult } = useGamePlayStore()
@@ -92,7 +94,7 @@ const GameSessionResult = () => {
             severity="error"
             action={
               <Button color="inherit" size="small" onClick={handleRetry}>
-                Retry
+                {t('result.retry')}
               </Button>
             }
             sx={{ mb: 3 }}

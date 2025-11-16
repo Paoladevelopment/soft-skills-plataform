@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { RoundRecap } from '../../types/gameSessionResult'
 import RoundCard from './RoundCard'
 
@@ -7,6 +8,7 @@ interface RoundsTimelineProps {
 }
 
 const RoundsTimeline = ({ rounds }: RoundsTimelineProps) => {
+  const { t } = useTranslation('game')
   const safeRounds = rounds || []
   
   if (safeRounds.length === 0) {
@@ -18,7 +20,7 @@ const RoundsTimeline = ({ rounds }: RoundsTimelineProps) => {
         }}
       >
         <Typography variant="body1">
-          No rounds available
+          {t('result.noRounds')}
         </Typography>
       </Box>
     )

@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Alert
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import RoadmapCard from '../components/roadmap/RoadmapCard'
@@ -19,6 +20,7 @@ import { FilterOption } from '../types/ui/filter.types'
 import { useExploreStore } from '../store/useExploreStore'
 
 const Explore = () => {
+  const { t } = useTranslation('roadmap')
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -128,16 +130,16 @@ const Explore = () => {
   const filterOptions: FilterOption[] = [
     {
       key: 'author',
-      label: 'Author',
+      label: t('explore.filters.author'),
       type: 'text',
-      placeholder: 'Enter author name'
+      placeholder: t('explore.filters.authorPlaceholder')
     },
     {
       key: 'stepsRange',
-      label: 'Steps Range',
+      label: t('explore.filters.stepsRange'),
       type: 'range',
-      minPlaceholder: 'min steps',
-      maxPlaceholder: 'max steps'
+      minPlaceholder: t('explore.filters.minSteps'),
+      maxPlaceholder: t('explore.filters.maxSteps')
     }
   ]
 
@@ -152,23 +154,23 @@ const Explore = () => {
     <Box p={4}>
       <Box mb={4}>
         <Typography variant="h4" fontWeight="bold">
-          Explore public roadmaps
+          {t('explore.title')}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          Discover learning paths created by the community
+          {t('explore.subtitle')}
         </Typography>
       </Box>
 
       <DataFilter
-        searchPlaceholder="Search public roadmaps..."
-        filterButtonText="Filter Roadmaps"
+        searchPlaceholder={t('explore.searchPlaceholder')}
+        filterButtonText={t('explore.filterButton')}
         searchValue={searchTerm}
         onSearchChange={handleSearchChange}
         filterOptions={filterOptions}
         selectedFilters={selectedFilters}
         onFilterChange={handleFilterChange}
         onApplyFilters={handleApplyFilters}
-        applyButtonText="Apply filters"
+        applyButtonText={t('explore.applyFilters')}
       />
 
       <ActiveFilters
@@ -183,12 +185,12 @@ const Explore = () => {
           severity="error" 
           action={
             <Button color="inherit" size="small" onClick={() => refetch()}>
-              Retry
+              {t('explore.errors.retry')}
             </Button>
           }
           sx={{ mb: 3 }}
         >
-          Failed to load roadmaps. Please try again.
+          {t('explore.errors.loadFailed')}
         </Alert>
       )}
 
@@ -201,7 +203,7 @@ const Explore = () => {
       {hasResults && (
         <>
           <Typography variant="body2" color="text.secondary" mb={3}>
-            Showing {roadmaps.length} of {total} roadmaps
+            {t('explore.showingResults', { count: roadmaps.length, total })}
           </Typography>
           
           <Grid2 container spacing={3} mb={4}>
@@ -233,9 +235,9 @@ const Explore = () => {
 
       {isEmpty && (
         <EmptyState
-          title="No public roadmaps found"
-          description="Try adjusting your search terms or filters to find more roadmaps."
-          buttonText="Clear Filters"
+          title={t('explore.empty.title')}
+          description={t('explore.empty.description')}
+          buttonText={t('explore.clearFilters')}
           onButtonClick={clearFilters}
         />
       )}

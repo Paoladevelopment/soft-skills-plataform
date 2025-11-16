@@ -358,7 +358,7 @@ class GameRoundService:
             
             return challenge
         except Exception as err:
-            raise InternalError(f"Failed to generate challenge: {str(err)}")
+            raise InternalError(f"Error al generar desafío: {str(err)}")
 
     def mark_round_as_served(self, game_round: GameRound) -> None:
         """Mark a round as served. Idempotent. Only changes status if not already attempted."""
@@ -418,7 +418,7 @@ class GameRoundService:
         )
         
         if not game_round:
-            raise Missing(f"Round {round_number} not found for session {game_session.game_session_id}")
+            raise Missing(f"Ronda {round_number} no encontrada para la sesión {game_session.game_session_id}")
         
         challenge = None
         if game_round.challenge_id:
@@ -450,15 +450,15 @@ class GameRoundService:
         
         if existing_submission.idempotency_key != idempotency_key:
             raise Conflict(
-                f"This round already has a submission with a different idempotency_key. "
-                f"Round can only have one submission."
+                f"Esta ronda ya tiene un envío con un idempotency_key diferente. "
+                f"La ronda solo puede tener un envío."
             )
         
         existing_payload = existing_submission.answer_payload or {}
         
         if existing_payload != answer_payload:
             raise Conflict(
-                "An attempt with this idempotency_key already exists with a different answer_payload"
+                "Ya existe un intento con este idempotency_key pero con un answer_payload diferente"
             )
         
         return existing_submission
@@ -479,26 +479,26 @@ class GameRoundService:
         for error in errors:
             field = error.get('loc', ['unknown'])[-1] if error.get('loc') else 'unknown'
             error_type = error.get('type', 'validation_error')
-            error_msg = error.get('msg', 'Invalid value')
+            error_msg = error.get('msg', 'Valor inválido')
             
             if error_type == 'missing':
-                error_messages.append(f"Missing required field '{field}'")
+                error_messages.append(f"Campo requerido faltante '{field}'")
             elif error_type == 'value_error':
-                error_messages.append(f"Invalid value for field '{field}': {error_msg}")
+                error_messages.append(f"Valor inválido para el campo '{field}': {error_msg}")
             elif error_type == 'type_error':
-                error_messages.append(f"Field '{field}' has wrong type: {error_msg}")
+                error_messages.append(f"El campo '{field}' tiene un tipo incorrecto: {error_msg}")
             else:
-                error_messages.append(f"Field '{field}': {error_msg}")
+                error_messages.append(f"Campo '{field}': {error_msg}")
         
         expected_fields = list(schema_class.model_fields.keys())
         provided_fields = list(answer_payload.keys()) if answer_payload else []
 
         error_detail = ". ".join(error_messages)
         message = (
-            f"Invalid answer payload for {play_mode.value} mode. "
+            f"Payload de respuesta inválido para el modo {play_mode.value}. "
             f"{error_detail}. "
-            f"Expected fields: {', '.join(expected_fields)}. "
-            f"Provided fields: {', '.join(provided_fields) if provided_fields else 'none'}."
+            f"Campos esperados: {', '.join(expected_fields)}. "
+            f"Campos proporcionados: {', '.join(provided_fields) if provided_fields else 'ninguno'}."
         )
         
         return message
@@ -522,7 +522,7 @@ class GameRoundService:
         schema_class = payload_schemas.get(play_mode)
         
         if not schema_class:
-            raise InvalidPayload(f"Unsupported play_mode: {play_mode}")
+            raise InvalidPayload(f"Modo de juego no soportado: {play_mode}")
         
         try:
             schema_class.model_validate(answer_payload)
@@ -546,24 +546,24 @@ class GameRoundService:
         """
         if round_number != game_session.current_round:
             raise BadRequest(
-                f"Round number {round_number} does not match current round {game_session.current_round}"
+                f"El número de ronda {round_number} no coincide con la ronda actual {game_session.current_round}"
             )
         
         game_round = self._get_existing_round(game_session, round_number, use_for_update=True, session=db_session)
         
         if not game_round:
-            raise Missing(f"Round {round_number} not found for session {game_session.game_session_id}")
+            raise Missing(f"Ronda {round_number} no encontrada para la sesión {game_session.game_session_id}")
         
         if game_round.status != GameRoundStatus.served:
             raise BadRequest(
-                f"Round must be in 'served' status to submit attempt. Current status: {game_round.status}"
+                f"La ronda debe estar en estado 'served' para enviar un intento. Estado actual: {game_round.status}"
             )
         
         if not game_round.play_mode:
-            raise BadRequest("Round play_mode is not set")
+            raise BadRequest("El play_mode de la ronda no está configurado")
         
         if not game_round.challenge_id:
-            raise Missing("Round challenge is not assigned")
+            raise Missing("El desafío de la ronda no está asignado")
         
         challenge = self.challenge_service.get_challenge(game_round.challenge_id, db_session)
         challenge_metadata = challenge.challenge_metadata or {}

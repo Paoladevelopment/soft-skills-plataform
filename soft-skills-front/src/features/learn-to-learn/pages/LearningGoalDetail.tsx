@@ -1,4 +1,5 @@
 import { Box, Typography, Breadcrumbs, Link, CircularProgress, Stack, Chip, Divider } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLearningGoalStore } from '../store/useLearningGoalStore'
 import { useLearningGoal, useUpdateLearningGoal } from '../hooks/useLearningGoals'
@@ -12,6 +13,7 @@ import { getLearningGoalStatusInfo, getStatusChipColor } from '../utils/learning
 import { useDebounce } from '../hooks/useDebounce'
 
 const LearningGoalDetail = () => {
+  const { t } = useTranslation('goals')
   const navigate = useNavigate()
   const { goalId } = useParams()
   const setSelectedGoalId = useLearningGoalStore(s => s.setSelectedGoalId)
@@ -110,15 +112,25 @@ const LearningGoalDetail = () => {
   if (error || !goal) {
     return (
       <NoResults
-        title="Goal not found"
-        description="The learning goal you're looking for doesn't exist or may have been removed."
-        buttonText="Back to Learning Goals"
+        title={t('goalDetail.notFound.title')}
+        description={t('goalDetail.notFound.description')}
+        buttonText={t('goalDetail.notFound.button')}
         onButtonClick={() => navigate('/learn/planner')}
       />
     )
   }
 
   const statusInfo = getLearningGoalStatusInfo(goal.completedAt, goal.startedAt)
+  
+  const getStatusKey = (status: string): string => {
+    const statusMap: Record<string, string> = {
+      'Not started': 'notStarted',
+      'In progress': 'inProgress',
+      'Completed': 'completed'
+    }
+    
+    return statusMap[status] || status.toLowerCase().replace(' ', '')
+  }
 
   return (
     <Box
@@ -143,7 +155,7 @@ const LearningGoalDetail = () => {
             textAlign: 'left'
           }}
         >
-          Learning Goals
+          {t('breadcrumbs.learningGoals')}
         </Link>
         <Typography color="text.primary">{goalData.title}</Typography>
       </Breadcrumbs>
@@ -161,7 +173,7 @@ const LearningGoalDetail = () => {
         >
           <Box sx={{ flex: 1 }}>
             <InlineEditableField
-              label="Title"
+              label={t('goalDetail.title')}
               defaultValue={goalData.title}
               onSave={(val) => saveField('title', val)}
               disableDefaultDecoration
@@ -171,7 +183,7 @@ const LearningGoalDetail = () => {
           <Stack direction="row" spacing={2} alignItems="center">
             {isSaving && (
               <Chip
-                label="Saving..."
+                label={t('goalDetail.saving')}
                 size="small"
                 color="info"
                 variant="outlined"
@@ -179,7 +191,7 @@ const LearningGoalDetail = () => {
             )}
 
             <Chip
-              label={statusInfo.status}
+              label={t(`goalDetail.status.${getStatusKey(statusInfo.status)}`, { defaultValue: statusInfo.status })}
               color={getStatusChipColor(statusInfo.status)}
               size="small"
             />
@@ -187,7 +199,7 @@ const LearningGoalDetail = () => {
             {statusInfo.elapsedTime && (
               <Chip
                 icon={<AccessTime />}
-                label={`Elapsed: ${statusInfo.elapsedTime}`}
+                label={`${t('goalDetail.elapsed')} ${statusInfo.elapsedTime}`}
                 variant="outlined"
                 size="small"
               />
@@ -196,7 +208,7 @@ const LearningGoalDetail = () => {
         </Stack>
         
         <InlineEditableField
-          label="Description"
+          label={t('goalDetail.description')}
           defaultValue={goalData.description}
           onSave={(val) => saveField('description', val)}
           multiline
@@ -204,7 +216,7 @@ const LearningGoalDetail = () => {
         />
 
         <InlineEditableField
-          label="Impact"
+          label={t('goalDetail.impact')}
           defaultValue={goalData.impact}
           onSave={(val) => saveField('impact', val)}
           multiline
@@ -214,22 +226,23 @@ const LearningGoalDetail = () => {
         <Divider sx={{ my: 3 }} />
 
         <DateDisplay
-          title="Dates"
+          title={t('goalDetail.dates.title')}
+          readOnlyLabel={t('goalDetail.dates.readOnly')}
           dates={[
             {
-              label: 'Created at',
+              label: t('goalDetail.dates.createdAt'),
               value: goal.createdAt
             },
             {
-              label: 'Updated at',
+              label: t('goalDetail.dates.updatedAt'),
               value: goal.updatedAt
             },
             {
-              label: 'Started at',
+              label: t('goalDetail.dates.startedAt'),
               value: goal.startedAt
             },
             {
-              label: 'Completed at',
+              label: t('goalDetail.dates.completedAt'),
               value: goal.completedAt
             }
           ]}

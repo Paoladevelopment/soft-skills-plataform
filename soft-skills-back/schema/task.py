@@ -68,20 +68,20 @@ class TaskSummary(SQLModel):
 
 
 class TaskUpdate(SQLModel):
-    title: str | None = Field(default=None, description="Updated title of the task")
-    description: str | None = Field(default=None, description="Updated detailed description of the task")
+    title: str | None = Field(default=None, description="Título actualizado de la tarea")
+    description: str | None = Field(default=None, description="Descripción detallada actualizada de la tarea")
     task_type: TaskType | None = Field(
         default=None, 
-        description="Updated type of task. Options: 'reading', 'practice', 'writing', 'research' (or others if defined)."
+        description="Tipo actualizado de tarea. Opciones: 'reading', 'practice', 'writing', 'research' (u otros si están definidos)."
         )
     priority: Priority | None = Field(
         default=None, 
-        description="Updated priority level of the task (low, medium, high)"
+        description="Nivel de prioridad actualizado de la tarea (low, medium, high)"
         )
-    due_date: datetime | None = Field(default=None, description="Updated deadline for completing the task (ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ)")
-    is_optional: bool | None = Field(default=None, description="Indicates whether the task is optional")
+    due_date: datetime | None = Field(default=None, description="Fecha límite actualizada para completar la tarea (formato ISO 8601: YYYY-MM-DDTHH:MM:SSZ)")
+    is_optional: bool | None = Field(default=None, description="Indica si la tarea es opcional")
     
-    estimated_seconds: int | None = Field(default=None, description="Time that will take to complete the task in seconds", ge=0)
+    estimated_seconds: int | None = Field(default=None, description="Tiempo que tomará completar la tarea en segundos", ge=0)
 
     @field_serializer("due_date", when_used="json")
     def serialize_due_date(self, v: datetime | None) -> str | None:

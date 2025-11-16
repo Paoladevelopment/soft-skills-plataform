@@ -3,6 +3,7 @@ import { Priority, Status } from '../types/common.enums'
 import { ObjectiveBoard, SubTask, TaskColumn } from '../types/kanban/board.types'
 import { CardData, ColumnData, ColumnModel, Task, DropTargetRecord } from '../types/kanban/drag-drop.types'
 import { normalizeDate } from './dateUtils'
+import i18n from '../../../i18n/config'
 
 /**
  * Transforms a TaskItem from the API to a SubTask for the component
@@ -94,10 +95,10 @@ export function transformKanbanApiResponse(
   objectiveTitle: string
 ): ObjectiveBoard {
   const columns: TaskColumn[] = [
-    createColumnFromApiData('todo', 'TO DO', apiResponse.columns.notStarted.items),
-    createColumnFromApiData('in-progress', 'IN PROGRESS', apiResponse.columns.inProgress.items),
-    createColumnFromApiData('done', 'DONE', apiResponse.columns.completed.items),
-    createColumnFromApiData('paused', 'PAUSED', apiResponse.columns.paused.items)
+    createColumnFromApiData('todo', i18n.t('goals:objectives.kanban.todo'), apiResponse.columns.notStarted.items),
+    createColumnFromApiData('in-progress', i18n.t('goals:objectives.kanban.inProgress'), apiResponse.columns.inProgress.items),
+    createColumnFromApiData('done', i18n.t('goals:objectives.kanban.done'), apiResponse.columns.completed.items),
+    createColumnFromApiData('paused', i18n.t('goals:objectives.kanban.paused'), apiResponse.columns.paused.items)
   ]
 
   return {

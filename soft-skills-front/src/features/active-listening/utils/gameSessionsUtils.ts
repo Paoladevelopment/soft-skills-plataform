@@ -1,4 +1,5 @@
 import { GameSessionStatus } from '../types/game-sessions/gameSession.models'
+import i18n from '../../../i18n/config'
 
 export const getStatusColor = (status: GameSessionStatus) => {
   switch (status) {
@@ -20,15 +21,15 @@ export const getStatusColor = (status: GameSessionStatus) => {
 export const getStatusLabel = (status: GameSessionStatus) => {
   switch (status) {
     case GameSessionStatus.PENDING:
-      return 'Not Started'
+      return i18n.t('sessions.status.notStarted', { ns: 'game' })
     case GameSessionStatus.IN_PROGRESS:
-      return 'In Progress'
+      return i18n.t('sessions.status.inProgress', { ns: 'game' })
     case GameSessionStatus.COMPLETED:
-      return 'Completed'
+      return i18n.t('sessions.status.completed', { ns: 'game' })
     case GameSessionStatus.PAUSED:
-      return 'Paused'
+      return i18n.t('sessions.status.paused', { ns: 'game' })
     case GameSessionStatus.CANCELLED:
-      return 'Cancelled'
+      return i18n.t('sessions.status.cancelled', { ns: 'game' })
     default:
       return status
   }

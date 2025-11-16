@@ -5,17 +5,17 @@ from utils.errors import APIException
 class InvalidPayload(APIException):
     """Invalid answer payload format or values"""
     status_code = status.HTTP_400_BAD_REQUEST
-    error_title = "Invalid Payload"
+    error_title = "Payload inválido"
 
 
 class MisconfiguredChallenge(APIException):
     """Challenge metadata is missing required fields or malformed"""
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-    error_title = "Misconfigured Challenge"
+    error_title = "Desafío mal configurado"
 
 
 class UnsupportedPlayMode(APIException):
     """Play mode is not supported for scoring"""
     status_code = status.HTTP_400_BAD_REQUEST
-    error_title = "Unsupported Play Mode"
+    error_title = "Modo de juego no soportado"
 

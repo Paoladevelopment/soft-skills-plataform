@@ -26,7 +26,7 @@ class ChallengeService:
             challenge = session.get(Challenge, challenge_id)
             
             if not challenge:
-                raise Missing(f"Challenge {challenge_id} not found")
+                raise Missing(f"Desafío {challenge_id} no encontrado")
                 
             return challenge
         
@@ -130,7 +130,7 @@ class ChallengeService:
         except Exception as e:
             session.rollback()
             raise APIException(
-                f"Failed to generate challenge: {str(e)}"
+                f"Error al generar desafío: {str(e)}"
             )
     
     def get_or_create_audio(
@@ -162,5 +162,5 @@ class ChallengeService:
         except Exception as e:
             session.rollback()
             logger.error(f"Error synthesizing/uploading audio: {str(e)}")
-            raise APIException(f"Failed to synthesize audio: {str(e)}")
+            raise APIException(f"Error al sintetizar audio: {str(e)}")
     

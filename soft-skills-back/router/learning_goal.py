@@ -21,7 +21,7 @@ objective_service = ObjectiveService()
 @router.post(
     "",
     response_model=LearningGoalResponse,
-    summary="Create learning goal",
+    summary="Crear meta de aprendizaje",
     status_code=status.HTTP_201_CREATED,
 )
 def create_learning_goal(
@@ -34,7 +34,7 @@ def create_learning_goal(
         learning_goal_data = LearningGoalRead.model_validate(created_learning_goal)
 
         return LearningGoalResponse(
-            message="Learning goal created successfully",
+            message="Meta de aprendizaje creada correctamente",
             data=learning_goal_data
         )
     
@@ -44,7 +44,7 @@ def create_learning_goal(
 
 @router.get(
     "/{id}", 
-    summary="Retrieve learning goal by ID", 
+    summary="Obtener meta de aprendizaje por ID", 
     response_model=LearningGoalResponse
 )
 def get_learning_goal(
@@ -57,7 +57,7 @@ def get_learning_goal(
         learning_goal_data = LearningGoalRead.model_validate(learning_goal)
 
         return LearningGoalResponse(
-            message="Learning goal retrieved successfully",
+            message="Meta de aprendizaje obtenida correctamente",
             data=learning_goal_data
         )
     
@@ -67,17 +67,17 @@ def get_learning_goal(
 
 @router.get(
     "/{id}/objectives",
-    summary="Get the objectives of a learning goal with optional filters",
+    summary="Obtener objetivos de una meta de aprendizaje con filtros opcionales",
     response_model=ObjectivePaginatedResponse
 )
 def get_objectives_by_learning_goal(
     id: str,
-    offset: int = Query(0, ge=0, description="Number of items to skip"),
-    limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
-    status: Optional[str] = Query(None, description="Filter by status ('completed', 'in_progress', etc.)"),
-    priority: List[str] = Query(None, description="Filter by priority values ('high', 'medium', 'low'). Can specify multiple values."),
-    search: Optional[str] = Query(None, description="Search objectives by title or description"),
-    order_by: List[str] = Query(None, description="Sorting criteria"),
+    offset: int = Query(0, ge=0, description="Número de elementos a omitir"),
+    limit: int = Query(10, le=100, description="Número máximo de elementos a recuperar (máx. 100)"),
+    status: Optional[str] = Query(None, description="Filtrar por estado ('completed', 'in_progress', etc.)"),
+    priority: List[str] = Query(None, description="Filtrar por valores de prioridad ('high', 'medium', 'low'). Se pueden especificar múltiples valores."),
+    search: Optional[str] = Query(None, description="Buscar objetivos por título o descripción"),
+    order_by: List[str] = Query(None, description="Criterios de ordenamiento"),
     _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session),
 ):
@@ -87,7 +87,7 @@ def get_objectives_by_learning_goal(
         )
 
         return ObjectivePaginatedResponse(
-            message="Objectives retrieved successfully",
+            message="Objetivos obtenidos correctamente",
             data=objectives,
             total=total_count,
             offset=offset,
@@ -99,7 +99,7 @@ def get_objectives_by_learning_goal(
 
 @router.patch(
     "/{id}", 
-    summary="Update learning goal details by ID", 
+    summary="Actualizar detalles de meta de aprendizaje por ID", 
     response_model=LearningGoalResponse
 )
 def update_learning_goal(
@@ -113,7 +113,7 @@ def update_learning_goal(
         learning_goal_data = LearningGoalRead.model_validate(updated_learning_goal)
 
         return LearningGoalResponse(
-            message="Learning goal updated successfully",
+            message="Meta de aprendizaje actualizada correctamente",
             data=learning_goal_data
         )
 
@@ -123,7 +123,7 @@ def update_learning_goal(
 
 @router.delete(
     "/{id}", 
-    summary="Delete learning goal by ID"
+    summary="Eliminar meta de aprendizaje por ID"
 )
 def delete_learning_goal(
     id: str, 
@@ -139,7 +139,7 @@ def delete_learning_goal(
 
 @router.post(
     "/{id}/convert-to-roadmap",
-    summary="Convert learning goal to roadmap",
+    summary="Convertir meta de aprendizaje a hoja de ruta de aprendizaje",
     status_code=status.HTTP_201_CREATED,
 )
 def convert_learning_goal_to_roadmap(

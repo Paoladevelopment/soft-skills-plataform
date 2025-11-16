@@ -14,7 +14,7 @@ module_service = ModuleService()
 @router.post(
     "",
     response_model=ModuleResponse,
-    summary="Create a module",
+    summary="Crear módulo",
     status_code=status.HTTP_201_CREATED,
 )
 def create_module(
@@ -27,7 +27,7 @@ def create_module(
         module_data = ModuleRead.model_validate(created_module)
 
         return ModuleResponse(
-            message="Module created successfully",
+            message="Módulo creado correctamente",
             data=module_data
         )
     
@@ -35,10 +35,10 @@ def create_module(
         raise_http_exception(exc) 
 
 
-@router.get("", summary="Retrieve all modules", response_model=ModulePaginatedResponse)
+@router.get("", summary="Obtener todos los módulos", response_model=ModulePaginatedResponse)
 def get_all_modules(
-        offset: int = Query(0, ge=0, description="Number of items to skip"),
-        limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
+        offset: int = Query(0, ge=0, description="Número de elementos a omitir"),
+        limit: int = Query(10, le=100, description="Número máximo de elementos a recuperar (máx. 100)"),
         _ = Depends(get_current_admin_user),
         session: Session = Depends(get_session),
     ):
@@ -46,7 +46,7 @@ def get_all_modules(
     try:
         modules, total_count = module_service.get_all_modules(offset, limit, session)
         return ModulePaginatedResponse(
-            message="Modules retrieved successfully",
+            message="Módulos obtenidos correctamente",
             data=modules,
             total=total_count,
             offset=offset,
@@ -57,7 +57,7 @@ def get_all_modules(
         raise_http_exception(exc)
 
 
-@router.get("/{id}", summary="Retrieve a module by ID", response_model=ModuleResponse)
+@router.get("/{id}", summary="Obtener módulo por ID", response_model=ModuleResponse)
 def get_module(
     id: int, 
     _ = Depends(get_current_admin_user),
@@ -68,7 +68,7 @@ def get_module(
         module_data = ModuleRead.model_validate(module)
 
         return ModuleResponse(
-            message="Modules retrieved successfully",
+            message="Módulo obtenido correctamente",
             data=module_data
         )
     
@@ -76,7 +76,7 @@ def get_module(
         raise_http_exception(exc)
 
 @router.patch(
-    "/{id}", summary="Update module details by ID", response_model=ModuleResponse
+    "/{id}", summary="Actualizar detalles de módulo por ID", response_model=ModuleResponse
 )
 def update_module(
     id: int, 
@@ -89,7 +89,7 @@ def update_module(
         module_data = ModuleRead.model_validate(updated_module)
 
         return ModuleResponse(
-            message="Module updated successfully",
+            message="Módulo actualizado correctamente",
             data=module_data
         )
 
@@ -97,7 +97,7 @@ def update_module(
         raise_http_exception(exc)
 
 
-@router.delete("/{id}", summary="Delete a module by ID")
+@router.delete("/{id}", summary="Eliminar módulo por ID")
 def delete_module(
     id: int, 
     _ = Depends(get_current_admin_user),

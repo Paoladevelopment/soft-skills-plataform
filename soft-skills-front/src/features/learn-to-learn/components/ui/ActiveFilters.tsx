@@ -1,4 +1,5 @@
 import { Box, Typography, Chip, Button } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { FilterOption, FilterType } from '../../types/ui/filter.types'
 
 export interface SelectedFilters {
@@ -18,6 +19,7 @@ const ActiveFilters = ({
   onRemoveFilter,
   onClearAllFilters
 }: ActiveFiltersProps) => {
+  const { t } = useTranslation('roadmap')
   const getFilterChips = () => {
     const chipLabelGenerators: Record<FilterType, (option: FilterOption, value: string) => string> = {
       text: (option: FilterOption, value: string) => `${option.label}: ${value}`,
@@ -73,7 +75,7 @@ const ActiveFilters = ({
         fontWeight="500"
         sx={{ mr: 1 }}
       >
-        Active filters:
+        {t('explore.activeFilters')}
       </Typography>
       
       {filterChips.map(chip => (
@@ -112,7 +114,7 @@ const ActiveFilters = ({
           ml: 1
         }}
       >
-        Clear all filters
+        {t('explore.clearAllFilters')}
       </Button>
     </Box>
   )

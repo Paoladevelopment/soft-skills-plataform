@@ -1,4 +1,5 @@
 import { Typography, Box } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import TealBorderedCard from './TealBorderedCard'
 
 interface ClozeCorrectAnswerDisplayProps {
@@ -7,6 +8,7 @@ interface ClozeCorrectAnswerDisplayProps {
 }
 
 const ClozeCorrectAnswerDisplay = ({ blanks, correctLabel }: ClozeCorrectAnswerDisplayProps) => {
+  const { t } = useTranslation('game')
   return (
     <TealBorderedCard borderLeftColor="#4CAF50">
       <Typography
@@ -33,7 +35,7 @@ const ClozeCorrectAnswerDisplay = ({ blanks, correctLabel }: ClozeCorrectAnswerD
               fontWeight: 600,
             }}
           >
-            Blank {idx + 1}:
+            {t('result.blank')} {idx + 1}:
           </Typography>
           <Typography
             component="span"

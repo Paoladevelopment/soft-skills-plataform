@@ -1,9 +1,11 @@
 import { Box, Container, Typography, IconButton, Button, Stack } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ArrowBack } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import backgroundImage from '../assets/code_breakers_main_background.png'
 
 const Home = () => {
+  const { t } = useTranslation('game')
   const navigate = useNavigate()
 
   const handleGoBack = () => {
@@ -122,7 +124,7 @@ const Home = () => {
                 },
               }}
             >
-              Game Sessions
+              {t('home.gameSessions')}
             </Button>
 
             <Button
@@ -147,7 +149,7 @@ const Home = () => {
                 },
               }}
             >
-              Leaderboard
+              {t('home.leaderboard')}
             </Button>
           </Stack>
         </Stack>

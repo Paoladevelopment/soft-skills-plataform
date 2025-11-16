@@ -1,7 +1,9 @@
 import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import GoalsSection from '../components/planner/GoalsSection'
 
 const Planner = () => {
+  const { t } = useTranslation('goals')
   return (
     <Box
       sx={{
@@ -22,10 +24,10 @@ const Planner = () => {
         }}
       >
           <Typography variant="h4" component="h1" fontWeight="bold">
-            Self-regulated learning
+            {t('title')}
           </Typography>
           <Typography variant="subtitle1" component="p">
-            Organize your learning goals, objectives, and tasks as part of your self-regulated learning journey.
+            {t('subtitle')}
           </Typography>
       </Box>
     

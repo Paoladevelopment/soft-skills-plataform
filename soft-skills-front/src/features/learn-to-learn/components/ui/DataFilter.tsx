@@ -7,6 +7,7 @@ import {
   Typography,
   Stack,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import SearchIcon from '@mui/icons-material/Search'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
@@ -41,6 +42,7 @@ const DataFilter = ({
   onApplyFilters,
   applyButtonText = "Aplicar filtros"
 }: DataFilterProps) => {
+  const { t } = useTranslation('roadmap')
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [rangeErrors, setRangeErrors] = useState<{[key: string]: string}>({})
 
@@ -125,7 +127,7 @@ const DataFilter = ({
           const maxNum = parseInt(max)
           
           if (maxNum < minNum) {
-            errors[option.key] = `Max value cannot be less than min value`
+            errors[option.key] = t('explore.errors.rangeError')
           }
         }
       }
@@ -299,7 +301,7 @@ const DataFilter = ({
                       }}
                     />
                     <Typography variant="body2" color="text.secondary">
-                      to
+                      {t('explore.range.to')}
                     </Typography>
                     <TextField
                       id={`filter-${option.key}-max`}

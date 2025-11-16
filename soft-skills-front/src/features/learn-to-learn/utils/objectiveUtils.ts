@@ -1,6 +1,7 @@
 import { Status } from '../types/common.enums'
 import { calculateElapsedTime } from '../../../utils/timeUtils'
 import { PRIORITY_COLORS, STATUS_COLORS, PriorityColorValue, StatusColorValue } from '../types/ui/colors'
+import i18n from '../../../i18n/config'
 
 export interface ObjectiveStatusInfo {
   status: string
@@ -38,10 +39,25 @@ export function getObjectiveStatusChipColor(status: string): StatusColorValue {
 
 /**
  * General function to format status strings
- * Converts snake_case to readable format
+ * Uses i18n to translate status values
  */
 export function formatStatus(status: string): string {
-  return status.replace('_', ' ')
+  // Map status values to translation keys (camelCase)
+  const statusMap: Record<string, string> = {
+    'not_started': 'notStarted',
+    'in_progress': 'inProgress',
+    'completed': 'completed',
+    'paused': 'paused',
+    'notstarted': 'notStarted',
+    'inprogress': 'inProgress'
+  }
+  
+  const normalizedStatus = status.toLowerCase().replace(/_/g, '')
+  const statusKey = statusMap[normalizedStatus] || statusMap[status.toLowerCase()] || normalizedStatus
+  const key = `goals:objectives.filters.${statusKey}`
+  
+  const translated = i18n.t(key)
+  return translated !== key ? translated : status.replace(/_/g, ' ')
 }
 
 /**
@@ -75,4 +91,15 @@ export function getPriorityColor(priority: string): PriorityColorValue {
   if (lowerPriority === 'medium') return PRIORITY_COLORS.MEDIUM
   
   return PRIORITY_COLORS.LOW
+}
+
+/**
+ * Formats priority strings using i18n
+ */
+export function formatPriority(priority: string): string {
+  const priorityKey = priority.toLowerCase()
+  const key = `goals:objectives.filters.${priorityKey}`
+  
+  const translated = i18n.t(key)
+  return translated !== key ? translated : priority
 }

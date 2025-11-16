@@ -1,4 +1,5 @@
 import { Typography, Stack, Chip, Grid2 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { AccessTimeOutlined, Lock } from '@mui/icons-material'
 import { formatTimeAgo, formatDate } from '../../../../utils/timeUtils'
 
@@ -9,10 +10,12 @@ interface DateItem {
 
 interface DateDisplayProps {
   title: string
+  readOnlyLabel?: string
   dates: DateItem[]
 }
 
-const DateDisplay = ({ title, dates }: DateDisplayProps) => {
+const DateDisplay = ({ title, readOnlyLabel, dates }: DateDisplayProps) => {
+  const { t } = useTranslation('goals')
   
   const renderDateItem = (dateItem: DateItem) => (
     <Stack 
@@ -73,7 +76,7 @@ const DateDisplay = ({ title, dates }: DateDisplayProps) => {
         
         <Chip
           icon={<Lock />}
-          label="Read-only"
+          label={readOnlyLabel || t('goalDetail.dates.readOnly')}
           size="small"
           variant="outlined"
           color="default"

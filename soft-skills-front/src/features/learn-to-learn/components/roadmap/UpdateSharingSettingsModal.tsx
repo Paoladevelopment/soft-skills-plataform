@@ -11,6 +11,7 @@ import {
   IconButton,
   CircularProgress,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { Lock, Public } from '@mui/icons-material'
 import { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
@@ -24,6 +25,7 @@ interface Props {
 }
 
 const UpdateSharingSettingsModal = ({ open, visibility, onSubmit, onClose }: Props) => {
+  const { t } = useTranslation('roadmap')
   const [selectedVisibility, setSelectedVisibility] = useState<RoadmapVisibility>(visibility)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -51,7 +53,7 @@ const UpdateSharingSettingsModal = ({ open, visibility, onSubmit, onClose }: Pro
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography fontWeight="bold">Update Sharing Settings</Typography>
+          <Typography fontWeight="bold">{t('editor.sharing.title')}</Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -60,7 +62,7 @@ const UpdateSharingSettingsModal = ({ open, visibility, onSubmit, onClose }: Pro
 
       <DialogContent>
         <Typography variant="body2" mb={2}>
-          Pick and modify who can access this roadmap.
+          {t('editor.sharing.instruction')}
         </Typography>
 
         <ToggleButtonGroup
@@ -75,14 +77,14 @@ const UpdateSharingSettingsModal = ({ open, visibility, onSubmit, onClose }: Pro
             sx={{ textTransform: 'none' }}
           >
             <Lock fontSize="small" sx={{ mr: 1 }} />
-            Only me
+            {t('editor.sharing.onlyMe')}
           </ToggleButton>
           <ToggleButton 
             value={RoadmapVisibility.Public}
             sx={{ textTransform: 'none' }}
           >
             <Public fontSize="small" sx={{ mr: 1 }} />
-            Public
+            {t('editor.sharing.public')}
           </ToggleButton>
         </ToggleButtonGroup>
 
@@ -97,13 +99,13 @@ const UpdateSharingSettingsModal = ({ open, visibility, onSubmit, onClose }: Pro
           {isPrivate && (
             <>
               <Lock fontSize="large" />
-              <Typography mt={1}>Only you will be able to access.</Typography>
+              <Typography mt={1}>{t('editor.sharing.onlyYouAccess')}</Typography>
             </>
           )}
           {isPublic && (
             <>
               <Public fontSize="large" />
-              <Typography mt={1}>Anyone with the link can access.</Typography>
+              <Typography mt={1}>{t('editor.sharing.anyoneWithLink')}</Typography>
             </>
           )}
         </Box>
@@ -116,7 +118,7 @@ const UpdateSharingSettingsModal = ({ open, visibility, onSubmit, onClose }: Pro
         }}
       >
         <Button onClick={onClose} variant="outlined" color="inherit">
-          Close
+          {t('editor.sharing.close')}
         </Button>
         <Button 
           onClick={handleSave} 
@@ -128,7 +130,7 @@ const UpdateSharingSettingsModal = ({ open, visibility, onSubmit, onClose }: Pro
               size={20} 
               sx={{ color: 'white', mr: 1 }} />
           ) : null}
-          Update Sharing Settings
+          {t('editor.sharing.update')}
         </Button>
       </DialogActions>
     </Dialog>

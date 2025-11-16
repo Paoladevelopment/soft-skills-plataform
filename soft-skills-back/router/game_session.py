@@ -93,12 +93,12 @@ def _build_round_response(
 
 @router.get(
     "",
-    summary="List all game sessions owned by the authenticated user",
+    summary="Listar todas las sesiones de juego del usuario autenticado",
     response_model=GameSessionPaginatedResponse,
 )
 def list_game_sessions(
-    offset: int = Query(0, ge=0, description="Number of items to skip"),
-    limit: int = Query(10, le=100, description="Maximum number of items to retrieve (max 100)"),
+    offset: int = Query(0, ge=0, description="Número de elementos a omitir"),
+    limit: int = Query(10, le=100, description="Número máximo de elementos a recuperar (máx. 100)"),
     token_data: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session)
 ):
@@ -108,7 +108,7 @@ def list_game_sessions(
         )
         
         return GameSessionPaginatedResponse(
-            message="Game sessions retrieved successfully",
+            message="Sesiones de juego obtenidas correctamente",
             data=game_session_summaries,
             total=total_count,
             offset=offset,
@@ -121,7 +121,7 @@ def list_game_sessions(
 
 @router.post(
     "",
-    summary="Create a new single-player listening game session",
+    summary="Crear una nueva sesión de juego de escucha para un solo jugador",
     response_model=GameSessionResponse[GameSessionRead],
     status_code=status.HTTP_201_CREATED,
 )
@@ -138,7 +138,7 @@ def create_game_session(
         game_read = GameSessionRead.model_validate(created_session)
         
         return GameSessionResponse(
-            message="Game session created successfully",
+            message="Sesión de juego creada correctamente",
             data=game_read
         )
     
@@ -148,7 +148,7 @@ def create_game_session(
 
 @router.post(
     "/{session_id}/start",
-    summary="Start a game session",
+    summary="Iniciar una sesión de juego",
     response_model=GameSessionStartResponse,
 )
 def start_game_session(
@@ -180,7 +180,7 @@ def start_game_session(
 
 @router.get(
     "/{session_id}",
-    summary="Get game session details with embedded config",
+    summary="Obtener detalles de sesión de juego con configuración incluida",
     response_model=GameSessionResponse[GameSessionDetail],
 )
 def get_game_session(
@@ -203,7 +203,7 @@ def get_game_session(
         )
         
         return GameSessionResponse(
-            message="Game session retrieved successfully",
+            message="Sesión de juego obtenida correctamente",
             data=game_detail
         )
     
@@ -213,7 +213,7 @@ def get_game_session(
 
 @router.patch(
     "/{session_id}",
-    summary="Update game session name and/or status",
+    summary="Actualizar nombre y/o estado de sesión de juego",
     response_model=GameSessionResponse[GameSessionRead],
 )
 def update_game_session(
@@ -234,7 +234,7 @@ def update_game_session(
         game_read = GameSessionRead.model_validate(updated_session)
         
         return GameSessionResponse(
-            message="Game session updated successfully",
+            message="Sesión de juego actualizada correctamente",
             data=game_read
         )
     
@@ -244,7 +244,7 @@ def update_game_session(
 
 @router.patch(
     "/{session_id}/config",
-    summary="Partially update game session configuration",
+    summary="Actualizar parcialmente la configuración de sesión de juego",
     response_model=BaseResponse[GameSessionConfigRead],
 )
 def update_game_session_config(
@@ -263,7 +263,7 @@ def update_game_session_config(
         config_read = GameSessionConfigRead.model_validate(updated_config)
         
         return BaseResponse(
-            message="Game session configuration updated successfully",
+            message="Configuración de sesión de juego actualizada correctamente",
             data=config_read
         )
     
@@ -273,7 +273,7 @@ def update_game_session_config(
 
 @router.delete(
     "/{session_id}",
-    summary="Delete a game session by ID",
+    summary="Eliminar sesión de juego por ID",
     status_code=status.HTTP_200_OK
 )
 def delete_game_session(
@@ -291,7 +291,7 @@ def delete_game_session(
 
 @router.get(
     "/{session_id}/rounds/current",
-    summary="Get the current round of a game session",
+    summary="Obtener la ronda actual de una sesión de juego",
     response_model=BaseResponse[CurrentRoundResponse],
 )
 def get_current_round(
@@ -318,7 +318,7 @@ def get_current_round(
         response_data = _build_round_response(game_round, challenge, config, game_session, session)
         
         return BaseResponse(
-            message="Current round retrieved successfully",
+            message="Ronda actual obtenida correctamente",
             data=response_data
         )
     
@@ -328,7 +328,7 @@ def get_current_round(
 
 @router.get(
     "/{session_id}/rounds/{round_number}",
-    summary="Get a specific round by round number",
+    summary="Obtener una ronda específica por número de ronda",
     response_model=BaseResponse[CurrentRoundResponse],
 )
 def get_round_by_number(
@@ -348,7 +348,7 @@ def get_round_by_number(
         response_data = _build_round_response(game_round, challenge, config, game_session, session)
         
         return BaseResponse(
-            message="Round retrieved successfully",
+            message="Ronda obtenida correctamente",
             data=response_data
         )
     
@@ -358,7 +358,7 @@ def get_round_by_number(
 
 @router.post(
     "/{session_id}/rounds/next",
-    summary="Advance to next round (strict: only after attempted)",
+    summary="Avanzar a la siguiente ronda (estricto: solo después de intentar)",
     response_model=BaseResponse[AdvanceNextRoundResponse],
     status_code=status.HTTP_200_OK
 )
@@ -377,7 +377,7 @@ def advance_to_next_round(
         validated_data = RoundAdvanceResponse.model_validate(response_data)
         
         return BaseResponse(
-            message="Advanced",
+            message="Avanzado",
             data=validated_data
         )
     
@@ -387,7 +387,7 @@ def advance_to_next_round(
 
 @router.post(
     "/{session_id}/rounds/{round_number}/attempt",
-    summary="Submit an attempt for a game round",
+    summary="Enviar un intento para una ronda de juego",
     response_model=BaseResponse[AttemptSubmissionResponse],
     status_code=status.HTTP_200_OK
 )
@@ -399,7 +399,7 @@ def submit_round_attempt(
     session: Session = Depends(get_session)
 ):
     """
-    Submit an attempt for the specified round.
+    Enviar un intento para la ronda especificada.
     """
     try:
         response = game_service.submit_round_attempt(
@@ -413,7 +413,7 @@ def submit_round_attempt(
         )
         
         return BaseResponse(
-            message="Attempt submitted successfully",
+            message="Intento enviado correctamente",
             data=response
         )
     
@@ -423,7 +423,7 @@ def submit_round_attempt(
 
 @router.post(
     "/{session_id}/finish",
-    summary="Finish a game session",
+    summary="Finalizar una sesión de juego",
     response_model=BaseResponse[SessionFinishResponse],
     status_code=status.HTTP_200_OK
 )
@@ -442,7 +442,7 @@ def finish_game_session(
         validated_data = SessionFinishResponse.model_validate(response_data)
         
         return BaseResponse(
-            message="Game session completed",
+            message="Sesión de juego completada",
             data=validated_data
         )
     
@@ -452,7 +452,7 @@ def finish_game_session(
 
 @router.get(
     "/{session_id}/result",
-    summary="Get completion result for a finished game session",
+    summary="Obtener resultado de finalización de una sesión de juego terminada",
     response_model=BaseResponse[SessionResultResponse],
 )
 def get_game_session_result(
@@ -470,7 +470,7 @@ def get_game_session_result(
         validated_data = SessionResultResponse.model_validate(response_data)
         
         return BaseResponse(
-            message="Game session result retrieved successfully",
+            message="Resultado de sesión de juego obtenido correctamente",
             data=validated_data
         )
     
@@ -480,7 +480,7 @@ def get_game_session_result(
 
 @router.post(
     "/{session_id}/rounds/{round_number}/audio/replay",
-    summary="Increment replay counter if under limit",
+    summary="Incrementar contador de repetición si está bajo el límite",
     response_model=BaseResponse[AudioReplayCounterResponse],
     status_code=status.HTTP_200_OK
 )
@@ -501,7 +501,7 @@ def increment_audio_replay(
         validated_data = AudioReplayCounterResponse.model_validate(response_data)
         
         return BaseResponse(
-            message="Replay counter updated successfully",
+            message="Contador de repetición actualizado correctamente",
             data=validated_data
         )
     

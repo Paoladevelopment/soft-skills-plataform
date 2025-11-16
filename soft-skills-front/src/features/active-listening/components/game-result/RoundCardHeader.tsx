@@ -1,10 +1,12 @@
 import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 interface RoundCardHeaderProps {
   roundNumber: number
 }
 
 const RoundCardHeader = ({ roundNumber }: RoundCardHeaderProps) => {
+  const { t } = useTranslation('game')
   return (
     <Box
       sx={{
@@ -29,7 +31,7 @@ const RoundCardHeader = ({ roundNumber }: RoundCardHeaderProps) => {
             color: 'white',
           }}
         >
-          Round {roundNumber}
+          {t('result.round')} {roundNumber}
         </Typography>
       </Box>
     </Box>

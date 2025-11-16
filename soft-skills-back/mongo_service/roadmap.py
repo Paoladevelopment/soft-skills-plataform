@@ -33,7 +33,7 @@ class RoadmapMongoService:
             )
 
             if not roadmap:
-                raise Missing("Roadmap not found")
+                raise Missing("Hoja de ruta de aprendizaje no encontrada")
             
             return to_roadmap_model(roadmap)
         
@@ -181,7 +181,7 @@ class RoadmapMongoService:
             )
 
             if not success:
-                raise Missing(f"Roadmap {roadmap_id} not found")
+                raise Missing(f"Hoja de ruta de aprendizaje {roadmap_id} no encontrada")
               
             return success
         
