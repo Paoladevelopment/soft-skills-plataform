@@ -111,7 +111,7 @@
       "gameSettings": {
         "title": "Configuración de juego",
         "totalRounds": "Rondas totales (1-10)",
-        "maxReplaysPerRound": "Máximo de repeticiones por ronda (0-5)",
+        "maxReplaysPerRound": "Máximo de repeticiones por ronda (1-5)",
         "reuseExistingChallenges": "Reutilizar desafíos existentes"
       },
       "contentSettings": {

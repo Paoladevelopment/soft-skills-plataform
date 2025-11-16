@@ -24,7 +24,6 @@ import { useGameSessionDraftStore } from '../store/useGameSessionDraftStore'
 import { CreateGameSessionRequest } from '../types/game-sessions/gameSession.api'
 import { PromptType, GameSessionListItem } from '../types/game-sessions/gameSession.models'
 import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
-import { convertAudioEffectsToSnakeCase } from '../utils/audioEffectsUtils'
 
 const GameSessions = () => {
   const { t } = useTranslation('game')
@@ -69,7 +68,6 @@ const GameSessions = () => {
         response_time_limits: draft.responseTimeLimits,
         selected_modes: draft.selectedModes,
         allowed_types: draft.allowedTypes as PromptType[],
-        audio_effects: convertAudioEffectsToSnakeCase(draft.audioEffects),
         reuse_existing_challenges: draft.reuseExistingChallenges,
       },
     }
@@ -108,7 +106,6 @@ const GameSessions = () => {
             responseTimeLimits: fullSession.config.responseTimeLimits,
             selectedModes: fullSession.config.selectedModes,
             allowedTypes: fullSession.config.allowedTypes,
-            audioEffects: fullSession.config.audioEffects,
           })
         }
     } finally {

@@ -111,7 +111,7 @@
       "gameSettings": {
         "title": "Game settings",
         "totalRounds": "Total rounds (1-10)",
-        "maxReplaysPerRound": "Max replays per round (0-5)",
+        "maxReplaysPerRound": "Max replays per round (1-5)",
         "reuseExistingChallenges": "Reuse existing challenges"
       },
       "contentSettings": {

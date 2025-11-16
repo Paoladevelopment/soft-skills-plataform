@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   Paper,
   TextField,
   Typography,
@@ -15,7 +14,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { SubmitHandler, useForm } from "react-hook-form";
 import {z} from 'zod'
-import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAuthStore from "../store/useAuthStore";
 import { useState } from "react";
@@ -146,32 +145,6 @@ const Login = () => {
               {t('signIn.submit')}
             </Button>
           </Box>
-
-          <Divider 
-            sx={{ 
-              my: 3 
-            }}
-          >
-            {t('signIn.or')}
-          </Divider>
-
-          <Button
-            variant="outlined"
-            startIcon={<Google />}
-            fullWidth
-            sx={{
-              borderColor: "#D1D1D1",
-              color: "#2F3437",
-              fontWeight: 500,
-              py: 1.2,
-              "&:hover": {
-                backgroundColor: "#F7F6F3",
-                borderColor: "#C4C4C4",
-              },
-            }}
-          >
-            {t('signIn.continueWithGoogle')}
-          </Button>
         </Paper>
       </Container>
     </>

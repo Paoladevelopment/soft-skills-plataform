@@ -35,21 +35,7 @@ export enum AudioStorage {
   NONE = 'none',
 }
 
-export enum AudioEffectType {
-  REVERB = 'reverb',
-  ECHO = 'echo',
-  BACKGROUND_NOISE = 'background_noise',
-  SPEED_VARIATION = 'speed_variation',
-}
-
 export type ResponseTimeLimits = Partial<Record<PlayMode, number>>
-
-export type AudioEffects = {
-  reverb?: number
-  echo?: number
-  backgroundNoise?: number
-  speedVariation?: number
-}
 
 export interface GameSessionConfig {
   totalRounds: number
@@ -58,7 +44,6 @@ export interface GameSessionConfig {
   responseTimeLimits: ResponseTimeLimits
   selectedModes: PlayMode[]
   allowedTypes: PromptType[]
-  audioEffects: AudioEffects
 }
 
 export interface BaseGameSession {

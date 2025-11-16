@@ -17,10 +17,6 @@ export interface ResponseTimeLimitsPayload {
   [mode: string]: number
 }
 
-export interface AudioEffectsPayload {
-  [effect: string]: number
-}
-
 export interface GameSessionConfigPayload {
   total_rounds: number
   max_replays_per_round: number
@@ -28,7 +24,6 @@ export interface GameSessionConfigPayload {
   response_time_limits: ResponseTimeLimitsPayload
   selected_modes: PlayMode[]
   allowed_types: PromptType[]
-  audio_effects: AudioEffectsPayload
   reuse_existing_challenges: boolean
 }
 

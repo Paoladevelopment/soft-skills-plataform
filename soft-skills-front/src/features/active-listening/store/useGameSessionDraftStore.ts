@@ -25,12 +25,6 @@ const initialState = {
   allowedTypes: [
     PromptType.DESCRIPTIVE,
   ],
-  audioEffects: {
-    reverb: 0,
-    echo: 0,
-    backgroundNoise: 0,
-    speedVariation: 0,
-  },
   reuseExistingChallenges: false,
 }
 
@@ -80,15 +74,6 @@ export const useGameSessionDraftStore = create<IGameSessionDraftStore>()(
         }))
       },
 
-      setAudioEffect: (effect, value) => {
-        set((state) => ({
-          audioEffects: {
-            ...state.audioEffects,
-            [effect]: value,
-          },
-        }))
-      },
-
       setReuseExistingChallenges: (reuse) => {
         set({ reuseExistingChallenges: reuse })
       },
@@ -114,7 +99,6 @@ export const useGameSessionDraftStore = create<IGameSessionDraftStore>()(
           responseTimeLimits: state.responseTimeLimits,
           selectedModes: state.selectedModes,
           allowedTypes: state.allowedTypes,
-          audioEffects: state.audioEffects,
           reuseExistingChallenges: state.reuseExistingChallenges,
         }
       },
