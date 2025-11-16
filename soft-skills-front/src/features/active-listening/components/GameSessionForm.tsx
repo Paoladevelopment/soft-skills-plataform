@@ -8,7 +8,6 @@ import GameSessionNameSection from './sections/GameSessionNameSection'
 import GameSettingsSection from './sections/GameSettingsSection'
 import ContentSettingsSection from './sections/ContentSettingsSection'
 import GamePlaySettingsSection from './sections/GamePlaySettingsSection'
-import AudioEffectsSection from './sections/AudioEffectsSection'
 
 interface GameSessionFormData {
   sessionName: string
@@ -18,7 +17,6 @@ interface GameSessionFormData {
   responseTimeLimits: { [mode: string]: number }
   selectedModes: PlayMode[]
   allowedTypes: PromptType[]
-  audioEffects: { [effect: string]: number }
   reuseExistingChallenges: boolean
 }
 
@@ -55,10 +53,6 @@ const GameSessionForm = ({ mode = GAME_SESSION_MODE.CREATE, sessionId, onSubmit 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
       <GamePlaySettingsSection />
-
-      <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
-
-      <AudioEffectsSection />
 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 

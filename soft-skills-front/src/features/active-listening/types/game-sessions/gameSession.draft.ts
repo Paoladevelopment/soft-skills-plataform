@@ -8,7 +8,6 @@ export interface GameSessionDraftData {
   responseTimeLimits: { [mode: string]: number }
   selectedModes: PlayMode[]
   allowedTypes: PromptType[]
-  audioEffects: { [effect: string]: number }
   reuseExistingChallenges: boolean
 }
 
@@ -20,7 +19,6 @@ export interface IGameSessionDraftStore extends GameSessionDraftData {
   togglePlayMode: (mode: PlayMode) => void
   togglePromptType: (type: PromptType) => void
   setResponseTimeLimit: (mode: string, value: number) => void
-  setAudioEffect: (effect: string, value: number) => void
   setReuseExistingChallenges: (reuse: boolean) => void
   reset: () => void
   getSnapshot: () => GameSessionDraftData

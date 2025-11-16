@@ -16,7 +16,6 @@ import GameSessionForm from './GameSessionForm'
 import { GAME_SESSION_MODE } from '../constants/gameSessionMode'
 import { useGameSessionStore } from '../store/useGameSessionStore'
 import { PromptType, GameSessionDifficulty, PlayMode } from '../types/game-sessions/gameSession.models'
-import { convertAudioEffectsToSnakeCase } from '../utils/audioEffectsUtils'
 
 interface GameSessionSettingsModalProps {
   open: boolean
@@ -63,7 +62,6 @@ const GameSessionSettingsModal = ({ open, onClose, sessionId, sessionName, isLoa
     responseTimeLimits: { [mode: string]: number }
     selectedModes: PlayMode[]
     allowedTypes: PromptType[]
-    audioEffects: { [effect: string]: number }
   }) => {
     await updateGameSessionConfig(sessionId, {
       config: {
@@ -73,7 +71,6 @@ const GameSessionSettingsModal = ({ open, onClose, sessionId, sessionName, isLoa
         response_time_limits: data.responseTimeLimits,
         selected_modes: data.selectedModes,
         allowed_types: data.allowedTypes,
-        audio_effects: convertAudioEffectsToSnakeCase(data.audioEffects),
       },
     })
     onClose()

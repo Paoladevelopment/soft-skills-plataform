@@ -77,7 +77,7 @@ const GameSettingsSection = () => {
               value={maxReplaysPerRound}
               onChange={(e) => setMaxReplaysPerRound(Number(e.target.value))}
               slotProps={{ 
-                htmlInput: { min: 0, max: 5 } 
+                htmlInput: { min: 1, max: 5 } 
               }}
               fullWidth
               sx={fieldStyles}
