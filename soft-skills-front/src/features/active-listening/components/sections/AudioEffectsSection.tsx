@@ -1,7 +1,10 @@
 import { Box, Checkbox, FormControlLabel, Slider, Stack, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
 
 const AudioEffectsSection = () => {
+  const { t } = useTranslation('game')
+  
   const audioEffects = useGameSessionDraftStore((state) => state.audioEffects)
   const setAudioEffect = useGameSessionDraftStore((state) => state.setAudioEffect)
   
@@ -12,8 +15,13 @@ const AudioEffectsSection = () => {
 
   return (
     <Box>
-      <Typography variant="h6" fontWeight="bold" color="white" mb={2}>
-        Audio Effects (Optional)
+      <Typography 
+        variant="h6" 
+        fontWeight="bold" 
+        color="white" 
+        mb={2}
+      >
+        {t('play.sessionForm.audioEffects.title')}
       </Typography>
       <Stack spacing={2}>
         <FormControlLabel
@@ -27,7 +35,7 @@ const AudioEffectsSection = () => {
               }}
             />
           }
-          label="Reverb (0.0 - 1.0)"
+          label={t('play.sessionForm.audioEffects.reverb')}
           sx={{
             color: 'white',
             '& .MuiFormControlLabel-label': { color: 'white' },
@@ -74,7 +82,7 @@ const AudioEffectsSection = () => {
               }}
             />
           }
-          label="Echo (0.0 - 1.0)"
+          label={t('play.sessionForm.audioEffects.echo')}
           sx={{
             color: 'white',
             '& .MuiFormControlLabel-label': { color: 'white' },
@@ -121,7 +129,7 @@ const AudioEffectsSection = () => {
               }}
             />
           }
-          label="Background Noise (0.0 - 1.0)"
+          label={t('play.sessionForm.audioEffects.backgroundNoise')}
           sx={{
             color: 'white',
             '& .MuiFormControlLabel-label': { color: 'white' },
@@ -168,7 +176,7 @@ const AudioEffectsSection = () => {
               }}
             />
           }
-          label="Speed Variation (0.0 - 1.0)"
+          label={t('play.sessionForm.audioEffects.speedVariation')}
           sx={{
             color: 'white',
             '& .MuiFormControlLabel-label': { color: 'white' },

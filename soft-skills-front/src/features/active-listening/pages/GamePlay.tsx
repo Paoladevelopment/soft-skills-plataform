@@ -7,6 +7,7 @@ import {
   IconButton,
   Alert,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ArrowBack } from '@mui/icons-material'
 import { useGamePlayStore } from '../store/useGamePlayStore'
 import { useGamePlayAnswerStore } from '../store/useGamePlayAnswerStore'
@@ -27,6 +28,7 @@ import { loadPreviousAnswers } from '../utils/loadPreviousAnswers'
 import { countBlanks } from '../utils/clozeUtils'
 
 const GamePlay = () => {
+  const { t } = useTranslation('game')
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
 
@@ -118,7 +120,7 @@ const GamePlay = () => {
     })
 
     if (!validation.isValid) {
-      setValidationError(validation.error || 'Validation failed')
+      setValidationError(validation.error || t('play.validation.failed'))
       return
     }
 

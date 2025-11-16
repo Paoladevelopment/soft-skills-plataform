@@ -22,7 +22,9 @@
     "view": "Ver",
     "loading": "Cargando...",
     "explore": "Explorar",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "confirmDeletion": "Confirmar eliminación",
+    "confirmDeleteMessage": "¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer."
   },
   "errors": {
     "generic": "Ha ocurrido un error",

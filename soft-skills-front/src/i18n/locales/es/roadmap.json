@@ -169,6 +169,10 @@
     "range": {
       "to": "a"
     }
+  },
+  "taskInformation": {
+    "visitResources": "Visita los siguientes recursos para aprender más:",
+    "noResources": "No hay recursos disponibles"
   }
 }
 

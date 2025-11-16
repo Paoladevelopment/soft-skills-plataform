@@ -12,6 +12,7 @@ import {
   InputAdornment,
   IconButton
 } from "@mui/material";
+import { useTranslation } from 'react-i18next'
 import { SubmitHandler, useForm } from "react-hook-form";
 import {z} from 'zod'
 import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -19,20 +20,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useAuthStore from "../store/useAuthStore";
 import { useState } from "react";
 
-const signInSchema = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-})
-
-type sigInFields = z.infer<typeof signInSchema>
-
 const Login = () => {
+  const { t } = useTranslation('auth')
   const theme = useTheme()
 
   const login = useAuthStore(state => state.login)
   const isLoading = useAuthStore(state => state.isLoading)
   const error = useAuthStore(state => state.error)
   const clearError = useAuthStore(state => state.clearError)
+
+  const signInSchema = z.object({
+    email: z.string().email(t('validation.emailInvalid')),
+    password: z.string().min(8, t('validation.passwordMinLength')),
+  })
+
+  type sigInFields = z.infer<typeof signInSchema>
 
   const {
     register, 
@@ -89,12 +91,12 @@ const Login = () => {
           }}
         >
           <Typography variant="h4" component="h2" fontWeight="bold">
-            Sign In
+            {t('signIn.title')}
           </Typography>
 
           <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(onSubmit)}>
             <TextField
-              label="Email"
+              label={t('signIn.email')}
               type="email"
               fullWidth
               variant="outlined"
@@ -104,7 +106,7 @@ const Login = () => {
               {...register("email")}
             />
             <TextField
-              label="Password"
+              label={t('signIn.password')}
               type={showPassword ? "text" : "password"}
               fullWidth
               variant="outlined"
@@ -119,7 +121,7 @@ const Login = () => {
                       <IconButton
                         onClick={handleClickShowPassword}
                         edge="end"
-                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        aria-label={showPassword ? t('signIn.hidePassword') : t('signIn.showPassword')}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -135,13 +137,23 @@ const Login = () => {
               variant="contained"
               color="secondary"
               fullWidth
-              sx={{ mt: 2, py: 1.2, borderRadius: 2 }}
+              sx={{ 
+                mt: 2, 
+                py: 1.2, 
+                borderRadius: 2 
+              }}
             >
-              Sign In
+              {t('signIn.submit')}
             </Button>
           </Box>
 
-          <Divider sx={{ my: 3 }}>or</Divider>
+          <Divider 
+            sx={{ 
+              my: 3 
+            }}
+          >
+            {t('signIn.or')}
+          </Divider>
 
           <Button
             variant="outlined"
@@ -158,7 +170,7 @@ const Login = () => {
               },
             }}
           >
-            Continue with Google
+            {t('signIn.continueWithGoogle')}
           </Button>
         </Paper>
       </Container>

@@ -1,4 +1,5 @@
 import { Box, Button, Card, Chip, IconButton, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { Settings, PlayArrow, Delete, Visibility } from '@mui/icons-material'
 import { GameSessionListItem, GameSessionStatus } from '../types/game-sessions/gameSession.models'
 import { getStatusColor, getStatusLabel } from '../utils/gameSessionsUtils'
@@ -13,6 +14,7 @@ interface GameSessionCardProps {
 }
 
 const GameSessionCard = ({ session, onPlay, onSettings, onDelete, onStart, onView }: GameSessionCardProps) => {
+  const { t } = useTranslation('game')
   const isSessionEnded = session.status === GameSessionStatus.COMPLETED || session.status === GameSessionStatus.CANCELLED
   const isPaused = session.status === GameSessionStatus.PAUSED
   const isPending = session.status === GameSessionStatus.PENDING
@@ -129,7 +131,7 @@ const GameSessionCard = ({ session, onPlay, onSettings, onDelete, onStart, onVie
               },
             }}
           >
-            {isPending ? 'Start' : isPaused ? 'Continue Playing' : 'Play'}
+            {isPending ? t('sessions.actions.start') : isPaused ? t('sessions.actions.continuePlaying') : t('sessions.actions.play')}
           </Button>
         )}
       </Box>

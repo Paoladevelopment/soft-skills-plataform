@@ -7,6 +7,7 @@ import {
   Box,
   IconButton
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import DeleteIcon from '@mui/icons-material/Delete'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
@@ -23,9 +24,13 @@ const ConfirmDeleteModal = ({
   open,
   onClose,
   onConfirm,
-  title = 'Confirm Deletion',
-  message = 'Are you sure you want to delete this item? This action cannot be undone.'
+  title,
+  message
 }: ConfirmDeleteModalProps) => {
+  const { t } = useTranslation('common')
+  const defaultTitle = t('actions.confirmDeletion')
+  const defaultMessage = t('actions.confirmDeleteMessage')
+  
   return (
     <Dialog 
       open={open} 
@@ -41,7 +46,7 @@ const ConfirmDeleteModal = ({
           position: "relative" 
         }}>
         <Typography variant="h6" fontWeight="semi-bold" color="white">
-          {title}
+          {title || defaultTitle}
         </Typography>
         <IconButton 
           onClick={onClose} 
@@ -61,7 +66,7 @@ const ConfirmDeleteModal = ({
           py: 4 
         }}>
         <WarningAmberIcon color="error" fontSize="large" />
-        <Typography mt={2}>{message}</Typography>
+        <Typography mt={2}>{message || defaultMessage}</Typography>
       </DialogContent>
 
       <DialogActions 
@@ -75,7 +80,7 @@ const ConfirmDeleteModal = ({
           color="inherit" 
           startIcon={<CloseIcon />}
         >
-          Cancel
+          {t('actions.cancel')}
         </Button>
         <Button 
           onClick={onConfirm} 
@@ -83,7 +88,7 @@ const ConfirmDeleteModal = ({
           color="error" 
           startIcon={<DeleteIcon />}
         >
-          Delete
+          {t('actions.delete')}
         </Button>
       </DialogActions>
     </Dialog>

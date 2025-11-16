@@ -1,4 +1,5 @@
 import { Box, Button, CircularProgress } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useGamePlayStore } from '../../store/useGamePlayStore'
 
 interface GamePlayActionsProps {
@@ -24,6 +25,7 @@ const GamePlayActions = ({
   onAdvance,
   onFinishSession,
 }: GamePlayActionsProps) => {
+  const { t } = useTranslation('game')
   const { isSubmitting, isLoading } = useGamePlayStore()
 
   const getGradientButtonStyles = (gradientColors: string, shadowColor: string) => ({
@@ -77,7 +79,7 @@ const GamePlayActions = ({
         },
       }}
     >
-      {isSubmitting ? renderLoadingSpinner() : 'Submit Answer'}
+      {isSubmitting ? renderLoadingSpinner() : t('play.submitAnswer')}
     </Button>
   )
 
@@ -92,7 +94,7 @@ const GamePlayActions = ({
         'rgba(74, 138, 111, 0.3)'
       )}
     >
-      Try Again
+      {t('play.tryAgain')}
     </Button>
   )
 
@@ -107,7 +109,7 @@ const GamePlayActions = ({
         'rgba(255, 167, 38, 0.4)'
       )}
     >
-      {isLoading ? renderLoadingSpinner() : 'Finish Session'}
+      {isLoading ? renderLoadingSpinner() : t('play.finishSession')}
     </Button>
   )
 
@@ -122,7 +124,7 @@ const GamePlayActions = ({
         'rgba(255, 167, 38, 0.4)'
       )}
     >
-      {isLoading ? renderLoadingSpinner() : 'Next Round →'}
+      {isLoading ? renderLoadingSpinner() : t('play.nextRound')}
     </Button>
   )
 

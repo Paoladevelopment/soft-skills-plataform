@@ -1,8 +1,10 @@
 import { Box, Typography, Button, useTheme } from "@mui/material"
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, Outlet } from "react-router-dom"
 import Logo from "../features/authentication/assets/skill-development.png"
 
 const PublicLayout = () => {
+  const { t } = useTranslation('auth')
   const theme = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
@@ -56,7 +58,7 @@ const PublicLayout = () => {
             fontWeight="light"
             sx={{ mr: 3 }}
           >
-            {isLoginPage ? "Don't have an account?" : "Already have an account?"}
+            {isLoginPage ? t('layout.dontHaveAccount') : t('layout.alreadyHaveAccount')}
           </Typography>
           <Button
             variant="contained"
@@ -64,7 +66,7 @@ const PublicLayout = () => {
             sx={{ py: 0.75, borderRadius: 2 }}
             onClick={() => navigate(isLoginPage ? "/register" : "/login")}
           >
-            {isLoginPage ? "Sign Up" : "Sign In"}
+            {isLoginPage ? t('layout.signUp') : t('layout.signIn')}
           </Button>
         </Box>
       </Box>
@@ -74,7 +76,7 @@ const PublicLayout = () => {
         fontWeight="light" 
         sx={{ mt: 4 }}
       >
-        {isLoginPage ? "Don't have an account?" : "Already have an account?"}
+        {isLoginPage ? t('layout.dontHaveAccount') : t('layout.alreadyHaveAccount')}
         <Typography
           component="span"
           color="secondary"
@@ -92,7 +94,7 @@ const PublicLayout = () => {
 
           onClick={() => navigate(isLoginPage ? "/register" : "/login")}
         >
-          {isLoginPage ? "Sign Up" : "Sign In"}
+          {isLoginPage ? t('layout.signUp') : t('layout.signIn')}
         </Typography>
       </Typography>
     </Box>

@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { RoundRecap } from '../../types/gameSessionResult'
 
 interface ScoreSummaryProps {
@@ -9,6 +10,7 @@ interface ScoreSummaryProps {
 }
 
 const ScoreSummary = ({ finalScore, finalMaxScore, totalRounds, rounds }: ScoreSummaryProps) => {
+  const { t } = useTranslation('game')
   const safeRounds = rounds || []
   
   const correctCount = safeRounds.filter(
@@ -37,7 +39,7 @@ const ScoreSummary = ({ finalScore, finalMaxScore, totalRounds, rounds }: ScoreS
             color: '#333' 
         }}
       >
-        Overall Performance
+        {t('result.overallPerformance')}
       </Typography>
       <Box 
         sx={{ 
@@ -69,7 +71,7 @@ const ScoreSummary = ({ finalScore, finalMaxScore, totalRounds, rounds }: ScoreS
             {totalRounds}
           </Typography>
           <Typography variant="body2" color="#666">
-            Total Rounds
+            {t('result.totalRounds')}
           </Typography>
         </Box>
         <Box
@@ -91,7 +93,7 @@ const ScoreSummary = ({ finalScore, finalMaxScore, totalRounds, rounds }: ScoreS
             {finalScore} / {finalMaxScore}
           </Typography>
           <Typography variant="body2" color="#666">
-            Total Score
+            {t('result.totalScore')}
           </Typography>
         </Box>
         <Box
@@ -113,7 +115,7 @@ const ScoreSummary = ({ finalScore, finalMaxScore, totalRounds, rounds }: ScoreS
             {correctCount}
           </Typography>
           <Typography variant="body2" color="#666">
-            Correct
+            {t('result.correct')}
           </Typography>
         </Box>
         <Box
@@ -135,7 +137,7 @@ const ScoreSummary = ({ finalScore, finalMaxScore, totalRounds, rounds }: ScoreS
             {incorrectCount}
           </Typography>
           <Typography variant="body2" color="#666">
-            Incorrect
+            {t('result.incorrect')}
           </Typography>
         </Box>
       </Box>

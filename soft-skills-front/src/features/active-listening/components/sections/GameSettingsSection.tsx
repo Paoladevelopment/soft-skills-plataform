@@ -1,7 +1,10 @@
 import { Box, Stack, TextField, Typography, FormControlLabel, Checkbox } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
 
 const GameSettingsSection = () => {
+  const { t } = useTranslation('game')
+  
   const totalRounds = useGameSessionDraftStore((state) => state.totalRounds)
   const maxReplaysPerRound = useGameSessionDraftStore((state) => state.maxReplaysPerRound)
   const reuseExistingChallenges = useGameSessionDraftStore((state) => state.reuseExistingChallenges)
@@ -27,14 +30,26 @@ const GameSettingsSection = () => {
 
   return (
     <Box>
-      <Typography variant="h6" fontWeight="bold" color="white" mb={2}>
-        Game Settings
+      <Typography 
+        variant="h6" 
+        fontWeight="bold" 
+        color="white" 
+        mb={2}
+      >
+        {t('play.sessionForm.gameSettings.title')}
       </Typography>
       <Stack spacing={2}>
-        <Stack direction="row" spacing={2}>
+        <Stack 
+          direction="row" 
+          spacing={2}
+        >
           <Box flex={1}>
-            <Typography variant="body2" color="white" mb={1}>
-              Total Rounds (1-10)
+            <Typography 
+              variant="body2" 
+              color="white" 
+              mb={1}
+            >
+              {t('play.sessionForm.gameSettings.totalRounds')}
             </Typography>
             <TextField
               type="number"
@@ -49,8 +64,12 @@ const GameSettingsSection = () => {
             />
           </Box>
           <Box flex={1}>
-            <Typography variant="body2" color="white" mb={1}>
-              Max Replays Per Round (0-5)
+            <Typography 
+              variant="body2" 
+              color="white" 
+              mb={1}
+            >
+              {t('play.sessionForm.gameSettings.maxReplaysPerRound')}
             </Typography>
             <TextField
               type="number"
@@ -80,8 +99,11 @@ const GameSettingsSection = () => {
             />
           }
           label={
-            <Typography variant="body2" color="white">
-              Reuse existing challenges
+            <Typography 
+              variant="body2" 
+              color="white"
+            >
+              {t('play.sessionForm.gameSettings.reuseExistingChallenges')}
             </Typography>
           }
         />

@@ -13,6 +13,7 @@ import {
   InputAdornment,
   IconButton
 } from "@mui/material";
+import { useTranslation } from 'react-i18next'
 import { SubmitHandler, useForm } from "react-hook-form";
 import {z} from 'zod'
 import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -20,22 +21,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useAuthStore from "../store/useAuthStore";
 import { useState } from "react";
 
-const signUpSchema = z.object({
-  name: z.string().nonempty("Name is required"),
-  username: z.string().nonempty("Username is required"),
-  email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  confirm_password: z.string().min(8, "Confirm your password")
-}).refine(
-  (data) => data.password === data.confirm_password, {
-    message: "Passwords do not match",
-    path: ["confirm_password"]
-  }
-)
-
-type sigUpFields = z.infer<typeof signUpSchema>
-
 const Register = () => {
+  const { t } = useTranslation('auth')
   const theme = useTheme();
 
   const signUp = useAuthStore(state => state.signUp)
@@ -44,6 +31,21 @@ const Register = () => {
   const successMessage = useAuthStore(state => state.successMessage)
   const clearError = useAuthStore(state => state.clearError)
   const clearSuccessMessage = useAuthStore(state => state.clearSuccessMessage)
+
+  const signUpSchema = z.object({
+    name: z.string().nonempty(t('validation.nameRequired')),
+    username: z.string().nonempty(t('validation.usernameRequired')),
+    email: z.string().email(t('validation.emailInvalid')),
+    password: z.string().min(8, t('validation.passwordMinLength')),
+    confirm_password: z.string().min(8, t('validation.confirmPasswordRequired'))
+  }).refine(
+    (data) => data.password === data.confirm_password, {
+      message: t('validation.passwordsDoNotMatch'),
+      path: ["confirm_password"]
+    }
+  )
+
+  type sigUpFields = z.infer<typeof signUpSchema>
 
   const {
     register, 
@@ -87,9 +89,16 @@ const Register = () => {
         open={openError}
         autoHideDuration={5000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ 
+          vertical: "top", 
+          horizontal: "center" 
+        }}
       >
-        <Alert severity="error" variant="filled" onClose={handleCloseSnackbar}>
+        <Alert 
+          severity="error" 
+          variant="filled" 
+          onClose={handleCloseSnackbar}
+        >
           {error}
         </Alert>
       </Snackbar>
@@ -98,9 +107,15 @@ const Register = () => {
         open={!!successMessage}
         autoHideDuration={5000}
         onClose={clearSuccessMessage}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ 
+          vertical: "top", 
+          horizontal: "center" 
+        }}
       >
-        <Alert severity="success" variant="filled">
+        <Alert 
+          severity="success" 
+          variant="filled"
+        >
           {successMessage}
         </Alert>
       </Snackbar>
@@ -114,15 +129,25 @@ const Register = () => {
             borderRadius: 4,
           }}
         >
-          <Typography variant="h4" component="h2" fontWeight="bold">
-            Sign Up
+          <Typography 
+            variant="h4" 
+            component="h2" 
+            fontWeight="bold"
+          >
+            {t('signUp.title')}
           </Typography>
 
-          <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit(onSubmit)}>
+          <Box 
+            component="form" 
+            sx={{ 
+              mt: 3 
+            }} 
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Grid2 container spacing={2}>
               <Grid2 size={6}>
                 <TextField
-                  label="Name"
+                  label={t('signUp.name')}
                   fullWidth
                   variant="outlined"
                   error={!!errors.name}
@@ -132,7 +157,7 @@ const Register = () => {
               </Grid2>
               <Grid2 size={6}>
                 <TextField
-                  label="Username"
+                  label={t('signUp.username')}
                   fullWidth
                   variant="outlined"
                   error={!!errors.username}
@@ -142,7 +167,7 @@ const Register = () => {
               </Grid2>
               <Grid2 size={12}>
                 <TextField
-                  label="Email"
+                  label={t('signUp.email')}
                   type="email"
                   fullWidth
                   variant="outlined"
@@ -153,7 +178,7 @@ const Register = () => {
               </Grid2>
               <Grid2 size={6}>
                 <TextField
-                  label="Password"
+                  label={t('signUp.password')}
                   type={showPassword ? "text" : "password"}
                   fullWidth
                   variant="outlined"
@@ -167,7 +192,7 @@ const Register = () => {
                           <IconButton
                             onClick={handleClickShowPassword}
                             edge="end"
-                            aria-label={showPassword ? "Hide password" : "Show password"}
+                            aria-label={showPassword ? t('signUp.hidePassword') : t('signUp.showPassword')}
                           >
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
@@ -180,7 +205,7 @@ const Register = () => {
               </Grid2>
               <Grid2 size={6}>
                 <TextField
-                  label="Confirm Password"
+                  label={t('signUp.confirmPassword')}
                   type={showConfirmPassword? "text": "password"}
                   fullWidth
                   variant="outlined"
@@ -194,7 +219,7 @@ const Register = () => {
                           <IconButton
                             onClick={handleClickShowConfirmPassword}
                             edge="end"
-                            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                            aria-label={showConfirmPassword ? t('signUp.hidePassword') : t('signUp.showPassword')}
                           >
                             {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
@@ -212,13 +237,23 @@ const Register = () => {
               variant="contained"
               color="secondary"
               fullWidth
-              sx={{ mt: 2, py: 1.2, borderRadius: 2 }}
+              sx={{ 
+                mt: 2, 
+                py: 1.2, 
+                borderRadius: 2 
+              }}
             >
-              Sign Up
+              {t('signUp.submit')}
             </Button>
           </Box>
 
-          <Divider sx={{ my: 3 }}>or</Divider>
+          <Divider 
+            sx={{ 
+              my: 3 
+            }}
+          >
+            {t('signUp.or')}
+          </Divider>
 
           <Button
             variant="outlined"
@@ -235,7 +270,7 @@ const Register = () => {
               },
             }}
           >
-            Continue with Google
+            {t('signUp.continueWithGoogle')}
           </Button>
         </Paper>
       </Container>

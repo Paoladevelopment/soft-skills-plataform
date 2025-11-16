@@ -1,4 +1,5 @@
 import { Box, Typography, Card, IconButton } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { PlayArrow, Pause } from '@mui/icons-material'
 import { useRef, useState, useEffect } from 'react'
 
@@ -7,6 +8,7 @@ interface AudioPlayerResultProps {
 }
 
 const AudioPlayerResult = ({ audioUrl }: AudioPlayerResultProps) => {
+  const { t } = useTranslation('game')
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -71,7 +73,7 @@ const AudioPlayerResult = ({ audioUrl }: AudioPlayerResultProps) => {
           mb: 2,
         }}
       >
-        🎵 Audio Content
+        🎵 {t('result.audioContent')}
       </Typography>
       <Box 
         sx={{ 

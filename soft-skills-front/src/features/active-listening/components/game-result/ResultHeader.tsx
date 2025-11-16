@@ -1,4 +1,5 @@
 import { Box, Typography, Divider } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { CalendarToday, AccessTime } from '@mui/icons-material'
 import { formatDate } from '../../../../utils/timeUtils'
 
@@ -11,6 +12,7 @@ const ResultHeader = ({
   startedAt,
   finishedAt,
 }: ResultHeaderProps) => {
+  const { t } = useTranslation('game')
   const formatDateTime = (dateString: string): string => {
     const date = new Date(dateString)
     return formatDate(date)
@@ -64,7 +66,7 @@ const ResultHeader = ({
                 mb: 0.5,
               }}
             >
-              Started
+              {t('result.started')}
             </Typography>
             <Typography
               variant="body1"
@@ -119,7 +121,7 @@ const ResultHeader = ({
                 mb: 0.5,
               }}
             >
-              Finished
+              {t('result.finished')}
             </Typography>
             <Typography
               variant="body1"

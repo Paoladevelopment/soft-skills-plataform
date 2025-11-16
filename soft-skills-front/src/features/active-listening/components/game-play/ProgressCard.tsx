@@ -1,4 +1,5 @@
 import { Box, Card, LinearProgress, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 interface ProgressCardProps {
   currentRound: number
@@ -6,6 +7,7 @@ interface ProgressCardProps {
 }
 
 const ProgressCard = ({ currentRound, totalRounds = 5 }: ProgressCardProps) => {
+  const { t } = useTranslation('game')
   return (
     <Card
       sx={{
@@ -32,7 +34,7 @@ const ProgressCard = ({ currentRound, totalRounds = 5 }: ProgressCardProps) => {
                     fontSize: '1rem',
                 }}
                 >
-                Progress
+                {t('play.progress')}
             </Typography>
             <Typography
                 variant="body2"
@@ -42,7 +44,7 @@ const ProgressCard = ({ currentRound, totalRounds = 5 }: ProgressCardProps) => {
                     fontSize: '0.95rem',
                 }}
                 >
-                Round {currentRound} / {totalRounds}
+                {t('play.round')} {currentRound} / {totalRounds}
             </Typography>
         </Box>
       <LinearProgress

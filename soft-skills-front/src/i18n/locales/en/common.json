@@ -22,7 +22,9 @@
     "view": "View",
     "loading": "Loading...",
     "explore": "Explore",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "confirmDeletion": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this item? This action cannot be undone."
   },
   "errors": {
     "generic": "An error occurred",

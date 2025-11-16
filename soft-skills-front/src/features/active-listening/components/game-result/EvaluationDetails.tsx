@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ModePayload, Evaluation, FocusModePayload } from '../../types/game-sessions/gamePlay.models'
 import { PlayMode } from '../../types/game-sessions/gameSession.models'
 import UserAnswerDisplay from './answer-display/UserAnswerDisplay'
@@ -9,34 +10,6 @@ interface RecapLabels {
   sectionTitle: string
   userLabel: string
   correctLabel: string
-}
-
-const recapLabels: Record<string, RecapLabels> = {
-  focus: {
-    sectionTitle: 'Question Asked',
-    userLabel: 'Your answer:',
-    correctLabel: 'Correct answer:',
-  },
-  cloze: {
-    sectionTitle: 'Filled Blanks',
-    userLabel: 'Your responses:',
-    correctLabel: 'Correct responses:',
-  },
-  paraphrase: {
-    sectionTitle: 'Your Paraphrase',
-    userLabel: 'Your wording:',
-    correctLabel: 'Reference paraphrase:',
-  },
-  summarize: {
-    sectionTitle: 'Summary',
-    userLabel: 'Your summary:',
-    correctLabel: 'Reference summary:',
-  },
-  clarify: {
-    sectionTitle: 'Clarifying Questions',
-    userLabel: 'Questions you asked:',
-    correctLabel: 'Reference questions:',
-  },
 }
 
 interface EvaluationDetailsProps {
@@ -50,11 +23,50 @@ const EvaluationDetails = ({
   modePayload,
   playMode,
 }: EvaluationDetailsProps) => {
+  const { t } = useTranslation('game')
+  
   if (!evaluation || !playMode) {
     return null
   }
 
-  const labels = recapLabels[playMode.toLowerCase()]
+  const getLabels = (mode: string): RecapLabels | null => {
+    switch (mode.toLowerCase()) {
+      case 'focus':
+        return {
+          sectionTitle: t('result.evaluation.questionAsked'),
+          userLabel: t('result.evaluation.yourAnswer'),
+          correctLabel: t('result.evaluation.correctAnswer'),
+        }
+      case 'cloze':
+        return {
+          sectionTitle: t('result.evaluation.filledBlanks'),
+          userLabel: t('result.evaluation.yourResponses'),
+          correctLabel: t('result.evaluation.correctResponses'),
+        }
+      case 'paraphrase':
+        return {
+          sectionTitle: t('result.evaluation.yourParaphrase'),
+          userLabel: t('result.evaluation.yourWording'),
+          correctLabel: t('result.evaluation.referenceParaphrase'),
+        }
+      case 'summarize':
+        return {
+          sectionTitle: t('result.evaluation.summary'),
+          userLabel: t('result.evaluation.yourSummary'),
+          correctLabel: t('result.evaluation.referenceSummary'),
+        }
+      case 'clarify':
+        return {
+          sectionTitle: t('result.evaluation.clarifyingQuestions'),
+          userLabel: t('result.evaluation.questionsYouAsked'),
+          correctLabel: t('result.evaluation.referenceQuestions'),
+        }
+      default:
+        return null
+    }
+  }
+
+  const labels = getLabels(playMode.toLowerCase())
   
   if (!labels) {
     return null

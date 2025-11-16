@@ -5,6 +5,7 @@ import {
   Link,
   IconButton,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
 import { useRoadmapStore } from '../../store/useRoadmapStore'
 import { findNodeById } from '../../utils/roadmap/roadmapGraphHelpers'
@@ -12,13 +13,13 @@ import { findTaskById, findObjectiveById } from '../../utils/roadmap/roadmapStru
 import { isTaskNode, isObjectiveNode } from '../../utils/roadmap/roadmapNodeTypeUtils'
 import { ResourceType } from '../../types/common.enums'
 
-const getResourceTypeLabel = (type: ResourceType): string => {
+const getResourceTypeLabel = (type: ResourceType, t: (key: string) => string): string => {
   const labels: Record<ResourceType, string> = {
-    [ResourceType.Article]: 'Article',
-    [ResourceType.Book]: 'Book',
-    [ResourceType.Video]: 'Video',
-    [ResourceType.Web]: 'Web',
-    [ResourceType.Other]: 'Other',
+    [ResourceType.Article]: t('editor.contentLinksTab.resourceTypes.article'),
+    [ResourceType.Book]: t('editor.contentLinksTab.resourceTypes.book'),
+    [ResourceType.Video]: t('editor.contentLinksTab.resourceTypes.video'),
+    [ResourceType.Web]: t('editor.contentLinksTab.resourceTypes.web'),
+    [ResourceType.Other]: t('editor.contentLinksTab.resourceTypes.other'),
   }
   return labels[type] || type
 }
@@ -40,6 +41,8 @@ interface TaskInformationSidebarProps {
 }
 
 const TaskInformationSidebar = ({ selectedNodeId, onClose }: TaskInformationSidebarProps) => {
+  const { t } = useTranslation('roadmap')
+  
   const {
     selectedRoadmap,
     editorNodes,
@@ -135,7 +138,7 @@ const TaskInformationSidebar = ({ selectedNodeId, onClose }: TaskInformationSide
                 mb: 2,
               }}
             >
-              Visit the following resources to learn more:
+              {t('taskInformation.visitResources')}
             </Typography>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
@@ -150,7 +153,7 @@ const TaskInformationSidebar = ({ selectedNodeId, onClose }: TaskInformationSide
                   }}
                 >
                   <Chip
-                    label={getResourceTypeLabel(resource.type)}
+                    label={getResourceTypeLabel(resource.type, t)}
                     size="small"
                     sx={{
                       backgroundColor: getResourceTypeColor(resource.type),
@@ -192,7 +195,7 @@ const TaskInformationSidebar = ({ selectedNodeId, onClose }: TaskInformationSide
               fontStyle: 'italic',
             }}
           >
-            No resources available
+            {t('taskInformation.noResources')}
           </Typography>
         )}
       </Box>

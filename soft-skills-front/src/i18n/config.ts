@@ -10,6 +10,10 @@ import goalsEs from './locales/es/goals.json'
 import goalsEn from './locales/en/goals.json'
 import dashboardEs from './locales/es/dashboard.json'
 import dashboardEn from './locales/en/dashboard.json'
+import gameEs from './locales/es/game.json'
+import gameEn from './locales/en/game.json'
+import authEs from './locales/es/auth.json'
+import authEn from './locales/en/auth.json'
 
 const getStoredLanguage = (): string => {
   if (typeof window !== 'undefined') {
@@ -31,6 +35,8 @@ i18n
         roadmap: roadmapEs,
         goals: goalsEs,
         dashboard: dashboardEs,
+        game: gameEs,
+        auth: authEs,
       },
       en: {
         common: commonEn,
@@ -38,12 +44,14 @@ i18n
         roadmap: roadmapEn,
         goals: goalsEn,
         dashboard: dashboardEn,
+        game: gameEn,
+        auth: authEn,
       },
     },
     lng: getStoredLanguage(),
     fallbackLng: 'es',
     defaultNS: 'common',
-    ns: ['common', 'reports', 'roadmap', 'goals', 'dashboard'],
+    ns: ['common', 'reports', 'roadmap', 'goals', 'dashboard', 'game', 'auth'],
     interpolation: {
       escapeValue: false,
     },

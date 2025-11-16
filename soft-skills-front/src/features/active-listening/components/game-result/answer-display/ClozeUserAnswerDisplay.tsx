@@ -1,4 +1,5 @@
 import { Typography, Box } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import TealBorderedCard from './TealBorderedCard'
 
 interface ClozeUserAnswerDisplayProps {
@@ -7,6 +8,7 @@ interface ClozeUserAnswerDisplayProps {
 }
 
 const ClozeUserAnswerDisplay = ({ blanks, userLabel }: ClozeUserAnswerDisplayProps) => {
+  const { t } = useTranslation('game')
   return (
     <TealBorderedCard>
       <Typography
@@ -32,7 +34,7 @@ const ClozeUserAnswerDisplay = ({ blanks, userLabel }: ClozeUserAnswerDisplayPro
                fontWeight: 600,
              }}
            >
-             Blank {idx + 1}:
+             {t('result.blank')} {idx + 1}:
            </Typography>
           <Typography
             component="span"

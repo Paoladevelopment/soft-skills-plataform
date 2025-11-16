@@ -1,4 +1,5 @@
 import { Box, Button, Card, Container, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ErrorOutline } from '@mui/icons-material'
 import backgroundImage from '../../assets/background_2.png'
 
@@ -7,7 +8,9 @@ interface GamePlayErrorProps {
   onGoBack: () => void
 }
 
-const GamePlayError = ({ message = 'Failed to load game round. Please try again.', onGoBack }: GamePlayErrorProps) => {
+const GamePlayError = ({ message, onGoBack }: GamePlayErrorProps) => {
+  const { t } = useTranslation('game')
+  const defaultMessage = t('play.error.loadFailed')
   return (
     <Box
       sx={{
@@ -52,7 +55,7 @@ const GamePlayError = ({ message = 'Failed to load game round. Please try again.
               mb: 2,
             }}
           >
-            Oops! Something went wrong
+            {t('play.error.title')}
           </Typography>
 
           <Typography
@@ -63,7 +66,7 @@ const GamePlayError = ({ message = 'Failed to load game round. Please try again.
               lineHeight: 1.6,
             }}
           >
-            {message}
+            {message || defaultMessage}
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
@@ -86,7 +89,7 @@ const GamePlayError = ({ message = 'Failed to load game round. Please try again.
                 },
               }}
             >
-              Go Back
+              {t('play.error.goBack')}
             </Button>
           </Box>
         </Card>

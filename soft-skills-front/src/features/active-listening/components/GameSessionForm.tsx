@@ -1,4 +1,5 @@
 import { Button, Divider, Stack } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { Save } from '@mui/icons-material'
 import { useGameSessionDraftStore } from '../store/useGameSessionDraftStore'
 import { PromptType, GameSessionDifficulty, PlayMode } from '../types/game-sessions/gameSession.models'
@@ -28,6 +29,7 @@ interface GameSessionFormProps {
 }
 
 const GameSessionForm = ({ mode = GAME_SESSION_MODE.CREATE, sessionId, onSubmit }: GameSessionFormProps) => {
+  const { t } = useTranslation('game')
   const getSnapshot = useGameSessionDraftStore((state) => state.getSnapshot)
 
   const handleSubmit = async () => {
@@ -78,7 +80,7 @@ const GameSessionForm = ({ mode = GAME_SESSION_MODE.CREATE, sessionId, onSubmit 
           },
         }}
       >
-        {mode === GAME_SESSION_MODE.CREATE ? 'Create Session' : 'Update Configuration'}
+        {mode === GAME_SESSION_MODE.CREATE ? t('play.form.createSession') : t('play.form.updateConfiguration')}
       </Button>
     </Stack>
   )

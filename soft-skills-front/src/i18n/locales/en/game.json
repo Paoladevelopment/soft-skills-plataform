@@ -1,0 +1,149 @@
+{
+  "home": {
+    "gameSessions": "Game sessions",
+    "leaderboard": "Leaderboard"
+  },
+  "sessions": {
+    "title": {
+      "part1": "Your game",
+      "part2": "Sessions"
+    },
+    "createNew": "Create new session",
+    "createDescription": "Configure and create your own game session",
+    "deleteTitle": "Delete session",
+    "deleteMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "status": {
+      "notStarted": "Not started",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "paused": "Paused",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "start": "Start",
+      "play": "Play",
+      "continuePlaying": "Continue playing"
+    }
+  },
+  "result": {
+    "retry": "Retry",
+    "started": "Started",
+    "finished": "Finished",
+    "overallPerformance": "Overall performance",
+    "totalRounds": "Total rounds",
+    "totalScore": "Total score",
+    "correct": "Correct",
+    "incorrect": "Incorrect",
+    "noRounds": "No rounds available",
+    "round": "Round",
+    "audioContent": "Audio content",
+    "score": "Score: {{score}} / {{maxScore}}",
+    "evaluation": {
+      "questionAsked": "Question asked",
+      "yourAnswer": "Your answer:",
+      "correctAnswer": "Correct answer:",
+      "filledBlanks": "Filled blanks",
+      "yourResponses": "Your responses:",
+      "correctResponses": "Correct responses:",
+      "yourParaphrase": "Your paraphrase",
+      "yourWording": "Your wording:",
+      "referenceParaphrase": "Reference paraphrase:",
+      "summary": "Summary",
+      "yourSummary": "Your summary:",
+      "referenceSummary": "Reference summary:",
+      "clarifyingQuestions": "Clarifying questions",
+      "questionsYouAsked": "Questions you asked:",
+      "referenceQuestions": "Reference questions:",
+      "question": "Question:"
+    },
+    "pagination": {
+      "of": "of"
+    },
+    "blank": "Blank"
+  },
+  "play": {
+    "audioContent": "Audio content",
+    "replayAudio": "Replay audio",
+    "noReplaysLeft": "No replays left",
+    "replays": "Replays",
+    "maxReplaysReached": "⚠️ Maximum replays reached. Submit your answer now.",
+    "question": "Question",
+    "selectAnswer": "Select your answer:",
+    "submitAnswer": "Submit Answer",
+    "tryAgain": "Try Again",
+    "finishSession": "Finish session",
+    "nextRound": "Next round →",
+    "progress": "Progress",
+    "round": "Round",
+    "correct": "✓ Correct!",
+    "incorrect": "✗ Incorrect",
+    "score": "Score",
+    "correctAnswer": "Correct answer:",
+    "possibleAnswer": "Possible answer:",
+    "possibleQuestions": "Possible questions:",
+    "answer": "Answer:",
+    "error": {
+      "title": "Oops! Something went wrong",
+      "loadFailed": "Failed to load game round. Please try again.",
+      "goBack": "Go Back"
+    },
+    "settings": {
+      "title": "Game settings",
+      "allowedModes": "Allowed game modes (select at least one)",
+      "focus": "Focus",
+      "cloze": "Fill in the blanks",
+      "paraphrase": "Paraphrase",
+      "summarize": "Summarize",
+      "clarify": "Clarify questions"
+    },
+    "form": {
+      "createSession": "Create session",
+      "updateConfiguration": "Update configuration"
+    },
+    "validation": {
+      "failed": "Validation failed"
+    },
+    "sessionForm": {
+      "sessionName": {
+        "label": "Session name",
+        "placeholder": "Enter session name"
+      },
+      "gameSettings": {
+        "title": "Game settings",
+        "totalRounds": "Total rounds (1-10)",
+        "maxReplaysPerRound": "Max replays per round (0-5)",
+        "reuseExistingChallenges": "Reuse existing challenges"
+      },
+      "contentSettings": {
+        "title": "Content settings",
+        "allowedPromptTypes": "Allowed prompt types (select at least one)",
+        "promptTypes": {
+          "descriptive": "Descriptive",
+          "historicalEvent": "Historical event",
+          "instructional": "Instructional",
+          "dialogue": "Dialogue",
+          "narratedDialogue": "Narrated dialogue"
+        },
+        "difficultyLevel": "Difficulty level",
+        "difficulty": {
+          "easy": "Easy",
+          "intermediate": "Intermediate",
+          "hard": "Hard"
+        }
+      },
+      "audioEffects": {
+        "title": "Audio effects (optional)",
+        "reverb": "Reverb (0.0 - 1.0)",
+        "echo": "Echo (0.0 - 1.0)",
+        "backgroundNoise": "Background noise (0.0 - 1.0)",
+        "speedVariation": "Speed variation (0.0 - 1.0)"
+      }
+    },
+    "settingsModal": {
+      "title": "Session settings - {{name}}",
+      "subtitle": "Manage session configuration",
+      "configurationTab": "Configuration"
+    }
+  }
+}
+

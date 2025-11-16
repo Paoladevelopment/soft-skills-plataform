@@ -3,6 +3,7 @@ import {
   Typography,
   Button
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import {
   ChevronLeft,
   ChevronRight,
@@ -23,6 +24,7 @@ const PaginationControls = ({
   limit,
   onChangeOffset,
 }: PaginationControlsProps) => {
+  const { t } = useTranslation('game')
   const totalPages = Math.ceil(total / limit)
   const currentPage = Math.floor(offset / limit) + 1
   const start = offset + 1
@@ -82,7 +84,7 @@ const PaginationControls = ({
             fontSize: '0.9rem',
           }}
         >
-          {start}-{end} of {total}
+          {start}-{end} {t('result.pagination.of')} {total}
         </Typography>
       </Box>
 

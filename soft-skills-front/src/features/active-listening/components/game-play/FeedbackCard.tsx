@@ -1,4 +1,5 @@
 import { Box, Card, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { CheckCircle, Cancel } from '@mui/icons-material'
 import { PlayMode } from '../../types/game-sessions/gameSession.models'
 
@@ -12,6 +13,8 @@ interface FeedbackCardProps {
 }
 
 const FeedbackCard = ({ isCorrect, feedbackShort, score, maxScore, correctAnswer, playMode }: FeedbackCardProps) => {
+  const { t } = useTranslation('game')
+  
   const renderScoreSection = () => {
     if (score === undefined && maxScore === undefined) return null
 
@@ -30,7 +33,7 @@ const FeedbackCard = ({ isCorrect, feedbackShort, score, maxScore, correctAnswer
             color: '#333' 
           }}
         >
-          Score: {score ?? 0} / {maxScore ?? 0}
+          {t('play.score')}: {score ?? 0} / {maxScore ?? 0}
         </Typography>
       </Box>
     )
@@ -40,15 +43,15 @@ const FeedbackCard = ({ isCorrect, feedbackShort, score, maxScore, correctAnswer
     switch (playMode) {
       case PlayMode.CLOZE:
       case PlayMode.FOCUS:
-        return 'Correct Answer:'
+        return t('play.correctAnswer')
       case PlayMode.PARAPHRASE:
-        return 'Possible Answer:'
+        return t('play.possibleAnswer')
       case PlayMode.SUMMARIZE:
-        return 'Possible Answer:'
+        return t('play.possibleAnswer')
       case PlayMode.CLARIFY:
-        return 'Possible Questions:'
+        return t('play.possibleQuestions')
       default:
-        return 'Answer:'
+        return t('play.answer')
     }
   }
 
@@ -127,7 +130,7 @@ const FeedbackCard = ({ isCorrect, feedbackShort, score, maxScore, correctAnswer
               color: isCorrect ? '#2E7D32' : '#C62828',
             }}
           >
-            {isCorrect ? '✓ Correct!' : '✗ Incorrect'}
+            {isCorrect ? t('play.correct') : t('play.incorrect')}
           </Typography>
           <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
             {feedbackShort}
