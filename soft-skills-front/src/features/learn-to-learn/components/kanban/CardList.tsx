@@ -4,9 +4,11 @@ import TaskCard from './TaskCard'
 
 interface CardListProps {
   tasks: SubTask[]
+  onDeleteTask?: (taskId: string) => void
+  onViewTask?: (taskId: string) => void
 }
 
-const CardList = ({ tasks }: CardListProps) => {
+const CardList = ({ tasks, onDeleteTask, onViewTask }: CardListProps) => {
   return (
     <Box
       sx={{
@@ -18,7 +20,12 @@ const CardList = ({ tasks }: CardListProps) => {
       }}
     >
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
+        <TaskCard
+          key={task.id}
+          task={task}
+          onDelete={onDeleteTask}
+          onViewDetails={onViewTask}
+        />
       ))}
     </Box>
   )

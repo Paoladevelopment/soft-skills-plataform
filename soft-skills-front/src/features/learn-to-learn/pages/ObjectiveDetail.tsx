@@ -18,11 +18,12 @@ import { Priority } from '../types/common.enums'
 import { formatDateToDateTime, normalizeDate } from '../utils/dateUtils'
 import { useKanbanTasks, useKanbanMoveTasks } from '../hooks/useKanbanTasks'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCreateTask } from '../hooks/useTasks'
+import { useCreateTask, useDeleteTask } from '../hooks/useTasks'
 import { CreateTaskPayload } from '../types/planner/task.api'
 import { usePomodoroPreferencesStore } from '../store/usePomodoroPreferencesStore'
 import { AddTaskFields } from '../components/objectives/AddTaskModal'
 import SelfEvaluationModal from '../components/self-evaluation/SelfEvaluationModal'
+import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
 import { useRef } from 'react'
 
 const ObjectiveDetail = () => {
@@ -46,6 +47,7 @@ const ObjectiveDetail = () => {
   const queryClient = useQueryClient()
   const { data: kanbanBoard, isLoading: isKanbanLoading, error: kanbanError } = useKanbanTasks(objectiveId || null, objectiveData.title)
   const { mutate: moveTaskMutation } = useKanbanMoveTasks(objectiveId || null)
+  const { mutateAsync: deleteTaskMutation } = useDeleteTask(objectiveId || null)
 
   const pendingMoveRef = useRef<{
     taskId: string
@@ -113,7 +115,12 @@ const ObjectiveDetail = () => {
     description: false
   })
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [taskToDelete, setTaskToDelete] = useState<{
+    id: string
+    title: string
+  } | null>(null)
 
   const debouncedTitle = useDebounce<string>(objectiveData.title)
   const debouncedDescription = useDebounce(objectiveData.description)
@@ -174,11 +181,11 @@ const ObjectiveDetail = () => {
   }
 
   const handleOpenModal = () => {
-    setIsModalOpen(true)
+    setCreateModalOpen(true)
   }
 
   const handleCloseModal = () => {
-    setIsModalOpen(false)
+    setCreateModalOpen(false)
   }
 
   const handleCreateTask = async (taskData: AddTaskFields) => {
@@ -200,7 +207,42 @@ const ObjectiveDetail = () => {
     }
     
     await createTask(taskPayload)
-    setIsModalOpen(false)
+    setCreateModalOpen(false)
+  }
+
+  const handleOpenDeleteModal = (taskId: string) => {
+    if (!kanbanBoard) return
+
+    const allTasks = kanbanBoard.columns.flatMap(column => column.tasks)
+    const task = allTasks.find(item => item.id === taskId)
+
+    setTaskToDelete({
+      id: taskId,
+      title: task?.title || ''
+    })
+    setDeleteModalOpen(true)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalOpen(false)
+    setTaskToDelete(null)
+  }
+
+  const handleConfirmDelete = async () => {
+    setDeleteModalOpen(false)
+
+    if (!taskToDelete) {
+      return
+    }
+
+    await deleteTaskMutation(taskToDelete.id)
+    setTaskToDelete(null)
+  }
+
+  const handleViewTaskDetails = (taskId: string) => {
+    if (!goalId || !objectiveId) return
+
+    navigate(`/learn/planner/goals/${goalId}/objectives/${objectiveId}/tasks/${taskId}`)
   }
 
   useEffect(() => {
@@ -458,7 +500,12 @@ const ObjectiveDetail = () => {
               {t('objectives.detail.taskBreakdown.failedToLoad')}
             </Typography>
           ) : kanbanBoard ? (
-            <Board board={kanbanBoard} moveTask={moveTask} />
+            <Board
+              board={kanbanBoard}
+              moveTask={moveTask}
+              onDeleteTask={handleOpenDeleteModal}
+              onViewTask={handleViewTaskDetails}
+            />
           ) : (
             <Typography variant="body2" color="text.secondary">
               {t('objectives.detail.taskBreakdown.noTasksFound')}
@@ -468,9 +515,19 @@ const ObjectiveDetail = () => {
       </Box>
 
       <AddTaskModal
-        open={isModalOpen}
+        open={createModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleCreateTask}
+      />
+
+      <ConfirmDeleteModal
+        open={deleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title={t('objectives.detail.taskBreakdown.deleteTask')}
+        message={t('objectives.detail.taskBreakdown.confirmDeleteMessage', {
+          title: taskToDelete?.title || ''
+        })}
       />
 
       <SelfEvaluationModal 

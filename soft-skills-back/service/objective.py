@@ -178,6 +178,45 @@ class ObjectiveService:
         except Exception as err:
             handle_db_error(err, "_tasks_by_status", error_type="query")
 
+    def _calculate_candidate_status_from_tasks(self, task_counts: dict) -> Status:
+        """Calculate candidate status based on task counts"""
+        total = task_counts["total"]
+        completed = task_counts["completed"]
+        in_progress = task_counts["in_progress"]
+        paused = task_counts["paused"]
+
+        if completed == total and total > 0:
+            return Status.COMPLETED
+        if in_progress > 0:
+            return Status.IN_PROGRESS
+        if paused == total and total > 0:
+            return Status.PAUSED
+            
+        return Status.NOT_STARTED
+
+    def _update_objective_status_and_timestamps(self, objective: Objective, old_status: Status, new_status: Status, now: datetime):
+        """Update objective status and timestamps"""
+        objective.status = new_status
+        objective.updated_at = now
+        self._update_objective_timestamps(objective, old_status, new_status, now)
+
+    def _sync_objective_to_mongo(self, objective: Objective, objective_id: UUID):
+        """Sync objective changes to MongoDB"""
+        mongo_data = build_objective_document(objective)
+        self.mongo_service.update_objective(
+            objective.learning_goal_id,
+            objective_id,
+            mongo_data
+        )
+
+    def _update_learning_goal_if_needed(self, objective: Objective, session: Session):
+        """Update learning goal completion if objective has a learning goal"""
+        if objective.learning_goal_id:
+            self.learning_goal_service.update_learning_goal_completion_after_objective_change(
+                objective.learning_goal_id, 
+                session
+            )
+
     def update_objective(self, objective_id: UUID, objective: ObjectiveUpdate, user_id: UUID, session: Session) -> Objective:
         try:
             existing_objective = self.get_objective(objective_id, session)
@@ -208,41 +247,24 @@ class ObjectiveService:
             handle_db_error(err, "update_objective", error_type="commit")
 
     def update_status(self, objective_id: UUID, session: Session):
+        """Update objective status with monotonic logic - only advance, never regress"""
         try:
-            task_counts = self._tasks_by_status(objective_id, session)
-
-            total = task_counts["total"]
-            completed = task_counts["completed"]
-            in_progress = task_counts["in_progress"]
-            paused = task_counts["paused"]
-
-            if completed == total and total > 0:
-                new_status = Status.COMPLETED
-            elif in_progress > 0:
-                new_status = Status.IN_PROGRESS
-            elif paused == total and total > 0:
-                new_status = Status.PAUSED
-            else:
-                new_status = Status.NOT_STARTED
-        
             objective = self.get_objective(objective_id, session)
+            old_status = objective.status
+            
+            task_counts = self._tasks_by_status(objective_id, session)
+            candidate_status = self._calculate_candidate_status_from_tasks(task_counts)
+            new_status = self._apply_monotonic_status_transition(old_status, candidate_status)
+
+            if objective.status == new_status:
+                return
+
             now = datetime.now(timezone.utc)
+            self._update_objective_status_and_timestamps(objective, old_status, new_status, now)
+            self._sync_objective_to_mongo(objective, objective_id)
+            self._update_learning_goal_if_needed(objective, session)
 
-            if objective.status != new_status:
-                old_status = objective.status
-                objective.status = new_status
-                objective.updated_at = now
-
-                self._update_objective_timestamps(objective, old_status, new_status, now)
-
-                mongo_data = build_objective_document(objective)
-                self.mongo_service.update_objective(
-                    objective.learning_goal_id,
-                    objective_id,
-                    mongo_data
-                )
-
-                session.commit()
+            session.commit()
 
         except APIException as api_error:
             raise api_error
@@ -252,46 +274,21 @@ class ObjectiveService:
             handle_db_error(err, "update_status", error_type="commit")
 
     def update_objective_status_after_task_change(self, objective_id: UUID, session: Session):
-        """Update objective status after task creation/deletion/modification"""
+        """Update objective status after task creation/deletion/modification with monotonic logic"""
         try:
             objective = self.get_objective(objective_id, session)
             old_status = objective.status
             
             task_counts = self._tasks_by_status(objective_id, session)
-            total = task_counts["total"]
-            completed = task_counts["completed"]
-            in_progress = task_counts["in_progress"]
-            paused = task_counts["paused"]
-            
-            now = datetime.now(timezone.utc)
-            
-            if completed == total and total > 0:
-                new_status = Status.COMPLETED
-            elif in_progress > 0:
-                new_status = Status.IN_PROGRESS
-            elif paused == total and total > 0:
-                new_status = Status.PAUSED
-            else:
-                new_status = Status.NOT_STARTED
+            candidate_status = self._calculate_candidate_status_from_tasks(task_counts)
+            new_status = self._apply_monotonic_status_transition(old_status, candidate_status)
             
             if objective.status != new_status:
-                objective.status = new_status
-                objective.updated_at = now
-                
-                self._update_objective_timestamps(objective, old_status, new_status, now)
+                now = datetime.now(timezone.utc)
+                self._update_objective_status_and_timestamps(objective, old_status, new_status, now)
             
-            mongo_data = build_objective_document(objective)
-            self.mongo_service.update_objective(
-                objective.learning_goal_id,
-                objective_id,
-                mongo_data
-            )
-            
-            if objective.status != old_status and objective.learning_goal_id:
-                self.learning_goal_service.update_learning_goal_completion_after_objective_change(
-                    objective.learning_goal_id, 
-                    session
-                )
+            self._sync_objective_to_mongo(objective, objective_id)
+            self._update_learning_goal_if_needed(objective, session)
                 
         except APIException as api_error:
             raise api_error
@@ -465,21 +462,39 @@ class ObjectiveService:
         
         return result
 
+    def _apply_monotonic_status_transition(self, current_status: Status, candidate_status: Status) -> Status:
+        """
+        Apply monotonic status transition - only advance, never regress.
+        
+        Rules:
+        - NOT_STARTED can advance to IN_PROGRESS, PAUSED, or COMPLETED
+        - IN_PROGRESS can advance to COMPLETED, but not regress to NOT_STARTED or PAUSED
+        - PAUSED can advance to IN_PROGRESS or COMPLETED, but not regress to NOT_STARTED
+        - COMPLETED never changes to another status
+        """
+        if current_status == Status.COMPLETED:
+            return Status.COMPLETED
+        
+        if current_status == Status.IN_PROGRESS:
+            return Status.COMPLETED if candidate_status == Status.COMPLETED else Status.IN_PROGRESS
+        
+        if current_status == Status.PAUSED:
+            return candidate_status if candidate_status in [Status.COMPLETED, Status.IN_PROGRESS] else Status.PAUSED
+        
+        return candidate_status
+
     def _update_objective_timestamps(self, objective: Objective, old_status: Status, new_status: Status, now: datetime):
-        """Update objective timestamps based on status transitions"""
+        """Update objective timestamps based on status transitions (monotonic - only set once)"""
         is_becoming_completed = new_status == Status.COMPLETED and old_status != Status.COMPLETED
-        is_leaving_completed = new_status != Status.COMPLETED and old_status == Status.COMPLETED
         
         if is_becoming_completed and objective.completed_at is None:
             objective.completed_at = now
-        elif is_leaving_completed:
-            objective.completed_at = None
         
-        is_first_activation = (
+        is_becoming_active = (
             old_status == Status.NOT_STARTED and 
             new_status in [Status.IN_PROGRESS, Status.PAUSED, Status.COMPLETED] and 
             objective.started_at is None
         )
         
-        if is_first_activation:
+        if is_becoming_active:
             objective.started_at = now

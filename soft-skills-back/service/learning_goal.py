@@ -138,6 +138,40 @@ class LearningGoalService:
         except Exception as err:
             handle_db_error(err, "_objectives_by_status", error_type="query")
 
+    def _should_set_completed_timestamp(self, objective_counts: dict, learning_goal: LearningGoal) -> bool:
+        """Check if completed_at timestamp should be set"""
+        total = objective_counts["total"]
+        completed = objective_counts["completed"]
+        all_completed = completed == total and total > 0
+        
+        return all_completed and learning_goal.completed_at is None
+
+    def _should_set_started_timestamp(self, objective_counts: dict, learning_goal: LearningGoal) -> bool:
+        """Check if started_at timestamp should be set"""
+        active = objective_counts["active"]
+        return active > 0 and learning_goal.started_at is None
+
+    def _set_learning_goal_timestamps(self, learning_goal: LearningGoal, objective_counts: dict, now: datetime) -> bool:
+        """Set learning goal timestamps if needed. Returns True if any timestamp was set."""
+        updated = False
+        
+        if self._should_set_completed_timestamp(objective_counts, learning_goal):
+            learning_goal.completed_at = now
+            learning_goal.updated_at = now
+            updated = True
+        
+        if self._should_set_started_timestamp(objective_counts, learning_goal):
+            learning_goal.started_at = now
+            learning_goal.updated_at = now
+            updated = True
+        
+        return updated
+
+    def _sync_learning_goal_to_mongo(self, learning_goal_id: UUID, learning_goal: LearningGoal):
+        """Sync learning goal changes to MongoDB"""
+        mongo_data = build_learning_goal_document(learning_goal)
+        self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
+
     def update_learning_goal(self, learning_goal_id: UUID, learning_goal: LearningGoalUpdate, user_id: UUID, session: Session) -> LearningGoal:
         try:
             existing_learning_goal = self.get_learning_goal(learning_goal_id, session)
@@ -218,37 +252,16 @@ class LearningGoalService:
             handle_db_error(err, "remove_objective_from_order", error_type="update")
 
     def update_learning_goal_completion_after_objective_change(self, learning_goal_id: UUID, session: Session):
-        """Update learning goal completed_at field after objective status changes"""
+        """Update learning goal timestamps after objective status changes (monotonic - only set once)"""
         try:
             learning_goal = self.get_learning_goal(learning_goal_id, session)
-            
             objective_counts = self._objectives_by_status(learning_goal_id, session)
-            total = objective_counts["total"]
-            completed = objective_counts["completed"]
-            active = objective_counts["active"]
-            
             now = datetime.now(timezone.utc)
             
-            all_completed = completed == total and total > 0
-            should_set_completed = all_completed and learning_goal.completed_at is None
-            should_clear_completed = not all_completed and learning_goal.completed_at is not None
+            updated = self._set_learning_goal_timestamps(learning_goal, objective_counts, now)
             
-            should_set_started = (active > 0 and learning_goal.started_at is None)
-            
-            if should_set_completed:
-                learning_goal.completed_at = now
-                learning_goal.updated_at = now
-            elif should_clear_completed:
-                learning_goal.completed_at = None
-                learning_goal.updated_at = now
-            
-            if should_set_started:
-                learning_goal.started_at = now
-                learning_goal.updated_at = now
-            
-            if should_set_completed or should_clear_completed or should_set_started:
-                mongo_data = build_learning_goal_document(learning_goal)
-                self.mongo_service.update_learning_goal(learning_goal_id, mongo_data)
+            if updated:
+                self._sync_learning_goal_to_mongo(learning_goal_id, learning_goal)
                 
         except APIException as api_error:
             raise api_error
@@ -275,6 +288,56 @@ class LearningGoalService:
             session.rollback()
             handle_db_error(err, "delete_learning_goal", error_type="commit")
 
+    def _build_roadmap_base_data(self, learning_goal_id: UUID, user_id: UUID, learning_goal_mongo: dict) -> dict:
+        """Build base roadmap data structure"""
+        return {
+            "learning_goal_id": str(learning_goal_id),
+            "title": learning_goal_mongo["title"],
+            "description": learning_goal_mongo["description"],
+            "user_id": str(user_id),
+            "started_at": None,
+            "completed_at": None,
+            "objectives": []
+        }
+
+    def _get_ordered_objective_ids(self, objectives_order: list, objective_map: dict) -> list:
+        """Get all objective IDs in correct order (ordered first, then unordered)"""
+        ordered_ids = [obj_id for obj_id in objectives_order if obj_id in objective_map]
+        unordered_ids = [obj_id for obj_id in objective_map.keys() if obj_id not in ordered_ids]
+        
+        return ordered_ids + unordered_ids
+
+    def _convert_objective_to_roadmap(self, objective_id: str, mongo_obj: dict, learning_goal_id: UUID, index: int) -> dict:
+        """Convert a single objective to roadmap format"""
+        converted_tasks = self._convert_tasks_with_order(
+            mongo_obj.get("tasks", []), 
+            mongo_obj.get("tasks_order_by_status", {})
+        )
+        
+        return {
+            "objective_id": objective_id,
+            "learning_goal_id": str(learning_goal_id),
+            "title": mongo_obj["title"],
+            "description": mongo_obj.get("description", ""),
+            "order_index": index,
+            "tasks": converted_tasks
+        }
+
+    def _convert_all_objectives(self, all_objective_ids: list, objective_map: dict, learning_goal_id: UUID) -> list:
+        """Convert all objectives to roadmap format"""
+        return [
+            self._convert_objective_to_roadmap(obj_id, objective_map[obj_id], learning_goal_id, index)
+            for index, obj_id in enumerate(all_objective_ids)
+        ]
+
+    def _create_and_save_roadmap(self, roadmap_data: dict, user_id: UUID, session: Session) -> dict:
+        """Create roadmap in MongoDB and return result"""
+        objectives = roadmap_data.pop("objectives")
+        result = self.roadmap_mongo_service.add_roadmap(roadmap_data, str(user_id), session)
+        roadmap_id = result["roadmap_id"]
+        self.roadmap_mongo_service.update_roadmap(roadmap_id, {"objectives": objectives})
+        return result
+
     def convert_to_roadmap(self, learning_goal_id: UUID, user_id: UUID, session: Session) -> dict:
         """Convert a learning goal to a roadmap format"""
         try:
@@ -282,58 +345,17 @@ class LearningGoalService:
             self.verify_user_ownership(learning_goal, user_id)
             
             learning_goal_mongo = self.mongo_service.get_learning_goal(learning_goal_id)
-            
-            roadmap_data = {
-                "learning_goal_id": str(learning_goal_id),
-                "title": learning_goal_mongo["title"],
-                "description": learning_goal_mongo["description"],
-                "user_id": str(user_id),
-                "started_at": None,
-                "completed_at": None,
-                "objectives": []
-            }
+            roadmap_data = self._build_roadmap_base_data(learning_goal_id, user_id, learning_goal_mongo)
             
             objectives_order = learning_goal_mongo.get("objectives_order", [])
             mongo_objectives = learning_goal_mongo.get("objectives", [])
-            
             objective_map = {obj["objective_id"]: obj for obj in mongo_objectives}
             
-            all_objective_ids = []
-            
-            for objective_id in objectives_order:
-                if objective_id in objective_map:
-                    all_objective_ids.append(objective_id)
-            
-            for objective_id in objective_map.keys():
-                if objective_id not in all_objective_ids:
-                    all_objective_ids.append(objective_id)
-            
-            converted_objectives = []
-            for index, objective_id in enumerate(all_objective_ids):
-                mongo_obj = objective_map[objective_id]
-                
-                converted_tasks = self._convert_tasks_with_order(
-                    mongo_obj.get("tasks", []), 
-                    mongo_obj.get("tasks_order_by_status", {})
-                )
-                
-                converted_objective = {
-                    "objective_id": objective_id,
-                    "learning_goal_id": str(learning_goal_id),
-                    "title": mongo_obj["title"],
-                    "description": mongo_obj.get("description", ""),
-                    "order_index": index,
-                    "tasks": converted_tasks
-                }
-                converted_objectives.append(converted_objective)
+            all_objective_ids = self._get_ordered_objective_ids(objectives_order, objective_map)
+            converted_objectives = self._convert_all_objectives(all_objective_ids, objective_map, learning_goal_id)
             
             roadmap_data["objectives"] = converted_objectives
-            
-            objectives = roadmap_data.pop("objectives")
-            result = self.roadmap_mongo_service.add_roadmap(roadmap_data, str(user_id), session)
-            
-            roadmap_id = result["roadmap_id"]
-            self.roadmap_mongo_service.update_roadmap(roadmap_id, {"objectives": objectives})
+            result = self._create_and_save_roadmap(roadmap_data, user_id, session)
             
             return {
                 "message": "Meta de aprendizaje convertida a plan de aprendizaje correctamente",

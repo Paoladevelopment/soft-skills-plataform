@@ -1,9 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createTask, getTaskById, updateTask, deleteTask } from '../api/Tasks'
 import { CreateTaskPayload, UpdateTaskPayload } from '../types/planner/task.api'
-import { Task } from '../types/planner/planner.models'
 import { useToastStore } from '../../../store/useToastStore'
-import { KanbanApiResponse, TaskColumnResponse} from '../types/kanban/task.api'
 import { ObjectiveBoard } from '../types/kanban/board.types'
 import { mapApiPriorityToComponentPriority, mapStatusToComponentStatus } from '../utils/kanbanUtils'
 import { useTranslation } from 'react-i18next'
@@ -123,62 +121,8 @@ export const useUpdateTask = () => {
     mutationFn: async ({ id, payload }: { id: string; payload: UpdateTaskPayload }) => {
       return await updateTask(id, payload)
     },
-    
-    onMutate: async ({ id, payload }) => {
-      await queryClient.cancelQueries({ queryKey: ['tasks', 'detail', id] })
-      
-      const kanbanQueries = queryClient.getQueriesData({ queryKey: ['kanban-tasks'] })
-      
-      const previousTaskDetail = queryClient.getQueryData(['tasks', 'detail', id])
-      const previousKanbanQueries = kanbanQueries.map(([queryKey, data]) => [queryKey, data])
-
-      queryClient.setQueryData(['tasks', 'detail', id], (oldData: Task | undefined) => {
-        if (!oldData) return oldData
-        return { ...oldData, ...payload, updatedAt: new Date().toISOString() }
-      })
-
-      kanbanQueries.forEach(([queryKey]) => {
-        queryClient.setQueryData(queryKey, (oldData: KanbanApiResponse | undefined) => {
-          if (!oldData) return oldData
-
-          const updateTaskInColumn = (column: TaskColumnResponse | undefined) => {
-            if (!column?.items) return column
-            return {
-              ...column,
-              items: column.items.map((task) =>
-                task.taskId === id 
-                  ? { ...task, ...payload }
-                  : task
-              )
-            }
-          }
-
-          return {
-            ...oldData,
-            columns: {
-              notStarted: updateTaskInColumn(oldData.columns?.notStarted),
-              inProgress: updateTaskInColumn(oldData.columns?.inProgress),
-              completed: updateTaskInColumn(oldData.columns?.completed),
-              paused: updateTaskInColumn(oldData.columns?.paused),
-            }
-          }
-        })
-      })
-
-      return { previousTaskDetail, previousKanbanQueries }
-    },
-    
-    onError: (_error, { id }, context) => {
-      if (context?.previousTaskDetail) {
-        queryClient.setQueryData(['tasks', 'detail', id], context.previousTaskDetail)
-      }
-
-      if (context?.previousKanbanQueries) {
-        context.previousKanbanQueries.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey as readonly unknown[], data)
-        })
-      }
-      
+        
+    onError: () => {
       showToast(t('toasts.tasks.updateError'), 'error')
     },
     
@@ -192,7 +136,7 @@ export const useUpdateTask = () => {
   })
 }
 
-export const useDeleteTask = () => {
+export const useDeleteTask = (objectiveId: string | null) => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
   const { t } = useTranslation('goals')
@@ -201,55 +145,35 @@ export const useDeleteTask = () => {
     mutationFn: async (id: string) => {
       return await deleteTask(id)
     },
-    
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ['tasks', 'detail', id] })
-      
-      const kanbanQueries = queryClient.getQueriesData({ queryKey: ['kanban-tasks'] })
-      const previousKanbanQueries = kanbanQueries.map(([queryKey, data]) => [queryKey, data])
 
-      kanbanQueries.forEach(([queryKey]) => {
-        queryClient.setQueryData(queryKey, (oldData: KanbanApiResponse | undefined) => {
-          if (!oldData) return oldData
-
-          const removeTaskFromColumn = (column: TaskColumnResponse | undefined) => {
-            if (!column?.items) return column
-            return {
-              ...column,
-              items: column.items.filter((task) => task.taskId !== id),
-              total: Math.max(0, column.total - 1)
-            }
-          }
-
-          return {
-            ...oldData,
-            columns: {
-              notStarted: removeTaskFromColumn(oldData.columns?.notStarted),
-              inProgress: removeTaskFromColumn(oldData.columns?.inProgress),
-              completed: removeTaskFromColumn(oldData.columns?.completed),
-              paused: removeTaskFromColumn(oldData.columns?.paused),
-            }
-          }
-        })
-      })
-
-     
-      queryClient.removeQueries({ queryKey: ['tasks', 'detail', id] })
-
-      return { previousKanbanQueries }
-    },
-      
-    onError: (error, _id, context) => {
-      if (context?.previousKanbanQueries) {
-        context.previousKanbanQueries.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey as readonly unknown[], data)
-        })
-      }
-      
-      showToast(error.message || t('toasts.tasks.deleteError'), 'error')
+    onError: (error) => {
+      const message = (error as Error)?.message || t('toasts.tasks.deleteError')
+      showToast(message, 'error')
     },
     
     onSuccess: ({ message }) => {
+      if (objectiveId) {
+        queryClient.invalidateQueries({
+          queryKey: ['kanban-tasks', objectiveId]
+        })
+
+        queryClient.invalidateQueries({
+          queryKey: ['objectives', 'detail', objectiveId]
+        })
+
+        queryClient.invalidateQueries({
+          queryKey: ['objectives', 'list']
+        })
+
+        queryClient.invalidateQueries({
+          queryKey: ['learningGoals', 'list']
+        })
+
+        queryClient.invalidateQueries({
+          queryKey: ['learningGoals', 'detail']
+        })
+      }
+
       showToast(message || t('toasts.tasks.deleteSuccess'), 'success')
     },
   })

@@ -33,10 +33,12 @@ interface BoardProps {
     newPosition: number,
     reason?: string
   ) => void
+  onDeleteTask?: (taskId: string) => void
+  onViewTask?: (taskId: string) => void
 }
 
 
-const Board = ({ board, moveTask }: BoardProps) => {
+const Board = ({ board, moveTask, onDeleteTask, onViewTask }: BoardProps) => {
   const { t } = useTranslation('goals')
   const [columnsData, setColumnsData] = useState<ObjectiveBoard>(board)
 
@@ -271,7 +273,12 @@ const Board = ({ board, moveTask }: BoardProps) => {
       }}
     >
       {columnsData.columns.map(column => (
-        <Column key={column.id} column={column} />
+        <Column
+          key={column.id}
+          column={column}
+          onDeleteTask={onDeleteTask}
+          onViewTask={onViewTask}
+        />
       ))}
     </Box>
   )

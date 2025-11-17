@@ -1,10 +1,11 @@
-import { Card, CardContent, Typography, Chip, Box } from '@mui/material'
-import { CalendarToday, Flag } from '@mui/icons-material'
+import { Card, CardContent, Typography, Chip, Box, IconButton, Tooltip } from '@mui/material'
+import { CalendarToday, Flag, DeleteOutline, Visibility } from '@mui/icons-material'
 import { SubTask } from '../../types/kanban/board.types'
 import { CardData } from '../../types/kanban/drag-drop.types'
 import { getPriorityColor } from '../../utils/objectiveUtils'
 import { formatDateString } from '../../../../utils/formatDate'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   draggable,
   dropTargetForElements
@@ -18,9 +19,13 @@ import DropIndicator from './DropIndicator'
 
 interface TaskCardProps {
   task: SubTask
+  onDelete?: (taskId: string) => void
+  onViewDetails?: (taskId: string) => void
 }
 
-const TaskCard = ({ task }: TaskCardProps) => {
+const TaskCard = ({ task, onDelete, onViewDetails }: TaskCardProps) => {
+  const { t } = useTranslation('goals')
+  
   const cardRef = useRef<HTMLDivElement>(null)
   const [closestEdge, setClosestEdge] = useState<'top' | 'bottom' | 'left' | 'right' | null>(null)
 
@@ -67,6 +72,20 @@ const TaskCard = ({ task }: TaskCardProps) => {
     )
   }, [task.id])
 
+  const handleDeleteClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    if (!onDelete) return
+
+    onDelete(task.id)
+  }
+
+  const handleViewDetailsClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    if (!onViewDetails) return
+
+    onViewDetails(task.id)
+  }
+
   return (
     <Card
       ref={cardRef}
@@ -90,24 +109,62 @@ const TaskCard = ({ task }: TaskCardProps) => {
         }
       }}
     >
-      <CardContent 
-        sx={{ 
-          p: 2, 
-          '&:last-child': { 
-            pb: 2 
-          } 
+      <CardContent
+        sx={{
+          p: 2,
+          '&:last-child': {
+            pb: 2
+          }
         }}
       >
-        <Typography 
-          variant="subtitle2" 
-          sx={{ 
-            fontWeight: 600,
-            mb: 1,
-            lineHeight: 1.3
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            mb: 1
           }}
         >
-          {task.title}
-        </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              lineHeight: 1.3
+            }}
+          >
+            {task.title}
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5
+            }}
+          >
+            {onViewDetails && (
+              <Tooltip title={t('objectives.detail.taskBreakdown.viewTask')}>
+                <IconButton
+                  size="small"
+                  onClick={handleViewDetailsClick}
+                >
+                  <Visibility sx={{ fontSize: '1rem' }} />
+                </IconButton>
+              </Tooltip>
+            )}
+
+            {onDelete && (
+              <Tooltip title={t('objectives.detail.taskBreakdown.deleteTask')}>
+                <IconButton
+                  size="small"
+                  onClick={handleDeleteClick}
+                >
+                  <DeleteOutline sx={{ fontSize: '1rem' }} />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        </Box>
         
         {task.description && (
           <Typography 
@@ -123,11 +180,11 @@ const TaskCard = ({ task }: TaskCardProps) => {
           </Typography>
         )}
 
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center' 
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}
         >
           <Chip
