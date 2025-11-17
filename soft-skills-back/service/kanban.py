@@ -169,15 +169,13 @@ class KanbanService:
             
             old_position = from_column_tasks.index(task_id_str) if task_id_str in from_column_tasks else 0
             
-            before_aggregates = self._compute_required_task_aggregates(objective_id, session)
-            
             if move_request.from_column == move_request.to_column:
                 self._reorder_task_in_column(objective, move_request, task_id_str)
             else:
                 self._move_task_between_columns(objective, task, move_request, task_id_str, session)
             
-            after_aggregates = self._compute_required_task_aggregates(objective_id, session)
-            self._apply_objective_transitions(objective, before_aggregates, after_aggregates)
+            aggregates = self._compute_required_task_aggregates(objective_id, session)
+            self._apply_objective_transitions(objective, aggregates)
             
             if objective.learning_goal_id:
                 self._recompute_learning_goal_status(objective.learning_goal_id, session)
@@ -368,27 +366,42 @@ class KanbanService:
         except Exception as err:
             handle_db_error(err, "_compute_required_task_aggregates", error_type="query")
 
-    def _apply_objective_transitions(self, objective: Objective, before: dict, after: dict):
-        """Apply objective status transitions based on aggregate changes"""
+    def _calculate_candidate_status_from_aggregates(self, aggregates: dict) -> Status:
+        """Calculate candidate status based on required task aggregates"""
+        required_total = aggregates["required_total"]
+        required_done = aggregates["required_done"]
+        required_active = aggregates["required_active"]
+        
+        if required_done == required_total and required_total > 0:
+            return Status.COMPLETED
+        if required_active > 0:
+            return Status.IN_PROGRESS
+        return Status.NOT_STARTED
+
+    def _apply_objective_transitions(self, objective: Objective, aggregates: dict):
+        """Apply objective status transitions based on aggregate changes (monotonic logic)"""
+        old_status = objective.status
+        candidate_status = self._calculate_candidate_status_from_aggregates(aggregates)
+        new_status = self.objective_service._apply_monotonic_status_transition(old_status, candidate_status)
+        
+        if objective.status == new_status:
+            return
+        
         now = datetime.now(timezone.utc)
+        objective.status = new_status
+        objective.updated_at = now
         
-        if (before["required_done"] == before["required_total"] and before["required_total"] > 0 and
-            after["required_done"] < after["required_total"]):
-            objective.status = Status.IN_PROGRESS
-            objective.completed_at = None
+        is_becoming_completed = new_status == Status.COMPLETED and old_status != Status.COMPLETED
+        if is_becoming_completed and objective.completed_at is None:
+            objective.completed_at = now
         
-        if after["required_done"] == after["required_total"] and after["required_total"] > 0:
-            objective.status = Status.COMPLETED
-            if objective.completed_at is None:
-                objective.completed_at = now
+        is_becoming_active = (
+            new_status in [Status.IN_PROGRESS, Status.PAUSED, Status.COMPLETED] and 
+            objective.started_at is None
+        )
         
-        if after["required_active"] > 0 and before["required_active"] == 0:
-            objective.status = Status.IN_PROGRESS
-            if objective.started_at is None:
-                objective.started_at = now
-           
-        if after["required_active"] == 0:
-            objective.status = Status.NOT_STARTED
+        if is_becoming_active:
+            objective.started_at = now
 
     def _recompute_learning_goal_status(self, learning_goal_id: UUID, session: Session):
         """Recompute and apply learning goal status transitions"""
