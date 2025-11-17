@@ -4,14 +4,17 @@ import {
   TextField,
   IconButton,
   Stack,
-  Button
+  Button,
+  Alert
 } from '@mui/material'
 import ReactMarkdown from 'react-markdown'
 import SendIcon from '@mui/icons-material/Send'
 import LogoutIcon from '@mui/icons-material/Logout'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChatMessage } from '../../types/chatbot/chatbot.models'
+import { useChatbotStore } from '../../store/useChatbotStore'
 
 interface Props {
   messages: ChatMessage[]
@@ -23,6 +26,10 @@ interface Props {
 const AithenaChatbot = ({ messages, isLoading, onSendMessage, onEndChat }: Props) => {
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const isConversationEnded = useChatbotStore((state) => state.isConversationEnded)
+  const startNewConversation = useChatbotStore((state) => state.startNewConversation)
+  
+  const { t } = useTranslation('roadmap')
 
   const handleSend = () => {
     if (!input.trim()) return
@@ -64,8 +71,17 @@ const AithenaChatbot = ({ messages, isLoading, onSendMessage, onEndChat }: Props
         }}
       >
         <Box>
-          <Typography variant="subtitle1" fontWeight="bold">Aithena</Typography>
-          <Typography variant="body2">Your learning roadmap assistant</Typography>
+          <Typography 
+            variant="subtitle1" 
+            fontWeight="bold"
+          >
+            Aithena
+          </Typography>
+          <Typography 
+            variant="body2"
+          >
+            {t('chatbot.assistant')}
+          </Typography>
         </Box>
         <Button
           onClick={onEndChat}
@@ -85,11 +101,18 @@ const AithenaChatbot = ({ messages, isLoading, onSendMessage, onEndChat }: Props
             }
           }}
         >
-          End Chat
+          {t('chatbot.endChat')}
         </Button>
       </Box>
 
-      <Box sx={{ flex: 1, px: 4, py: 2, overflowY: 'auto' }}>
+      <Box 
+        sx={{ 
+          flex: 1, 
+          px: 4, 
+          py: 2, 
+          overflowY: 'auto' 
+        }}
+      >
         {messages.map((msg, idx) => (
           <Box
             key={idx}
@@ -108,9 +131,18 @@ const AithenaChatbot = ({ messages, isLoading, onSendMessage, onEndChat }: Props
                 whiteSpace: 'pre-wrap',
               }}
             >
-              <Stack direction="row" alignItems="flex-start" spacing={2}>
+              <Stack 
+                direction="row" 
+                alignItems="flex-start" 
+                spacing={2}
+              >
                 {msg.sender === 'aithena' && (
-                  <SmartToyIcon fontSize="small" sx={{ color: '#6A5AE0' }} />
+                  <SmartToyIcon 
+                    fontSize="small" 
+                    sx={{ 
+                      color: '#6A5AE0' 
+                    }} 
+                  />
                 )}
                 <Box sx={{ 
                   wordBreak: 'break-word' 
@@ -165,7 +197,11 @@ const AithenaChatbot = ({ messages, isLoading, onSendMessage, onEndChat }: Props
         ))}
 
         {isLoading && (
-          <Box display="flex" justifyContent="flex-start" mb={1}>
+          <Box 
+            display="flex" 
+            justifyContent="flex-start" 
+            mb={1}
+          >
             <Box
               sx={{
                 backgroundColor: '#fff',
@@ -178,12 +214,46 @@ const AithenaChatbot = ({ messages, isLoading, onSendMessage, onEndChat }: Props
                 fontSize: '14px',
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <SmartToyIcon fontSize="small" sx={{ color: '#6A5AE0' }} />
-                <Typography variant="body2">Typing…</Typography>
+              <Stack 
+                direction="row" 
+                alignItems="center" 
+                spacing={1}
+              >
+                <SmartToyIcon 
+                  fontSize="small" 
+                  sx={{ 
+                    color: '#6A5AE0' 
+                  }} 
+                />
+                <Typography 
+                  variant="body2"
+                >
+                  {t('chatbot.typing')}
+                </Typography>
               </Stack>
             </Box>
           </Box>
+        )}
+
+        {isConversationEnded && (
+          <Alert 
+            severity="warning" 
+            sx={{
+              mt: 2,
+              mb: 2 
+            }}
+            action={
+              <Button 
+                color="inherit" 
+                size="small" 
+                onClick={startNewConversation}
+              >
+                {t('chatbot.conversationEnded.newConversation')}
+              </Button>
+            }
+          >
+            {t('chatbot.conversationEnded.message')}
+          </Alert>
         )}
 
         <div ref={messagesEndRef} />
@@ -202,13 +272,17 @@ const AithenaChatbot = ({ messages, isLoading, onSendMessage, onEndChat }: Props
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type your message..."
+          placeholder={t('chatbot.inputPlaceholder')}
           fullWidth
           size="small"
           variant="outlined"
-          disabled={isLoading}
+          disabled={isLoading || isConversationEnded}
         />
-        <IconButton onClick={handleSend} sx={{ ml: 1 }} disabled={isLoading}>
+        <IconButton 
+          onClick={handleSend} 
+          sx={{ ml: 1 }} 
+          disabled={isLoading || isConversationEnded}
+        >
           <SendIcon />
         </IconButton>
       </Box>

@@ -173,6 +173,17 @@
   "taskInformation": {
     "visitResources": "Visita los siguientes recursos para aprender más:",
     "noResources": "No hay recursos disponibles"
+  },
+  "chatbot": {
+    "assistant": "Tu asistente de hojas de ruta de aprendizaje",
+    "endChat": "Finalizar chat",
+    "typing": "Escribiendo…",
+    "inputPlaceholder": "Escribe tu mensaje...",
+    "initialMessage": "¡Puedo ayudarte a crear una hoja de ruta de aprendizaje para diversos temas como lenguajes de programación, desarrollo web, ciencia de datos y más. ¡Envíame un mensaje para comenzar!",
+    "conversationEnded": {
+      "message": "La conversación finalizó. Empieza una nueva conversación para continuar.",
+      "newConversation": "Nueva conversación"
+    }
   }
 }
 
