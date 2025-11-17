@@ -13,7 +13,9 @@ from model import (
     GameRound,
     Challenge,
     RoundSubmission,
-    SelfEvaluation
+    SelfEvaluation,
+    TaskNote,
+    TaskResource
 )
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel

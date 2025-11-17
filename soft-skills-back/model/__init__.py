@@ -2,6 +2,8 @@ from .learning_goal import LearningGoal
 from .module import Module
 from .objective import Objective
 from .task import Task
+from .task_note import TaskNote
+from .task_resource import TaskResource
 from .user import User
 from .pomodoro_preferences import PomodoroPreferences
 from .self_evaluation import SelfEvaluation
@@ -13,6 +15,8 @@ __all__ = [
     "Module",
     "Objective",
     "Task",
+    "TaskNote",
+    "TaskResource",
     "User",
     "PomodoroPreferences",
     "SelfEvaluation",
