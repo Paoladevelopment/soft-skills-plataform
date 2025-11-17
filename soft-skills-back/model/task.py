@@ -73,3 +73,9 @@ class Task(TaskBase, table=True):
   self_evaluations: List["SelfEvaluation"] = Relationship(
     back_populates="task", sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete"}
   )
+  notes: List["TaskNote"] = Relationship(
+    back_populates="task", sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete-orphan"}
+  )
+  resources: List["TaskResource"] = Relationship(
+    back_populates="task", sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete-orphan"}
+  )

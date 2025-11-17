@@ -7,10 +7,14 @@ from service.task import TaskService
 from sqlmodel import Session
 from utils.db import get_session
 from utils.errors import APIException, raise_http_exception, validate_uuid
+from router import task_notes, task_resources
 
 router = APIRouter()
 
 task_service = TaskService()
+
+router.include_router(task_notes.router, tags=["Task Notes"])
+router.include_router(task_resources.router, tags=["Task Resources"])
 
 @router.post(
 	"",

@@ -5,3 +5,4 @@ class ResourceType(str, Enum):
     BOOK = "book"
     VIDEO = "video"
     WEB = "web"
+    OTHER = "other"
