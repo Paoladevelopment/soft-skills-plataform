@@ -3,16 +3,58 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AithenaChatbot from "../components/roadmap/AithenaChatbot"
 import { useChatbotStore } from "../store/useChatbotStore"
 import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
+
+const initialMessageEs = "¡Puedo ayudarte a crear una hoja de ruta de aprendizaje para diversos temas como lenguajes de programación, desarrollo web, ciencia de datos y más. ¡Envíame un mensaje para comenzar!"
+const initialMessageEn = "I can help you create a learning roadmap for various subjects like programming languages, web development, data science, and more. Send me a message to get started!"
 
 const CreateRoadmapWithChatbot = () => {
   const {
     messages,
     isLoading,
     sendMessageToChatbot,
-    clearMessages
+    clearMessages,
+    addMessage
   } = useChatbotStore()
 
   const navigate = useNavigate()
+  const { t, i18n: i18nHook } = useTranslation('roadmap')
+
+  useEffect(() => {
+    const currentInitialMessage = t('chatbot.initialMessage')
+    
+    if (messages.length === 0) {
+      addMessage({
+        sender: 'aithena',
+        text: currentInitialMessage,
+      })
+
+      return
+    }
+
+    const firstMessage = messages[0]
+    if (firstMessage?.sender !== 'aithena') {
+      return
+    }
+
+    const isInitialMessage = firstMessage.text === initialMessageEs || firstMessage.text === initialMessageEn
+    if (!isInitialMessage) {
+      return
+    }
+
+    if (firstMessage.text === currentInitialMessage) {
+      return
+    }
+
+    const updatedMessages = [...messages]
+    updatedMessages[0] = {
+      ...firstMessage,
+      text: currentInitialMessage,
+    }
+    
+    useChatbotStore.setState({ messages: updatedMessages })
+  }, [i18nHook.language, messages, addMessage, t])
 
   const onEndChat = () => {
     clearMessages()

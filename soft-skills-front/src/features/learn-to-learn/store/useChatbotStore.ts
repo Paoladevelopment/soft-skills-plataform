@@ -5,23 +5,41 @@ import { persist } from 'zustand/middleware'
 import { IChatbotStore } from '../types/chatbot/chatbot.store'
 import { ChatMessage } from '../types/chatbot/chatbot.models'
 import { chatWithAithena } from '../api/Chatbot'
+import i18n from '../../../i18n/config'
+
+const getInitialMessage = () => {
+  return i18n.t('chatbot.initialMessage', { ns: 'roadmap' })
+}
+
+const isRoadmapCreationMessage = (message: string): boolean => {
+  const lowerMessage = message.toLowerCase()
+  const hasRoadmap = lowerMessage.includes('roadmap')
+  const hasCreationKeywords = 
+    lowerMessage.includes('creado') || 
+    lowerMessage.includes('creando') ||
+    lowerMessage.includes('completado') ||
+    lowerMessage.includes('notificaremos') ||
+    lowerMessage.includes('siendo creado')
+
+  return hasRoadmap && hasCreationKeywords
+}
 
 export const useChatbotStore = create<IChatbotStore>()(
   devtools(
     persist(
       immer((set, get) => ({
-        messages: [
-          {
-            sender: 'aithena',
-            text: "I can help you create a learning roadmap for various subjects like programming languages, web development, data science, and more. Send me a message to get started!",
-          },
-        ],
+        messages: [],
         threadId: null,
         isLoading: false,
+        isConversationEnded: false,
 
         addMessage: (message: ChatMessage) => {
           set((state) => {
             state.messages.push(message)
+            
+            if (message.sender === 'aithena' && isRoadmapCreationMessage(message.text)) {
+              state.isConversationEnded = true
+            }
           }, false, 'CHATBOT/ADD_MESSAGE')
         },
 
@@ -29,6 +47,7 @@ export const useChatbotStore = create<IChatbotStore>()(
           set((state) => {
             state.messages = []
             state.threadId = null
+            state.isConversationEnded = false
           }, false, 'CHATBOT/CLEAR_MESSAGES')
         },
 
@@ -36,6 +55,25 @@ export const useChatbotStore = create<IChatbotStore>()(
           set((state) => {
             state.threadId = id
           }, false, 'CHATBOT/SET_THREAD_ID')
+        },
+
+        endConversation: () => {
+          set((state) => {
+            state.isConversationEnded = true
+          }, false, 'CHATBOT/END_CONVERSATION')
+        },
+
+        startNewConversation: () => {
+          set((state) => {
+            state.isConversationEnded = false
+            state.messages = [
+              {
+                sender: 'aithena',
+                text: getInitialMessage(),
+              },
+            ]
+            state.threadId = null
+          }, false, 'CHATBOT/START_NEW_CONVERSATION')
         },
 
         sendMessageToChatbot: async (userInput: string) => {
@@ -53,7 +91,8 @@ export const useChatbotStore = create<IChatbotStore>()(
               setThreadId(response.threadId)
             }
 
-            addMessage({ sender: 'aithena', text: response.content })
+            const aithenaMessage = { sender: 'aithena' as const, text: response.content }
+            addMessage(aithenaMessage)
           } catch (err) {
             console.error('Error sending message to chatbot:', err)
           } finally {

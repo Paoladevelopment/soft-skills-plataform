@@ -173,6 +173,17 @@
   "taskInformation": {
     "visitResources": "Visit the following resources to learn more:",
     "noResources": "No resources available"
+  },
+  "chatbot": {
+    "assistant": "Your learning roadmap assistant",
+    "endChat": "End chat",
+    "typing": "Typing…",
+    "inputPlaceholder": "Type your message...",
+    "initialMessage": "I can help you create a learning roadmap for various subjects like programming languages, web development, data science, and more. Send me a message to get started!",
+    "conversationEnded": {
+      "message": "The conversation has ended. Start a new conversation to continue.",
+      "newConversation": "New conversation"
+    }
   }
 }
 
