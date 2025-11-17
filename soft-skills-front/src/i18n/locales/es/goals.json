@@ -130,7 +130,10 @@
         "subtitle": "Desglosa este objetivo en sub-tareas manejables y rastrea su progreso",
         "addTask": "Agregar tarea",
         "failedToLoad": "Error al cargar las tareas. Por favor, inténtalo de nuevo.",
-        "noTasksFound": "No se encontraron tareas para este objetivo."
+        "noTasksFound": "No se encontraron tareas para este objetivo.",
+        "viewTask": "Ver tarea",
+        "deleteTask": "Eliminar tarea",
+        "confirmDeleteMessage": "¿Estás seguro de que deseas eliminar \"{{title}}\"? Esta acción no se puede deshacer."
       },
       "notFound": {
         "title": "Objetivo no encontrado",

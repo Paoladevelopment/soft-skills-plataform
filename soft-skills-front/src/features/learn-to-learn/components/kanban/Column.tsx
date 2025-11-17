@@ -8,9 +8,11 @@ import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element
 
 interface ColumnProps {
   column: TaskColumn
+  onDeleteTask?: (taskId: string) => void
+  onViewTask?: (taskId: string) => void
 }
 
-const Column = ({ column }: ColumnProps) => {
+const Column = ({ column, onDeleteTask, onViewTask }: ColumnProps) => {
   const columnRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -103,7 +105,11 @@ const Column = ({ column }: ColumnProps) => {
           }
         }}
       >
-        <CardList tasks={column.tasks} />
+        <CardList
+          tasks={column.tasks}
+          onDeleteTask={onDeleteTask}
+          onViewTask={onViewTask}
+        />
       </Box>
     </Box>
   )

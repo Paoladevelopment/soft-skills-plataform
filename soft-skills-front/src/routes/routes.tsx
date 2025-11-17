@@ -20,6 +20,7 @@ import CreateRoadmapWithChatbot from '../features/learn-to-learn/pages/CreateRoa
 import RoadmapEditor from '../features/learn-to-learn/pages/RoadmapEditor'
 import LearningGoalDetail from '../features/learn-to-learn/pages/LearningGoalDetail'
 import ObjectiveDetail from '../features/learn-to-learn/pages/ObjectiveDetail'
+import TaskDetail from '../features/learn-to-learn/pages/TaskDetail'
 import ActiveListeningHome from '../features/active-listening/pages/Home'
 import GameSessions from '../features/active-listening/pages/GameSessions'
 import GamePlay from '../features/active-listening/pages/GamePlay'
@@ -51,7 +52,10 @@ export const RoutesConfiguration = () => {
               <Route index element={<Planner />} />
               <Route path='goals/:goalId'>
                 <Route index element={<LearningGoalDetail />} />
-                <Route path='objectives/:objectiveId' element={<ObjectiveDetail />} />
+                <Route path='objectives/:objectiveId'>
+                  <Route index element={<ObjectiveDetail />} />
+                  <Route path='tasks/:taskId' element={<TaskDetail />} />
+                </Route>
               </Route>
             </Route>
             

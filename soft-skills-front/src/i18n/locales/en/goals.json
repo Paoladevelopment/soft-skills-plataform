@@ -130,7 +130,10 @@
         "subtitle": "Break down this objective into manageable sub-tasks and track their progress",
         "addTask": "Add Task",
         "failedToLoad": "Failed to load tasks. Please try again.",
-        "noTasksFound": "No tasks found for this objective."
+        "noTasksFound": "No tasks found for this objective.",
+        "viewTask": "View task",
+        "deleteTask": "Delete task",
+        "confirmDeleteMessage": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone."
       },
       "notFound": {
         "title": "Objective not found",
