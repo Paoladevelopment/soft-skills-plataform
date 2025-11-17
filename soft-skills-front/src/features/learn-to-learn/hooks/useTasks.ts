@@ -6,6 +6,7 @@ import { useToastStore } from '../../../store/useToastStore'
 import { KanbanApiResponse, TaskColumnResponse} from '../types/kanban/task.api'
 import { ObjectiveBoard } from '../types/kanban/board.types'
 import { mapApiPriorityToComponentPriority, mapStatusToComponentStatus } from '../utils/kanbanUtils'
+import { useTranslation } from 'react-i18next'
 
 export const useTask = (taskId: string | null) => {
   return useQuery({
@@ -22,6 +23,7 @@ export const useTask = (taskId: string | null) => {
 export const useCreateTask = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: (payload: CreateTaskPayload) => createTask(payload),
@@ -72,7 +74,7 @@ export const useCreateTask = () => {
         queryClient.setQueryData(['kanban-tasks', newTask.objective_id], context.previousKanbanTasks)
       }
       
-      showToast('Failed to create task. Please try again.', 'error')
+      showToast(t('toasts.tasks.createError'), 'error')
     },
     
     onSuccess: (task, payload) => {
@@ -107,7 +109,7 @@ export const useCreateTask = () => {
         }
       })
       
-      showToast('Task created successfully!', 'success')
+      showToast(t('toasts.tasks.createSuccess'), 'success')
     },
   })
 }
@@ -115,6 +117,7 @@ export const useCreateTask = () => {
 export const useUpdateTask = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async ({ id, payload }: { id: string; payload: UpdateTaskPayload }) => {
@@ -176,7 +179,7 @@ export const useUpdateTask = () => {
         })
       }
       
-      showToast('Failed to update task. Please try again.', 'error')
+      showToast(t('toasts.tasks.updateError'), 'error')
     },
     
     onSuccess: (task, { id }) => {
@@ -184,7 +187,7 @@ export const useUpdateTask = () => {
       
       queryClient.invalidateQueries({ queryKey: ['kanban-tasks'] })
       
-      showToast('Task updated successfully!', 'success')
+      showToast(t('toasts.tasks.updateSuccess'), 'success')
     },
   })
 }
@@ -192,6 +195,7 @@ export const useUpdateTask = () => {
 export const useDeleteTask = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -242,11 +246,11 @@ export const useDeleteTask = () => {
         })
       }
       
-      showToast(error.message || 'Error deleting task', 'error')
+      showToast(error.message || t('toasts.tasks.deleteError'), 'error')
     },
     
     onSuccess: ({ message }) => {
-      showToast(message || 'Task deleted successfully', 'success')
+      showToast(message || t('toasts.tasks.deleteSuccess'), 'success')
     },
   })
 }

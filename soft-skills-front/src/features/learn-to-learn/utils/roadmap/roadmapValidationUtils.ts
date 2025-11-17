@@ -1,4 +1,5 @@
 import { Roadmap } from '../../types/roadmap/roadmap.models'
+import i18n from '../../../../i18n/config'
 
 export interface ValidationResult {
   isValid: boolean
@@ -44,8 +45,8 @@ export function validatePublicRoadmap(roadmap: Roadmap, messages: ValidationMess
  */
 export function validateRoadmapForPublicVisibility(roadmap: Roadmap): ValidationResult {
   return validatePublicRoadmap(roadmap, {
-    noObjectives: 'A public roadmap must contain at least one objective.',
-    unassignedTasks: 'All tasks of a public roadmap must be connected to an objective before making it public.'
+    noObjectives: i18n.t('toasts.validation.noObjectives', { ns: 'roadmap' }),
+    unassignedTasks: i18n.t('toasts.validation.unassignedTasksVisibility', { ns: 'roadmap' })
   })
 }
 
@@ -55,7 +56,7 @@ export function validateRoadmapForPublicVisibility(roadmap: Roadmap): Validation
  */
 export function validateRoadmapForPublicSave(roadmap: Roadmap): ValidationResult {
   return validatePublicRoadmap(roadmap, {
-    noObjectives: 'A public roadmap must contain at least one objective.',
-    unassignedTasks: 'All tasks of a public roadmap must be connected to an objective before saving.'
+    noObjectives: i18n.t('toasts.validation.noObjectives', { ns: 'roadmap' }),
+    unassignedTasks: i18n.t('toasts.validation.unassignedTasksSave', { ns: 'roadmap' })
   })
 }

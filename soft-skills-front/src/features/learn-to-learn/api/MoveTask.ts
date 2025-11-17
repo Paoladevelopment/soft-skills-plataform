@@ -1,12 +1,13 @@
 import { api } from "../../../config/api"
 import { fetchWithAuth, FetchError } from "../../../utils/fetchWithAuth"
 import { MoveTaskPayload, MoveTaskResponse } from "../types/kanban/move-task.api"
+import i18n from "../../../i18n/config"
 
 const SELF_EVALUATION_REQUIRED_STATUS = 428
 
 export class SelfEvaluationRequiredError extends Error {
   constructor(public taskId: string) {
-    super('Self evaluation required')
+    super(i18n.t('errors.selfEvaluationRequired', { ns: 'common' }))
     this.name = 'SelfEvaluationRequiredError'
   }
 }

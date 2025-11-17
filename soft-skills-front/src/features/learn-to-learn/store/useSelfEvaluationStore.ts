@@ -4,6 +4,7 @@ import type { SelfEvaluationStore } from '../types/self-evaluation/self-evaluati
 import { createSelfEvaluation } from '../api/SelfEvaluations'
 import { useToastStore } from '../../../store/useToastStore'
 import { useSelfEvaluationDraftStore } from './useSelfEvaluationDraftStore'
+import i18n from '../../../i18n/config'
 
 export const useSelfEvaluationStore = create<SelfEvaluationStore>()(
   devtools(
@@ -39,14 +40,15 @@ export const useSelfEvaluationStore = create<SelfEvaluationStore>()(
             submitting: false 
           }, false, 'SELF_EVAL/SUBMIT_SUCCESS')
 
-          useToastStore.getState().showToast('Self-evaluation saved successfully', 'success')
+          const successMessage = i18n.t('toasts.selfEvaluation.saveSuccess', { ns: 'goals' })
+          useToastStore.getState().showToast(successMessage, 'success')
           return res
         } catch (error) {
           set({ 
             submitting: false 
           }, false, 'SELF_EVAL/SUBMIT_ERROR')
           
-          const errorMessage = error instanceof Error ? error.message : 'Failed to save self-evaluation'
+          const errorMessage = error instanceof Error ? error.message : i18n.t('toasts.selfEvaluation.saveError', { ns: 'goals' })
           useToastStore.getState().showToast(errorMessage, 'error')
         }
       },

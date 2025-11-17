@@ -15,12 +15,12 @@ interface EditButtonProps {
   onClick: () => void
 }
 
-const EditButton = ({ onClick }: EditButtonProps) => (
+const EditButton = ({ onClick, ariaLabel }: EditButtonProps & { ariaLabel: string }) => (
   <InputAdornment position="end">
     <IconButton
       onClick={onClick}
       size="small"
-      aria-label="Edit room name"
+      aria-label={ariaLabel}
       edge="end"
       sx={{
         color: 'white',
@@ -37,9 +37,11 @@ const EditButton = ({ onClick }: EditButtonProps) => (
 interface ActionButtonsProps {
   onConfirm: () => void
   onCancel: () => void
+  confirmAriaLabel: string
+  cancelAriaLabel: string
 }
 
-const ActionButtons = ({ onConfirm, onCancel }: ActionButtonsProps) => (
+const ActionButtons = ({ onConfirm, onCancel, confirmAriaLabel, cancelAriaLabel }: ActionButtonsProps) => (
   <InputAdornment position="end">
     <Box 
       sx={{ 
@@ -50,7 +52,7 @@ const ActionButtons = ({ onConfirm, onCancel }: ActionButtonsProps) => (
       <IconButton
         onClick={onConfirm}
         size="small"
-        aria-label="Confirm room name change"
+        aria-label={confirmAriaLabel}
         sx={{
           backgroundColor: '#FFA726',
           color: 'white',
@@ -64,7 +66,7 @@ const ActionButtons = ({ onConfirm, onCancel }: ActionButtonsProps) => (
       <IconButton
         onClick={onCancel}
         size="small"
-        aria-label="Cancel room name change"
+        aria-label={cancelAriaLabel}
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.2)',
           color: 'white',
@@ -123,9 +125,14 @@ const GameSessionNameSection = ({ mode = GAME_SESSION_MODE.CREATE, sessionId }: 
           input: {
             endAdornment: mode === GAME_SESSION_MODE.UPDATE ? (
               isLocked ? (
-                <EditButton onClick={handleEditClick} />
+                <EditButton onClick={handleEditClick} ariaLabel={t('play.sessionForm.sessionName.editAriaLabel')} />
               ) : (
-                <ActionButtons onConfirm={handleConfirm} onCancel={handleCancel} />
+                <ActionButtons 
+                  onConfirm={handleConfirm} 
+                  onCancel={handleCancel}
+                  confirmAriaLabel={t('play.sessionForm.sessionName.confirmAriaLabel')}
+                  cancelAriaLabel={t('play.sessionForm.sessionName.cancelAriaLabel')}
+                />
               )
             ) : undefined,
           },

@@ -83,6 +83,7 @@
       "saving": "Saving..."
     },
     "validation": {
+      "taskIdInvalid": "Task ID must be a valid UUID",
       "studyPlaceRequired": "Study place is required",
       "learningIntentionRequired": "What were you trying to get better at? is required",
       "learningIntentionMaxLength": "What were you trying to get better at? must be 800 characters or less",

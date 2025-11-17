@@ -5,6 +5,7 @@ import { PomodoroPreferencesStore } from '../types/pomodoroPreferences/pomodoroP
 import { useToastStore } from '../../../store/useToastStore'
 import { getPomodoroPreferences, createOrUpdatePomodoroPreferences } from '../api/PomodoroPreferences'
 import { CreateOrUpdatePomodoroPreferencesPayload } from '../types/pomodoroPreferences/pomodoroPreferences.api'
+import i18n from '../../../i18n/config'
 
 export const usePomodoroPreferencesStore = create<PomodoroPreferencesStore>()(
   devtools(
@@ -78,7 +79,7 @@ export const usePomodoroPreferencesStore = create<PomodoroPreferencesStore>()(
           get().setEffectivePomodoroLengthMinutes(response.effective_pomodoro_length_minutes)
         } catch (err: unknown) {
           if (err instanceof Error) {
-            const errorMessage = err.message || 'Error fetching pomodoro preferences'
+            const errorMessage = err.message || i18n.t('toasts.fetchError', { ns: 'pomodoro' })
             get().setError(errorMessage)
 
             useToastStore.getState().showToast(errorMessage, 'error')
@@ -103,10 +104,11 @@ export const usePomodoroPreferencesStore = create<PomodoroPreferencesStore>()(
           get().setIsConfigured(true)
           get().setEffectivePomodoroLengthMinutes(response.data.pomodoro_length_minutes)
 
-          useToastStore.getState().showToast('Pomodoro preferences updated successfully!', 'success')
+          const successMessage = i18n.t('toasts.updateSuccess', { ns: 'pomodoro' })
+          useToastStore.getState().showToast(successMessage, 'success')
         } catch (err: unknown) {
           if (err instanceof Error) {
-            const errorMessage = err.message || 'Error updating pomodoro preferences'
+            const errorMessage = err.message || i18n.t('toasts.updateError', { ns: 'pomodoro' })
             get().setError(errorMessage)
 
             useToastStore.getState().showToast(errorMessage, 'error')

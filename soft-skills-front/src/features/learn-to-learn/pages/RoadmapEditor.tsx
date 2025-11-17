@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import ReactFlow, {
   Background,
   Controls,
@@ -32,6 +33,7 @@ import RoadmapForm from '../components/roadmap/RoadmapForm'
 import UpdateSharingSettingsModal from '../components/roadmap/UpdateSharingSettingsModal'
 
 const RoadmapEditorContent = () => {
+  const { t } = useTranslation('roadmap')
   const {
     editorNodes,
     editorEdges,
@@ -190,7 +192,7 @@ const RoadmapEditorContent = () => {
   return (
     <Box display="flex" flexDirection="column" height="100vh">
       <Topbar
-        title={selectedRoadmap?.title || 'Untitled Roadmap'}
+        title={selectedRoadmap?.title || t('editor.node.untitled')}
         description={selectedRoadmap?.description}
         visibility={selectedRoadmap?.visibility ?? RoadmapVisibility.Private}
         onEditMetaClick={handleOpenEditMeta}

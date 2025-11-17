@@ -142,7 +142,9 @@
       "todo": "POR HACER",
       "inProgress": "EN PROGRESO",
       "done": "HECHO",
-      "paused": "PAUSADO"
+      "paused": "PAUSADO",
+      "taskReordered": "Tarea reordenada dentro de la columna",
+      "taskMoved": "Tarea movida de {{from}} a {{to}}"
     },
     "addTaskModal": {
       "title": "Crear tarea",
@@ -192,5 +194,38 @@
     "titleRequired": "El título es obligatorio",
     "descriptionRequired": "La descripción es obligatoria",
     "impactRequired": "El impacto es obligatorio"
+  },
+  "toasts": {
+    "goals": {
+      "createError": "Error al crear la meta",
+      "createSuccess": "{{title}} agregado a tus metas de aprendizaje.",
+      "updateError": "Error al actualizar la meta",
+      "updateSuccess": "Meta actualizada exitosamente",
+      "deleteError": "Error al eliminar la meta",
+      "deleteSuccess": "Meta eliminada exitosamente",
+      "convertError": "Error al convertir la meta en plan de aprendizaje",
+      "convertSuccess": "¡Meta de aprendizaje convertida en plan de aprendizaje exitosamente!"
+    },
+    "objectives": {
+      "createError": "Error al crear el objetivo. Por favor, inténtalo de nuevo.",
+      "createSuccess": "¡Objetivo creado exitosamente!",
+      "updateError": "Error al actualizar el objetivo. Por favor, inténtalo de nuevo.",
+      "updateSuccess": "¡Objetivo actualizado exitosamente!",
+      "deleteError": "Error al eliminar el objetivo",
+      "deleteSuccess": "Objetivo eliminado exitosamente"
+    },
+    "tasks": {
+      "createError": "Error al crear la tarea. Por favor, inténtalo de nuevo.",
+      "createSuccess": "¡Tarea creada exitosamente!",
+      "updateError": "Error al actualizar la tarea. Por favor, inténtalo de nuevo.",
+      "updateSuccess": "¡Tarea actualizada exitosamente!",
+      "deleteError": "Error al eliminar la tarea",
+      "deleteSuccess": "Tarea eliminada exitosamente",
+      "moveError": "Error al mover la tarea. Por favor, inténtalo de nuevo."
+    },
+    "selfEvaluation": {
+      "saveSuccess": "Auto-evaluación guardada exitosamente",
+      "saveError": "Error al guardar la auto-evaluación"
+    }
   }
 }

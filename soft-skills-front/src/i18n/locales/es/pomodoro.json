@@ -1,0 +1,8 @@
+{
+  "toasts": {
+    "fetchError": "Error al cargar las preferencias de pomodoro",
+    "updateSuccess": "¡Preferencias de pomodoro actualizadas exitosamente!",
+    "updateError": "Error al actualizar las preferencias de pomodoro"
+  }
+}
+

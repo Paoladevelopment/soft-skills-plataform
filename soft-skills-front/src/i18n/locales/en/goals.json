@@ -142,7 +142,9 @@
       "todo": "TO DO",
       "inProgress": "IN PROGRESS",
       "done": "DONE",
-      "paused": "PAUSED"
+      "paused": "PAUSED",
+      "taskReordered": "Task reordered within column",
+      "taskMoved": "Task moved from {{from}} to {{to}}"
     },
     "addTaskModal": {
       "title": "Create task",
@@ -192,5 +194,38 @@
     "titleRequired": "Title is required",
     "descriptionRequired": "Description is required",
     "impactRequired": "Impact is required"
+  },
+  "toasts": {
+    "goals": {
+      "createError": "Error creating goal",
+      "createSuccess": "{{title}} added to your learning goals.",
+      "updateError": "Error updating goal",
+      "updateSuccess": "Goal updated successfully",
+      "deleteError": "Error deleting goal",
+      "deleteSuccess": "Goal deleted successfully",
+      "convertError": "Error converting goal to roadmap",
+      "convertSuccess": "Learning goal converted to roadmap successfully!"
+    },
+    "objectives": {
+      "createError": "Failed to create objective. Please try again.",
+      "createSuccess": "Objective created successfully!",
+      "updateError": "Failed to update objective. Please try again.",
+      "updateSuccess": "Objective updated successfully!",
+      "deleteError": "Error deleting objective",
+      "deleteSuccess": "Objective deleted successfully"
+    },
+    "tasks": {
+      "createError": "Failed to create task. Please try again.",
+      "createSuccess": "Task created successfully!",
+      "updateError": "Failed to update task. Please try again.",
+      "updateSuccess": "Task updated successfully!",
+      "deleteError": "Error deleting task",
+      "deleteSuccess": "Task deleted successfully",
+      "moveError": "Error moving task. Please try again."
+    },
+    "selfEvaluation": {
+      "saveSuccess": "Self-evaluation saved successfully",
+      "saveError": "Failed to save self-evaluation"
+    }
   }
 }

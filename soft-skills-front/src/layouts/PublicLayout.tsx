@@ -36,8 +36,21 @@ const PublicLayout = () => {
           py: 4,
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Box component="img" src={Logo} alt="Logo" sx={{ height: 50, mr: 1 }} />
+        <Box 
+          sx={{ 
+            display: "flex", 
+            alignItems: "center" 
+          }}
+        >
+          <Box 
+            component="img" 
+            src={Logo} 
+            alt={t('ui.logo', { ns: 'common' })} 
+            sx={{ 
+              height: 50, 
+              mr: 1 
+            }} 
+          />
           <Typography
             variant="h4"
             component="h1"
@@ -47,7 +60,7 @@ const PublicLayout = () => {
               letterSpacing: "0.05em",
             }}
           >
-            SoftSkills
+            {t('ui.appName', { ns: 'common' })}
           </Typography>
         </Box>
 
@@ -91,7 +104,6 @@ const PublicLayout = () => {
               textDecoration: "underline",
             },
           }}
-
           onClick={() => navigate(isLoginPage ? "/register" : "/login")}
         >
           {isLoginPage ? t('layout.signUp') : t('layout.signIn')}

@@ -1,7 +1,8 @@
 import { Objective, Roadmap, Task } from '../../types/roadmap/roadmap.models'
+import i18n from '../../../../i18n/config'
 
 export const ORPHAN_OBJECTIVE_ID = '__unassigned__'
-export const ORPHAN_OBJECTIVE_TITLE = 'Unassigned'
+export const ORPHAN_OBJECTIVE_TITLE = () => i18n.t('editor.node.unassigned', { ns: 'roadmap' })
 export const ORPHAN_OBJECTIVE_ORDER_INDEX = -1
 
 /**
@@ -270,7 +271,7 @@ export function getOrCreateOrphanObjective(roadmap: Roadmap): Objective {
   if (!orphan) {
     orphan = {
       objectiveId: ORPHAN_OBJECTIVE_ID,
-      title: ORPHAN_OBJECTIVE_TITLE,
+      title: ORPHAN_OBJECTIVE_TITLE(),
       orderIndex: ORPHAN_OBJECTIVE_ORDER_INDEX,
       tasks: [],
     }

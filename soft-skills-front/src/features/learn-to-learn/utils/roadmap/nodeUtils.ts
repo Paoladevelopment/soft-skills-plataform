@@ -1,6 +1,7 @@
 import { LayoutNodeType } from '../../types/roadmap/roadmap.enums'
 import { LayoutNode } from '../../types/roadmap/roadmap.models'
 import { v4 as uuid } from 'uuid'
+import i18n from '../../../../i18n/config'
 
 
 /**
@@ -16,9 +17,15 @@ export function createNode(type: LayoutNodeType, position: { x: number; y: numbe
     type,
     position,
     data: {
-      title: type === LayoutNodeType.Objective ? 'New Objective' : 'New Task',
+      title: type === LayoutNodeType.Objective 
+        ? i18n.t('editor.node.newObjective', { ns: 'roadmap' })
+        : i18n.t('editor.node.newTask', { ns: 'roadmap' }),
       isEditable: true,
       ...(type === LayoutNodeType.Objective ? { total_tasks: 0 } : {}),
     },
+    width: 200,
+    height: 100,
+    selected: false,
+    dragging: false,
   }
 }

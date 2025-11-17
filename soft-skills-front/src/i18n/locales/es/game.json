@@ -101,12 +101,56 @@
       "updateConfiguration": "Actualizar configuración"
     },
     "validation": {
-      "failed": "Error de validación"
+      "failed": "Error de validación",
+      "selectAnswer": "Por favor, selecciona una respuesta",
+      "fillAllBlanks": "Por favor, completa todos los espacios",
+      "provideParaphrase": "Por favor, proporciona una paráfrasis",
+      "provideSummary": "Por favor, proporciona un resumen",
+      "askClarifyingQuestion": "Por favor, haz al menos una pregunta aclaratoria",
+      "invalidPlayMode": "Modo de juego inválido"
+    },
+    "modes": {
+      "paraphrase": {
+        "title": "Parafrasear el contenido",
+        "description": "Reformula las ideas principales con tus propias palabras sin cambiar el significado.",
+        "prompt": "Parafrasea lo que escuchaste:"
+      },
+      "summarize": {
+        "title": "Resumir el contenido",
+        "description": "Proporciona un resumen breve de los puntos clave que escuchaste.",
+        "prompt": "Resume lo que escuchaste:"
+      },
+      "clarify": {
+        "title": "Aclarar el contenido",
+        "description": "Haz preguntas aclaratorias sobre lo que escuchaste o proporciona contexto adicional.",
+        "prompt": "¿Qué te gustaría aclarar:"
+      },
+      "default": {
+        "title": "Proporciona tu respuesta",
+        "description": "Escribe tu respuesta aquí.",
+        "prompt": "Tu respuesta:"
+      }
+    },
+    "cloze": {
+      "title": "Completa los espacios",
+      "description": "Escucha con atención y completa las palabras faltantes en el siguiente texto:",
+      "blankPlaceholder": "Espacio {{number}}"
+    },
+    "clarify": {
+      "title": "¿Qué te gustaría aclarar:",
+      "questionPlaceholder": "Pregunta {{number}}...",
+      "addQuestion": "Agregar otra pregunta"
+    },
+    "textInput": {
+      "placeholder": "Escribe tu respuesta aquí..."
     },
     "sessionForm": {
       "sessionName": {
         "label": "Nombre de sesión",
-        "placeholder": "Ingresa el nombre de la sesión"
+        "placeholder": "Ingresa el nombre de la sesión",
+        "editAriaLabel": "Editar nombre de sesión",
+        "confirmAriaLabel": "Confirmar cambio de nombre de sesión",
+        "cancelAriaLabel": "Cancelar cambio de nombre de sesión"
       },
       "gameSettings": {
         "title": "Configuración de juego",
@@ -143,6 +187,33 @@
       "title": "Configuración de sesión - {{name}}",
       "subtitle": "Gestiona la configuración de la sesión",
       "configurationTab": "Configuración"
+    }
+  },
+  "toasts": {
+    "sessions": {
+      "fetchError": "Error al cargar las sesiones de juego",
+      "fetchByIdError": "Error al cargar la sesión de juego",
+      "createSuccess": "¡Sesión de juego creada exitosamente!",
+      "createError": "Error al crear la sesión de juego",
+      "updateSuccess": "¡Sesión de juego actualizada exitosamente!",
+      "updateError": "Error al actualizar la sesión de juego",
+      "updateConfigSuccess": "¡Configuración de sesión de juego actualizada exitosamente!",
+      "updateConfigError": "Error al actualizar la sesión de juego",
+      "deleteSuccess": "Sesión de juego eliminada exitosamente.",
+      "deleteError": "Error al eliminar la sesión de juego",
+      "startSuccess": "¡Sesión de juego iniciada exitosamente!",
+      "startError": "Error al iniciar la sesión de juego"
+    },
+    "play": {
+      "fetchRoundError": "Error al cargar la ronda actual",
+      "replayLimitReached": "Se alcanzó el límite de repeticiones",
+      "replayError": "No se pudo actualizar la repetición. Inténtalo de nuevo.",
+      "noCurrentRound": "No hay ronda actual disponible",
+      "submitError": "Error al enviar el intento",
+      "advanceError": "Error al avanzar a la siguiente ronda",
+      "finishSuccess": "¡Sesión finalizada exitosamente!",
+      "finishError": "Error al finalizar la sesión",
+      "fetchResultError": "Error al cargar el resultado de la sesión"
     }
   }
 }

@@ -8,6 +8,7 @@ import { GameSessionResult } from '../types/gameSessionResult'
 import { useToastStore } from '../../../store/useToastStore'
 import { getCurrentRound, submitAttempt, advanceRound, replayAudio, finishSession } from '../api/GamePlay'
 import { getSessionResult } from '../api/GameSessions'
+import i18n from '../../../i18n/config'
 
 export const useGamePlayStore = create<IGamePlayStore>()(
   devtools(
@@ -89,7 +90,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           get().setElapsedTime(0)
           get().setError(null)
         } catch (err: unknown) {
-          const errorMessage = err instanceof Error ? err.message : 'Error fetching current round'
+          const errorMessage = err instanceof Error ? err.message : i18n.t('toasts.play.fetchRoundError', { ns: 'game' })
           get().setError(errorMessage)
           useToastStore.getState().showToast(errorMessage, 'error')
         } finally {
@@ -105,7 +106,8 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           const replayStatus = response.data
 
           if (!replayStatus.requestAccepted) {
-            useToastStore.getState().showToast('Replay limit reached', 'warning')
+            const warningMessage = i18n.t('toasts.play.replayLimitReached', { ns: 'game' })
+            useToastStore.getState().showToast(warningMessage, 'warning')
             return { 
               requestAccepted: false,
               canReplayNext: false, 
@@ -122,7 +124,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           }
         } catch (err: unknown) {
           if (err instanceof Error) {
-            const errorMessage = err.message || 'Couldn\'t update replay. Try again.'
+            const errorMessage = err.message || i18n.t('toasts.play.replayError', { ns: 'game' })
             useToastStore.getState().showToast(errorMessage, 'error')
           }
 
@@ -142,10 +144,11 @@ export const useGamePlayStore = create<IGamePlayStore>()(
         try {
           const currentRound = get().currentRound
           if (!currentRound) {
-            useToastStore.getState().showToast('No current round available', 'error')
+            const errorMessage = i18n.t('toasts.play.noCurrentRound', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
             return {
               isCorrect: false,
-              feedbackShort: 'Error: No current round',
+              feedbackShort: errorMessage,
               canAdvance: false,
             }
           }
@@ -163,7 +166,8 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           }
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error submitting attempt', 'error')
+            const errorMessage = err.message || i18n.t('toasts.play.submitError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
           
           return null
@@ -181,7 +185,8 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           await get().fetchCurrentRound(sessionId)
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error advancing to next round', 'error')
+            const errorMessage = err.message || i18n.t('toasts.play.advanceError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         } finally {
           get().setIsLoading(false)
@@ -193,12 +198,14 @@ export const useGamePlayStore = create<IGamePlayStore>()(
 
         try {
           const response = await finishSession(sessionId)
-          useToastStore.getState().showToast('Session finished successfully!', 'success')
+          const successMessage = i18n.t('toasts.play.finishSuccess', { ns: 'game' })
+          useToastStore.getState().showToast(successMessage, 'success')
           
           return response
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error finishing session', 'error')
+            const errorMessage = err.message || i18n.t('toasts.play.finishError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
 
           return null
@@ -216,7 +223,7 @@ export const useGamePlayStore = create<IGamePlayStore>()(
           get().setResult(response.data)
           get().setError(null)
         } catch (err: unknown) {
-          const errorMessage = err instanceof Error ? err.message : 'Error fetching session result'
+          const errorMessage = err instanceof Error ? err.message : i18n.t('toasts.play.fetchResultError', { ns: 'game' })
           
           get().setResult(null)
           get().setError(errorMessage)

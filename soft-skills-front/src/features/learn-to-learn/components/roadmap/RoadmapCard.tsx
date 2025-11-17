@@ -138,7 +138,7 @@ const RoadmapCard = ({ roadmapSummary, onDeleteClick, onViewClick, mode = 'priva
         }
         action={
           content.showDeleteAction && hovered && (
-            <IconButton aria-label='delete' onClick={onDeleteClick}>
+            <IconButton aria-label={t('ui.delete', { ns: 'common' })} onClick={onDeleteClick}>
               <DeleteIcon/>
             </IconButton>
           )

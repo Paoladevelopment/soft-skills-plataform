@@ -101,12 +101,56 @@
       "updateConfiguration": "Update configuration"
     },
     "validation": {
-      "failed": "Validation failed"
+      "failed": "Validation failed",
+      "selectAnswer": "Please select an answer",
+      "fillAllBlanks": "Please fill in all the blanks",
+      "provideParaphrase": "Please provide a paraphrase",
+      "provideSummary": "Please provide a summary",
+      "askClarifyingQuestion": "Please ask at least one clarifying question",
+      "invalidPlayMode": "Invalid play mode"
+    },
+    "modes": {
+      "paraphrase": {
+        "title": "Paraphrase the content",
+        "description": "Restate the main ideas in your own words without changing the meaning.",
+        "prompt": "Paraphrase what you heard:"
+      },
+      "summarize": {
+        "title": "Summarize the content",
+        "description": "Provide a brief summary of the key points you heard.",
+        "prompt": "Summarize what you heard:"
+      },
+      "clarify": {
+        "title": "Clarify the content",
+        "description": "Ask clarifying questions about what you heard or provide additional context.",
+        "prompt": "What would you like to clarify:"
+      },
+      "default": {
+        "title": "Provide your response",
+        "description": "Type your response here.",
+        "prompt": "Your response:"
+      }
+    },
+    "cloze": {
+      "title": "Fill in the blanks",
+      "description": "Listen carefully and complete the missing words in the following text:",
+      "blankPlaceholder": "Blank {{number}}"
+    },
+    "clarify": {
+      "title": "What would you like to clarify:",
+      "questionPlaceholder": "Question {{number}}...",
+      "addQuestion": "Add another question"
+    },
+    "textInput": {
+      "placeholder": "Type your response here..."
     },
     "sessionForm": {
       "sessionName": {
         "label": "Session name",
-        "placeholder": "Enter session name"
+        "placeholder": "Enter session name",
+        "editAriaLabel": "Edit room name",
+        "confirmAriaLabel": "Confirm room name change",
+        "cancelAriaLabel": "Cancel room name change"
       },
       "gameSettings": {
         "title": "Game settings",
@@ -143,6 +187,33 @@
       "title": "Session settings - {{name}}",
       "subtitle": "Manage session configuration",
       "configurationTab": "Configuration"
+    }
+  },
+  "toasts": {
+    "sessions": {
+      "fetchError": "Error fetching game sessions",
+      "fetchByIdError": "Error fetching game session",
+      "createSuccess": "Game session created successfully!",
+      "createError": "Error creating game session",
+      "updateSuccess": "Game session updated successfully!",
+      "updateError": "Error updating game session",
+      "updateConfigSuccess": "Game session configuration updated successfully!",
+      "updateConfigError": "Error updating game session",
+      "deleteSuccess": "Game session deleted successfully.",
+      "deleteError": "Error deleting game session",
+      "startSuccess": "Game session started successfully!",
+      "startError": "Error starting game session"
+    },
+    "play": {
+      "fetchRoundError": "Error fetching current round",
+      "replayLimitReached": "Replay limit reached",
+      "replayError": "Couldn't update replay. Try again.",
+      "noCurrentRound": "No current round available",
+      "submitError": "Error submitting attempt",
+      "advanceError": "Error advancing to next round",
+      "finishSuccess": "Session finished successfully!",
+      "finishError": "Error finishing session",
+      "fetchResultError": "Error fetching session result"
     }
   }
 }

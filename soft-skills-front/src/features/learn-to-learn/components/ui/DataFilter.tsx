@@ -40,9 +40,13 @@ const DataFilter = ({
   selectedFilters,
   onFilterChange,
   onApplyFilters,
-  applyButtonText = "Aplicar filtros"
+  applyButtonText
 }: DataFilterProps) => {
   const { t } = useTranslation('roadmap')
+  const defaultApplyText = t('actions.applyFilters', { ns: 'common' })
+  const defaultFilterText = t('actions.filter', { ns: 'common' })
+  const defaultSearchPlaceholder = t('actions.search', { ns: 'common' }) + '...'
+  
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [rangeErrors, setRangeErrors] = useState<{[key: string]: string}>({})
 
@@ -127,7 +131,7 @@ const DataFilter = ({
           const maxNum = parseInt(max)
           
           if (maxNum < minNum) {
-            errors[option.key] = t('explore.errors.rangeError')
+            errors[option.key] = t('explore.errors.rangeError', { ns: 'roadmap' })
           }
         }
       }
@@ -161,7 +165,7 @@ const DataFilter = ({
     >
       <TextField
         id="objectives-search"
-        placeholder={searchPlaceholder}
+        placeholder={searchPlaceholder || defaultSearchPlaceholder}
         value={searchValue}
         onChange={(e) => onSearchChange(e.target.value)}
         sx={{
@@ -199,7 +203,7 @@ const DataFilter = ({
           textTransform: 'none'
         }}
       >
-        {filterButtonText}
+        {filterButtonText || defaultFilterText}
       </Button>
 
       <Popover
@@ -280,7 +284,7 @@ const DataFilter = ({
                   <Stack direction="row" spacing={1} alignItems="center">
                     <TextField
                       id={`filter-${option.key}-min`}
-                      placeholder={option.minPlaceholder || "Min"}
+                      placeholder={option.minPlaceholder || t('ui.min', { ns: 'common' })}
                       value={getRangeValues(option.key).min}
                       onChange={(e) => {
                         const { max } = getRangeValues(option.key)
@@ -305,7 +309,7 @@ const DataFilter = ({
                     </Typography>
                     <TextField
                       id={`filter-${option.key}-max`}
-                      placeholder={option.maxPlaceholder || "Max"}
+                      placeholder={option.maxPlaceholder || t('ui.max', { ns: 'common' })}
                       value={getRangeValues(option.key).max}
                       onChange={(e) => {
                         const { min } = getRangeValues(option.key)
@@ -354,7 +358,7 @@ const DataFilter = ({
                   fontWeight: 500
                 }}
               >
-                {applyButtonText}
+                {applyButtonText || defaultApplyText}
               </Button>
             </Box>
           )}

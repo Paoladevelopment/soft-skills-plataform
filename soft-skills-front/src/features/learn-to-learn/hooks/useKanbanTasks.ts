@@ -4,6 +4,7 @@ import { moveTaskInKanban, SelfEvaluationRequiredError } from '../api/MoveTask'
 import { transformKanbanApiResponse, mapColumnIdToApiFormat } from '../utils/kanbanUtils'
 import { useToastStore } from '../../../store/useToastStore'
 import { useSelfEvaluationStore } from '../store/useSelfEvaluationStore'
+import { useTranslation } from 'react-i18next'
 
 export const useKanbanTasks = (objectiveId: string | null, objectiveTitle: string = '') => {
   return useQuery({
@@ -25,6 +26,7 @@ export const useKanbanMoveTasks = (objectiveId: string | null) => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
   const { open: openSelfEvaluation } = useSelfEvaluationStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async ({ 
@@ -88,7 +90,7 @@ export const useKanbanMoveTasks = (objectiveId: string | null) => {
         return
       }
       
-      showToast('Error moving task. Please try again.', 'error')
+      showToast(t('toasts.tasks.moveError'), 'error')
     }
   })
 }

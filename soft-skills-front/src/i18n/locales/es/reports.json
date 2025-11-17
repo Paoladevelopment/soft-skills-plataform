@@ -83,6 +83,7 @@
       "saving": "Guardando..."
     },
     "validation": {
+      "taskIdInvalid": "El ID de tarea debe ser un UUID válido",
       "studyPlaceRequired": "El lugar de estudio es obligatorio",
       "learningIntentionRequired": "¿En qué estabas tratando de mejorar? es obligatorio",
       "learningIntentionMaxLength": "¿En qué estabas tratando de mejorar? debe tener 800 caracteres o menos",

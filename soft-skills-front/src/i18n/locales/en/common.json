@@ -18,20 +18,53 @@
     "confirm": "Confirm",
     "clear": "Clear",
     "filter": "Filter",
+    "applyFilters": "Apply filters",
     "search": "Search",
     "view": "View",
     "loading": "Loading...",
     "explore": "Explore",
     "signOut": "Sign out",
     "confirmDeletion": "Confirm Deletion",
-    "confirmDeleteMessage": "Are you sure you want to delete this item? This action cannot be undone."
+    "confirmDeleteMessage": "Are you sure you want to delete this item? This action cannot be undone.",
+    "settings": "Settings"
+  },
+  "sidebar": {
+    "planner": "Planner",
+    "explore": "Explore",
+    "learningReports": "Learning reports",
+    "learningRoadmaps": "Learning roadmaps",
+    "appHome": "App Home",
+    "help": "Help"
+  },
+  "userMenu": {
+    "userAvatar": "User Avatar",
+    "settings": "Settings",
+    "signOut": "Sign Out"
   },
   "errors": {
     "generic": "An error occurred",
     "notFound": "Resource not found",
     "unauthorized": "Unauthorized",
     "network": "Connection error",
-    "required": "This field is required"
+    "required": "This field is required",
+    "somethingWentWrong": "Something went wrong",
+    "reportNotFound": "Report not found",
+    "selfEvaluationRequired": "Self evaluation required"
+  },
+  "ui": {
+    "min": "Min",
+    "max": "Max",
+    "emptyStateIllustration": "Empty state illustration",
+    "logo": "Logo",
+    "user": "User",
+    "appName": "Soft Skills",
+    "delete": "Delete",
+    "close": "Close"
+  },
+  "notFound": {
+    "title": "Sorry, we couldn't find this page.",
+    "description": "But don't worry, you can find plenty of other things on our homepage.",
+    "backToHomepage": "Back to homepage"
   },
   "success": {
     "saved": "Saved successfully",
@@ -43,6 +76,12 @@
     "error": "Something went wrong",
     "warning": "Warning",
     "info": "Info"
+  },
+  "time": {
+    "days": "d",
+    "hours": "h",
+    "elapsedTime": "{{days}}d {{hours}}h",
+    "elapsedTimeHoursOnly": "{{hours}}h"
   },
   "enums": {
     "studyPlace": {

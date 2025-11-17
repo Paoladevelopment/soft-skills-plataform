@@ -4,9 +4,11 @@ import i18n from '../../../i18n/config'
 
 type SupportedPlayMode = PlayMode.FOCUS | PlayMode.CLOZE | PlayMode.PARAPHRASE | PlayMode.SUMMARIZE | PlayMode.CLARIFY
 
-const answerValidationSchemas: Record<SupportedPlayMode, z.ZodSchema> = {
+const getValidationSchemas = (): Record<SupportedPlayMode, z.ZodSchema> => ({
   [PlayMode.FOCUS]: z.object({
-    selectedIndex: z.number({ invalid_type_error: 'Please select an answer' }).min(0, 'Please select an answer'),
+    selectedIndex: z.number({ 
+      invalid_type_error: i18n.t('play.validation.selectAnswer', { ns: 'game' }) 
+    }).min(0, i18n.t('play.validation.selectAnswer', { ns: 'game' })),
   }),
   [PlayMode.CLOZE]: z.object({
     filledBlanks: z.array(z.string()),
@@ -14,21 +16,21 @@ const answerValidationSchemas: Record<SupportedPlayMode, z.ZodSchema> = {
   }).refine(
     (data) => data.filledBlanks.length === (data as {filledBlanks: string[], blankCount: number}).blankCount && 
               (data as {filledBlanks: string[], blankCount: number}).filledBlanks.every(b => b.trim()),
-    'Please fill in all the blanks'
+    i18n.t('play.validation.fillAllBlanks', { ns: 'game' })
   ),
   [PlayMode.PARAPHRASE]: z.object({
-    textResponse: z.string().min(1, 'Please provide a paraphrase'),
+    textResponse: z.string().min(1, i18n.t('play.validation.provideParaphrase', { ns: 'game' })),
   }),
   [PlayMode.SUMMARIZE]: z.object({
-    textResponse: z.string().min(1, 'Please provide a summary'),
+    textResponse: z.string().min(1, i18n.t('play.validation.provideSummary', { ns: 'game' })),
   }),
   [PlayMode.CLARIFY]: z.object({
-    clarifyQuestions: z.array(z.string()).min(1, 'Please ask at least one clarifying question'),
+    clarifyQuestions: z.array(z.string()).min(1, i18n.t('play.validation.askClarifyingQuestion', { ns: 'game' })),
   }).refine(
     (data) => (data as {clarifyQuestions: string[]}).clarifyQuestions.some(q => q.trim()),
-    'Please ask at least one clarifying question'
+    i18n.t('play.validation.askClarifyingQuestion', { ns: 'game' })
   )
-}
+})
 
 interface ValidateAnswerParams {
   playMode: PlayMode
@@ -46,12 +48,13 @@ export function validateGamePlayAnswer(params: ValidateAnswerParams): {
   const { playMode, selectedIndex, filledBlanks, textResponse, blankCount, clarifyQuestions } = params
 
   try {
+    const answerValidationSchemas = getValidationSchemas()
     const schema = answerValidationSchemas[playMode]
 
     if (!schema) {
       return { 
         isValid: false, 
-        error: 'Invalid play mode' 
+        error: i18n.t('play.validation.invalidPlayMode', { ns: 'game' })
       }
     }
 
