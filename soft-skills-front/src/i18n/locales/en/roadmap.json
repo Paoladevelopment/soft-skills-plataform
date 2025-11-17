@@ -57,7 +57,11 @@
       "task": "Task"
     },
     "node": {
-      "tasks": "Tasks:"
+      "tasks": "Tasks:",
+      "newObjective": "New objective",
+      "newTask": "New task",
+      "untitled": "Untitled roadmap",
+      "unassigned": "Unassigned"
     },
     "sidebarEditor": {
       "properties": "Properties",
@@ -183,6 +187,23 @@
     "conversationEnded": {
       "message": "The conversation has ended. Start a new conversation to continue.",
       "newConversation": "New conversation"
+    }
+  },
+  "toasts": {
+    "fetchError": "Error fetching your roadmaps",
+    "fetchByIdError": "Error fetching roadmap",
+    "deleteSuccess": "Roadmap deleted successfully.",
+    "deleteError": "Error deleting roadmap",
+    "createSuccess": "Roadmap created successfully!",
+    "createError": "Error creating roadmap",
+    "updateSuccess": "Roadmap updated successfully!",
+    "updateError": "Error updating roadmap",
+    "updateMetadataSuccess": "Roadmap metadata updated successfully!",
+    "updateMetadataError": "Error updating roadmap metadata",
+    "validation": {
+      "noObjectives": "A public roadmap must contain at least one objective.",
+      "unassignedTasksVisibility": "All tasks of a public roadmap must be connected to an objective before making it public.",
+      "unassignedTasksSave": "All tasks of a public roadmap must be connected to an objective before saving."
     }
   }
 }

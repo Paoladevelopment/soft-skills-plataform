@@ -6,6 +6,7 @@ import { CreateGameSessionRequest, UpdateGameSessionRequest, UpdateGameSessionCo
 import { useToastStore } from '../../../store/useToastStore'
 import { GameSessionListItem, GameSession, GameSessionStatus } from '../types/game-sessions/gameSession.models'
 import { getUserGameSessions, getGameSessionById, createGameSession, updateGameSession, updateGameSessionConfig, deleteGameSession, startGameSession } from '../api/GameSessions'
+import i18n from '../../../i18n/config'
 
 export const useGameSessionStore = create<IGameSessionStore>()(
   devtools(
@@ -65,7 +66,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           get().setGameSessionsTotal(total)
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error fetching game sessions', 'error')
+            const message = err.message || i18n.t('toasts.sessions.fetchError', { ns: 'game' })
+            useToastStore.getState().showToast(message, 'error')
           }
         } finally {
           set((state) => {
@@ -84,7 +86,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           get().setSelectedGameSession(data)
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error fetching game session', 'error')
+            const message = err.message || i18n.t('toasts.sessions.fetchByIdError', { ns: 'game' })
+            useToastStore.getState().showToast(message, 'error')
           }
         } finally {
           set((state) => {
@@ -100,7 +103,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
 
         try {
           const { data, message } = await createGameSession(sessionData)
-          useToastStore.getState().showToast(message || 'Game session created successfully!', 'success')
+          const successMessage = message || i18n.t('toasts.sessions.createSuccess', { ns: 'game' })
+          useToastStore.getState().showToast(successMessage, 'success')
 
           const newSessionListItem: GameSessionListItem = {
             gameSessionId: data.gameSessionId,
@@ -118,7 +122,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           }, false, 'GAME_SESSION/ADD_NEW')
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error creating game session', 'error')
+            const errorMessage = err.message || i18n.t('toasts.sessions.createError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         } finally {
           set((state) => {
@@ -134,7 +139,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
 
         try {
           const { message } = await updateGameSession(id, sessionData)
-          useToastStore.getState().showToast(message || 'Game session updated successfully!', 'success')
+          const successMessage = message || i18n.t('toasts.sessions.updateSuccess', { ns: 'game' })
+          useToastStore.getState().showToast(successMessage, 'success')
 
           get().fetchGameSessions()
           
@@ -143,7 +149,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           }
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message, 'error')
+            const errorMessage = err.message || i18n.t('toasts.sessions.updateError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         } finally {
           set((state) => {
@@ -159,7 +166,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
 
         try {
           const { message } = await updateGameSessionConfig(id, sessionData)
-          useToastStore.getState().showToast(message || 'Game session configuration updated successfully!', 'success')
+          const successMessage = message || i18n.t('toasts.sessions.updateConfigSuccess', { ns: 'game' })
+          useToastStore.getState().showToast(successMessage, 'success')
 
           get().fetchGameSessions()
           
@@ -168,7 +176,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           }
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error updating game session', 'error')
+            const errorMessage = err.message || i18n.t('toasts.sessions.updateConfigError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         } finally {
           set((state) => {
@@ -195,10 +204,12 @@ export const useGameSessionStore = create<IGameSessionStore>()(
             state.gameSessionsPagination.total = remainingItems
           }, false, 'GAME_SESSION/DELETE_SUCCESS')
 
-          useToastStore.getState().showToast(message || 'Game session deleted successfully.', 'success')
+          const successMessage = message || i18n.t('toasts.sessions.deleteSuccess', { ns: 'game' })
+          useToastStore.getState().showToast(successMessage, 'success')
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error deleting game session', 'error')
+            const errorMessage = err.message || i18n.t('toasts.sessions.deleteError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         }
       },
@@ -211,7 +222,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
         try {
           const response = await startGameSession(id)
           
-          useToastStore.getState().showToast('Game session started successfully!', 'success')
+          const successMessage = i18n.t('toasts.sessions.startSuccess', { ns: 'game' })
+          useToastStore.getState().showToast(successMessage, 'success')
 
           set((state) => {
             if (response) {
@@ -225,7 +237,8 @@ export const useGameSessionStore = create<IGameSessionStore>()(
           return response
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error starting game session', 'error')
+            const errorMessage = err.message || i18n.t('toasts.sessions.startError', { ns: 'game' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
           
           return undefined

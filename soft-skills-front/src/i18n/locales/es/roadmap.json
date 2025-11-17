@@ -1,17 +1,17 @@
 {
-  "title": "Hojas de ruta de aprendizaje",
+  "title": "Planes de aprendizaje",
   "placeholder": "Texto de placeholder para roadmap",
   "myRoadmaps": {
-    "title": "Tus hojas de ruta de aprendizaje",
+    "title": "Tus planes de aprendizaje",
     "subtitle": "Visualiza y gestiona tus rutas de aprendizaje personalizadas",
-    "createNew": "Crear nueva hoja de ruta de aprendizaje",
+    "createNew": "Crear nuevo plan de aprendizaje",
     "empty": {
-      "title": "Aún no hay hojas de ruta de aprendizaje",
-      "description": "Comienza tu viaje de aprendizaje creando tu primera hoja de ruta de aprendizaje personalizada. Construye rutas estructuradas para alcanzar tus objetivos.",
-      "button": "Crea tu primera hoja de ruta de aprendizaje"
+      "title": "Aún no hay planes de aprendizaje",
+      "description": "Comienza tu viaje de aprendizaje creando tu primer plan de aprendizaje personalizado. Construye rutas estructuradas para alcanzar tus objetivos.",
+      "button": "Crea tu primer plan de aprendizaje"
     },
     "card": {
-      "viewRoadmap": "Ver hoja de ruta de aprendizaje",
+      "viewRoadmap": "Ver plan de aprendizaje",
       "created": "Creado:",
       "createdPublic": "Creado",
       "step": "paso",
@@ -21,16 +21,16 @@
     }
   },
   "createModal": {
-    "title": "Nueva hoja de ruta de aprendizaje",
-    "question": "¿Cómo te gustaría crear tu hoja de ruta de aprendizaje?",
+    "title": "Nuevo plan de aprendizaje",
+    "question": "¿Cómo te gustaría crear tu plan de aprendizaje?",
     "options": {
       "chatbot": {
         "title": "Guiado por Aithena",
-        "description": "Deja que nuestro tutor de IA te guíe a través de una conversación personalizada para crear tu hoja de ruta de aprendizaje."
+        "description": "Deja que nuestro tutor de IA te guíe a través de una conversación personalizada para crear tu plan de aprendizaje."
       },
       "manual": {
         "title": "Empezar desde cero",
-        "description": "Construye tu hoja de ruta de aprendizaje manualmente usando nuestro editor visual."
+        "description": "Construye tu plan de aprendizaje manualmente usando nuestro editor visual."
       }
     },
     "buttons": {
@@ -39,10 +39,10 @@
     }
   },
   "detail": {
-    "backToRoadmaps": "Volver a hojas de ruta de aprendizaje",
+    "backToRoadmaps": "Volver a planes de aprendizaje",
     "backToExplore": "Volver a explorar",
-    "editRoadmap": "Editar hoja de ruta de aprendizaje",
-    "copyRoadmap": "Copiar hoja de ruta de aprendizaje",
+    "editRoadmap": "Editar plan de aprendizaje",
+    "copyRoadmap": "Copiar plan de aprendizaje",
     "createdBy": "Creado por",
     "unknownAuthor": "Autor desconocido",
     "learningSteps": "pasos de aprendizaje",
@@ -57,7 +57,11 @@
       "task": "Tarea"
     },
     "node": {
-      "tasks": "Tareas:"
+      "tasks": "Tareas:",
+      "newObjective": "Nuevo objetivo",
+      "newTask": "Nueva tarea",
+      "untitled": "Plan de aprendizaje sin título",
+      "unassigned": "Sin asignar"
     },
     "sidebarEditor": {
       "properties": "Propiedades",
@@ -92,8 +96,8 @@
       }
     },
     "topbar": {
-      "untitled": "Hoja de ruta sin título",
-      "saveRoadmap": "Guardar hoja de ruta",
+      "untitled": "Plan de aprendizaje sin título",
+      "saveRoadmap": "Guardar plan de aprendizaje",
       "noDescription": "Aún no se ha agregado una descripción.",
       "visibility": {
         "onlyMe": "Solo visible para mí",
@@ -106,20 +110,20 @@
       },
       "tooltips": {
         "back": "Volver",
-        "edit": "Editar hoja de ruta de aprendizaje",
+        "edit": "Editar plan de aprendizaje",
         "menu": "Más opciones",
         "sharing": "Configurar compartir",
-        "save": "Guardar hoja de ruta de aprendizaje",
+        "save": "Guardar plan de aprendizaje",
         "deleteNode": "Eliminar nodo"
       }
     },
     "form": {
-      "newRoadmap": "Nueva hoja de ruta de aprendizaje",
-      "editRoadmap": "Editar hoja de ruta de aprendizaje",
-      "createRoadmap": "Crear hoja de ruta de aprendizaje",
+      "newRoadmap": "Nuevo plan de aprendizaje",
+      "editRoadmap": "Editar plan de aprendizaje",
+      "createRoadmap": "Crear plan de aprendizaje",
       "saveChanges": "Guardar cambios",
-      "instruction": "Agrega un título y descripción a tu hoja de ruta de aprendizaje.",
-      "titleLabel": "Título de la hoja de ruta",
+      "instruction": "Agrega un título y descripción a tu plan de aprendizaje.",
+      "titleLabel": "Título del plan de aprendizaje",
       "titlePlaceholder": "Ingresar título",
       "descriptionLabel": "Descripción",
       "descriptionPlaceholder": "Ingresar descripción",
@@ -131,7 +135,7 @@
     },
     "sharing": {
       "title": "Actualizar configuración de compartir",
-      "instruction": "Elige y modifica quién puede acceder a esta hoja de ruta de aprendizaje.",
+      "instruction": "Elige y modifica quién puede acceder a este plan de aprendizaje.",
       "onlyMe": "Solo yo",
       "public": "Público",
       "onlyYouAccess": "Solo tú podrás acceder.",
@@ -141,10 +145,10 @@
     }
   },
   "explore": {
-    "title": "Explorar hojas de ruta de aprendizaje públicas",
+    "title": "Explorar planes de aprendizaje públicos",
     "subtitle": "Descubre rutas de aprendizaje creadas por la comunidad",
-    "searchPlaceholder": "Buscar hojas de ruta de aprendizaje públicas...",
-    "filterButton": "Filtrar hojas de ruta de aprendizaje",
+    "searchPlaceholder": "Buscar planes de aprendizaje públicos...",
+    "filterButton": "Filtrar planes de aprendizaje",
     "applyFilters": "Aplicar filtros",
     "clearFilters": "Limpiar filtros",
     "activeFilters": "Filtros activos:",
@@ -157,12 +161,12 @@
       "maxSteps": "pasos máx"
     },
     "empty": {
-      "title": "No se encontraron hojas de ruta de aprendizaje públicas",
-      "description": "Intenta ajustar tus términos de búsqueda o filtros para encontrar más hojas de ruta de aprendizaje."
+      "title": "No se encontraron planes de aprendizaje públicos",
+      "description": "Intenta ajustar tus términos de búsqueda o filtros para encontrar más planes de aprendizaje."
     },
-    "showingResults": "Mostrando {{count}} de {{total}} hojas de ruta de aprendizaje",
+    "showingResults": "Mostrando {{count}} de {{total}} planes de aprendizaje",
     "errors": {
-      "loadFailed": "Error al cargar las hojas de ruta de aprendizaje. Por favor, inténtalo de nuevo.",
+      "loadFailed": "Error al cargar los planes de aprendizaje. Por favor, inténtalo de nuevo.",
       "retry": "Reintentar",
       "rangeError": "El valor máximo no puede ser menor que el valor mínimo"
     },
@@ -175,14 +179,31 @@
     "noResources": "No hay recursos disponibles"
   },
   "chatbot": {
-    "assistant": "Tu asistente de hojas de ruta de aprendizaje",
+    "assistant": "Tu asistente de planes de aprendizaje",
     "endChat": "Finalizar chat",
     "typing": "Escribiendo…",
     "inputPlaceholder": "Escribe tu mensaje...",
-    "initialMessage": "¡Puedo ayudarte a crear una hoja de ruta de aprendizaje para diversos temas como lenguajes de programación, desarrollo web, ciencia de datos y más. ¡Envíame un mensaje para comenzar!",
+    "initialMessage": "¡Puedo ayudarte a crear un plan de aprendizaje para diversos temas como lenguajes de programación, desarrollo web, ciencia de datos y más. ¡Envíame un mensaje para comenzar!",
     "conversationEnded": {
       "message": "La conversación finalizó. Empieza una nueva conversación para continuar.",
       "newConversation": "Nueva conversación"
+    }
+  },
+  "toasts": {
+    "fetchError": "Error al cargar tus planes de aprendizaje",
+    "fetchByIdError": "Error al cargar el plan de aprendizaje",
+    "deleteSuccess": "Plan de aprendizaje eliminado exitosamente.",
+    "deleteError": "Error al eliminar el plan de aprendizaje",
+    "createSuccess": "¡Plan de aprendizaje creado exitosamente!",
+    "createError": "Error al crear el plan de aprendizaje",
+    "updateSuccess": "¡Plan de aprendizaje actualizado exitosamente!",
+    "updateError": "Error al actualizar el plan de aprendizaje",
+    "updateMetadataSuccess": "¡Metadatos del plan de aprendizaje actualizados exitosamente!",
+    "updateMetadataError": "Error al actualizar los metadatos del plan de aprendizaje",
+    "validation": {
+      "noObjectives": "Un plan de aprendizaje público debe contener al menos un objetivo.",
+      "unassignedTasksVisibility": "Todas las tareas de un plan de aprendizaje público deben estar conectadas a un objetivo antes de hacerlo público.",
+      "unassignedTasksSave": "Todas las tareas de un plan de aprendizaje público deben estar conectadas a un objetivo antes de guardar."
     }
   }
 }

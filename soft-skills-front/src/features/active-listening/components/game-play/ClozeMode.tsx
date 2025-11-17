@@ -1,4 +1,5 @@
 import { Box, TextField, Typography, Card} from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ClozeModePayload } from '../../types/game-sessions/gamePlay.models'
 import { splitTextByBlanks, getBlankIndices, isBlank } from '../../utils/clozeUtils'
 
@@ -10,6 +11,7 @@ interface ClozeModeProps {
 }
 
 const ClozeMode = ({ modePayload, filledBlanks, onBlankChange, disabled = false }: ClozeModeProps) => {
+  const { t } = useTranslation('game')
   const parts = splitTextByBlanks(modePayload.textWithBlanks)
   const blankIndices = getBlankIndices(parts)
 
@@ -29,10 +31,10 @@ const ClozeMode = ({ modePayload, filledBlanks, onBlankChange, disabled = false 
         }}
       >
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#1565C0' }}>
-          Fill in the blanks
+          {t('play.cloze.title')}
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          Listen carefully and complete the missing words in the following text:
+          {t('play.cloze.description')}
         </Typography>
       </Card>
 
@@ -62,7 +64,7 @@ const ClozeMode = ({ modePayload, filledBlanks, onBlankChange, disabled = false 
                   key={index}
                   value={filledBlanks[blankIndex] || ''}
                   onChange={(e) => onBlankChange?.(blankIndex, e.target.value)}
-                  placeholder={`Blank ${blankIndex + 1}`}
+                  placeholder={t('play.cloze.blankPlaceholder', { number: blankIndex + 1 })}
                   variant="outlined"
                   size="small"
                   disabled={disabled}

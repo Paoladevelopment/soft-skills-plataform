@@ -1,4 +1,5 @@
 import { Box } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { ObjectiveBoard } from '../../types/kanban/board.types'
 import { 
   getDataType,
@@ -36,6 +37,7 @@ interface BoardProps {
 
 
 const Board = ({ board, moveTask }: BoardProps) => {
+  const { t } = useTranslation('goals')
   const [columnsData, setColumnsData] = useState<ObjectiveBoard>(board)
 
   useEffect(() => {
@@ -68,10 +70,10 @@ const Board = ({ board, moveTask }: BoardProps) => {
         columnId,
         columnId,
         finishIndex,
-        'Task reordered within column'
+        t('objectives.kanban.taskReordered')
       )
     },
-    [columnsData, moveTask]
+    [columnsData, moveTask, t]
   )
 
   const moveCard = useCallback(
@@ -108,8 +110,8 @@ const Board = ({ board, moveTask }: BoardProps) => {
       setColumnsData(prev => ({ ...prev, columns: updatedColumns }))
 
       const reason = sourceColumnId === destinationColumnId 
-        ? 'Task reordered within column' 
-        : `Task moved from ${sourceColumn.title} to ${destinationColumn.title}`
+        ? t('objectives.kanban.taskReordered')
+        : t('objectives.kanban.taskMoved', { from: sourceColumn.title, to: destinationColumn.title })
       
       moveTask(
         cardToMove.id,
@@ -119,7 +121,7 @@ const Board = ({ board, moveTask }: BoardProps) => {
         reason
       )
     },
-    [columnsData, moveTask]
+    [columnsData, moveTask, t]
   )
 
   const getSourceColumnData = useCallback(

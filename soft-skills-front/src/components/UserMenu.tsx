@@ -7,10 +7,12 @@ import {
   ListItemIcon,
   IconButton
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
 
 const UserMenu = () => {
+  const { t } = useTranslation('common')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -32,7 +34,7 @@ const UserMenu = () => {
     <Box>
       <IconButton onClick={handleClick} size="small" sx={{ p: 0 }}>
         <Avatar 
-          alt="User Avatar" 
+          alt={t('userMenu.userAvatar')} 
           src="/profile.jpg" 
           sx={
             { 
@@ -73,14 +75,14 @@ const UserMenu = () => {
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
-            Settings
+            {t('userMenu.settings')}
           </MenuItem>
 
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <Logout fontSize="small" />
             </ListItemIcon>
-            Sign Out
+            {t('userMenu.signOut')}
           </MenuItem>
       </Menu>
     </Box>

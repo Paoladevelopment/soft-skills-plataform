@@ -1,5 +1,6 @@
 import { Box, Button, IconButton, TextField, Typography } from '@mui/material'
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 
 interface ClarifyModeProps {
   clarifyQuestions: string[]
@@ -22,6 +23,8 @@ const ClarifyMode = ({
   textColor,
   disabled = false,
 }: ClarifyModeProps) => {
+  const { t } = useTranslation('game')
+  
   return (
     <Box 
       sx={{ 
@@ -35,7 +38,7 @@ const ClarifyMode = ({
         sx={{ 
           fontWeight: 'bold' 
         }}>
-        What would you like to clarify:
+        {t('play.clarify.title')}
       </Typography>
       {clarifyQuestions.map((question, index) => (
         <Box 
@@ -49,7 +52,7 @@ const ClarifyMode = ({
           <TextField
             value={question}
             onChange={(e) => onQuestionChange?.(index, e.target.value)}
-            placeholder={`Question ${index + 1}...`}
+            placeholder={t('play.clarify.questionPlaceholder', { number: index + 1 })}
             fullWidth
             variant="outlined"
             multiline
@@ -92,7 +95,7 @@ const ClarifyMode = ({
           },
         }}
       >
-        Add another question
+        {t('play.clarify.addQuestion')}
       </Button>
     </Box>
   )

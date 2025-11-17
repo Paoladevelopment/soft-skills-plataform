@@ -1,5 +1,6 @@
 import { Box, Typography, Button } from '@mui/material'
 import { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FolderOpen } from '@mui/icons-material'
 
 interface EmptyStateProps {
@@ -25,13 +26,15 @@ const EmptyState = ({
   minHeight = '400px',
   fullHeight = false
 }: EmptyStateProps) => {
+  const { t } = useTranslation('common')
+  
   const renderVisual = () => {
     if (image) {
       return (
         <Box
           component="img"
           src={image}
-          alt="Empty state illustration"
+          alt={t('ui.emptyStateIllustration')}
           sx={{
             width: '200px',
             height: '200px',

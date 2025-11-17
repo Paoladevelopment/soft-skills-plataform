@@ -4,6 +4,7 @@ import { getUserLearningGoals, getLearningGoalById, createLearningGoal, updateLe
 import { CreateLearningGoalPayload, UpdateLearningGoalPayload, FetchLearningGoalsResponse } from '../types/planner/learningGoals.api'
 import { useToastStore } from '../../../store/useToastStore'
 import { useLearningGoalStore } from '../store/useLearningGoalStore'
+import { useTranslation } from 'react-i18next'
 
 export const useLearningGoals = (offset: number, limit: number) => {
   return useQuery({
@@ -33,6 +34,7 @@ export const useCreateLearningGoal = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
   const { learningGoalsPagination } = useLearningGoalStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async (payload: CreateLearningGoalPayload) => {
@@ -86,7 +88,7 @@ export const useCreateLearningGoal = () => {
         })
       }
 
-      showToast(error.message || 'Error creating goal', 'error')
+      showToast(error.message || t('toasts.goals.createError'), 'error')
     },
     onSuccess: ({ goal, message }, payload) => {
       const { limit } = learningGoalsPagination
@@ -111,7 +113,7 @@ export const useCreateLearningGoal = () => {
         )
       }
 
-      showToast(message || `${payload.title} added to your learning goals.`, 'success')
+      showToast(message || t('toasts.goals.createSuccess', { title: payload.title }), 'success')
     }
   })
 }
@@ -119,6 +121,7 @@ export const useCreateLearningGoal = () => {
 export const useUpdateLearningGoal = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async ({ id, payload }: { id: string; payload: UpdateLearningGoalPayload }) => {
@@ -169,11 +172,11 @@ export const useUpdateLearningGoal = () => {
         })
       }
 
-      showToast(error.message || 'Error updating goal', 'error')
+      showToast(error.message || t('toasts.goals.updateError'), 'error')
     },
     onSuccess: ({ goal, message }, { id }) => {
       queryClient.setQueryData(['learningGoals', 'detail', id], goal)
-      showToast(message || 'Goal updated successfully', 'success', 2000)
+      showToast(message || t('toasts.goals.updateSuccess'), 'success', 2000)
     }
   })
 }
@@ -181,6 +184,7 @@ export const useUpdateLearningGoal = () => {
 export const useDeleteLearningGoal = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -218,16 +222,17 @@ export const useDeleteLearningGoal = () => {
         })
       }
       
-      showToast(error.message || 'Error deleting goal', 'error')
+      showToast(error.message || t('toasts.goals.deleteError'), 'error')
     },
     onSuccess: ({ message }) => {
-      showToast(message || 'Goal deleted successfully', 'success')
+      showToast(message || t('toasts.goals.deleteSuccess'), 'success')
     }
   })
 }
 
 export const useConvertLearningGoalToRoadmap = (onSuccess?: (roadmapId: string) => void) => {
   const { showToast } = useToastStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async (learningGoalId: string) => {
@@ -238,7 +243,7 @@ export const useConvertLearningGoalToRoadmap = (onSuccess?: (roadmapId: string) 
       const { message, roadmapId } = response
       
       showToast(
-        message || 'Learning goal converted to roadmap successfully!', 
+        message || t('toasts.goals.convertSuccess'), 
         'success',
         3000
       )
@@ -248,7 +253,7 @@ export const useConvertLearningGoalToRoadmap = (onSuccess?: (roadmapId: string) 
       }
     },
     onError: (error: Error) => {
-      showToast(error.message || 'Error converting goal to roadmap', 'error')
+      showToast(error.message || t('toasts.goals.convertError'), 'error')
     }
   })
 }

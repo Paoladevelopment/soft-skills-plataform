@@ -1,4 +1,5 @@
 import { Box, TextField, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 interface TextInputProps {
   textResponse: string
@@ -9,6 +10,8 @@ interface TextInputProps {
 }
 
 const TextInput = ({ textResponse, onTextChange, borderColor, prompt, disabled = false }: TextInputProps) => {
+  const { t } = useTranslation('game')
+  
   return (
     <Box 
       sx={{ 
@@ -25,7 +28,7 @@ const TextInput = ({ textResponse, onTextChange, borderColor, prompt, disabled =
         onChange={(e) => onTextChange?.(e.target.value)}
         multiline
         rows={8}
-        placeholder="Type your response here..."
+        placeholder={t('play.textInput.placeholder')}
         fullWidth
         variant="outlined"
         disabled={disabled}

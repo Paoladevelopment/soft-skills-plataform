@@ -120,7 +120,7 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
           <Typography fontWeight="bold">
             {t('objectives.addTaskModal.title')}
           </Typography>
-          <IconButton onClick={onClose} aria-label="close">
+          <IconButton onClick={onClose} aria-label={t('ui.close', { ns: 'common' })}>
             <CloseIcon />
           </IconButton>
         </Stack>

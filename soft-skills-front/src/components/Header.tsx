@@ -59,7 +59,7 @@ const Header = () => {
 					color="common.white"
 					sx={{ letterSpacing: '0.1em' }}
 				>
-					Soft Skills
+					{t('ui.appName')}
 				</Typography>
 				</Box>
 
@@ -73,7 +73,7 @@ const Header = () => {
 					<LanguageSelector />
 					<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 						<Avatar 
-							alt={user?.name || 'user'} 
+							alt={user?.name || t('ui.user')} 
 							src={user?.profilePicture} 
 						/>
 					</IconButton>

@@ -18,20 +18,53 @@
     "confirm": "Confirmar",
     "clear": "Limpiar",
     "filter": "Filtrar",
+    "applyFilters": "Aplicar filtros",
     "search": "Buscar",
     "view": "Ver",
     "loading": "Cargando...",
     "explore": "Explorar",
     "signOut": "Cerrar sesión",
     "confirmDeletion": "Confirmar eliminación",
-    "confirmDeleteMessage": "¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer."
+    "confirmDeleteMessage": "¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.",
+    "settings": "Configuración"
+  },
+  "sidebar": {
+    "planner": "Planificador",
+    "explore": "Explorar",
+    "learningReports": "Reportes de aprendizaje",
+    "learningRoadmaps": "Planes de aprendizaje",
+    "appHome": "Inicio",
+    "help": "Ayuda"
+  },
+  "userMenu": {
+    "userAvatar": "Avatar de usuario",
+    "settings": "Configuración",
+    "signOut": "Cerrar sesión"
   },
   "errors": {
     "generic": "Ha ocurrido un error",
     "notFound": "No se encontró el recurso",
     "unauthorized": "No autorizado",
     "network": "Error de conexión",
-    "required": "Este campo es obligatorio"
+    "required": "Este campo es obligatorio",
+    "somethingWentWrong": "Algo salió mal",
+    "reportNotFound": "Reporte no encontrado",
+    "selfEvaluationRequired": "Se requiere auto-evaluación"
+  },
+  "ui": {
+    "min": "Mín",
+    "max": "Máx",
+    "emptyStateIllustration": "Ilustración de estado vacío",
+    "logo": "Logo",
+    "user": "Usuario",
+    "appName": "Soft Skills",
+    "delete": "Eliminar",
+    "close": "Cerrar"
+  },
+  "notFound": {
+    "title": "Lo sentimos, no pudimos encontrar esta página.",
+    "description": "Pero no te preocupes, puedes encontrar muchas otras cosas en nuestra página de inicio.",
+    "backToHomepage": "Volver a la página de inicio"
   },
   "success": {
     "saved": "Guardado exitosamente",
@@ -43,6 +76,12 @@
     "error": "Algo salió mal",
     "warning": "Advertencia",
     "info": "Información"
+  },
+  "time": {
+    "days": "d",
+    "hours": "h",
+    "elapsedTime": "{{days}}d {{hours}}h",
+    "elapsedTimeHoursOnly": "{{hours}}h"
   },
   "enums": {
     "studyPlace": {

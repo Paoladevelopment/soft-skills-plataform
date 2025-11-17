@@ -18,7 +18,7 @@ roadmap_service = RoadmapMongoService()
 @router.post(
     "",
     response_model=RoadmapResponse,
-    summary="Crear hoja de ruta de aprendizaje",
+    summary="Crear plan de aprendizaje",
     status_code=status.HTTP_201_CREATED,
 )
 def create_roadmap(
@@ -32,7 +32,7 @@ def create_roadmap(
         result_dict = roadmap_service.add_roadmap(roadmap_dict, user_id, session)
 
         return RoadmapResponse(
-            message="Hoja de ruta de aprendizaje creada correctamente",
+            message="Plan de aprendizaje creado correctamente",
             data=result_dict
         )
 
@@ -41,7 +41,7 @@ def create_roadmap(
 
 @router.get(
     "/mine",
-    summary="Obtener mis hojas de ruta de aprendizaje",
+    summary="Obtener mis planes de aprendizaje",
     response_model=PaginatedRoadmapsResponse
 )
 def get_user_roadmaps(
@@ -59,20 +59,20 @@ def get_user_roadmaps(
 
 @router.get(
     "/public",
-    summary="Obtener todas las hojas de ruta de aprendizaje públicas",
+    summary="Obtener todos los planes de aprendizaje públicos",
     response_model=PaginatedRoadmapsResponse,
     status_code=status.HTTP_200_OK,
 )
 def get_public_roadmaps(
     offset: int = Query(0, ge=0, description="Número de elementos a omitir antes de comenzar a recopilar el conjunto de resultados"),
     limit: int = Query(10, ge=10, le=50,  description="Número máximo de elementos a recuperar (entre 10 y 50)"),
-    title: Optional[str] = Query(None, description="Filtrar por título de hoja de ruta de aprendizaje (coincidencia parcial)"),
-    description: Optional[str] = Query(None, description="Filtrar por descripción de hoja de ruta de aprendizaje (coincidencia parcial)"),
-    created_at_from: Optional[datetime] = Query(None, description="Filtrar hojas de ruta de aprendizaje creadas desde esta fecha"),
-    created_at_to: Optional[datetime] = Query(None, description="Filtrar hojas de ruta de aprendizaje creadas hasta esta fecha"),
+    title: Optional[str] = Query(None, description="Filtrar por título de plan de aprendizaje (coincidencia parcial)"),
+    description: Optional[str] = Query(None, description="Filtrar por descripción de plan de aprendizaje (coincidencia parcial)"),
+    created_at_from: Optional[datetime] = Query(None, description="Filtrar planes de aprendizaje creados desde esta fecha"),
+    created_at_to: Optional[datetime] = Query(None, description="Filtrar planes de aprendizaje creados hasta esta fecha"),
     steps_min: Optional[int] = Query(None, ge=0, description="Número mínimo de pasos"),
     steps_max: Optional[int] = Query(None, ge=0, description="Número máximo de pasos"),
-    username: Optional[str] = Query(None, description="Filtrar por nombre de usuario que creó la hoja de ruta de aprendizaje"),
+    username: Optional[str] = Query(None, description="Filtrar por nombre de usuario que creó el plan de aprendizaje"),
     _: TokenData = Depends(decode_jwt_token),
 ):
     try:
@@ -93,7 +93,7 @@ def get_public_roadmaps(
 
 @router.get(
     "/{id}",
-    summary="Obtener hoja de ruta de aprendizaje por ID",
+    summary="Obtener plan de aprendizaje por ID",
     response_model=RoadmapResponse,
 )
 def get_roadmap(
@@ -103,7 +103,7 @@ def get_roadmap(
     try:
         roadmap = roadmap_service.get_roadmap_by_id(id)
         return RoadmapResponse(
-            message="Hoja de ruta de aprendizaje obtenida correctamente",
+            message="Plan de aprendizaje obtenido correctamente",
             data=roadmap
         )
 
@@ -112,7 +112,7 @@ def get_roadmap(
 
 @router.patch(
     "/{id}",
-    summary="Actualizar hoja de ruta de aprendizaje por ID",
+    summary="Actualizar plan de aprendizaje por ID",
     response_model=RoadmapResponse
 )
 async def update_roadmap(
@@ -126,7 +126,7 @@ async def update_roadmap(
         if success:
             roadmap = roadmap_service.get_roadmap_by_id(id)
             return RoadmapResponse(
-                message="Hoja de ruta de aprendizaje actualizada correctamente",
+                message="Plan de aprendizaje actualizado correctamente",
                 data=roadmap
             )
 
@@ -136,7 +136,7 @@ async def update_roadmap(
 
 @router.delete(
     "/{id}",
-    summary="Eliminar hoja de ruta de aprendizaje por ID"
+    summary="Eliminar plan de aprendizaje por ID"
 )
 def delete_roadmap(
     id: str,
@@ -144,7 +144,7 @@ def delete_roadmap(
 ):
     try:
         roadmap_service.delete_roadmap(id)
-        return JSONResponse(status_code=200, content={"message": "Hoja de ruta de aprendizaje eliminada correctamente."})
+        return JSONResponse(status_code=200, content={"message": "Plan de aprendizaje eliminado correctamente."})
 
     except APIException as err:
         raise_http_exception(err)

@@ -139,7 +139,7 @@ def delete_learning_goal(
 
 @router.post(
     "/{id}/convert-to-roadmap",
-    summary="Convertir meta de aprendizaje a hoja de ruta de aprendizaje",
+    summary="Convertir meta de aprendizaje a plan de aprendizaje",
     status_code=status.HTTP_201_CREATED,
 )
 def convert_learning_goal_to_roadmap(

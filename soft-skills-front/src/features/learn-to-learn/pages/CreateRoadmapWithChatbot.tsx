@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 
-const initialMessageEs = "¡Puedo ayudarte a crear una hoja de ruta de aprendizaje para diversos temas como lenguajes de programación, desarrollo web, ciencia de datos y más. ¡Envíame un mensaje para comenzar!"
+const initialMessageEs = "¡Puedo ayudarte a crear un plan de aprendizaje para diversos temas como lenguajes de programación, desarrollo web, ciencia de datos y más. ¡Envíame un mensaje para comenzar!"
 const initialMessageEn = "I can help you create a learning roadmap for various subjects like programming languages, web development, data science, and more. Send me a message to get started!"
 
 const CreateRoadmapWithChatbot = () => {
@@ -85,7 +85,7 @@ const CreateRoadmapWithChatbot = () => {
           sx={{ cursor: 'pointer' }}
           onClick={() => navigate('/learn/roadmaps')}
         >
-          Back to roadmaps
+          {t('detail.backToRoadmaps')}
         </Typography>
       </Stack>
 

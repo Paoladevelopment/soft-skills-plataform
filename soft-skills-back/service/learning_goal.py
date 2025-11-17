@@ -336,7 +336,7 @@ class LearningGoalService:
             self.roadmap_mongo_service.update_roadmap(roadmap_id, {"objectives": objectives})
             
             return {
-                "message": "Meta de aprendizaje convertida a hoja de ruta de aprendizaje correctamente",
+                "message": "Meta de aprendizaje convertida a plan de aprendizaje correctamente",
                 "roadmap_id": result["roadmap_id"]
             }
             

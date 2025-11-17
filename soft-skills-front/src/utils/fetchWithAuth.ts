@@ -1,5 +1,6 @@
 import useAuthStore from "../features/authentication/store/useAuthStore"
 import camelcaseKeys from "camelcase-keys"
+import i18n from "../i18n/config"
 
 export type FetchError = Error & { 
   status?: number
@@ -26,7 +27,7 @@ export async function fetchWithAuth(
   const data = await response.json()
 
   if (!response.ok) {
-    const message = data?.detail?.message || data?.error || "Something went wrong"
+    const message = data?.detail?.message || data?.error || i18n.t('errors.somethingWentWrong', { ns: 'common' })
     const error = new Error(message) as FetchError
 
     error.status = response.status

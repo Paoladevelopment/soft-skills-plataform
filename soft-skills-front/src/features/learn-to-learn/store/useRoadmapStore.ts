@@ -10,6 +10,7 @@ import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, fin
 import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmapGraphHelpers'
 import { isObjectiveNode, isObjectiveToObjectiveConnection, isObjectiveToTaskConnection, isTaskNode } from '../utils/roadmap/roadmapNodeTypeUtils'
 import { validateRoadmapForPublicSave } from '../utils/roadmap/roadmapValidationUtils'
+import i18n from '../../../i18n/config'
 
 export const useRoadmapStore = create<IRoadmapStore>()(
   devtools(
@@ -252,7 +253,8 @@ export const useRoadmapStore = create<IRoadmapStore>()(
           get().setMyRoadmapsTotal(total)
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error fetching your roadmaps', 'error')
+            const message = err.message || i18n.t('toasts.fetchError', { ns: 'roadmap' })
+            useToastStore.getState().showToast(message, 'error')
           }
         } finally {
           set((state) => {
@@ -279,7 +281,8 @@ export const useRoadmapStore = create<IRoadmapStore>()(
           get().setEditorEdges(layout.edges)
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error fetching roadmap', 'error')
+            const message = err.message || i18n.t('toasts.fetchByIdError', { ns: 'roadmap' })
+            useToastStore.getState().showToast(message, 'error')
           }
         } finally {
           set((state) => {
@@ -306,10 +309,12 @@ export const useRoadmapStore = create<IRoadmapStore>()(
             state.myRoadmapsPagination.total = remainingItems
           }, false, 'ROADMAP/DELETE_ROADMAP_SUCCESS')
 
-          useToastStore.getState().showToast(message || 'Roadmap deleted successfully.', 'success')
+          const successMessage = message || i18n.t('toasts.deleteSuccess', { ns: 'roadmap' })
+          useToastStore.getState().showToast(successMessage, 'success')
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error deleting roadmap', 'error')
+            const errorMessage = err.message || i18n.t('toasts.deleteError', { ns: 'roadmap' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         }
       },
@@ -321,14 +326,16 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       
         try {
           const newRoadmap = await createRoadmap({ title, description })
-          useToastStore.getState().showToast('Roadmap created successfully!', 'success')
+          const successMessage = i18n.t('toasts.createSuccess', { ns: 'roadmap' })
+          useToastStore.getState().showToast(successMessage, 'success')
           
           get().fetchMyRoadmaps()
           return newRoadmap.roadmapId
       
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error creating roadmap', 'error')
+            const errorMessage = err.message || i18n.t('toasts.createError', { ns: 'roadmap' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
           
           return null
@@ -368,10 +375,12 @@ export const useRoadmapStore = create<IRoadmapStore>()(
           
           await updateRoadmap(id, updatedRoadmap)
       
-          useToastStore.getState().showToast("Roadmap updated successfully!", "success")
+          const successMessage = i18n.t('toasts.updateSuccess', { ns: 'roadmap' })
+          useToastStore.getState().showToast(successMessage, 'success')
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error updating roadmap', 'error')
+            const errorMessage = err.message || i18n.t('toasts.updateError', { ns: 'roadmap' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         }
       },
@@ -393,10 +402,12 @@ export const useRoadmapStore = create<IRoadmapStore>()(
              get().setSelectedRoadmapMetadata(updates)
           }
 
-           useToastStore.getState().showToast("Roadmap metadata updated successfully!", "success")
+           const successMessage = i18n.t('toasts.updateMetadataSuccess', { ns: 'roadmap' })
+           useToastStore.getState().showToast(successMessage, 'success')
         } catch (err: unknown) {
           if (err instanceof Error) {
-            useToastStore.getState().showToast(err.message || 'Error updating roadmap metadata', 'error')
+            const errorMessage = err.message || i18n.t('toasts.updateMetadataError', { ns: 'roadmap' })
+            useToastStore.getState().showToast(errorMessage, 'error')
           }
         }
       },

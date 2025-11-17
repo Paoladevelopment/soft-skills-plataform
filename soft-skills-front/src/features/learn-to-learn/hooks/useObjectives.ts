@@ -7,6 +7,7 @@ import { Objective } from '../types/planner/planner.models'
 import { Status } from '../types/common.enums'
 import { useToastStore } from '../../../store/useToastStore'
 import { useLearningGoalStore } from '../store/useLearningGoalStore'
+import { useTranslation } from 'react-i18next'
 
 const useSelectedGoalId = () => useLearningGoalStore(s => s.selectedGoalId)
 
@@ -52,6 +53,7 @@ export const useCreateObjective = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
   const selectedGoalId = useSelectedGoalId()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: (payload: CreateObjectivePayload) => 
@@ -104,7 +106,7 @@ export const useCreateObjective = () => {
         })
       }
       
-      showToast('Failed to create objective. Please try again.', 'error')
+      showToast(t('toasts.objectives.createError'), 'error')
     },
     
     onSuccess: () => {
@@ -122,7 +124,7 @@ export const useCreateObjective = () => {
         })
       }
       
-      showToast('Objective created successfully!', 'success')
+      showToast(t('toasts.objectives.createSuccess'), 'success')
     },
   })
 }
@@ -130,6 +132,7 @@ export const useCreateObjective = () => {
 export const useUpdateObjective = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async ({ id, payload }: { id: string; payload: UpdateObjectivePayload }) => {
@@ -176,11 +179,11 @@ export const useUpdateObjective = () => {
         })
       }
       
-      showToast('Failed to update objective. Please try again.', 'error')
+      showToast(t('toasts.objectives.updateError'), 'error')
     },
     onSuccess: ({ objective, message }, { id }) => {
       queryClient.setQueryData(['objectives', 'detail', id], objective)
-      showToast(message || 'Objective updated successfully!', 'success', 2000)
+      showToast(message || t('toasts.objectives.updateSuccess'), 'success', 2000)
     }
   })
 }
@@ -189,6 +192,7 @@ export const useDeleteObjective = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToastStore()
   const selectedGoalId = useSelectedGoalId()
+  const { t } = useTranslation('goals')
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -226,7 +230,7 @@ export const useDeleteObjective = () => {
         })
       }
       
-      showToast(error.message || 'Error deleting objective', 'error')
+      showToast(error.message || t('toasts.objectives.deleteError'), 'error')
     },
     onSuccess: ({ message }) => {
       queryClient.invalidateQueries({ 
@@ -239,7 +243,7 @@ export const useDeleteObjective = () => {
         })
       }
       
-      showToast(message || 'Objective deleted successfully', 'success')
+      showToast(message || t('toasts.objectives.deleteSuccess'), 'success')
     }
   })
 }

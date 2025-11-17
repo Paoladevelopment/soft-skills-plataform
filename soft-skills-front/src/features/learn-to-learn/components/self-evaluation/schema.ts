@@ -11,7 +11,7 @@ import {
 } from '../../types/self-evaluation/self-evaluation.enums'
 
 export const selfEvaluationSchema = z.object({
-  task_id: z.string().uuid('Task ID must be a valid UUID'),
+  task_id: z.string().uuid(i18n.t('reports:selfEvaluation.validation.taskIdInvalid')),
   study_place: z.nativeEnum(StudyPlace, {
     required_error: i18n.t('reports:selfEvaluation.validation.studyPlaceRequired'),
   }),

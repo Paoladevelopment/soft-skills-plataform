@@ -1,5 +1,6 @@
 import { Box, CircularProgress } from '@mui/material'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSelfEvaluation } from '../hooks/useSelfEvaluations'
 import BackToReportsButton from '../components/learning-reports/BackToReportsButton'
 import ReportHeader from '../components/learning-reports/ReportHeader'
@@ -12,6 +13,7 @@ import LearningMethodsSection from '../components/learning-reports/LearningMetho
 import ErrorState from '../components/learning-reports/ErrorState'
 
 const LearningReportDetail = () => {
+  const { t } = useTranslation('common')
   const { evaluationId } = useParams()
   const { data: report, isLoading, error } = useSelfEvaluation(evaluationId || null)
 
@@ -38,7 +40,7 @@ const LearningReportDetail = () => {
           py: 4 
         }}
       >
-        <ErrorState error={error || new Error('Report not found')} />
+        <ErrorState error={error || new Error(t('errors.reportNotFound'))} />
       </Box>
     )
   }
