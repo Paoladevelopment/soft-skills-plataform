@@ -35,9 +35,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Configurar CORS con orígenes específicos
-# Los orígenes se configuran en CORS_ORIGINS (separados por coma)
-# Ejemplo: "https://tu-frontend.vercel.app,http://localhost:3000"
 cors_origins_str = settings.CORS_ORIGINS
 origins = [origin.strip() for origin in cors_origins_str.split(",") if origin.strip()]
 
