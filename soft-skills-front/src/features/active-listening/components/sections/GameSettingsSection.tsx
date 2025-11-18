@@ -1,4 +1,5 @@
-import { Box, Stack, TextField, Typography, FormControlLabel, Checkbox } from '@mui/material'
+import { Box, Stack, TextField, Typography, FormControlLabel, Checkbox, Tooltip, IconButton } from '@mui/material'
+import { InfoOutlined } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
 
@@ -99,12 +100,35 @@ const GameSettingsSection = () => {
             />
           }
           label={
-            <Typography 
-              variant="body2" 
-              color="white"
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 0.5 
+              }}
             >
-              {t('play.sessionForm.gameSettings.reuseExistingChallenges')}
-            </Typography>
+              <Typography 
+                variant="body2" 
+                color="white"
+              >
+                {t('play.sessionForm.gameSettings.reuseExistingChallenges')}
+              </Typography>
+              <Tooltip title={t('play.sessionForm.gameSettings.reuseExistingChallengesTooltip')}>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    padding: 0.25,
+                    '&:hover': {
+                      color: 'white',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}
+                >
+                  <InfoOutlined fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
           }
         />
       </Stack>

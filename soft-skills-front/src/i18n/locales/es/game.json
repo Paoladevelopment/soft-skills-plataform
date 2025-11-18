@@ -1,7 +1,54 @@
 {
   "home": {
     "gameSessions": "Sesiones de juego",
-    "leaderboard": "Tabla de clasificación"
+    "howToPlay": "Guía de juego"
+  },
+  "howToPlay": {
+    "title": "Guía de juego: Codebreakers",
+    "subtitle": "Aprende a jugar y mejora tus habilidades de escucha activa",
+    "objective": {
+      "title": "Objetivo",
+      "description": "Codebreakers está pensado para ayudarte a escuchar mejor. Cada ronda te reta a entender, recordar y explicar lo que oyes, mientras practicas habilidades clave como identificar ideas importantes, hacer preguntas y comunicarte con claridad. Es una forma divertida y dinámica de mejorar tu escucha activa."
+    },
+    "howToPlay": {
+      "title": "Cómo jugar",
+      "step1": "Inicia una sesión de juego creando una nueva o eligiendo una que ya tengas.",
+      "step2": "Configura tu sesión: selecciona cuántas rondas quieres jugar, el nivel de dificultad y los modos de juego que deseas practicar.",
+      "step3": "Escucha con atención el audio de cada ronda. Dependiendo de la modalidad, podrás escucharlo una o varias veces.",
+      "step4": "Resuelve el desafío según el modo de juego: responde una pregunta, completa espacios, parafrasea, resume o formula preguntas aclaratorias.",
+      "step5": "Envía tu respuesta y recibe retroalimentación inmediata. Observa tu desempeño, aprende del proceso y continúa con la siguiente ronda."
+    },
+    "gameModes": {
+      "title": "Modos de juego",
+      "focus": {
+        "title": "Enfoque",
+        "description": "Pon a prueba tu comprensión respondiendo preguntas de opción múltiple sobre el contenido del audio."
+      },
+      "cloze": {
+        "title": "Completar espacios",
+        "description": "Escucha con detalle y completa las palabras faltantes en un texto basado en el audio."
+      },
+      "paraphrase": {
+        "title": "Paráfrasis",
+        "description": "Reformula las ideas principales del audio utilizando tus propias palabras, manteniendo el significado original."
+      },
+      "summarize": {
+        "title": "Resumen",
+        "description": "Elabora una versión breve con los puntos clave que escuchaste en el audio."
+      },
+      "clarify": {
+        "title": "Preguntas aclaratorias",
+        "description": "Formula preguntas que te ayuden a profundizar en lo que escuchaste o aclara detalles para demostrar comprensión."
+      }
+    },
+    "tips": {
+      "title": "Consejos para el éxito",
+      "tip1": "Escucha con intención: concéntrate en las ideas principales en lugar de intentar recordar cada palabra.",
+      "tip2": "Usa tus repeticiones estratégicamente: no gastes todas al inicio; guárdalas para confirmar o aclarar información clave.",
+      "tip3": "Toma notas si lo necesitas: registrar palabras clave o ideas centrales puede ayudarte a organizar tu respuesta.",
+      "tip4": "Reformula para comprender mejor: intentar explicar lo que escuchaste con tus propias palabras mejora la retención.",
+      "tip5": "Practica de forma constante: tus habilidades de escucha mejorarán con la práctica y podrás ver tu progreso con el tiempo."
+    }
   },
   "sessions": {
     "title": {
@@ -156,7 +203,8 @@
         "title": "Configuración de juego",
         "totalRounds": "Rondas totales (1-10)",
         "maxReplaysPerRound": "Máximo de repeticiones por ronda (1-5)",
-        "reuseExistingChallenges": "Reutilizar desafíos existentes"
+        "reuseExistingChallenges": "Reutilizar desafíos existentes",
+        "reuseExistingChallengesTooltip": "Usa desafíos ya creados para practicar sin generar nuevos."
       },
       "contentSettings": {
         "title": "Configuración de contenido",
@@ -166,7 +214,14 @@
           "historicalEvent": "Evento histórico",
           "instructional": "Instructivo",
           "dialogue": "Diálogo",
-          "narratedDialogue": "Diálogo narrado"
+          "narratedDialogue": "Diálogo narrado",
+          "descriptions": {
+            "descriptive": "Audio que describe objetos, escenas o situaciones para entrenar la observación y comprensión de detalles.",
+            "historicalEvent": "Audio que relata un hecho histórico real, permitiendo practicar comprensión de contextos, causas y consecuencias.",
+            "instructional": "Audio con pasos o indicaciones claras para seguir una acción o proceso, enfocado en habilidades de escucha procedural.",
+            "dialogue": "Conversación entre dos o más personas donde debes captar turnos, intenciones y mensajes clave.",
+            "narratedDialogue": "Un narrador relata un diálogo ocurrido entre personajes, mezclando narración y citas directas para trabajar atención y memoria secuencial."
+          }
         },
         "difficultyLevel": "Nivel de dificultad",
         "difficulty": {

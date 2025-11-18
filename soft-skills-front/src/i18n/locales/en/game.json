@@ -1,7 +1,54 @@
 {
   "home": {
     "gameSessions": "Game sessions",
-    "leaderboard": "Leaderboard"
+    "howToPlay": "How to play"
+  },
+  "howToPlay": {
+    "title": "Game Guide: Codebreakers",
+    "subtitle": "Learn how to play and improve your active listening skills",
+    "objective": {
+      "title": "Objective",
+      "description": "Codebreakers is designed to help you listen better. Each round challenges you to understand, remember, and explain what you hear, while practicing key skills like identifying important ideas, asking questions, and communicating clearly. It's a fun and dynamic way to improve your active listening."
+    },
+    "howToPlay": {
+      "title": "How to Play",
+      "step1": "Start a game session by creating a new one or choosing one you already have.",
+      "step2": "Configure your session: select how many rounds you want to play, the difficulty level, and the game modes you want to practice.",
+      "step3": "Listen carefully to the audio in each round. Depending on the mode, you'll be able to listen to it once or several times.",
+      "step4": "Solve the challenge according to the game mode: answer a question, fill in blanks, paraphrase, summarize, or formulate clarifying questions.",
+      "step5": "Submit your answer and receive immediate feedback. Observe your performance, learn from the process, and continue to the next round."
+    },
+    "gameModes": {
+      "title": "Game Modes",
+      "focus": {
+        "title": "Focus",
+        "description": "Test your comprehension by answering multiple-choice questions about the audio content."
+      },
+      "cloze": {
+        "title": "Fill in the Blanks",
+        "description": "Listen carefully and complete the missing words in a text based on the audio."
+      },
+      "paraphrase": {
+        "title": "Paraphrase",
+        "description": "Restate the main ideas from the audio using your own words, maintaining the original meaning."
+      },
+      "summarize": {
+        "title": "Summarize",
+        "description": "Create a brief version with the key points you heard in the audio."
+      },
+      "clarify": {
+        "title": "Clarifying Questions",
+        "description": "Formulate questions that help you delve deeper into what you heard or clarify details to demonstrate understanding."
+      }
+    },
+    "tips": {
+      "title": "Tips for Success",
+      "tip1": "Listen with intention: focus on the main ideas rather than trying to remember every word.",
+      "tip2": "Use your replays strategically: don't spend them all at the beginning; save them to confirm or clarify key information.",
+      "tip3": "Take notes if needed: recording key words or central ideas can help you organize your response.",
+      "tip4": "Rephrase to understand better: trying to explain what you heard in your own words improves retention.",
+      "tip5": "Practice consistently: your listening skills will improve with practice and you'll be able to see your progress over time."
+    }
   },
   "sessions": {
     "title": {
@@ -156,7 +203,8 @@
         "title": "Game settings",
         "totalRounds": "Total rounds (1-10)",
         "maxReplaysPerRound": "Max replays per round (1-5)",
-        "reuseExistingChallenges": "Reuse existing challenges"
+        "reuseExistingChallenges": "Reuse existing challenges",
+        "reuseExistingChallengesTooltip": "Use already created challenges to practice without generating new ones."
       },
       "contentSettings": {
         "title": "Content settings",
@@ -166,7 +214,14 @@
           "historicalEvent": "Historical event",
           "instructional": "Instructional",
           "dialogue": "Dialogue",
-          "narratedDialogue": "Narrated dialogue"
+          "narratedDialogue": "Narrated dialogue",
+          "descriptions": {
+            "descriptive": "Audio that describes objects, scenes, or situations to train observation and understanding of details.",
+            "historicalEvent": "Audio that narrates a real historical event, allowing practice in understanding contexts, causes, and consequences.",
+            "instructional": "Audio with clear steps or instructions to follow an action or process, focused on procedural listening skills.",
+            "dialogue": "Conversation between two or more people where you must capture turns, intentions, and key messages.",
+            "narratedDialogue": "A narrator recounts a dialogue that occurred between characters, mixing narration and direct quotes to work on attention and sequential memory."
+          }
         },
         "difficultyLevel": "Difficulty level",
         "difficulty": {
