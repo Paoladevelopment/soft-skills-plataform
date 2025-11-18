@@ -153,6 +153,9 @@ const AddObjectiveModal = ({ open, onClose, onSubmit, defaultValues }: AddObject
             type="date"
             fullWidth
             slotProps={{
+              htmlInput: {
+                min: new Date().toISOString().split('T')[0],
+              },
               inputLabel: {
                 shrink: true,
               },

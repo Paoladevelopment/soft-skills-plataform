@@ -37,6 +37,14 @@ const InlineEditableDate = ({
     }
   }
 
+  const getTodayDate = () => {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const day = String(today.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   return (
     <Box
       onMouseEnter={() => setHovered(true)}
@@ -90,18 +98,21 @@ const InlineEditableDate = ({
         size="small"
         id={fieldAttributes.id}
         name={fieldAttributes.name}
-        sx={{
-          backgroundColor: inputBackgroundColor,
-          transition: 'background-color 0.2s ease-in-out',
-          padding: 1,
-        }}
         slotProps={{
+          htmlInput: {
+            min: getTodayDate(),
+          },
           input: {
             disableUnderline: true,
             sx: {
               fontSize: '0.875rem',
             },
           },
+        }}
+        sx={{
+          backgroundColor: inputBackgroundColor,
+          transition: 'background-color 0.2s ease-in-out',
+          padding: 1,
         }}
       />
     </Box>

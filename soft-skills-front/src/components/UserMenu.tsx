@@ -8,11 +8,15 @@ import {
   IconButton
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import Settings from '@mui/icons-material/Settings'
+import { useNavigate } from 'react-router-dom'
 import Logout from '@mui/icons-material/Logout'
+import useAuthStore from '../features/authentication/store/useAuthStore'
 
 const UserMenu = () => {
   const { t } = useTranslation('common')
+  const navigate = useNavigate()
+  const logout = useAuthStore(state => state.logout)
+  const user = useAuthStore(state => state.user)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -26,16 +30,16 @@ const UserMenu = () => {
 
   const handleLogout = () => {
     handleClose()
-    // your logout logic here
-    console.log('Signing out...')
+    logout()
+    navigate('/login')
   }
 
   return (
     <Box>
       <IconButton onClick={handleClick} size="small" sx={{ p: 0 }}>
         <Avatar 
-          alt={t('userMenu.userAvatar')} 
-          src="/profile.jpg" 
+          alt={user?.name || t('userMenu.userAvatar')} 
+          src={user?.profilePicture} 
           sx={
             { 
               width: 40, 
@@ -71,13 +75,6 @@ const UserMenu = () => {
           vertical: 'top',
           horizontal: 'left',
         }}>
-          <MenuItem>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            {t('userMenu.settings')}
-          </MenuItem>
-
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <Logout fontSize="small" />
