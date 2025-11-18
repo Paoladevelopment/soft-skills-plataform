@@ -1,6 +1,6 @@
 import { api } from "../../../config/api"
 import { fetchWithAuth } from "../../../utils/fetchWithAuth"
-import { CopyRoadmapResponse, CreateRoadmapPayload, FetchRoadmapsSummaryResponse, PublicRoadmapsParams } from "../types/roadmap/roadmap.api"
+import { CopyRoadmapResponse, ConvertToLearningGoalResponse, CreateRoadmapPayload, FetchRoadmapsSummaryResponse, PublicRoadmapsParams } from "../types/roadmap/roadmap.api"
 import { Roadmap } from "../types/roadmap/roadmap.models"
 import { normalizeLayoutNodes } from "../utils/roadmap/roadmapSerializers"
 import snakecaseKeys from 'snakecase-keys'
@@ -112,6 +112,17 @@ export async function updateRoadmap(
 
 export async function copyRoadmap(id: string): Promise<CopyRoadmapResponse> {
   const url = api.roadmap.copy(id)
+
+  const response = await fetchWithAuth(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  })
+
+  return response
+}
+
+export async function convertRoadmapToLearningGoal(id: string): Promise<ConvertToLearningGoalResponse> {
+  const url = api.roadmap.convertToLearningGoal(id)
 
   const response = await fetchWithAuth(url, {
     method: "POST",

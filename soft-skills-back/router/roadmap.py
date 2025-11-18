@@ -7,6 +7,7 @@ from nosql_schema.roadmap import RoadmapCreate, RoadmapUpdate, RoadmapResponse, 
 from schema.token import TokenData
 from mongo_service.roadmap import RoadmapMongoService
 from service.auth_service import decode_jwt_token
+from service.roadmap_conversion import RoadmapConversionService
 from utils.errors import APIException, raise_http_exception
 from utils.db import get_session
 from sqlmodel import Session
@@ -14,6 +15,7 @@ from sqlmodel import Session
 router = APIRouter()
 
 roadmap_service = RoadmapMongoService()
+roadmap_conversion_service = RoadmapConversionService()
 
 @router.post(
     "",
@@ -154,6 +156,28 @@ def copy_roadmap(
                 "message": "Plan de aprendizaje copiado correctamente",
                 "roadmap_id": new_roadmap_id
             }
+        )
+
+    except APIException as err:
+        raise_http_exception(err)
+
+
+@router.post(
+    "/{id}/convert-to-learning-goal",
+    summary="Convertir plan de aprendizaje a meta de aprendizaje",
+    status_code=status.HTTP_201_CREATED,
+)
+def convert_roadmap_to_learning_goal(
+    id: str,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session),
+):
+    try:
+        result = roadmap_conversion_service.convert_roadmap_to_learning_goal(id, token_data.user_id, session)
+
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content=result
         )
 
     except APIException as err:

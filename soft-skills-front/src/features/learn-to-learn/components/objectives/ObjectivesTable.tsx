@@ -11,7 +11,8 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  IconButton
+  IconButton,
+  Tooltip
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
@@ -283,30 +284,38 @@ const ObjectivesTable = ({
                       gap: 0.5
                     }}
                   >
-                    <IconButton 
-                      size="small" 
-                      onClick={() => onViewClick?.(objective)}
-                      sx={{ 
-                        color: 'text.secondary',
-                        '&:hover': {
-                          color: 'primary.main'
-                        }
-                      }}
-                    >
-                      <VisibilityIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => onDeleteClick?.(objective)}
-                      sx={{ 
-                        color: 'text.secondary',
-                        '&:hover': {
-                          color: 'error.main'
-                        }
-                      }}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
+                    {onViewClick && (
+                      <Tooltip title={t('objectives.table.viewObjective')}>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => onViewClick(objective)}
+                          sx={{ 
+                            color: 'text.secondary',
+                            '&:hover': {
+                              color: 'primary.main'
+                            }
+                          }}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {onDeleteClick && (
+                      <Tooltip title={t('objectives.table.deleteObjective')}>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => onDeleteClick(objective)}
+                          sx={{ 
+                            color: 'text.secondary',
+                            '&:hover': {
+                              color: 'error.main'
+                            }
+                          }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </Box>
                 </TableCell>
               </TableRow>

@@ -23,3 +23,8 @@ export interface CopyRoadmapResponse {
   message: string
   roadmapId: string
 }
+
+export interface ConvertToLearningGoalResponse {
+  message: string
+  learningGoalId: string
+}

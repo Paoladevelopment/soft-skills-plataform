@@ -24,7 +24,10 @@
     "notStarted": "Aún no iniciado",
     "objectives": "objetivos",
     "complete": "completo",
-    "noObjectives": "Aún no hay objetivos. ¡Comienza a desglosar esta meta!"
+    "noObjectives": "Aún no hay objetivos. ¡Comienza a desglosar esta meta!",
+    "viewGoal": "Ver meta",
+    "deleteGoal": "Eliminar meta",
+    "convertToRoadmap": "Transformar en plan de aprendizaje"
   },
   "goalDetail": {
     "title": "Título",
@@ -85,6 +88,8 @@
       "noObjectivesFound": "No se encontraron objetivos para esta meta de aprendizaje.",
       "noObjectivesMatchFilters": "No hay objetivos que coincidan con tus filtros actuales.",
       "errorLoading": "Error al cargar objetivos",
+      "viewObjective": "Ver objetivo",
+      "deleteObjective": "Eliminar objetivo",
       "pagination": {
         "rowsPerPage": "Filas por página:",
         "displayedRows": "{{from}}-{{to}} de {{count}}"

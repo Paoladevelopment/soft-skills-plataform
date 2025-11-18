@@ -6,6 +6,7 @@ from enums.common import Status
 from fastapi import Depends
 from model.learning_goal import LearningGoal
 from model.objective import Objective
+from model.task_resource import TaskResource
 from mongo_service.learning_goal import LearningGoalMongoService
 from schema.learning_goal import LearningGoalCreate, LearningGoalUpdate, LearningGoalReadWithProgress
 from sqlmodel import desc, Session, func, select
@@ -307,11 +308,12 @@ class LearningGoalService:
         
         return ordered_ids + unordered_ids
 
-    def _convert_objective_to_roadmap(self, objective_id: str, mongo_obj: dict, learning_goal_id: UUID, index: int) -> dict:
+    def _convert_objective_to_roadmap(self, objective_id: str, mongo_obj: dict, learning_goal_id: UUID, index: int, session: Session) -> dict:
         """Convert a single objective to roadmap format"""
         converted_tasks = self._convert_tasks_with_order(
             mongo_obj.get("tasks", []), 
-            mongo_obj.get("tasks_order_by_status", {})
+            mongo_obj.get("tasks_order_by_status", {}),
+            session
         )
         
         return {
@@ -323,10 +325,10 @@ class LearningGoalService:
             "tasks": converted_tasks
         }
 
-    def _convert_all_objectives(self, all_objective_ids: list, objective_map: dict, learning_goal_id: UUID) -> list:
+    def _convert_all_objectives(self, all_objective_ids: list, objective_map: dict, learning_goal_id: UUID, session: Session) -> list:
         """Convert all objectives to roadmap format"""
         return [
-            self._convert_objective_to_roadmap(obj_id, objective_map[obj_id], learning_goal_id, index)
+            self._convert_objective_to_roadmap(obj_id, objective_map[obj_id], learning_goal_id, index, session)
             for index, obj_id in enumerate(all_objective_ids)
         ]
 
@@ -352,7 +354,7 @@ class LearningGoalService:
             objective_map = {obj["objective_id"]: obj for obj in mongo_objectives}
             
             all_objective_ids = self._get_ordered_objective_ids(objectives_order, objective_map)
-            converted_objectives = self._convert_all_objectives(all_objective_ids, objective_map, learning_goal_id)
+            converted_objectives = self._convert_all_objectives(all_objective_ids, objective_map, learning_goal_id, session)
             
             roadmap_data["objectives"] = converted_objectives
             result = self._create_and_save_roadmap(roadmap_data, user_id, session)
@@ -368,20 +370,57 @@ class LearningGoalService:
         except Exception as err:
             handle_db_error(err, "convert_to_roadmap", error_type="conversion")
 
-    def _convert_tasks_with_order(self, tasks: list, tasks_order_by_status: dict) -> list:
+    def _fetch_task_resources_map(self, task_ids: list, session: Session) -> dict:
+        """Fetch all task resources from database and return a map of task_id -> resources"""
+        task_resources_map = {}
+        if not task_ids:
+            return task_resources_map
+        
+        task_uuids = [UUID(task_id) for task_id in task_ids]
+        resources = session.exec(
+            select(TaskResource).where(TaskResource.task_id.in_(task_uuids))
+        ).all()
+        
+        for resource in resources:
+            task_id_str = str(resource.task_id)
+            if task_id_str not in task_resources_map:
+                task_resources_map[task_id_str] = []
+            
+            task_resources_map[task_id_str].append({
+                "type": resource.type.value,
+                "title": resource.title,
+                "url": resource.link
+            })
+        
+        return task_resources_map
+
+    def _get_all_task_ids_from_status_order(self, tasks_order_by_status: dict) -> list:
+        """Extract all task IDs from tasks_order_by_status dictionary"""
+        all_task_ids = []
+        status_priority = ["completed", "in_progress", "paused", "not_started"]
+        for status in status_priority:
+            task_ids = tasks_order_by_status.get(status, [])
+            all_task_ids.extend(task_ids)
+        return all_task_ids
+
+    def _convert_tasks_with_order(self, tasks: list, tasks_order_by_status: dict, session: Session) -> list:
         """Convert tasks with proper order_index based on status priority (completed first)"""
         task_map = {task["task_id"]: task for task in tasks}
-        
-        status_priority = ["completed", "in_progress", "paused", "not_started"]
+        all_task_ids = self._get_all_task_ids_from_status_order(tasks_order_by_status)
+        task_resources_map = self._fetch_task_resources_map(all_task_ids, session)
         
         converted_tasks = []
         order_index = 0
+        status_priority = ["completed", "in_progress", "paused", "not_started"]
         
         for status in status_priority:
             task_ids = tasks_order_by_status.get(status, [])
             for task_id in task_ids:
                 if task_id in task_map:
                     task = task_map[task_id]
+
+                    task_resources = task_resources_map.get(task_id, [])
+                    
                     converted_task = {
                         "task_id": task_id,
                         "title": task["title"],
@@ -389,7 +428,7 @@ class LearningGoalService:
                         "order_index": order_index,
                         "type": task.get("type"),
                         "content_title": task.get("content_title"),
-                        "resources": task.get("resources", []),
+                        "resources": task_resources,
                         "comments": task.get("comments", [])
                     }
                     converted_tasks.append(converted_task)

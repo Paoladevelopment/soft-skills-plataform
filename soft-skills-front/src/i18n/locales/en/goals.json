@@ -24,7 +24,10 @@
     "notStarted": "Not started yet",
     "objectives": "objectives",
     "complete": "complete",
-    "noObjectives": "No objectives yet. Start breaking down this goal!"
+    "noObjectives": "No objectives yet. Start breaking down this goal!",
+    "viewGoal": "View goal",
+    "deleteGoal": "Delete goal",
+    "convertToRoadmap": "Transform to roadmap"
   },
   "goalDetail": {
     "title": "Title",
@@ -85,6 +88,8 @@
       "noObjectivesFound": "No objectives found for this learning goal.",
       "noObjectivesMatchFilters": "No objectives match your current filters.",
       "errorLoading": "Error loading objectives",
+      "viewObjective": "View objective",
+      "deleteObjective": "Delete objective",
       "pagination": {
         "rowsPerPage": "Rows per page:",
         "displayedRows": "{{from}}-{{to}} of {{count}}"

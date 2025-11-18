@@ -30,6 +30,7 @@ export interface IRoadmapStore {
   myRoadmaps: RoadmapSummary[]
 
   isLoading: boolean
+  isConverting: boolean
 
   myRoadmapsPagination: PaginationState
 
@@ -53,6 +54,7 @@ export interface IRoadmapStore {
   updateRoadmap: (id: string) => Promise<void>
   updateRoadmapMetadata: (id: string, updates: OnlyRoadmapMetadata) => Promise<void>
   copyRoadmap: (id: string) => Promise<string | null>
+  convertToLearningGoal: (id: string) => Promise<string | null>
 
   updateRoadmapAfterConnection: (connection: Connection) => void
 
