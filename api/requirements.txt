@@ -1,0 +1,43 @@
+# FastAPI and core dependencies
+fastapi==0.111.0
+uvicorn==0.30.1
+starlette==0.37.2
+pydantic==2.8.2
+pydantic-settings==2.3.4
+pydantic_core==2.20.1
+
+# Database
+sqlmodel==0.0.19
+SQLAlchemy==2.0.25
+psycopg2==2.9.9
+
+# Authentication and security
+python-jose[cryptography]
+python-multipart==0.0.9
+bcrypt==4.0.1
+passlib==1.7.4
+
+# HTTP and networking
+httpx==0.27.0
+httpcore==1.0.2
+requests==2.31.0
+
+# MongoDB
+pymongo==4.6.1
+
+# Environment and config
+python-dotenv==1.0.0
+
+# Email validation
+email-validator==2.2.0
+
+# LLM and AI services
+elevenlabs==1.59.0
+supabase==2.22.3
+
+# Vercel serverless adapter
+mangum==0.17.0
+
+# Utilities
+orjson==3.10.6
+PyYAML==6.0.3

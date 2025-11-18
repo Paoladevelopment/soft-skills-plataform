@@ -1,0 +1,53 @@
+# Ignore files and directories that shouldn't be deployed to Vercel
+
+# Development files
+*.log
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+*.md
+!README.md
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Build artifacts (keep dist for frontend)
+node_modules/
+.git/
+.gitignore
+
+# Project-specific
+databases/
+documents/
+godot-project/
+latex-project/
+tests/
+
+# Environment files (use Vercel dashboard instead)
+.env
+.env.local
+.env.*.local
+

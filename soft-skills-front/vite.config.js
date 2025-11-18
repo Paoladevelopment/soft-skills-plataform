@@ -6,4 +6,10 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+  },
+  // Base path for production (Vercel serves from root)
+  base: '/',
 })
