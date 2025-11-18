@@ -1,6 +1,7 @@
 {
   "title": "Self-regulated learning",
-  "subtitle": "Organize your learning goals, objectives, and tasks as part of your self-regulated learning journey.",
+  "subtitle": "Organize your learning goals, objectives, and tasks as part of your",
+  "subtitleLink": "self-regulated learning journey",
   "breadcrumbs": {
     "learningGoals": "Learning goals"
   },
@@ -234,6 +235,64 @@
     "selfEvaluation": {
       "saveSuccess": "Self-evaluation saved successfully",
       "saveError": "Failed to save self-evaluation"
+    }
+  },
+  "help": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to the most common questions about self-regulated learning",
+    "questions": {
+      "q1": {
+        "question": "What is self-regulated learning?",
+        "answer": "It is the ability to manage your own learning process: you set goals, plan, monitor your progress, adjust your strategies, and reflect on what works best for you. It is an active approach in which you control your learning."
+      },
+      "q2": {
+        "question": "Why is it important to learn in a self-regulated way?",
+        "answer": "Because it allows you to learn more efficiently and consciously. You develop autonomy, improve your problem-solving skills, and increase your motivation and persistence when facing academic or professional challenges."
+      },
+      "q3": {
+        "question": "How does this module help me learn to learn?",
+        "answer": "This module strengthens your ability to learn to learn by providing you with an environment where you can plan, monitor, and evaluate your own learning process. It allows you to structure goals, set achievable objectives, and break down tasks, thus promoting metacognition, self-regulation, and the development of effective strategies for autonomous learning."
+      },
+      "q4": {
+        "question": "What is the difference between a goal, an objective, and a task?",
+        "answer": "Goal: it is the general purpose of learning.\n\nObjective: it is a concrete intermediate step that brings you closer to your goal.\n\nTask: these are specific and manageable actions to advance in each objective."
+      },
+      "q5": {
+        "question": "How do I know if I'm progressing well?",
+        "answer": "You can review markers such as:\n\n• completed tasks,\n• achieved objectives,\n• time dedicated,\n• adjustments you make in the process,\n• clarity with which you can explain what you learned.\n\nThe key is to observe trends, not daily perfection."
+      },
+      "q6": {
+        "question": "What do I do if I have trouble starting or staying consistent?",
+        "answer": "Try these strategies:\n\n• Break down your tasks into smaller steps.\n• Set short time limits (5–10 min).\n• Adjust your goal if it's too broad.\n• Review what obstacles you have and how you can manage them.\n• Celebrate small achievements to maintain motivation."
+      },
+      "q7": {
+        "question": "What happens if I need to modify my goals or objectives?",
+        "answer": "It's completely normal. In self-regulated learning, goals are adjusted when your needs, priorities, or conditions change. Modifying and adjusting is part of the process, not a setback."
+      },
+      "q8": {
+        "question": "Do I need to complete everything to consider that I learned something?",
+        "answer": "No. Learning self-regulatively means that you know when you have acquired sufficient understanding to move forward."
+      },
+      "q9": {
+        "question": "Why do I record my start and end dates?",
+        "answer": "To help you visualize your learning path. They are not meant to judge you, but to help you recognize patterns, identify how long it takes you to learn something, and improve your future planning."
+      },
+      "q10": {
+        "question": "What happens if I delete a task or objective?",
+        "answer": "Your progress maintains historical traceability. You can adjust what you need without losing your milestones. Adjusting your plan is a natural part of flexible and reflective learning."
+      },
+      "q11": {
+        "question": "How can I reflect on my learning?",
+        "answer": "Upon completing a task, this module offers you a self-evaluation form that invites you to pause and think about how you did your work. Through brief questions, you can identify what worked for you, what difficulties you encountered, what strategies you used, and what you could adjust to progress better. This reflective pause turns each task into an opportunity to know yourself as a learner and improve your way of learning in the future."
+      },
+      "q12": {
+        "question": "Is self-regulated learning only useful for studying?",
+        "answer": "No. It also improves skills at work, personal projects, communication, productivity, and personal growth. It is a lifelong competency."
+      },
+      "q13": {
+        "question": "Why can a goal or objective appear as \"completed\" even if I've added new tasks or objectives afterwards?",
+        "answer": "The system marks a goal or objective as completed the first time you reach the set of tasks or objectives initially defined. If you later add new elements, the completed mark is preserved because it corresponds to the original milestone. In the future, a version and change log will be integrated so you can visualize with greater precision how your planning evolves."
+      }
     }
   }
 }

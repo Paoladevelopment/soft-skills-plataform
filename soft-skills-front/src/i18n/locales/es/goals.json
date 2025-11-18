@@ -1,6 +1,7 @@
 {
   "title": "Aprendizaje autorregulado",
-  "subtitle": "Organiza tus metas de aprendizaje, objetivos y tareas como parte de tu viaje de aprendizaje autorregulado.",
+  "subtitle": "Organiza tus metas de aprendizaje, objetivos y tareas como parte de tu viaje de",
+  "subtitleLink": "aprendizaje autorregulado",
   "breadcrumbs": {
     "learningGoals": "Metas de aprendizaje"
   },
@@ -234,6 +235,64 @@
     "selfEvaluation": {
       "saveSuccess": "Auto-evaluación guardada exitosamente",
       "saveError": "Error al guardar la auto-evaluación"
+    }
+  },
+  "help": {
+    "title": "Preguntas frecuentes",
+    "subtitle": "Encuentra respuestas a las preguntas más comunes sobre el aprendizaje autorregulado",
+    "questions": {
+      "q1": {
+        "question": "¿Qué es el aprendizaje autorregulado?",
+        "answer": "Es la capacidad de gestionar tu propio proceso de aprendizaje: estableces metas, planificas, monitoreas tu progreso, ajustas tus estrategias y reflexionas sobre lo que funciona mejor para ti. Es un enfoque activo en el que tú controlas tu aprendizaje."
+      },
+      "q2": {
+        "question": "¿Por qué es importante aprender de forma autorregulada?",
+        "answer": "Porque te permite aprender de manera más eficiente y consciente. Desarrollas autonomía, mejoras tu capacidad para resolver problemas y aumentas tu motivación y persistencia frente a retos académicos o profesionales."
+      },
+      "q3": {
+        "question": "¿Cómo me ayuda este módulo a aprender a aprender?",
+        "answer": "Este módulo fortalece tu capacidad de aprender a aprender al ofrecerte un entorno donde puedes planificar, supervisar y evaluar tu propio proceso de aprendizaje. Permite estructurar metas, establecer objetivos alcanzables y desglosar tareas, favoreciendo así la metacognición, la autorregulación y el desarrollo de estrategias efectivas para aprender de manera autónoma."
+      },
+      "q4": {
+        "question": "¿Qué diferencia hay entre una meta, un objetivo y una tarea?",
+        "answer": "Meta: es el propósito general de aprendizaje.\n\nObjetivo: es un paso intermedio concreto que te acerca a tu meta.\n\nTarea: son acciones específicas y manejables para avanzar en cada objetivo."
+      },
+      "q5": {
+        "question": "¿Cómo sé si estoy progresando bien?",
+        "answer": "Puedes revisar marcadores como:\n\n• tareas completadas,\n• objetivos alcanzados,\n• tiempo dedicado,\n• ajustes que realizas en el proceso,\n• claridad con la que puedes explicar lo que aprendiste.\n\nLa clave es observar tendencias, no perfección diaria."
+      },
+      "q6": {
+        "question": "¿Qué hago si me cuesta empezar o mantenerme constante?",
+        "answer": "Prueba estas estrategias:\n\n• Reduce tus tareas a pasos más pequeños.\n• Establece límites de tiempo breves (5–10 min).\n• Ajusta tu meta si es demasiado amplia.\n• Revisa qué obstáculos tienes y cómo puedes gestionarlos.\n• Celebra pequeños logros para mantener motivación."
+      },
+      "q7": {
+        "question": "¿Qué ocurre si necesito modificar mis metas u objetivos?",
+        "answer": "Es totalmente normal. En el aprendizaje autorregulado las metas se ajustan cuando cambian tus necesidades, prioridades o condiciones. Modificar y ajustar es parte del proceso, no un retroceso."
+      },
+      "q8": {
+        "question": "¿Debo completar todo para considerar que aprendí algo?",
+        "answer": "No. Aprender autorreguladamente significa que conoces cuándo has adquirido suficiente comprensión para avanzar."
+      },
+      "q9": {
+        "question": "¿Por qué registro mis fechas de inicio y finalización?",
+        "answer": "Para ayudarte a visualizar tu camino de aprendizaje. No sirven para juzgarte, sino para que puedas reconocer patrones, identificar cuánto tiempo te toma aprender algo y mejorar tu planificación futura."
+      },
+      "q10": {
+        "question": "¿Qué pasa si elimino una tarea u objetivo?",
+        "answer": "Tu progreso mantiene la trazabilidad histórica. Puedes ajustar lo que necesites sin perder tus hitos. Ajustar tu plan es parte natural del aprendizaje flexible y reflexivo."
+      },
+      "q11": {
+        "question": "¿Cómo puedo reflexionar sobre mi aprendizaje?",
+        "answer": "Al finalizar una tarea, este módulo te ofrece un formulario de auto-evaluación que te invita a detenerte y pensar en cómo realizaste tu trabajo. A través de preguntas breves, puedes identificar qué te funcionó, qué dificultades encontraste, qué estrategias utilizaste y qué podrías ajustar para avanzar mejor. Esta pausa reflexiva convierte cada tarea en una oportunidad para conocerte como aprendiz y mejorar tu manera de aprender en el futuro."
+      },
+      "q12": {
+        "question": "¿El aprendizaje autorregulado sirve solo para estudiar?",
+        "answer": "No. También mejora habilidades en el trabajo, proyectos personales, comunicación, productividad y crecimiento personal. Es una competencia para toda la vida."
+      },
+      "q13": {
+        "question": "¿Por qué una meta u objetivo pueden aparecer como \"completados\" aunque haya añadido nuevas tareas u objetivos después?",
+        "answer": "El sistema marca como completada una meta u objetivo la primera vez que alcanzas el conjunto de tareas u objetivos definidos inicialmente. Si luego añades nuevos elementos, la marca de completado se conserva porque corresponde al hito original. En el futuro se integrará un registro de versiones y cambios para que puedas visualizar con mayor precisión cómo evoluciona tu planificación."
+      }
     }
   }
 }
