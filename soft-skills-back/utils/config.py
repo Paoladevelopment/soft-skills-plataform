@@ -15,7 +15,14 @@ db_dir = top_dir / "db"
 sqlite_db_name = "tesis.db"
 sqlite_db_path = str(db_dir / sqlite_db_name)
 
-db_dir.mkdir(parents=True, exist_ok=True)
+# Only create db directory if not in serverless environment (Vercel)
+# In serverless, filesystem is read-only except /tmp, and we should use PostgreSQL
+try:
+    db_dir.mkdir(parents=True, exist_ok=True)
+except (OSError, PermissionError):
+    # In serverless environments (like Vercel), filesystem is read-only
+    # This is fine - we should use PostgreSQL in production anyway
+    pass
 
 class Settings(BaseSettings):
   PROJECT_NAME : str = "Soft skills backend"
