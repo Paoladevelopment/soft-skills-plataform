@@ -5,7 +5,8 @@ import {
   Stack,
   IconButton,
   Paper,
-  CircularProgress
+  CircularProgress,
+  Tooltip
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
@@ -77,28 +78,38 @@ const GoalCard = ({ goal, onDeleteClick, onCreateRoadmapClick, isConverting }: G
         <Stack direction="row" alignItems="center" spacing={1}>
           {hovered && (
             <>
-              <IconButton 
-                size="small" 
-                onClick={onCreateRoadmapClick}
-                disabled={isConverting}
-              >
-                {isConverting ? (
-                  <CircularProgress size={16} />
-                ) : (
-                  <RouteIcon fontSize="small"/>
-                )}
-              </IconButton>
-              <IconButton size="small" onClick={onDeleteClick}>
-                <DeleteIcon fontSize="small"/>
-              </IconButton>
+              {onCreateRoadmapClick && (
+                <Tooltip title={t('goalCard.convertToRoadmap')}>
+                  <IconButton 
+                    size="small" 
+                    onClick={onCreateRoadmapClick}
+                    disabled={isConverting}
+                  >
+                    {isConverting ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      <RouteIcon fontSize="small"/>
+                    )}
+                  </IconButton>
+                </Tooltip>
+              )}
+              {onDeleteClick && (
+                <Tooltip title={t('goalCard.deleteGoal')}>
+                  <IconButton size="small" onClick={onDeleteClick}>
+                    <DeleteIcon fontSize="small"/>
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
-          <IconButton 
-            size="small"
-            onClick={handleNavigate}
-          >
-            <ArrowForwardIosIcon fontSize="small" />
-          </IconButton>
+          <Tooltip title={t('goalCard.viewGoal')}>
+            <IconButton 
+              size="small"
+              onClick={handleNavigate}
+            >
+              <ArrowForwardIosIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Stack>
       </Box>
 

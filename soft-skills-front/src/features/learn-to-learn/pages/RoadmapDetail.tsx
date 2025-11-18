@@ -16,6 +16,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import PersonIcon from '@mui/icons-material/Person'
 import PublicIcon from '@mui/icons-material/Public'
 import LockIcon from '@mui/icons-material/Lock'
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { formatDateString } from '../../../utils/formatDate'
 import { useRoadmapStore } from '../store/useRoadmapStore'
@@ -36,11 +37,13 @@ const RoadmapDetail = () => {
     selectedRoadmap,
     selectedRoadmapSteps,
     isLoading,
+    isConverting,
     getRoadmapById,
     setSelectedRoadmap,
     setSelectedRoadmapSteps,
     resetEditorLayout,
-    copyRoadmap
+    copyRoadmap,
+    convertToLearningGoal
   } = useRoadmapStore()
 
   const resetRoadmapEditorState = () => {
@@ -63,6 +66,15 @@ const RoadmapDetail = () => {
     const newRoadmapId = await copyRoadmap(roadmapId)
     if (newRoadmapId) {
       navigate(`/learn/roadmaps/${newRoadmapId}`)
+    }
+  }
+
+  const handleConvertToLearningGoal = async () => {
+    if (!roadmapId || isConverting) return
+    
+    const learningGoalId = await convertToLearningGoal(roadmapId)
+    if (learningGoalId) {
+      navigate(`/learn/planner/goals/${learningGoalId}`)
     }
   }
 
@@ -98,23 +110,47 @@ const RoadmapDetail = () => {
         </Stack>
 
         {isPublicMode ? (
-          <Tooltip title={t('detail.copyRoadmapTooltip', { defaultValue: 'Creates a copy of the roadmap in your account' })}>
+          <Stack direction="row" spacing={2}>
+            <Tooltip title={t('detail.createActionablePlanTooltip')}>
+              <Button
+                variant="contained"
+                startIcon={isConverting ? <CircularProgress size={16} color="inherit" /> : <PlaylistAddCheckIcon />}
+                onClick={handleConvertToLearningGoal}
+                disabled={isConverting}
+              >
+                {t('detail.createActionablePlan')}
+              </Button>
+            </Tooltip>
+            <Tooltip title={t('detail.copyRoadmapTooltip')}>
+              <Button
+                variant="contained"
+                startIcon={<ContentCopyIcon />}
+                onClick={handleCopyRoadmap}
+              >
+                {t('detail.copyRoadmap')}
+              </Button>
+            </Tooltip>
+          </Stack>
+        ) : (
+          <Stack direction="row" spacing={2}>
+            <Tooltip title={t('detail.createActionablePlanTooltip')}>
+              <Button
+                variant="contained"
+                startIcon={isConverting ? <CircularProgress size={16} color="inherit" /> : <PlaylistAddCheckIcon />}
+                onClick={handleConvertToLearningGoal}
+                disabled={isConverting}
+              >
+                {t('detail.createActionablePlan')}
+              </Button>
+            </Tooltip>
             <Button
               variant="contained"
-              startIcon={<ContentCopyIcon />}
-              onClick={handleCopyRoadmap}
+              startIcon={<EditIcon />}
+              onClick={() => navigate(`/learn/roadmaps/${roadmapId}/edit`)}
             >
-              {t('detail.copyRoadmap')}
+              {t('detail.editRoadmap')}
             </Button>
-          </Tooltip>
-        ) : (
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            onClick={() => navigate(`/learn/roadmaps/${roadmapId}/edit`)}
-          >
-            {t('detail.editRoadmap')}
-          </Button>
+          </Stack>
         )}
       </Stack>
 

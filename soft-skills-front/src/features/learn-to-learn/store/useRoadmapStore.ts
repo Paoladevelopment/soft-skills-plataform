@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer'
 import { IRoadmapStore } from '../types/roadmap/roadmap.store'
 import { useToastStore } from '../../../store/useToastStore'
 import { LayoutNode, OnlyRoadmapMetadata, Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
-import { createRoadmap, deleteRoadmap, getRoadmapById, getUserRoadmaps, updateRoadmap, copyRoadmap } from '../api/Roadmaps'
+import { createRoadmap, deleteRoadmap, getRoadmapById, getUserRoadmaps, updateRoadmap, copyRoadmap, convertRoadmapToLearningGoal } from '../api/Roadmaps'
 import { buildRoadmapLayout } from '../utils/roadmap/roadmapLayoutGenerator'
 import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, findTaskInObjective, getOrCreateOrphanObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, removeTaskFromOrphanObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmapStructureUtils'
 import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmapGraphHelpers'
@@ -20,6 +20,7 @@ export const useRoadmapStore = create<IRoadmapStore>()(
 
       myRoadmaps: [],
       isLoading: false,
+      isConverting: false,
 
       myRoadmapsPagination: {
         total: 0,
@@ -501,6 +502,32 @@ export const useRoadmapStore = create<IRoadmapStore>()(
           }
           
           return null
+        }
+      },
+
+      convertToLearningGoal: async (id: string) => {
+        set((state) => {
+          state.isConverting = true
+        }, false, 'ROADMAP/SET_CONVERTING')
+
+        try {
+          const response = await convertRoadmapToLearningGoal(id)
+          const successMessage = response.message || i18n.t('toasts.convertToLearningGoalSuccess', { ns: 'roadmap', defaultValue: 'Roadmap converted to learning goal successfully' })
+          
+          useToastStore.getState().showToast(successMessage, 'success')
+          
+          return response.learningGoalId
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            const errorMessage = err.message || i18n.t('toasts.convertToLearningGoalError', { ns: 'roadmap', defaultValue: 'Failed to convert roadmap to learning goal' })
+            useToastStore.getState().showToast(errorMessage, 'error')
+          }
+          
+          return null
+        } finally {
+          set((state) => {
+            state.isConverting = false
+          }, false, 'ROADMAP/SET_CONVERTING_COMPLETE')
         }
       },
     })),
