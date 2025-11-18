@@ -51,3 +51,7 @@ tests/
 .env.local
 .env.*.local
 
+soft-skills-back/pyproject.toml
+soft-skills-back/poetry.lock
+
+
