@@ -1,95 +1,44 @@
-alembic==1.14.1 ; python_version >= "3.11" and python_version < "4.0"
-annotated-types==0.6.0 ; python_version >= "3.11" and python_version < "4.0"
-anyio==4.2.0 ; python_version >= "3.11" and python_version < "4.0"
-bcrypt==4.0.1 ; python_version >= "3.11" and python_version < "4.0"
-certifi==2023.11.17 ; python_version >= "3.11" and python_version < "4.0"
-cffi==1.17.1 ; python_version >= "3.11" and python_version < "4.0" and platform_python_implementation != "PyPy"
-charset-normalizer==3.3.2 ; python_version >= "3.11" and python_version < "4.0"
-click==8.1.7 ; python_version >= "3.11" and python_version < "4.0"
-colorama==0.4.6 ; python_version >= "3.11" and python_version < "4.0" and (platform_system == "Windows" or sys_platform == "win32")
-cryptography==44.0.1 ; python_version >= "3.11" and python_version < "4.0"
-defusedxml==0.7.1 ; python_version >= "3.11" and python_version < "4.0"
-deprecation==2.1.0 ; python_version >= "3.11" and python_version < "4.0"
-distro==1.9.0 ; python_version >= "3.11" and python_version < "4.0"
-dnspython==2.7.0 ; python_version >= "3.11" and python_version < "4.0"
-ecdsa==0.19.0 ; python_version >= "3.11" and python_version < "4.0"
-elevenlabs==1.59.0 ; python_version >= "3.11" and python_version < "4.0"
-email-validator==2.2.0 ; python_version >= "3.11" and python_version < "4.0"
-fastapi==0.108.0 ; python_version >= "3.11" and python_version < "4.0"
-greenlet==3.0.3 ; python_version >= "3.11" and python_version < "4.0" and (platform_machine == "aarch64" or platform_machine == "ppc64le" or platform_machine == "x86_64" or platform_machine == "amd64" or platform_machine == "AMD64" or platform_machine == "win32" or platform_machine == "WIN32")
-gunicorn==22.0.0 ; python_version >= "3.11" and python_version < "4.0"
-h11==0.14.0 ; python_version >= "3.11" and python_version < "4.0"
-h2==4.3.0 ; python_version >= "3.11" and python_version < "4.0"
-hpack==4.1.0 ; python_version >= "3.11" and python_version < "4.0"
-httpcore==1.0.2 ; python_version >= "3.11" and python_version < "4.0"
-httpie==3.2.2 ; python_version >= "3.11" and python_version < "4.0"
-httpx==0.26.0 ; python_version >= "3.11" and python_version < "4.0"
-hyperframe==6.1.0 ; python_version >= "3.11" and python_version < "4.0"
-idna==3.6 ; python_version >= "3.11" and python_version < "4.0"
-isort==6.0.1 ; python_version >= "3.11" and python_version < "4.0"
-jiter==0.11.1 ; python_version >= "3.11" and python_version < "4.0"
-jsonpatch==1.33 ; python_version >= "3.11" and python_version < "4.0"
-jsonpointer==3.0.0 ; python_version >= "3.11" and python_version < "4.0"
-langchain-core==1.0.1 ; python_version >= "3.11" and python_version < "4.0"
-langchain-openai==1.0.1 ; python_version >= "3.11" and python_version < "4.0"
-langchain==1.0.2 ; python_version >= "3.11" and python_version < "4.0"
-langgraph-checkpoint==3.0.0 ; python_version >= "3.11" and python_version < "4.0"
-langgraph-prebuilt==1.0.1 ; python_version >= "3.11" and python_version < "4.0"
-langgraph-sdk==0.2.9 ; python_version >= "3.11" and python_version < "4.0"
-langgraph==1.0.1 ; python_version >= "3.11" and python_version < "4.0"
-langsmith==0.4.38 ; python_version >= "3.11" and python_version < "4.0"
-mako==1.3.9 ; python_version >= "3.11" and python_version < "4.0"
-markdown-it-py==3.0.0 ; python_version >= "3.11" and python_version < "4.0"
-markupsafe==3.0.2 ; python_version >= "3.11" and python_version < "4.0"
-mdurl==0.1.2 ; python_version >= "3.11" and python_version < "4.0"
-multidict==6.0.4 ; python_version >= "3.11" and python_version < "4.0"
-openai==2.6.1 ; python_version >= "3.11" and python_version < "4.0"
-orjson==3.11.4 ; python_version >= "3.11" and python_version < "4.0"
-ormsgpack==1.11.0 ; python_version >= "3.11" and python_version < "4.0"
-packaging==24.0 ; python_version >= "3.11" and python_version < "4.0"
-passlib==1.7.4 ; python_version >= "3.11" and python_version < "4.0"
-pip==23.3.2 ; python_version >= "3.11" and python_version < "4.0"
-postgrest==2.22.3 ; python_version >= "3.11" and python_version < "4.0"
-propcache==0.4.1 ; python_version >= "3.11" and python_version < "4.0"
-psycopg2-binary==2.9.9 ; python_version >= "3.11" and python_version < "4.0"
-pyasn1==0.4.8 ; python_version >= "3.11" and python_version < "4.0"
-pycparser==2.22 ; python_version >= "3.11" and python_version < "4.0" and platform_python_implementation != "PyPy"
-pydantic-core==2.41.4 ; python_version >= "3.11" and python_version < "4.0"
-pydantic-settings==2.1.0 ; python_version >= "3.11" and python_version < "4.0"
-pydantic==2.12.3 ; python_version >= "3.11" and python_version < "4.0"
-pygments==2.17.2 ; python_version >= "3.11" and python_version < "4.0"
-pyjwt==2.10.1 ; python_version >= "3.11" and python_version < "4.0"
-pymongo==4.12.0 ; python_version >= "3.11" and python_version < "4.0"
-pysocks==1.7.1 ; python_version >= "3.11" and python_version < "4.0"
-python-dotenv==1.0.0 ; python_version >= "3.11" and python_version < "4.0"
-python-jose==3.4.0 ; python_version >= "3.11" and python_version < "4.0"
-python-multipart==0.0.20 ; python_version >= "3.11" and python_version < "4.0"
-pyyaml==6.0.3 ; python_version >= "3.11" and python_version < "4.0"
-realtime==2.22.3 ; python_version >= "3.11" and python_version < "4.0"
-regex==2025.10.23 ; python_version >= "3.11" and python_version < "4.0"
-requests-toolbelt==1.0.0 ; python_version >= "3.11" and python_version < "4.0"
-requests==2.31.0 ; python_version >= "3.11" and python_version < "4.0"
-rich==13.7.0 ; python_version >= "3.11" and python_version < "4.0"
-rsa==4.9 ; python_version >= "3.11" and python_version < "4.0"
-setuptools==69.0.3 ; python_version >= "3.11" and python_version < "4.0"
-six==1.17.0 ; python_version >= "3.11" and python_version < "4.0"
-sniffio==1.3.0 ; python_version >= "3.11" and python_version < "4.0"
-sqlalchemy==2.0.25 ; python_version >= "3.11" and python_version < "4.0"
-sqlmodel==0.0.14 ; python_version >= "3.11" and python_version < "4.0"
-starlette==0.32.0.post1 ; python_version >= "3.11" and python_version < "4.0"
-storage3==2.22.3 ; python_version >= "3.11" and python_version < "4.0"
-strenum==0.4.15 ; python_version >= "3.11" and python_version < "4.0"
-supabase-auth==2.22.3 ; python_version >= "3.11" and python_version < "4.0"
-supabase-functions==2.22.3 ; python_version >= "3.11" and python_version < "4.0"
-supabase==2.22.3 ; python_version >= "3.11" and python_version < "4.0"
-tenacity==9.1.2 ; python_version >= "3.11" and python_version < "4.0"
-tiktoken==0.12.0 ; python_version >= "3.11" and python_version < "4.0"
-tqdm==4.67.1 ; python_version >= "3.11" and python_version < "4.0"
-typing-extensions==4.15.0 ; python_version >= "3.11" and python_version < "4.0"
-typing-inspection==0.4.2 ; python_version >= "3.11" and python_version < "4.0"
-urllib3==2.1.0 ; python_version >= "3.11" and python_version < "4.0"
-uvicorn==0.25.0 ; python_version >= "3.11" and python_version < "4.0"
-websockets==15.0.1 ; python_version >= "3.11" and python_version < "4.0"
-xxhash==3.6.0 ; python_version >= "3.11" and python_version < "4.0"
-yarl==1.22.0 ; python_version >= "3.11" and python_version < "4.0"
-zstandard==0.25.0 ; python_version >= "3.11" and python_version < "4.0"
+# Core FastAPI dependencies
+fastapi==0.108.0
+uvicorn==0.25.0
+starlette==0.32.0.post1
+pydantic==2.12.3
+pydantic-settings==2.1.0
+pydantic-core==2.41.4
+
+# Database
+sqlmodel==0.0.14
+SQLAlchemy==2.0.25
+psycopg2-binary==2.9.9
+alembic==1.14.1
+
+# Authentication and security
+python-jose[cryptography]==3.4.0
+python-multipart==0.0.20
+bcrypt==4.0.1
+passlib==1.7.4
+
+# HTTP and networking
+httpx==0.26.0
+httpcore==1.0.2
+requests==2.31.0
+
+# MongoDB
+pymongo==4.12.0
+
+# Environment and config
+python-dotenv==1.0.0
+
+# Email validation
+email-validator==2.2.0
+
+# LLM and AI services
+langchain==1.0.2
+langchain-openai==1.0.1
+langchain-core==1.0.1
+elevenlabs==1.59.0
+supabase==2.22.3
+
+# Utilities
+orjson==3.11.4
+PyYAML==6.0.3
