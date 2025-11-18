@@ -2,14 +2,22 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from router import api as api_routes
 from utils.config import settings
 from utils.logger import logger_config
 
-load_dotenv()
+# Try to import load_dotenv, but make it optional
+try:
+    from dotenv import load_dotenv
+except ModuleNotFoundError:
+    load_dotenv = None
+
+# Load environment variables from a .env file, if available and in local environment
+# In production (Vercel), rely only on environment variables provided by the platform
+if load_dotenv is not None and os.getenv("ENV", "local") == "local":
+    load_dotenv()
 
 logging.basicConfig(
     level=logging.INFO,  

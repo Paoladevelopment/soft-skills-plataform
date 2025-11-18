@@ -3,11 +3,18 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
-from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
-#Load environment variables from a .env file, if available
-load_dotenv()
+# Try to import load_dotenv, but make it optional
+try:
+    from dotenv import load_dotenv
+except ModuleNotFoundError:
+    load_dotenv = None
+
+# Load environment variables from a .env file, if available and in local environment
+# In production (Vercel), rely only on environment variables provided by the platform
+if load_dotenv is not None and os.getenv("ENV", "local") == "local":
+    load_dotenv()
 
 #Define the directory and default SQLite database path
 top_dir = Path(__file__).resolve().parents[0]

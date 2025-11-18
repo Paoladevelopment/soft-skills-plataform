@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict, List, Optional
 
 from pymongo import MongoClient
@@ -8,13 +9,19 @@ from pymongo.database import Database
 class MongoDB:
     def __init__(self):
         try:
-            from os import getenv
+            # Try to import load_dotenv, but make it optional
+            try:
+                from dotenv import load_dotenv
+            except ModuleNotFoundError:
+                load_dotenv = None
 
-            from dotenv import load_dotenv
-            
-            load_dotenv()
-            mongo_uri = getenv("MONGODB_URI", "mongodb://localhost:27017")
-            db_name = getenv("MONGODB_DB_NAME", "soft_skills")
+            # Load environment variables from a .env file, if available and in local environment
+            # In production (Vercel), rely only on environment variables provided by the platform
+            if load_dotenv is not None and os.getenv("ENV", "local") == "local":
+                load_dotenv()
+
+            mongo_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+            db_name = os.getenv("MONGODB_DB_NAME", "soft_skills")
             
             self._client = MongoClient(mongo_uri)
             self._db = self._client[db_name]
