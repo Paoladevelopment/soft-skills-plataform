@@ -1,0 +1,53 @@
+# Python development files
+*.log
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# Documentation
+*.md
+!README.md
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+db/
+
+# Environment files (use Vercel dashboard instead)
+.env
+.env.local
+.env.*.local
+
+# Poetry files (not needed in Vercel, using requirements.txt)
+poetry.lock
+pyproject.toml
+
+# Other project directories
+../soft-skills-front/
+../databases/
+../documents/
+../godot-project/
+../latex-project/
+../tests/
+
