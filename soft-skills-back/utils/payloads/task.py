@@ -34,5 +34,6 @@ TASK_READ_EXAMPLE = {
 
 TASK_UPDATE_EXAMPLE = {
     "task_type": "research",
-    "estimated_seconds": 7200  # 120 minutes in seconds
+    "estimated_seconds": 7200,  # 120 minutes in seconds
+    "actual_seconds": 7800  # 130 minutes in seconds
 }

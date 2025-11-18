@@ -20,7 +20,7 @@ export async function createTask(payload: CreateTaskPayload): Promise<Task> {
 
 export async function getTaskById(id: string): Promise<TaskResponse> {
   const response = await fetchWithAuth(api.tasks.byId(id))
-  return response.data
+  return response
 }
 
 export async function updateTask(id: string, payload: UpdateTaskPayload): Promise<TaskResponse> {

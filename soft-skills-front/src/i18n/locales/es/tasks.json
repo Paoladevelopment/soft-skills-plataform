@@ -1,0 +1,101 @@
+{
+  "detail": {
+    "title": "Título",
+    "description": "Descripción",
+    "priority": "Prioridad",
+    "saving": "Guardando...",
+    "actualPomodoros": "Tiempo tomado",
+    "dates": {
+      "title": "Fechas",
+      "createdAt": "Creado el",
+      "updatedAt": "Actualizado el",
+      "startedAt": "Iniciado el",
+      "completedAt": "Completado el"
+    },
+    "notFound": {
+      "title": "Tarea no encontrada",
+      "description": "La tarea que buscas no existe o ha sido eliminada.",
+      "button": "Volver al objetivo"
+    }
+  },
+  "priority": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta"
+  },
+  "taskTypes": {
+    "reading": "Lectura",
+    "practice": "Práctica",
+    "writing": "Escritura",
+    "research": "Investigación",
+    "listening": "Escucha",
+    "discussion": "Discusión",
+    "problem_solving": "Resolución de problemas",
+    "experimenting": "Experimentación",
+    "teaching": "Enseñanza",
+    "other": "Otro"
+  },
+  "resources": {
+    "title": "Recursos",
+    "addButton": "Agregar recurso",
+    "addModal": {
+      "title": "Agregar nuevo recurso",
+      "subtitle": "Añade un recurso útil para esta tarea",
+      "typeLabel": "Tipo",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Nombre del recurso",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://...",
+      "addButton": "Agregar",
+      "validation": {
+        "typeRequired": "El tipo es requerido",
+        "titleRequired": "El título es requerido",
+        "urlRequired": "La URL es requerida",
+        "urlInvalid": "Por favor ingresa una URL válida"
+      }
+    },
+    "types": {
+      "web": "Web",
+      "video": "Video",
+      "document": "Documento",
+      "book": "Libro",
+      "article": "Artículo",
+      "other": "Otro"
+    },
+    "createSuccess": "Recurso creado correctamente",
+    "createError": "Error al crear el recurso",
+    "updateSuccess": "Recurso actualizado correctamente",
+    "updateError": "Error al actualizar el recurso",
+    "deleteSuccess": "Recurso eliminado correctamente",
+    "deleteError": "Error al eliminar el recurso",
+    "deleteConfirm": "¿Eliminar recurso?",
+    "deleteMessage": "¿Estás seguro de que deseas eliminar este recurso? Esta acción no se puede deshacer.",
+    "empty": "Aún no se han agregado recursos"
+  },
+  "notes": {
+    "title": "Notas",
+    "addButton": "Agregar nota",
+    "addModal": {
+      "title": "Agregar nueva nota",
+      "subtitle": "Escribe una nota para recordar información importante sobre esta tarea",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Título de la nota",
+      "contentLabel": "Contenido",
+      "contentPlaceholder": "Escribe tu nota aquí...",
+      "addButton": "Agregar",
+      "validation": {
+        "titleRequired": "El título es requerido",
+        "contentRequired": "El contenido es requerido"
+      }
+    },
+    "createSuccess": "Nota creada correctamente",
+    "createError": "Error al crear la nota",
+    "updateSuccess": "Nota actualizada correctamente",
+    "updateError": "Error al actualizar la nota",
+    "deleteSuccess": "Nota eliminada correctamente",
+    "deleteError": "Error al eliminar la nota",
+    "deleteConfirm": "¿Eliminar nota?",
+    "deleteMessage": "¿Estás seguro de que deseas eliminar esta nota? Esta acción no se puede deshacer.",
+    "empty": "Aún no se han agregado notas"
+  }
+}

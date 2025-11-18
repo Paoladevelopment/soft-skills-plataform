@@ -44,6 +44,10 @@ export const api = {
     byId: (id: string) => `${BASE_URL}/tasks/${id}`,
     update: (id: string) => `${BASE_URL}/tasks/${id}`,
     delete: (id: string) => `${BASE_URL}/tasks/${id}`,
+    resources: (taskId: string) => `${BASE_URL}/tasks/${taskId}/resources`,
+    resourceById: (taskId: string, resourceId: string) => `${BASE_URL}/tasks/${taskId}/resources/${resourceId}`,
+    notes: (taskId: string) => `${BASE_URL}/tasks/${taskId}/notes`,
+    noteById: (taskId: string, noteId: string) => `${BASE_URL}/tasks/${taskId}/notes/${noteId}`,
   },
   selfEvaluations: {
     create: `${BASE_URL}/self-evaluations`,

@@ -153,7 +153,6 @@ class TaskService:
             
             task_data.pop('pomodoro_length_seconds_snapshot', None)
             task_data.pop('estimated_pomodoros_snapshot', None)
-            task_data.pop('actual_seconds', None) 
             task_data.pop('status', None) 
             
             for key, value in task_data.items():
