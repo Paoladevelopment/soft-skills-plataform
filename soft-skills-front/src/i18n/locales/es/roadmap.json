@@ -41,8 +41,9 @@
   "detail": {
     "backToRoadmaps": "Volver a planes de aprendizaje",
     "backToExplore": "Volver a explorar",
-    "editRoadmap": "Editar plan de aprendizaje",
-    "copyRoadmap": "Copiar plan de aprendizaje",
+    "editRoadmap": "Editar",
+    "copyRoadmap": "Copiar",
+    "copyRoadmapTooltip": "Crea una copia del roadmap en tu cuenta",
     "createdBy": "Creado por",
     "unknownAuthor": "Autor desconocido",
     "learningSteps": "pasos de aprendizaje",
@@ -97,7 +98,7 @@
     },
     "topbar": {
       "untitled": "Plan de aprendizaje sin título",
-      "saveRoadmap": "Guardar plan de aprendizaje",
+      "saveRoadmap": "Guardar",
       "noDescription": "Aún no se ha agregado una descripción.",
       "visibility": {
         "onlyMe": "Solo visible para mí",
@@ -112,9 +113,13 @@
         "back": "Volver",
         "edit": "Editar plan de aprendizaje",
         "menu": "Más opciones",
-        "sharing": "Configurar compartir",
+        "sharing": "Opciones de acceso",
         "save": "Guardar plan de aprendizaje",
         "deleteNode": "Eliminar nodo"
+      },
+      "deleteModal": {
+        "title": "¿Eliminar roadmap?",
+        "message": "¿Estás seguro de que deseas eliminar \"{{title}}\"? Esta acción no se puede deshacer."
       }
     },
     "form": {
@@ -134,14 +139,14 @@
       }
     },
     "sharing": {
-      "title": "Actualizar configuración de compartir",
+      "title": "Opciones de acceso",
       "instruction": "Elige y modifica quién puede acceder a este plan de aprendizaje.",
       "onlyMe": "Solo yo",
       "public": "Público",
       "onlyYouAccess": "Solo tú podrás acceder.",
       "anyoneWithLink": "Cualquiera con el enlace puede acceder.",
       "close": "Cerrar",
-      "update": "Actualizar configuración de compartir"
+      "update": "Guardar cambios"
     }
   },
   "explore": {

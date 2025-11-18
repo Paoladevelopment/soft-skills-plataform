@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer'
 import { IRoadmapStore } from '../types/roadmap/roadmap.store'
 import { useToastStore } from '../../../store/useToastStore'
 import { LayoutNode, OnlyRoadmapMetadata, Roadmap, RoadmapSummary } from '../types/roadmap/roadmap.models'
-import { createRoadmap, deleteRoadmap, getRoadmapById, getUserRoadmaps, updateRoadmap } from '../api/Roadmaps'
+import { createRoadmap, deleteRoadmap, getRoadmapById, getUserRoadmaps, updateRoadmap, copyRoadmap } from '../api/Roadmaps'
 import { buildRoadmapLayout } from '../utils/roadmap/roadmapLayoutGenerator'
 import { addTaskToObjective, countAllTasks, findObjectiveById, findTaskById, findTaskInObjective, getOrCreateOrphanObjective, insertObjectiveRelativeToTarget, reindexObjectives, removeObjectiveById, removeTaskFromObjective, removeTaskFromOrphanObjective, updateObjectiveTitle, updateTaskTitle } from '../utils/roadmap/roadmapStructureUtils'
 import { createObjectiveFromNode, createTaskFromNode, findEdgeByNodeId, findNodeById, findNodeIndexById, getNodeTitle, removeEdgesByIds, removeEdgesConnectedToNode, removeNodeById, removeNodesByIds, updateObjectiveTaskCount } from '../utils/roadmap/roadmapGraphHelpers'
@@ -484,6 +484,24 @@ export const useRoadmapStore = create<IRoadmapStore>()(
       
           Object.assign(task, updates)
         }, false, 'ROADMAP/UPDATE_TASK_CONTENT')
+      },
+
+      copyRoadmap: async (id: string) => {
+        try {
+          const response = await copyRoadmap(id)
+          const successMessage = response.message || i18n.t('toasts.copySuccess', { ns: 'roadmap', defaultValue: 'Roadmap copied successfully' })
+          
+          useToastStore.getState().showToast(successMessage, 'success')
+          
+          return response.roadmapId
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            const errorMessage = err.message || i18n.t('toasts.copyError', { ns: 'roadmap', defaultValue: 'Failed to copy roadmap' })
+            useToastStore.getState().showToast(errorMessage, 'error')
+          }
+          
+          return null
+        }
       },
     })),
 

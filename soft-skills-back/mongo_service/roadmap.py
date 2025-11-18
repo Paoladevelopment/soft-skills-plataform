@@ -212,3 +212,35 @@ class RoadmapMongoService:
         
         except Exception as err:
             handle_db_error(err, "update_roadmap")
+
+    def copy_roadmap(self, roadmap_id: str, user_id: str, session: Session) -> str:
+        """Copy an existing roadmap and associate it with the requesting user"""
+        try:
+            original_roadmap = self.get_roadmap_by_id(roadmap_id)
+            
+            user = self.user_service.get_user(UUID(user_id), session)
+            username = user.username
+            
+            current_time = datetime.now(timezone.utc).isoformat()
+            roadmap_data = original_roadmap.model_dump(mode="json", exclude={"roadmap_id"})
+            
+            roadmap_data.update({
+                "user_id": user_id,
+                "username": username,
+                "visibility": Visibility.private,
+                "created_at": current_time,
+                "updated_at": current_time,
+            })
+            
+            roadmap_data.pop("roadmap_id", None)
+            
+            result = self.mongodb.insert_one(self.collection_name, roadmap_data)
+            new_roadmap_id = str(result.inserted_id)
+            
+            return new_roadmap_id
+        
+        except APIException as api_error:
+            raise api_error
+        
+        except Exception as err:
+            handle_db_error(err, "copy_roadmap")

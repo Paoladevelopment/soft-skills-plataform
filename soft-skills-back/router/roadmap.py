@@ -134,6 +134,32 @@ async def update_roadmap(
         raise_http_exception(err)
 
 
+@router.post(
+    "/{id}/copy",
+    summary="Copiar plan de aprendizaje",
+    status_code=status.HTTP_201_CREATED,
+)
+def copy_roadmap(
+    id: str,
+    token_data: TokenData = Depends(decode_jwt_token),
+    session: Session = Depends(get_session),
+):
+    try:
+        user_id = str(token_data.user_id)
+        new_roadmap_id = roadmap_service.copy_roadmap(id, user_id, session)
+
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={
+                "message": "Plan de aprendizaje copiado correctamente",
+                "roadmap_id": new_roadmap_id
+            }
+        )
+
+    except APIException as err:
+        raise_http_exception(err)
+
+
 @router.delete(
     "/{id}",
     summary="Eliminar plan de aprendizaje por ID"

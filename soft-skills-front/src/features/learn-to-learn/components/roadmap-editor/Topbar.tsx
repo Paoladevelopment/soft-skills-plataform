@@ -23,9 +23,11 @@ type TopbarProps = {
   onEditMetaClick: () => void
   onClickSharing: () => void
   onBackClick: () => void
+  onDuplicateClick?: () => void
+  onDeleteClick?: () => void
 }
 
-const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickSharing, onBackClick }: TopbarProps) => {
+const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickSharing, onBackClick, onDuplicateClick, onDeleteClick }: TopbarProps) => {
   const { t } = useTranslation('roadmap')
   const {
     updateRoadmap,
@@ -129,11 +131,18 @@ const Topbar = ({ title, description = '', visibility, onEditMetaClick, onClickS
               },
             }}
           >
-            <MenuItem>
+            <MenuItem onClick={() => {
+              onDuplicateClick?.()
+              handleMenuClose()
+            }}>
               <Copy size={16} strokeWidth={1.5} />
               {t('editor.topbar.menu.duplicate')}
             </MenuItem>
             <MenuItem 
+              onClick={() => {
+                onDeleteClick?.()
+                handleMenuClose()
+              }}
               sx={{ 
                 color: "#E53935",
                 "& svg": {

@@ -41,8 +41,9 @@
   "detail": {
     "backToRoadmaps": "Back to roadmaps",
     "backToExplore": "Back to explore",
-    "editRoadmap": "Edit Roadmap",
-    "copyRoadmap": "Copy Roadmap",
+    "editRoadmap": "Edit",
+    "copyRoadmap": "Copy",
+    "copyRoadmapTooltip": "Creates a copy of the roadmap in your account",
     "createdBy": "Created by",
     "unknownAuthor": "Unknown Author",
     "learningSteps": "learning steps",
@@ -97,7 +98,7 @@
     },
     "topbar": {
       "untitled": "Untitled Roadmap",
-      "saveRoadmap": "Save Roadmap",
+      "saveRoadmap": "Save",
       "noDescription": "No description has been added yet.",
       "visibility": {
         "onlyMe": "Only visible to me",
@@ -112,9 +113,13 @@
         "back": "Back",
         "edit": "Edit roadmap",
         "menu": "More options",
-        "sharing": "Sharing settings",
+        "sharing": "Access options",
         "save": "Save roadmap",
         "deleteNode": "Delete node"
+      },
+      "deleteModal": {
+        "title": "Delete roadmap?",
+        "message": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone."
       }
     },
     "form": {
@@ -134,14 +139,14 @@
       }
     },
     "sharing": {
-      "title": "Update Sharing Settings",
+      "title": "Access options",
       "instruction": "Pick and modify who can access this roadmap.",
       "onlyMe": "Only me",
       "public": "Public",
       "onlyYouAccess": "Only you will be able to access.",
       "anyoneWithLink": "Anyone with the link can access.",
       "close": "Close",
-      "update": "Update Sharing Settings"
+      "update": "Save changes"
     }
   },
   "explore": {

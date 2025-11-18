@@ -18,3 +18,8 @@ export interface PublicRoadmapsParams {
   offset?: number
   limit?: number
 }
+
+export interface CopyRoadmapResponse {
+  message: string
+  roadmapId: string
+}

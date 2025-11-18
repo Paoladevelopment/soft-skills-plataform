@@ -31,6 +31,7 @@ import { validateRoadmapForPublicVisibility } from '../utils/roadmap/roadmapVali
 import SidebarEditor from '../components/roadmap-editor/SidebarEditor'
 import RoadmapForm from '../components/roadmap/RoadmapForm'
 import UpdateSharingSettingsModal from '../components/roadmap/UpdateSharingSettingsModal'
+import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal'
 
 const RoadmapEditorContent = () => {
   const { t } = useTranslation('roadmap')
@@ -43,7 +44,9 @@ const RoadmapEditorContent = () => {
     addEditorNode,
     addEditorEdge,
     updateRoadmapAfterConnection,
-    updateRoadmapMetadata
+    updateRoadmapMetadata,
+    copyRoadmap,
+    deleteRoadmap
   } = useRoadmapStore()
 
   const navigate = useNavigate()
@@ -58,6 +61,7 @@ const RoadmapEditorContent = () => {
 
   const [isEditMetaOpen, setEditMetaOpen] = useState(false)
   const [isSharingSettingsOpen, setSharingSettingsOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const handleOpenEditMeta = () => setEditMetaOpen(true)
   const handleCloseEditMeta = () => setEditMetaOpen(false)
@@ -189,6 +193,31 @@ const RoadmapEditorContent = () => {
     navigate(`/learn/roadmaps/${selectedRoadmap.roadmapId}`)
   }
 
+  const handleDuplicateRoadmap = async () => {
+    if (!selectedRoadmap) return
+
+    const newRoadmapId = await copyRoadmap(selectedRoadmap.roadmapId)
+    if (newRoadmapId) {
+      navigate(`/learn/roadmaps/${newRoadmapId}/edit`)
+    }
+  }
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!selectedRoadmap) return
+
+    await deleteRoadmap(selectedRoadmap.roadmapId)
+    setIsDeleteModalOpen(false)
+    navigate('/learn/roadmaps')
+  }
+
   return (
     <Box display="flex" flexDirection="column" height="100vh">
       <Topbar
@@ -198,6 +227,8 @@ const RoadmapEditorContent = () => {
         onEditMetaClick={handleOpenEditMeta}
         onClickSharing={handleOpenSharingSettings}
         onBackClick={handleBackToRoadmapDetail}
+        onDuplicateClick={handleDuplicateRoadmap}
+        onDeleteClick={handleOpenDeleteModal}
       />
 
       <Box display="flex" flexGrow={1} overflow="hidden">
@@ -248,6 +279,19 @@ const RoadmapEditorContent = () => {
             visibility={selectedRoadmap.visibility}
             onClose={handleCloseSharingSettings}
             onSubmit={handleUpdateVisibility}
+          />
+        )}
+
+        {selectedRoadmap && (
+          <ConfirmDeleteModal
+            open={isDeleteModalOpen}
+            onClose={handleCloseDeleteModal}
+            onConfirm={handleConfirmDelete}
+            title={t('editor.topbar.deleteModal.title', { defaultValue: 'Delete roadmap?' })}
+            message={t('editor.topbar.deleteModal.message', { 
+              defaultValue: 'Are you sure you want to delete this roadmap? This action cannot be undone.',
+              title: selectedRoadmap.title 
+            })}
           />
         )}
       </Box>

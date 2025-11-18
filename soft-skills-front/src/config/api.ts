@@ -29,7 +29,8 @@ export const api = {
     create: `${BASE_URL}/roadmap`,
     getMine: `${BASE_URL}/roadmap/mine`,
     getPublic: `${BASE_URL}/roadmap/public`,
-    byId: (id: string) => `${BASE_URL}/roadmap/${id}`
+    byId: (id: string) => `${BASE_URL}/roadmap/${id}`,
+    copy: (id: string) => `${BASE_URL}/roadmap/${id}/copy`
   },
   chatbot: {
     chat: (threadId?: string) =>

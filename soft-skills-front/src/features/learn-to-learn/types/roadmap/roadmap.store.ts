@@ -52,6 +52,7 @@ export interface IRoadmapStore {
   createRoadmap: (title: string, description: string) => Promise<string | null>
   updateRoadmap: (id: string) => Promise<void>
   updateRoadmapMetadata: (id: string, updates: OnlyRoadmapMetadata) => Promise<void>
+  copyRoadmap: (id: string) => Promise<string | null>
 
   updateRoadmapAfterConnection: (connection: Connection) => void
 
