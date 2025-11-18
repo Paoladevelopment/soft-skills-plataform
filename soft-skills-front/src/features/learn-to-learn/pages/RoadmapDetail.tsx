@@ -4,7 +4,8 @@ import {
   Stack,
   Typography,
   IconButton,
-  CircularProgress
+  CircularProgress,
+  Tooltip
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -38,7 +39,8 @@ const RoadmapDetail = () => {
     getRoadmapById,
     setSelectedRoadmap,
     setSelectedRoadmapSteps,
-    resetEditorLayout
+    resetEditorLayout,
+    copyRoadmap
   } = useRoadmapStore()
 
   const resetRoadmapEditorState = () => {
@@ -55,8 +57,13 @@ const RoadmapDetail = () => {
     }
   }
 
-  const handleCopyRoadmap = () => {
-    console.log('Copy roadmap:', roadmapId)
+  const handleCopyRoadmap = async () => {
+    if (!roadmapId) return
+    
+    const newRoadmapId = await copyRoadmap(roadmapId)
+    if (newRoadmapId) {
+      navigate(`/learn/roadmaps/${newRoadmapId}`)
+    }
   }
 
   useEffect(() => {
@@ -91,13 +98,15 @@ const RoadmapDetail = () => {
         </Stack>
 
         {isPublicMode ? (
-          <Button
-            variant="contained"
-            startIcon={<ContentCopyIcon />}
-            onClick={handleCopyRoadmap}
-          >
-            {t('detail.copyRoadmap')}
-          </Button>
+          <Tooltip title={t('detail.copyRoadmapTooltip', { defaultValue: 'Creates a copy of the roadmap in your account' })}>
+            <Button
+              variant="contained"
+              startIcon={<ContentCopyIcon />}
+              onClick={handleCopyRoadmap}
+            >
+              {t('detail.copyRoadmap')}
+            </Button>
+          </Tooltip>
         ) : (
           <Button
             variant="contained"
