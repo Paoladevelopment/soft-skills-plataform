@@ -1,0 +1,101 @@
+{
+  "detail": {
+    "title": "Title",
+    "description": "Description",
+    "priority": "Priority",
+    "saving": "Saving...",
+    "actualPomodoros": "Time taken",
+    "dates": {
+      "title": "Dates",
+      "createdAt": "Created at",
+      "updatedAt": "Updated at",
+      "startedAt": "Started at",
+      "completedAt": "Completed at"
+    },
+    "notFound": {
+      "title": "Task not found",
+      "description": "The task you're looking for doesn't exist or may have been removed.",
+      "button": "Back to objective"
+    }
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "taskTypes": {
+    "reading": "Reading",
+    "practice": "Practice",
+    "writing": "Writing",
+    "research": "Research",
+    "listening": "Listening",
+    "discussion": "Discussion",
+    "problem_solving": "Problem Solving",
+    "experimenting": "Experimenting",
+    "teaching": "Teaching",
+    "other": "Other"
+  },
+  "resources": {
+    "title": "Resources",
+    "addButton": "Add resource",
+    "addModal": {
+      "title": "Add new resource",
+      "subtitle": "Add a useful resource for this task",
+      "typeLabel": "Type",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Resource name",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://...",
+      "addButton": "Add",
+      "validation": {
+        "typeRequired": "Type is required",
+        "titleRequired": "Title is required",
+        "urlRequired": "URL is required",
+        "urlInvalid": "Please enter a valid URL"
+      }
+    },
+    "types": {
+      "web": "Web",
+      "video": "Video",
+      "document": "Document",
+      "book": "Book",
+      "article": "Article",
+      "other": "Other"
+    },
+    "createSuccess": "Resource created successfully",
+    "createError": "Failed to create resource",
+    "updateSuccess": "Resource updated successfully",
+    "updateError": "Failed to update resource",
+    "deleteSuccess": "Resource deleted successfully",
+    "deleteError": "Failed to delete resource",
+    "deleteConfirm": "Delete resource?",
+    "deleteMessage": "Are you sure you want to delete this resource? This action cannot be undone.",
+    "empty": "No resources added yet"
+  },
+  "notes": {
+    "title": "Notes",
+    "addButton": "Add note",
+    "addModal": {
+      "title": "Add new note",
+      "subtitle": "Write a note to remember important information about this task",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Note title",
+      "contentLabel": "Content",
+      "contentPlaceholder": "Write your note here...",
+      "addButton": "Add",
+      "validation": {
+        "titleRequired": "Title is required",
+        "contentRequired": "Content is required"
+      }
+    },
+    "createSuccess": "Note created successfully",
+    "createError": "Failed to create note",
+    "updateSuccess": "Note updated successfully",
+    "updateError": "Failed to update note",
+    "deleteSuccess": "Note deleted successfully",
+    "deleteError": "Failed to delete note",
+    "deleteConfirm": "Delete note?",
+    "deleteMessage": "Are you sure you want to delete this note? This action cannot be undone.",
+    "empty": "No notes added yet"
+  }
+}

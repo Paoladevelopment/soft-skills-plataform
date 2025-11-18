@@ -11,7 +11,9 @@ export const useTask = (taskId: string | null) => {
     queryKey: ['tasks', 'detail', taskId],
     queryFn: async () => {
       if (!taskId) throw new Error('Task ID is required')
-      return await getTaskById(taskId)
+      const { data: task } = await getTaskById(taskId)
+    
+      return task
     },
     enabled: !!taskId,
     staleTime: 5 * 60 * 1000,

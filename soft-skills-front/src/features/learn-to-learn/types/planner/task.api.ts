@@ -22,6 +22,7 @@ export interface UpdateTaskPayload {
   due_date?: string
   is_optional?: boolean
   estimated_seconds?: number
+  actual_seconds?: number
   pomodoro_length_seconds_snapshot?: number
 }
 

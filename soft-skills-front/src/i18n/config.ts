@@ -16,6 +16,8 @@ import authEs from './locales/es/auth.json'
 import authEn from './locales/en/auth.json'
 import pomodoroEs from './locales/es/pomodoro.json'
 import pomodoroEn from './locales/en/pomodoro.json'
+import tasksEs from './locales/es/tasks.json'
+import tasksEn from './locales/en/tasks.json'
 
 const getStoredLanguage = (): string => {
   if (typeof window !== 'undefined') {
@@ -40,6 +42,7 @@ i18n
         game: gameEs,
         auth: authEs,
         pomodoro: pomodoroEs,
+        tasks: tasksEs,
       },
       en: {
         common: commonEn,
@@ -50,12 +53,13 @@ i18n
         game: gameEn,
         auth: authEn,
         pomodoro: pomodoroEn,
+        tasks: tasksEn,
       },
     },
     lng: getStoredLanguage(),
     fallbackLng: 'es',
     defaultNS: 'common',
-    ns: ['common', 'reports', 'roadmap', 'goals', 'dashboard', 'game', 'auth', 'pomodoro'],
+    ns: ['common', 'reports', 'roadmap', 'goals', 'dashboard', 'game', 'auth', 'pomodoro', 'tasks'],
     interpolation: {
       escapeValue: false,
     },

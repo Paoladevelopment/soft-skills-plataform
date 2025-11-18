@@ -82,6 +82,7 @@ class TaskUpdate(SQLModel):
     is_optional: bool | None = Field(default=None, description="Indica si la tarea es opcional")
     
     estimated_seconds: int | None = Field(default=None, description="Tiempo que tomará completar la tarea en segundos", ge=0)
+    actual_seconds: int | None = Field(default=None, description="Tiempo real que tomó completar la tarea en segundos", ge=0)
 
     @field_serializer("due_date", when_used="json")
     def serialize_due_date(self, v: datetime | None) -> str | None:

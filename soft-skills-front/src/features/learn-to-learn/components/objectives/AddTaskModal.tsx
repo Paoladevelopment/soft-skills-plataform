@@ -56,7 +56,7 @@ interface AddTaskModalProps {
 }
 
 const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalProps) => {
-  const { t } = useTranslation('goals')
+  const { t } = useTranslation(['goals', 'tasks'])
   const { isConfigured, effectivePomodoroLengthMinutes, fetchPomodoroPreferences } = usePomodoroPreferencesStore()
   const addTaskSchema = createAddTaskSchema(t)
   
@@ -180,16 +180,16 @@ const AddTaskModal = ({ open, onClose, onSubmit, defaultValues }: AddTaskModalPr
                   value={field.value ?? TaskType.Other}
                   onChange={field.onChange}
                 >
-                  <MenuItem value={TaskType.Reading}>{t('objectives.addTaskModal.taskTypes.reading')}</MenuItem>
-                  <MenuItem value={TaskType.Practice}>{t('objectives.addTaskModal.taskTypes.practice')}</MenuItem>
-                  <MenuItem value={TaskType.Writing}>{t('objectives.addTaskModal.taskTypes.writing')}</MenuItem>
-                  <MenuItem value={TaskType.Research}>{t('objectives.addTaskModal.taskTypes.research')}</MenuItem>
-                  <MenuItem value={TaskType.Listening}>{t('objectives.addTaskModal.taskTypes.listening')}</MenuItem>
-                  <MenuItem value={TaskType.Discussion}>{t('objectives.addTaskModal.taskTypes.discussion')}</MenuItem>
-                  <MenuItem value={TaskType.ProblemSolving}>{t('objectives.addTaskModal.taskTypes.problem_solving')}</MenuItem>
-                  <MenuItem value={TaskType.Experimenting}>{t('objectives.addTaskModal.taskTypes.experimenting')}</MenuItem>
-                  <MenuItem value={TaskType.Teaching}>{t('objectives.addTaskModal.taskTypes.teaching')}</MenuItem>
-                  <MenuItem value={TaskType.Other}>{t('objectives.addTaskModal.taskTypes.other')}</MenuItem>
+                  <MenuItem value={TaskType.Reading}>{t('tasks:taskTypes.reading')}</MenuItem>
+                  <MenuItem value={TaskType.Practice}>{t('tasks:taskTypes.practice')}</MenuItem>
+                  <MenuItem value={TaskType.Writing}>{t('tasks:taskTypes.writing')}</MenuItem>
+                  <MenuItem value={TaskType.Research}>{t('tasks:taskTypes.research')}</MenuItem>
+                  <MenuItem value={TaskType.Listening}>{t('tasks:taskTypes.listening')}</MenuItem>
+                  <MenuItem value={TaskType.Discussion}>{t('tasks:taskTypes.discussion')}</MenuItem>
+                  <MenuItem value={TaskType.ProblemSolving}>{t('tasks:taskTypes.problem_solving')}</MenuItem>
+                  <MenuItem value={TaskType.Experimenting}>{t('tasks:taskTypes.experimenting')}</MenuItem>
+                  <MenuItem value={TaskType.Teaching}>{t('tasks:taskTypes.teaching')}</MenuItem>
+                  <MenuItem value={TaskType.Other}>{t('tasks:taskTypes.other')}</MenuItem>
                 </Select>
                 <FormHelperText>
                   {errors.task_type?.message}
