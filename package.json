@@ -1,0 +1,9 @@
+{
+  "name": "soft-skills-plataform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd soft-skills-front && npm install && npm run build"
+  }
+}
+
