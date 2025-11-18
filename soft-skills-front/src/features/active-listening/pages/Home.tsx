@@ -16,8 +16,8 @@ const Home = () => {
     navigate('/active-listening/game-sessions')
   }
 
-  const handleLeaderboard = () => {
-    navigate('/active-listening/leaderboard')
+  const handleHowToPlay = () => {
+    navigate('/active-listening/how-to-play')
   }
 
   return (
@@ -128,7 +128,7 @@ const Home = () => {
             </Button>
 
             <Button
-              onClick={handleLeaderboard}
+              onClick={handleHowToPlay}
               sx={{
                 width: 200,
                 fontSize: '1.2rem',
@@ -149,7 +149,7 @@ const Home = () => {
                 },
               }}
             >
-              {t('home.leaderboard')}
+              {t('home.howToPlay')}
             </Button>
           </Stack>
         </Stack>

@@ -9,6 +9,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  Tooltip,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useGameSessionDraftStore } from '../../store/useGameSessionDraftStore'
@@ -56,20 +57,22 @@ const ContentSettingsSection = () => {
                 md: 4 
               }}
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={allowedTypes.includes(PromptType.DESCRIPTIVE)}
-                    onChange={() => togglePromptType(PromptType.DESCRIPTIVE)}
-                    sx={{
-                      color: 'white',
-                      '&.Mui-checked': { color: '#ED8936' },
-                    }}
-                  />
-                }
-                label={t('play.sessionForm.contentSettings.promptTypes.descriptive')}
-                sx={{ alignItems: 'center', margin: 0 }}
-              />
+              <Tooltip title={t('play.sessionForm.contentSettings.promptTypes.descriptions.descriptive')}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowedTypes.includes(PromptType.DESCRIPTIVE)}
+                      onChange={() => togglePromptType(PromptType.DESCRIPTIVE)}
+                      sx={{
+                        color: 'white',
+                        '&.Mui-checked': { color: '#ED8936' },
+                      }}
+                    />
+                  }
+                  label={t('play.sessionForm.contentSettings.promptTypes.descriptive')}
+                  sx={{ alignItems: 'center', margin: 0 }}
+                />
+              </Tooltip>
             </Grid2>
             <Grid2 
               size={{ 
@@ -77,20 +80,22 @@ const ContentSettingsSection = () => {
                 md: 4 
               }}
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={allowedTypes.includes(PromptType.HISTORICAL_EVENT)}
-                    onChange={() => togglePromptType(PromptType.HISTORICAL_EVENT)}
-                    sx={{
-                      color: 'white',
-                      '&.Mui-checked': { color: '#ED8936' },
-                    }}
-                  />
-                }
-                label={t('play.sessionForm.contentSettings.promptTypes.historicalEvent')}
-                sx={{ alignItems: 'center', margin: 0 }}
-              />
+              <Tooltip title={t('play.sessionForm.contentSettings.promptTypes.descriptions.historicalEvent')}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowedTypes.includes(PromptType.HISTORICAL_EVENT)}
+                      onChange={() => togglePromptType(PromptType.HISTORICAL_EVENT)}
+                      sx={{
+                        color: 'white',
+                        '&.Mui-checked': { color: '#ED8936' },
+                      }}
+                    />
+                  }
+                  label={t('play.sessionForm.contentSettings.promptTypes.historicalEvent')}
+                  sx={{ alignItems: 'center', margin: 0 }}
+                />
+              </Tooltip>
             </Grid2>
             <Grid2 
               size={{ 
@@ -98,20 +103,22 @@ const ContentSettingsSection = () => {
                 md: 4 
               }}
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={allowedTypes.includes(PromptType.INSTRUCTIONAL)}
-                    onChange={() => togglePromptType(PromptType.INSTRUCTIONAL)}
-                    sx={{
-                      color: 'white',
-                      '&.Mui-checked': { color: '#ED8936' },
-                    }}
-                  />
-                }
-                label={t('play.sessionForm.contentSettings.promptTypes.instructional')}
-                sx={{ alignItems: 'center', margin: 0 }}
-              />
+              <Tooltip title={t('play.sessionForm.contentSettings.promptTypes.descriptions.instructional')}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowedTypes.includes(PromptType.INSTRUCTIONAL)}
+                      onChange={() => togglePromptType(PromptType.INSTRUCTIONAL)}
+                      sx={{
+                        color: 'white',
+                        '&.Mui-checked': { color: '#ED8936' },
+                      }}
+                    />
+                  }
+                  label={t('play.sessionForm.contentSettings.promptTypes.instructional')}
+                  sx={{ alignItems: 'center', margin: 0 }}
+                />
+              </Tooltip>
             </Grid2>
             <Grid2 
               size={{ 
@@ -119,20 +126,22 @@ const ContentSettingsSection = () => {
                 md: 4 
               }}
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={allowedTypes.includes(PromptType.DIALOGUE)}
-                    onChange={() => togglePromptType(PromptType.DIALOGUE)}
-                    sx={{
-                      color: 'white',
-                      '&.Mui-checked': { color: '#ED8936' },
-                    }}
-                  />
-                }
-                label={t('play.sessionForm.contentSettings.promptTypes.dialogue')}
-                sx={{ alignItems: 'center', margin: 0 }}
-              />
+              <Tooltip title={t('play.sessionForm.contentSettings.promptTypes.descriptions.dialogue')}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowedTypes.includes(PromptType.DIALOGUE)}
+                      onChange={() => togglePromptType(PromptType.DIALOGUE)}
+                      sx={{
+                        color: 'white',
+                        '&.Mui-checked': { color: '#ED8936' },
+                      }}
+                    />
+                  }
+                  label={t('play.sessionForm.contentSettings.promptTypes.dialogue')}
+                  sx={{ alignItems: 'center', margin: 0 }}
+                />
+              </Tooltip>
             </Grid2>
             <Grid2 
               size={{
@@ -140,20 +149,22 @@ const ContentSettingsSection = () => {
                 md: 4 
               }}
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={allowedTypes.includes(PromptType.NARRATED_DIALOGUE)}
-                    onChange={() => togglePromptType(PromptType.NARRATED_DIALOGUE)}
-                    sx={{
-                      color: 'white',
-                      '&.Mui-checked': { color: '#ED8936' },
-                    }}
-                  />
-                }
-                label={t('play.sessionForm.contentSettings.promptTypes.narratedDialogue')}
-                sx={{ alignItems: 'center', margin: 0 }}
-              />
+              <Tooltip title={t('play.sessionForm.contentSettings.promptTypes.descriptions.narratedDialogue')}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowedTypes.includes(PromptType.NARRATED_DIALOGUE)}
+                      onChange={() => togglePromptType(PromptType.NARRATED_DIALOGUE)}
+                      sx={{
+                        color: 'white',
+                        '&.Mui-checked': { color: '#ED8936' },
+                      }}
+                    />
+                  }
+                  label={t('play.sessionForm.contentSettings.promptTypes.narratedDialogue')}
+                  sx={{ alignItems: 'center', margin: 0 }}
+                />
+              </Tooltip>
             </Grid2>
           </Grid2>
         </FormGroup>
