@@ -9,7 +9,7 @@ pydantic_core==2.20.1
 # Database
 sqlmodel==0.0.19
 SQLAlchemy==2.0.25
-psycopg2==2.9.9
+psycopg2-binary==2.9.9
 
 # Authentication and security
 python-jose[cryptography]
