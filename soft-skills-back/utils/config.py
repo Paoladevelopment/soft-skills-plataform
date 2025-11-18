@@ -54,6 +54,8 @@ class Settings(BaseSettings):
   ELEVENLABS_DEFAULT_MODEL: str = os.getenv('ELEVENLABS_DEFAULT_MODEL', 'eleven_multilingual_v2')
   AUDIO_DEFAULT_FORMAT: str = os.getenv('AUDIO_DEFAULT_FORMAT', 'mp3')
   AUDIO_STORAGE_TYPE: str = os.getenv('AUDIO_STORAGE_TYPE', 'supabase')
+  
+  CORS_ORIGINS: str = os.getenv('CORS_ORIGINS', 'http://localhost:3000,http://localhost:5173')
 
   def __is_valid_db_uri(self) -> bool:
     if self.DB_URI:

@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "soft-skills-back/main.py",
       "use": "@vercel/python"
     },
     {
@@ -16,7 +16,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/soft-skills-back/main.py"
     },
     {
       "src": "/(.*)",
@@ -24,7 +24,7 @@
     }
   ],
   "env": {
-    "PYTHONPATH": "soft-skills-back"
+    "APP_MODULE": "main:app"
   }
 }
 
