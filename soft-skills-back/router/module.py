@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Query, status
 from schema.module import (ModuleCreate, ModulePaginatedResponse, ModuleRead,
                            ModuleResponse, ModuleUpdate)
-from service.auth_service import get_current_admin_user
+from schema.token import TokenData
+from service.auth_service import decode_jwt_token, get_current_admin_user
 from service.module import ModuleService
 from sqlmodel import Session
 from utils.db import get_session
@@ -39,7 +40,7 @@ def create_module(
 def get_all_modules(
         offset: int = Query(0, ge=0, description="Número de elementos a omitir"),
         limit: int = Query(10, le=100, description="Número máximo de elementos a recuperar (máx. 100)"),
-        _ = Depends(get_current_admin_user),
+        _: TokenData = Depends(decode_jwt_token),
         session: Session = Depends(get_session),
     ):
 
@@ -60,7 +61,7 @@ def get_all_modules(
 @router.get("/{id}", summary="Obtener módulo por ID", response_model=ModuleResponse)
 def get_module(
     id: int, 
-    _ = Depends(get_current_admin_user),
+    _: TokenData = Depends(decode_jwt_token),
     session: Session = Depends(get_session)
 ):
     try:
