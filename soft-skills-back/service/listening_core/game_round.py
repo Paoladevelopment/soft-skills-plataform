@@ -193,6 +193,9 @@ class GameRoundService:
         """Select challenge and mode for round, ensure audio exists, mark as ready."""
         existing_rounds = self._get_previous_rounds(game_session, game_round.round_number, db_session)
         
+        if self._try_reuse_existing_challenge_for_round(game_round, db_session):
+            return
+
         play_mode, prompt_type = self.select_mode_and_type_with_diversity(
             config, 
             existing_rounds
@@ -209,6 +212,18 @@ class GameRoundService:
             db_session
         )
         
+        if challenge.play_mode != play_mode:
+            raise InternalError(
+                f"Inconsistencia detectada: el challenge {challenge.challenge_id} tiene play_mode '{challenge.play_mode}' "
+                f"pero se solicitó '{play_mode}' para la ronda {game_round.round_number}"
+            )
+            
+        if challenge.prompt_type != prompt_type:
+            raise InternalError(
+                f"Inconsistencia detectada: el challenge {challenge.challenge_id} tiene prompt_type '{challenge.prompt_type}' "
+                f"pero se solicitó '{prompt_type}' para la ronda {game_round.round_number}"
+            )
+        
         game_round.challenge_id = challenge.challenge_id
         self._synthesize_audio_if_needed(challenge, db_session)
         
@@ -216,6 +231,44 @@ class GameRoundService:
         game_round.status = GameRoundStatus.pending
         
         db_session.add(game_round)
+
+    def _try_reuse_existing_challenge_for_round(
+        self,
+        game_round: GameRound,
+        db_session: Session
+    ) -> bool:
+        """
+        Checks if the round already has an assigned challenge that is consistent.
+        If consistent, completes the preparation and returns True.
+        If there is no challenge or it is inconsistent, returns False.
+        """
+        if not game_round.challenge_id:
+            return False
+        
+        if not game_round.play_mode:
+            return False
+    
+        if not game_round.prompt_type:
+            return False
+        
+        try:
+            existing_challenge = self.challenge_service.get_challenge(game_round.challenge_id, db_session)
+            
+            if existing_challenge.play_mode != game_round.play_mode:
+                return False
+            
+            if existing_challenge.prompt_type != game_round.prompt_type:
+                return False
+            
+            self._synthesize_audio_if_needed(existing_challenge, db_session)
+            game_round.prepared_at = datetime.now(timezone.utc)
+            game_round.status = GameRoundStatus.pending
+            db_session.add(game_round)
+            
+            return True
+            
+        except Exception:
+            return False
 
     def _synthesize_audio_if_needed(self, challenge: Challenge, db_session: Session) -> None:
         """Synthesize audio for challenge if not already available. Non-blocking on failure."""
