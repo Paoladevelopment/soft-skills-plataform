@@ -1,0 +1,125 @@
+\section{Arquitectura general del sistema}
+El prototipo se desarrolló bajo una arquitectura cliente-servidor, siguiendo el modelo descrito en los principios fundamentales de aplicaciones web: el cliente ejecuta la interfaz gráfica e inicia las solicitudes HTTP, mientras que el servidor procesa la lógica de negocio, administra los datos y coordina los servicios necesarios para responder cada petición.
+\\
+\\
+Bajo este enfoque, el prototipo integra un cliente web construido con React y un servidor implementado con FastAPI, complementados por bases de datos relacionales y no relacionales, servicios externos de inteligencia artificial y un sistema de almacenamiento de audio para los desafíos del módulo de Escucha Activa. Cada componente cumple un rol específico dentro del flujo cliente-servidor, lo que permite mantener una arquitectura escalable, modular y fácilmente extensible.
+
+\section{Tecnologías seleccionadas}
+A partir de la arquitectura cliente-servidor descrita anteriormente, se seleccionó un conjunto de tecnologías que resultan apropiadas para satisfacer los requerimientos funcionales y no funcionales del prototipo. La selección consideró criterios como compatibilidad, mantenibilidad, facilidad de integración con servicios externos, disponibilidad de documentación y capacidad para soportar flujos que requieren una interacción continua entre el usuario y el sistema (como la manipulación de un editor visual) e inteligencia artificial.
+
+\subsection{Tecnologías para el desarrollo del frontend}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Tecnología} & \textbf{Descripción y uso en el prototipo} \\
+\hline
+React & Biblioteca para la construcción de interfaces web dinámicas basada en componentes reutilizables. Permitó desarrollar el módulo de \textit{Aprender a Aprender}, el editor de roadmaps y las pantallas interactivas del módulo de \textit{Escucha Activa}. \\
+\hline
+TypeScript & Añade tipado estático al ecosistema de React, mejorando la robustez del código, evitando errores comunes y facilitando el mantenimiento. \\
+\hline
+Material-UI (MUI) & Framework de componentes estilizados que permite construir interfaces consistentes, accesibles y responsivas, reduciendo el esfuerzo necesario en diseño visual y maquetación. \\
+\hline
+React Flow & Librería especializada en la construcción de editores visuales basados en grafos. Fue utilizada para implementar el editor de roadmaps, permitiendo arrastrar, conectar, organizar y almacenar nodos y relaciones. \\
+\hline
+Zustand & Biblioteca ligera para la gestión de estado global. Se utilizó en la administración de sesiones de juego, manejo del roadmap, estados del editor y sistema global de notificaciones (toasts). \\
+\hline
+React Query & Herramienta para la sincronización eficiente entre el frontend y la API, que gestiona el cacheo, revalidación y actualización de datos provenientes del backend. \\
+\hline
+\end{tabular}
+\caption{Tecnologías utilizadas en el desarrollo del frontend del prototipo.}
+\end{table}
+
+\subsection{Tecnologías para el desarrollo del backend}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Tecnología} & \textbf{Descripción y uso en el prototipo} \\
+\hline
+FastAPI & Framework para la creación de APIs en Python, caracterizado por su rendimiento, soporte para tipado estático y documentación automática. Fue utilizado para gestionar la lógica de negocio, los endpoints REST y la integración con los modelos de IA y los servicios de generación de audio. \\
+\hline
+SQLModel & ORM que fue utilizado para definir las entidades del dominio y facilitar su interacción con PostgreSQL, combinando características de Pydantic y SQLAlchemy. \\
+\hline
+Pydantic & Fue utilizado para la validación de datos en los esquemas de entrada y salida, garantizando integridad y coherencia entre cliente y servidor. \\
+\hline
+Uvicorn & Servidor ASGI que se empleó para la ejecución eficiente de la API en entornos de desarrollo y despliegue. \\
+\hline
+\end{tabular}
+\caption{Tecnologías empleadas en el desarrollo del backend del prototipo.}
+\end{table}
+
+\subsection{Tecnologías para la gestión de bases de datos}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Base de datos} & \textbf{Descripción y uso en el prototipo} \\
+\hline
+PostgreSQL & Base de datos relacional que fue utilizada para almacenar información estructurada, incluyendo usuarios, metas, objetivos, tareas, sesiones de juego, rondas, desafíos auditivos y evaluaciones. Proporcionó integridad, transaccionalidad y consultas eficientes durante la ejecución del prototipo. \\
+\hline
+MongoDB & Base de datos NoSQL orientada a documentos, que fue empleada para el almacenamiento flexible de los roadmaps de aprendizaje, sus nodos, tareas asociadas y el layout visual generado por el editor de React Flow. \\
+\hline
+\end{tabular}
+\caption{Tecnologías utilizadas para la gestión de datos en el prototipo.}
+\end{table}
+
+\subsection{Tecnologías para el uso de modelos de inteligencia artificial}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Tecnología} & \textbf{Descripción y uso en el prototipo} \\
+\hline
+OpenAI API & Servicio que fue utilizado para la generación de contenido textual, incluyendo desafíos auditivos, instrucciones, mensajes guía y retroalimentación semántica para los modos de juego. \\
+\hline
+LangChain & Librería que fue empleada para estructurar prompts, gestionar herramientas, manejar cadenas y definir agentes conversacionales encargados de generar contenido educativo y metadatos para los desafíos del módulo de Escucha Activa. \\
+\hline
+LangGraph & Framework utilizado para la creación de agentes basados en grafos que permiten estructurar secuencias de razonamiento. Fue empleado para implementar el agente tutor responsable de generar roadmaps personalizados. \\
+\hline
+\end{tabular}
+\caption{Tecnologías utilizadas para la integración con modelos de inteligencia artificial.}
+\end{table}
+
+\subsection{Tecnologías para la generación y almacenamiento de audio}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Tecnología} & \textbf{Descripción y uso en el prototipo} \\
+\hline
+ElevenLabs & Plataforma de síntesis de voz (TTS) que fue utilizada para generar audios de alta calidad a partir de los textos creados por los modelos de lenguaje. Permitió personalizar la voz, el estilo y el ritmo del audio en función de cada desafío. \\
+\hline
+Supabase Storage & Servicio de almacenamiento que fue utilizado para guardar los audios generados y obtener URLs públicas o firmadas para su reproducción en el frontend durante las sesiones de juego. \\
+\hline
+\end{tabular}
+\caption{Tecnologías empleadas para la generación y almacenamiento de archivos de audio.}
+\end{table}
+
+\subsection{Tecnologías de despliegue}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Tecnología} & \textbf{Descripción y uso en el prototipo} \\
+\hline
+Vercel & Plataforma que fue utilizada para desplegar el frontend y el backend principal del prototipo, aprovechando funciones serverless, bajos tiempos de respuesta y despliegues automáticos vinculados al repositorio. \\
+\hline
+Railway & Plataforma de despliegue en la nube que fue utilizada para alojar el backend independiente del agente de generación de roadmaps. Su modelo de ejecución persistente resultó más adecuado que el enfoque serverless de Vercel para manejar los tiempos de procesamiento prolongados y la continuidad requerida por los agentes basados en LangChain y LangGraph. \\
+\hline
+\end{tabular}
+\caption{Tecnologías utilizadas para el despliegue del prototipo.}
+\end{table}
+

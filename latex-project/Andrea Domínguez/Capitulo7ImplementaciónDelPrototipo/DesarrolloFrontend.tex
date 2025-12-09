@@ -1,0 +1,171 @@
+\section{Desarrollo del frontend}
+
+\subsection{Configuración del entorno}
+
+Para la implementación del frontend se empleó \textit{Vite} como entorno de construcción del proyecto, utilizando la plantilla con soporte para \textit{TypeScript} con el fin de garantizar un desarrollo tipado, estructurado y escalable. Sobre esta base se definieron las configuraciones iniciales del proyecto, entre ellas:
+
+\begin{itemize}
+    \item \textbf{React como biblioteca base:} instalada desde la configuración inicial del proyecto para gestionar la creación y composición de los componentes que conforman la interfaz.
+
+    \item \textbf{Tema global con Material UI (MUI):} configurado mediante su proveedor de estilos para unificar criterios de color, tipografía y lineamientos visuales desde el arranque de la aplicación.
+
+    \item \textbf{Internacionalización con i18next:} cargado en la inicialización del proyecto para habilitar soporte multilenguaje y permitir la gestión flexible de textos traducibles.
+
+    \item \textbf{React Query como proveedor global:} utilizado para manejar el estado de las solicitudes a la API, el manejo del \textit{cache} y los estados de carga de manera centralizada.
+
+    \item \textbf{ESLint como herramienta de análisis estático:} configurada para asegurar buenas prácticas, detectar errores comunes y mantener la consistencia del código durante el desarrollo.
+
+    \item \textbf{Variables de entorno administradas mediante Vite:} empleadas para parametrizar valores como las URLs de los servicios del backend y facilitar la ejecución del prototipo en entornos diferenciados.
+\end{itemize}
+
+En conjunto, estas configuraciones establecieron una base sólida y organizada que permitió desarrollar el frontend de manera estable, modular y coherente.
+
+\subsection{Arquitectura y organización}
+
+\subsubsection{Enfoque arquitectónico general}
+El frontend del prototipo se desarrolló siguiendo una arquitectura basada en componentes y organizada bajo un enfoque modular por características (\textit{feature-based}). Este enfoque agrupa dentro de cada módulo todos los elementos necesarios para una funcionalidad específica, tales como componentes visuales, vistas, servicios de comunicación, estados globales y funciones auxiliares. Esta organización permitió mantener una separación clara de responsabilidades, mejorar la cohesión interna de cada módulo y facilitar la evolución independiente de las diferentes partes del sistema.
+
+\subsubsection{Organización modular por funcionalidades}
+La aplicación se estructura en módulos que corresponden a las funcionalidades principales del prototipo, entre ellos el módulo de \textit{Aprender a Aprender}, el módulo de \textit{Escucha Activa} y el módulo de autenticación. Esta distribución permite organizar las funcionalidades en segmentos claramente delimitados, cada uno con su propio conjunto de elementos y flujos asociados.
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
+frontend/
+|-- public/                       (Archivos estáticos accesibles públicamente)
+|-- src/
+|   |-- api/                      (Clientes y funciones para consumir el backend)
+|   |-- app/                      (Configuración global de la aplicación, rutas y layout)
+|   |-- assets/                   (Recursos gráficos y multimedia)
+|   |-- components/               (Componentes reutilizables de la interfaz)
+|   |-- config/                   (Configuración de clientes API, constantes globales y variables de entorno)
+|   |-- features/
+|   |   |-- active-listening/     (Módulo de Escucha Activa)
+|   |   |   |-- api/              (Llamadas específicas del módulo al backend)
+|   |   |   |-- assets/           (Iconos, sonidos e imágenes del módulo)
+|   |   |   |-- components/       (Componentes UI propios del módulo)
+|   |   |   |-- constants/        (Constantes y parámetros usados en el juego)
+|   |   |   |-- pages/            (Páginas del módulo)
+|   |   |   |-- store/            (Estados y acciones en Zustand para el módulo)
+|   |   |   |-- types/            (Tipos y modelos TypeScript del módulo)
+|   |   |   +-- utils/            (Funciones auxiliares internas)
+|   |   |
+|   |   |-- authentication/       (Autenticación: login, registro, recuperación)
+|   |   +-- learn-to-learn/       (Módulo Aprender a Aprender)
+|   |
+|   +-- ...
++-- ...
+\end{verbatim}
+\caption{Estructura de carpetas del frontend organizada por características (\textit{feature-based}). Elaboración propia.}
+\label{fig:frontend-feature-structure}
+\end{figure}
+
+
+\subsubsection{Sistema de enrutamiento y uso de layouts}
+La navegación de la interfaz se gestiona mediante un sistema de enrutamiento que organiza las rutas principales del frontend e incorpora distintos \textit{layouts} para estructurar grupos de vistas relacionadas. Estos \textit{layouts} actúan como contenedores que reúnen elementos compartidos, tales como barras de navegación, encabezados o paneles laterales, y permiten definir la disposición general de cada sección. De esta manera, el enrutamiento establece la jerarquía visual y funcional del frontend, articulando la relación entre las diferentes vistas que conforman cada módulo.
+
+\subsubsection{Diseño de componentes}
+En el diseño de componentes se adoptó una aproximación que distingue entre componentes presentacionales y componentes contenedores, aunque con un grado de flexibilidad práctica. Los componentes presentacionales se centran principalmente en la representación visual y la interacción básica, recibiendo datos y funciones a través de \textit{props}. No obstante, en algunos casos estos componentes acceden directamente a estados globales cuando resulta más eficiente que propagar múltiples propiedades desde niveles superiores. Por su parte, los componentes contenedores se encargan de coordinar la interacción del usuario, gestionar la comunicación con los estados globales y organizar los flujos relacionados con servicios externos. Este enfoque híbrido permitió distribuir responsabilidades de manera equilibrada, mantener la coherencia de la interfaz y facilitar la reutilización de componentes en distintos contextos del sistema.
+
+\subsubsection{Gestión del estado global y datos asincrónicos}
+La gestión del estado global se implementó mediante un conjunto de almacenes especializados organizados por módulo, lo que permitió centralizar la información relevante y mantener una estructura coherente para el acceso y actualización del estado. Estos almacenes incorporan mecanismos que facilitan la trazabilidad de cambios y la manipulación inmutable de los datos. Por su parte, la gestión de datos asincrónicos provenientes del servidor se realizó mediante una herramienta dedicada al control del almacenamiento en caché, la revalidación y la sincronización controlada con la API, lo que permitió reducir solicitudes redundantes y asegurar la consistencia entre la interfaz y el estado persistente del sistema.
+
+\subsubsection{Funciones reutilizables y lógica transversal}
+Finalmente, la arquitectura del frontend integra un conjunto de funciones reutilizables que encapsulan lógica transversal, tales como validaciones, transformaciones de datos y operaciones comunes a varios módulos. Estas funciones contribuyen a la mantenibilidad del código, evitan la duplicación de lógica y favorecen la coherencia en la implementación de los distintos componentes del sistema.
+
+\subsection{Componentes principales}
+
+En esta sección se describen los componentes de interfaz más relevantes del frontend, organizados según los módulos funcionales del prototipo. Estos componentes constituyen los elementos centrales de interacción del usuario y articulan las principales operaciones de cada módulo.
+
+\subsubsection{Módulo \textit{Learn to Learn}}
+
+El módulo de \textit{Learn to Learn} integra una serie de componentes que permiten gestionar metas de aprendizaje, objetivos, tareas y su representación visual mediante \textit{roadmaps}. En la Tabla~\ref{tab:componentes-learn-to-learn} se presentan los componentes principales y su rol dentro del prototipo.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Componente} & \textbf{Rol funcional en el prototipo} \\
+\hline
+\textit{RoadmapEditor} & Componente central del módulo, encargado de orquestar la construcción y edición de \textit{roadmaps} de aprendizaje. Gestiona la interacción con la representación gráfica, la disposición de los nodos y las acciones asociadas al proceso de edición. \\
+\hline
+\textit{ObjectiveNode} & Representa visualmente un objetivo dentro del \textit{roadmap}. Permite identificar, seleccionar y manipular objetivos individuales, sirviendo como unidad básica de la estructura gráfica del plan de aprendizaje. \\
+\hline
+\textit{TaskCard} / \textit{TaskNode} & Componente utilizado para mostrar y gestionar las tareas asociadas a un objetivo, integrando información relevante (descripción, estado, estimaciones) y las acciones principales de seguimiento. \\
+\hline
+\textit{Board} & Tablero Kanban encargado de estructurar la visualización de las tareas según su estado (por ejemplo, pendiente, en progreso o completada). Facilita la organización y el seguimiento del avance del estudiante. \\
+\hline
+\textit{GoalsSection} & Vista principal de las metas de aprendizaje, desde la cual el usuario accede a la creación, consulta y administración de objetivos, así como a la navegación hacia el editor de \textit{roadmaps} y otras funcionalidades relacionadas. \\
+\hline
+\end{tabular}
+\caption{Componentes principales del módulo \textit{Learn to Learn}.}
+\label{tab:componentes-learn-to-learn}
+\end{table}
+
+\subsubsection{Módulo de \textit{Escucha Activa}}
+
+El módulo de \textit{Escucha Activa} se centra en la realización de sesiones de práctica auditiva mediante modos de juego que combinan reproducción de audio, resolución de desafíos y retroalimentación. La Tabla~\ref{tab:componentes-escucha-activa} resume los componentes principales que intervienen en este flujo.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{| m{3.5cm} | m{11cm} |}
+\hline
+\textbf{Componente} & \textbf{Rol funcional en el prototipo} \\
+\hline
+\textit{GameSessionForm} & Formulario empleado para configurar una sesión de práctica, incluyendo la selección del modo de juego y los parámetros necesarios antes de iniciar el ejercicio auditivo. \\
+\hline
+\textit{GamePlay} & Componente central del módulo, encargado de coordinar el flujo completo de la sesión de juego: carga del desafío auditivo, gestión de rondas, recepción de respuestas y transición entre etapas de la actividad. \\
+\hline
+\textit{AudioPlayer} & Componente dedicado a la reproducción del audio del desafío, ofreciendo controles básicos de interacción (reproducir, pausar, reiniciar) y garantizando una experiencia de escucha clara y controlada. \\
+\hline
+\textit{GameModeContent} & Panel de respuesta que se adapta al modo de juego seleccionado (por ejemplo, \textit{Focus}, \textit{Cloze}, \textit{Paraphrase}, \textit{Summarize}, \textit{Clarify}), permitiendo al usuario registrar su respuesta según la dinámica del ejercicio. \\
+\hline
+\textit{GameSessionResult} / \textit{ScoreSummary} & Vista que presenta el resultado final de la sesión e integra un componente especializado para resumir el desempeño del usuario, mostrar la retroalimentación generada y ofrecer una visión consolidada de la actividad realizada. \\
+\hline
+\end{tabular}
+\caption{Componentes principales del módulo de \textit{Escucha Activa}.}
+\label{tab:componentes-escucha-activa}
+\end{table}
+
+\subsection{Gestión del estado y comunicación con la API}
+
+El frontend del prototipo requiere una gestión cuidadosa del estado y una comunicación fluida con la API para soportar las funcionalidades interactivas de los módulos. La necesidad de estado global surge de la naturaleza modular del sistema, en la que distintos componentes y vistas comparten información contextual, como la sesión de juego activa, el \textit{roadmap} en edición o las notificaciones del sistema. Asimismo, el prototipo maneja datos dinámicos que se actualizan de manera continua durante la interacción del usuario, tales como el progreso en una ronda de escucha activa, la posición de nodos en el editor o el estado de carga de determinadas secciones.
+\\
+\\
+La sincronización con la API es fundamental para mantener la coherencia entre el estado local y los datos persistentes en el servidor, especialmente en operaciones como el auto-guardado del editor de \textit{roadmaps}, la actualización de tareas en el tablero Kanban o la obtención de resultados de sesiones de juego. Finalmente, el soporte para módulos independientes exige que cada uno gestione su propio estado de manera aislada, minimizando dependencias y favoreciendo la escalabilidad del sistema.
+
+\subsubsection{Gestión del estado global con Zustand}
+
+La gestión del estado global se implementó mediante \textit{Zustand}, una librería ligera que ofrece una API sencilla, baja sobrecarga y una organización modular a través de \textit{stores} independientes. Cada módulo cuenta con su propio store especializado lo que permite que cada funcionalidad evolucione sin afectar al resto de la aplicación.
+\\
+\\
+Adicionalmente, se configuró un store transversal para funcionalidades compartidas, como el sistema de notificaciones globales. Para mejorar la experiencia de desarrollo y garantizar la inmutabilidad del estado, se integraron dos middlewares: uno para herramientas de desarrollo, que permite inspeccionar y rastrear cambios, y otro para manipulación inmutable mediante escritura declarativa.
+\\
+\\
+Este enfoque aporta trazabilidad durante el desarrollo, asegura un manejo seguro del estado y mantiene una organización coherente entre las distintas funcionalidades, lo que facilita la comprensión y el mantenimiento del código.
+
+\subsubsection{Comunicación con la API mediante React Query}
+
+La comunicación con el servidor se gestionó mediante \textit{React Query}, una librería especializada en administración de datos asincrónicos que proporciona almacenamiento en caché, revalidación inteligente y sincronización controlada con la API. El sistema de caché evita solicitudes redundantes y mejora el rendimiento, mientras que la revalidación automática garantiza que la interfaz muestre siempre la información más actualizada disponible sin interrumpir la experiencia del usuario.
+\\
+\\
+La librería permite compartir de forma automática los datos entre componentes que dependen de los mismos recursos del backend, evitando duplicaciones innecesarias. Además, su política de reintentos facilita la recuperación ante fallos temporales de red. La integración con el ciclo de vida de los componentes se realizó mediante \textit{hooks} personalizados que encapsulan la lógica de consulta y mutación, permitiendo un consumo declarativo de los datos y manejando de forma automática estados de carga, error y éxito.
+\\
+\\
+En el módulo Learn to Learn, por ejemplo, la lista de metas, objetivos y tareas se mantiene sincronizada mediante invalidación de queries y actualizaciones optimistas, lo que permite que los cambios realizados por el usuario se reflejen inmediatamente en la interfaz, incluso antes de recibir la confirmación del servidor.
+
+\subsubsection{Integración entre stores y React Query}
+
+La arquitectura del prototipo establece una separación clara entre estado de interfaz y estado persistente. \textit{Zustand} se utiliza para almacenar estados transitorios relacionados con la interacción del usuario (como el nodo seleccionado en el editor, la ronda actual del juego o estados de visibilidad del UI) mientras que \textit{React Query} administra datos provenientes del servidor, como metas, objetivos, tareas o resultados de sesiones de juego.
+\\
+\\
+La interacción entre ambos sistemas se manifiesta en flujos en los cuales el usuario mantiene un contexto local mientras la aplicación sincroniza datos persistentes. Por ejemplo, al seleccionar un objetivo, el identificador correspondiente se almacena en un store, mientras que las tareas asociadas se obtienen mediante React Query, aprovechando la caché si los datos ya fueron recuperados previamente. En el editor de roadmaps, los datos del grafo se mantienen en un store para permitir manipulaciones inmediatas, mientras que la persistencia se gestiona mediante mutaciones que, al completarse, invalidan las consultas relacionadas para mantener la coherencia con otras vistas del sistema.
+
+\subsubsection{Ventajas del enfoque combinado}
+
+La combinación de Zustand y React Query aportó una base sólida para la implementación del frontend. La modularidad derivada de los stores independientes facilita la evolución y el mantenimiento de cada funcionalidad. El sistema de caché de React Query reduce la carga sobre el servidor y evita duplicar solicitudes. La separación explícita entre estado local y estado persistente mejora la claridad conceptual y la estabilidad del sistema.
+
+
+

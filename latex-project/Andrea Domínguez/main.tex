@@ -1,0 +1,188 @@
+\documentclass[letterpaper, 11pt, oneside]{book}
+
+\usepackage[utf8]{inputenc} %Para configuración de caracteres
+\usepackage[spanish]{babel} %Para configuración de idioma
+
+\usepackage{float} %Para que funcionen las tablas
+\usepackage{anysize} %Para usar márgenes
+\marginsize{3cm}{2.5cm}{1cm}{2cm} %{izquierda}{derecha}{arriba}{abajo}. La superior esta sobre 1, la derecha sobre -0.5 y la de abajo sobre 2 (por el número de página)
+
+%tablas
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{adjustbox}
+\usepackage{multirow}
+%rotar tablas (y usar \includegraphics )
+\usepackage{rotating}
+%Dividir en diagonal
+%\usepackage{slashbox}
+%color tablas
+\usepackage{colortbl}
+%colocar tabla en lugar de cuadro
+
+\usepackage[numbib,notlof,notlot,nottoc]{tocbibind} %Para que la biliografía se llame así y no referencias y para que quede numerada como sección.
+%\usepackage[notlof,notlot,nottoc]{tocbibind} %Bibliografía sin numerar
+\bibliographystyle{ieeetr} %Estilo de bibliografía IEEE
+
+\usepackage{url} % inserción url's notas de pie.
+
+%Para poder colocar texto en color
+\usepackage{color}
+\definecolor{naranja}{rgb}{1,0.5,0} % valores de las componentes roja, verde y azul (RGB)
+\definecolor{rojo}{rgb}{1,0,0}
+\definecolor{SteelBlue}{rgb}{0.3,0.5,0.7}
+
+%Para tener los bookmarks del pdf (menú al lado derecho en los visualizadores de pdf)
+% si colorlinks= true, no salen las cajas, sino el color del link!!
+% linkcolor para los indices, citecolor para las citas en texto, urlcolor para los enlaces
+\usepackage[pdftex,bookmarks=true, linkcolor=black, citecolor=black, colorlinks=true, urlcolor=black]{hyperref}
+
+%Para poder hacer subfiguras (subfloat)
+\usepackage{subfig}
+
+\usepackage{enumitem} % Para poder continuar enumerate en otras partes
+
+\usepackage{pdflscape}%Para colocar páginas horizontales en el PDF
+
+% Tablas avanzadas:
+% - array: amplía 'tabular' (nuevos tipos de columna p/m/b, formato con >{}/<{}, \newcolumntype,
+%          y ajustes como \extrarowheight para “padding” vertical).
+% - longtable: permite tablas que se parten entre páginas con encabezados y pies repetidos
+%              (\endfirsthead, \endhead, \endfoot, \endlastfoot).
+\usepackage{array,longtable}
+
+% Ajustar la separación número–texto en Lista de figuras y Lista de tablas
+\makeatletter
+%   \@dottedtocline{nivel}{margen izquierdo}{ancho del número}
+\renewcommand{\l@figure}{\@dottedtocline{1}{1.5em}{3.5em}}
+\renewcommand{\l@table}{\@dottedtocline{1}{1.5em}{3.5em}}
+\makeatother
+
+\begin{document}
+
+\renewcommand{\tablename}{Tabla}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Portada%%%%%%%%%%%%%%%%%%%%
+\include{Capitulo0/Portada}
+%Portada
+\portada
+
+\include{Capitulo0/Contraportada}
+%Contraportada
+\contraportada
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Aprobación%%%%%%%%%%%%%%%%%%%%
+\include{Capitulo0/Aprobacion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Agradecimientos%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagestyle{plain}  
+\pagenumbering{roman}
+\setcounter{page}{1}  
+
+\input{Capitulo0/Agradecimientos}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Tabla de contenido%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+\renewcommand\contentsname{\centering Tabla de Contenido}
+\tableofcontents
+
+\cleardoublepage
+\renewcommand{\listfigurename}{\centering Lista de Figuras}
+\listoffigures 
+
+\cleardoublepage
+\renewcommand{\listtablename}{\centering Lista de tablas}
+\listoftables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 0%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumen}
+\input{Capitulo0/Resumen}
+\thispagestyle{empty}
+
+\chapter*{Abstract}
+\input{Capitulo0/Abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 1%%%%%%%%%%%
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\chapter{Introducción}
+\markboth{Introducción}{Introducción}
+\input{Capitulo1Introduccion/Introduccion}
+
+\input{Capitulo1Introduccion/FormulacionDelProblema}
+\input{Capitulo1Introduccion/Objetivos}
+\input{Capitulo1Introduccion/ResultadosEsperados}
+\input{Capitulo1Introduccion/Antecedentes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 2%%%%%%%%%%%
+\chapter{Alcance de la propuesta}
+\markboth{Alcance de la propuesta}{Alcance de la propuesta}
+\input{Capitulo2Alcance/Alcance}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 3%%%%%%%%%%%
+\chapter{Marco de referencia}
+\markboth{Marco de referencia}{Marco de referencia}
+\input{Capitulo3MarcoDeReferencia/MarcoTeorico}
+\input{Capitulo3MarcoDeReferencia/EstadoDelArte}
+\input{Capitulo3MarcoDeReferencia/MarcoConceptual}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 4%%%%%%%%%%%
+\chapter{Metodología}
+\markboth{Metodología}{Metodología}
+\input{Capitulo4Metodologia/MetodologiaDeInvestigacion}
+\input{Capitulo4Metodologia/MetodologiaDeSoftware}
+\input{Capitulo4Metodologia/MetodologiaDeGestionDeActividades}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 5%%%%%%%%%%%
+\chapter{Revisión de literatura}
+\markboth{Revisión de literatura}{Revisión de literatura}
+\input{Capitulo5RevisiónLiteratura/RevisionLiteratura}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 6%%%%%%%%%%%
+\chapter{Diseño de actividades y recursos educativos del prototipo}
+\markboth{Diseño de actividades y recursos educativos del prototipo}{Diseño de actividades y recursos educativos del prototipo}
+\input{Capitulo6DesarrolloObjetivo3/DesarrolloObjetivo3}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 7%%%%%%%%%%%
+\chapter{Implementación del prototipo}
+\markboth{Implementación del prototipo}{Implementación del prototipo}
+\input{Capitulo7ImplementaciónDelPrototipo/ImplementacionDelPrototipo}
+\input{Capitulo7ImplementaciónDelPrototipo/DesarrolloBackend}
+\input{Capitulo7ImplementaciónDelPrototipo/DesarrolloFrontend}
+\input{Capitulo7ImplementaciónDelPrototipo/Repositorios}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Capitulo 8%%%%%%%%%%%
+\chapter{Pruebas sobre el prototipo}
+\markboth{Pruebas sobre el prototipo}{Pruebas sobre el prototipo}
+\input{Capitulo8Pruebas/PruebasPrototipo}
+\input{Capitulo8Pruebas/AnalisisYResultados}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Conclusiones%%%%%%%%%%%
+\chapter{Conclusiones y trabajos futuros}
+\markboth{Conclusiones y trabajos futuros}{Conclusiones y trabajos futuros}
+\input{CapituloConclusionesYTrabajosFuturos/Conclusiones}
+\input{CapituloConclusionesYTrabajosFuturos/TrabajosFuturos}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Referencias%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{Bibliografia}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Anexos%%%%%%%%%%%
+\chapter[Anexos]{Anexos}
+\markboth{Anexos}{Anexos}
+\input{CapituloAnexos/anexos}
+\input{CapituloAnexos/anexoA}
+\input{CapituloAnexos/anexoB}
+\input{CapituloAnexos/anexoC}
+\input{CapituloAnexos/anexoD}
+\input{CapituloAnexos/anexoE}
+\input{CapituloAnexos/anexoF}
+\input{CapituloAnexos/anexoH}
+\input{CapituloAnexos/anexoI}
+
+\end{document}
+
+

@@ -1,0 +1,538 @@
+% -------------------------------------------------
+% Anexo H. Endpoints de la API REST
+% -------------------------------------------------
+\section*{Anexo H. Especificación detallada de endpoints de la API REST}
+\addcontentsline{toc}{section}{Anexo H. Especificación detallada de endpoints de la API REST}
+\label{anexo:endpoints}
+
+Esta sección presenta la descripción detallada de los endpoints expuestos por la API REST
+del sistema, organizados por dominios funcionales. Para cada grupo se especifican el método
+HTTP, la ruta, la acción asociada, una breve descripción, el tipo de autenticación requerida
+y el esquema principal de respuesta.
+
+\subsection*{Autenticación y usuarios}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} & \textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/auth/login} & Inicio de sesión &
+Autentica al usuario y devuelve un token JWT. &
+No \\
+\hline
+
+POST & \url{/api/v1/auth/register} & Registro de usuario &
+Crea una nueva cuenta de usuario. &
+No \\
+\hline
+
+PATCH & \url{/api/v1/users/me} & Actualizar perfil &
+Actualiza datos del usuario autenticado. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/users/me} & Eliminar cuenta &
+Desactiva la cuenta del usuario autenticado. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/users/me/learning-goals} & Mis metas de aprendizaje &
+Obtiene las metas de aprendizaje del usuario con paginación. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/users/me/pomodoro-preferences} & Obtener preferencias Pomodoro &
+Obtiene la configuración de preferencias Pomodoro del usuario. &
+Sí \\
+\hline
+
+PUT & \url{/api/v1/users/me/pomodoro-preferences} &
+Crear/actualizar preferencias Pomodoro &
+Crea o actualiza las preferencias Pomodoro del usuario. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints del dominio de autenticación y usuarios.}
+\end{table}
+
+% -------------------------------------------------
+\subsection*{Módulo Aprender a Aprender}
+
+\subsubsection*{Metas de aprendizaje (\textit{learning\_goals})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} & \textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/learning-goals} & Crear meta de aprendizaje &
+Crea una nueva meta de aprendizaje. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/learning-goals/{id}} & Obtener meta por ID &
+Obtiene los detalles de una meta de aprendizaje. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/learning-goals/{id}/objectives} & Objetivos de una meta &
+Lista los objetivos de una meta con filtros y paginación. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/learning-goals/{id}} & Actualizar meta &
+Actualiza los datos de una meta de aprendizaje. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/learning-goals/{id}} & Eliminar meta &
+Elimina una meta de aprendizaje. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/learning-goals/{id}/convert-to-roadmap} & Convertir a roadmap &
+Convierte una meta de aprendizaje en un roadmap. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de metas de aprendizaje.}
+\end{table}
+
+% -------------------------------------------------
+\subsubsection*{Objetivos (\textit{objectives})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} & \textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/objectives} & Crear objetivo &
+Crea un nuevo objetivo de aprendizaje. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/objectives/{id}} & Obtener objetivo &
+Obtiene los detalles de un objetivo. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/objectives/{id}/tasks} & Tareas de un objetivo &
+Lista tareas de un objetivo con filtros y paginación. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/objectives/{id}} & Actualizar objetivo &
+Actualiza un objetivo existente. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/objectives/{id}} & Eliminar objetivo &
+Elimina un objetivo. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/objectives/{id}/kanban} & Obtener tablero Kanban &
+Obtiene el tablero Kanban de un objetivo. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/objectives/{id}/kanban/column} & Columna Kanban &
+Obtiene tareas paginadas de una columna específica. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/objectives/{id}/kanban/move} & Mover tarea en Kanban &
+Mueve una tarea entre columnas del tablero Kanban. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de objetivos.}
+\end{table}
+
+% -------------------------------------------------
+\subsubsection*{Tareas (\textit{tasks})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} & \textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/tasks} & Crear tarea &
+Crea una nueva tarea asociada a un objetivo. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/tasks/{id}} & Obtener tarea &
+Obtiene los detalles de una tarea. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/tasks/{id}} & Actualizar tarea &
+Actualiza los campos de una tarea. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/tasks/{id}/status} & Actualizar estado &
+Modifica el estado de una tarea. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/tasks/{id}} & Eliminar tarea &
+Elimina una tarea. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de tareas.}
+\end{table}
+
+% -------------------------------------------------
+\subsubsection*{Notas de tarea (\textit{task\_notes})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} & \textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/tasks/{task\_id}/notes} & Agregar nota &
+Crea una nota asociada a una tarea. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/tasks/{task\_id}/notes} & Listar notas &
+Lista todas las notas de una tarea. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/tasks/{task\_id}/notes/{note\_id}} & Actualizar nota &
+Actualiza una nota de tarea. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/tasks/{task\_id}/notes/{note\_id}} & Eliminar nota &
+Elimina una nota de tarea. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de notas de tarea.}
+\end{table}
+
+% -------------------------------------------------
+\subsubsection*{Recursos de tarea (\textit{task\_resources})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} & \textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/tasks/{task\_id}/resources} & Agregar recurso &
+Crea un recurso asociado a una tarea. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/tasks/{task\_id}/resources} & Listar recursos &
+Lista todos los recursos de una tarea. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/tasks/{task\_id}/resources/{resource\_id}} & Actualizar recurso &
+Actualiza un recurso de tarea. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/tasks/{task\_id}/resources/{resource\_id}} & Eliminar recurso &
+Elimina un recurso de tarea. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de recursos asociados a tareas.}
+\end{table}
+
+% -------------------------------------------------
+\subsubsection*{Autoevaluaciones (\textit{self\_evaluations})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} & \textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/self-evaluations} & Crear autoevaluación &
+Registra una autoevaluación para una tarea completada. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/self-evaluations/{evaluation\_id}} & Obtener autoevaluación &
+Obtiene una autoevaluación por identificador. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/self-evaluations/by-user/{user\_id}} & Autoevaluaciones por usuario &
+Lista autoevaluaciones de un usuario con filtros y paginación. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de autoevaluaciones.}
+\end{table}
+
+% -------------------------------------------------
+\subsection*{Módulo Escucha Activa}
+
+\subsubsection*{Sesiones de juego (\textit{game\_sessions})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} &
+\textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+GET & \url{/api/v1/game-sessions} & Listar sesiones &
+Lista sesiones de juego del usuario con paginación. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/game-sessions} & Crear sesión de juego &
+Crea una nueva sesión de juego de escucha. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/game-sessions/{session\_id}/start} & Iniciar sesión &
+Inicia una sesión y devuelve la primera ronda. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/game-sessions/{session\_id}} & Obtener detalles &
+Obtiene el detalle de una sesión, incluida su configuración. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/game-sessions/{session\_id}} & Actualizar sesión &
+Actualiza nombre y/o estado de la sesión. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/game-sessions/{session\_id}/config} & Actualizar configuración &
+Actualiza parcialmente la configuración de la sesión. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/game-sessions/{session\_id}} & Eliminar sesión &
+Elimina una sesión de juego. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/game-sessions/{session\_id}/rounds/current} & Ronda actual &
+Obtiene la ronda actual de la sesión. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/game-sessions/{session\_id}/rounds/{round\_number}} & Ronda específica &
+Obtiene una ronda específica por número. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/game-sessions/{session\_id}/rounds/next} & Siguiente ronda &
+Avanza a la siguiente ronda de la sesión. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/game-sessions/{session\_id}/rounds/{round\_number}/attempt} &
+Enviar intento &
+Envía un intento de respuesta para una ronda. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/game-sessions/{session\_id}/rounds/{round\_number}/audio/replay} &
+Repetición de audio &
+Incrementa el contador de reproducción de audio si está bajo el límite. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/game-sessions/{session\_id}/finish} & Finalizar sesión &
+Marca la sesión como finalizada. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/game-sessions/{session\_id}/result} & Resultado de sesión &
+Obtiene el resultado de una sesión terminada. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de sesiones de juego del módulo Escucha Activa.}
+\end{table}
+
+% -------------------------------------------------
+\subsubsection*{Desafíos de escucha (\textit{challenges})}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} &
+\textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/challenges/generate} & Generar desafío &
+Genera un nuevo desafío de escucha usando un modelo LLM. &
+No \\
+\hline
+
+GET & \url{/api/v1/challenges/{challenge\_id}/audio} & Audio de desafío &
+Obtiene o crea el audio asociado a un desafío y devuelve su URL. &
+No \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de desafíos de escucha.}
+\end{table}
+
+% -------------------------------------------------
+\subsection*{Roadmaps (planes de aprendizaje)}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} &
+\textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/roadmap} & Crear roadmap &
+Crea un nuevo plan de aprendizaje. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/roadmap/mine} & Mis roadmaps &
+Obtiene los planes de aprendizaje del usuario autenticado con paginación. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/roadmap/public} & Roadmaps públicos &
+Lista planes públicos con filtros por título, autor, fechas y número de pasos. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/roadmap/{id}} & Obtener roadmap &
+Obtiene los detalles de un plan de aprendizaje. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/roadmap/{id}} & Actualizar roadmap &
+Actualiza la información de un plan de aprendizaje. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/roadmap/{id}/copy} & Copiar roadmap &
+Realiza una copia (clonación) de un plan de aprendizaje. &
+Sí \\
+\hline
+
+POST & \url{/api/v1/roadmap/{id}/convert-to-learning-goal} & Convertir a meta &
+Convierte un roadmap en una meta de aprendizaje accionable. &
+Sí \\
+\hline
+
+DELETE & \url{/api/v1/roadmap/{id}} & Eliminar roadmap &
+Elimina un plan de aprendizaje. &
+Sí \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de roadmaps.}
+\end{table}
+
+% -------------------------------------------------
+\subsection*{Módulos del sistema}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{1.4cm}|p{4.1cm}|p{3.2cm}|p{5.8cm}|p{1cm}|}
+\hline
+\textbf{Método} & \textbf{Ruta} & \textbf{Recurso / acción} &
+\textbf{Descripción} & \textbf{Auth} \\
+\hline
+
+POST & \url{/api/v1/modules} & Crear módulo &
+Crea un nuevo módulo del sistema (requiere rol administrador). &
+Sí (admin) \\
+\hline
+
+GET & \url{/api/v1/modules} & Listar módulos &
+Lista los módulos disponibles con paginación. &
+Sí \\
+\hline
+
+GET & \url{/api/v1/modules/{id}} & Obtener módulo &
+Obtiene los detalles de un módulo. &
+Sí \\
+\hline
+
+PATCH & \url{/api/v1/modules/{id}} & Actualizar módulo &
+Actualiza la información de un módulo (requiere rol administrador). &
+Sí (admin) \\
+\hline
+
+DELETE & \url{/api/v1/modules/{id}} & Eliminar módulo &
+Elimina un módulo del sistema (requiere rol administrador). &
+Sí (admin) \\
+\hline
+
+\end{tabular}
+\caption{Endpoints para la gestión de módulos del sistema.}
+\end{table}

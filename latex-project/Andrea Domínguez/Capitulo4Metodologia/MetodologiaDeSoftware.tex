@@ -1,0 +1,52 @@
+\section{Metodología de desarrollo de software}
+La elección de una metodología de desarrollo de software adecuada resultó fundamental,
+ya que simplificó el trabajo y proporcionó un marco claro y coherente para la ejecución del proyecto. Por esta razón, se compararon distintas metodologías ágiles, como se evidencia en la tabla \ref{tab:metodologias-agiles} con el objetivo de seleccionar aquella que mejor se ajustará a la naturaleza del trabajo de grado.
+\\ 
+\\
+Dada la naturaleza del proyecto, se optó por analizar metodologías ágiles debido a su flexibilidad y eficiencia, aspectos cruciales para un desarrollo individual. Debido a la posibilidad de cambios en los requerimientos y objetivos del proyecto, una metodología ágil como Scrum, Kanban o Extreme Programming (XP) permitió manejar la incertidumbre de manera efectiva gracias a su enfoque simple, retroalimentación constante y adaptación al cambio. Es importante mencionar que, aunque estas metodologías fueron concebidas para equipos completos de desarrollo, muchos de sus conceptos pudieron aplicarse a un equipo conformado por un único desarrollador, tales como la planificación, la refactorización del código y el diseño simple del mismo.
+\\
+\\
+Scrum no es una metodología de desarrollo de software, es un marco de gestión de proyectos de metodología ágil que los equipos utilizan para organizarse por cuenta propia y trabajar en aras de alcanzar un objetivo común. Caracterizado por un conjunto de ceremonias, herramientas y funciones que, de forma coordinada, ayudan a los equipos entregar proyectos de forma eficiente \cite{Amazon2024}.
+\\
+\\
+Kanban es una metodología ágil que se basa en la visualización del flujo de trabajo y la carga de éste, su filosofía es centrada en la mejora continua, donde las tareas se extraen de una lista de acciones pendientes en un flujo de trabajo constante \cite{Martins2024}. Al utilizar tableros Kanban para representar visualmente las actividades organizadas por columnas (Las columnas más básicas son: trabajo pendiente, en progreso y terminado), el desarrollador puede identificar fácilmente cuellos de botella y ajustar la carga de trabajo según sea necesario. La ausencia de sprints permite una mayor flexibilidad en la planificación y ejecución de tareas, lo que puede ser beneficioso para proyectos donde los requisitos y objetivos pueden cambiar con frecuencia.
+\\
+\\
+El Extreme Programming es una metodología ágil, formulada por Kent Beck, basada en la comunicación, la reutilización del código desarrollado y la retroalimentación. Su objetivo es promover la aplicación de apropiadas prácticas de ingeniería al momento de crear software. Por ejemplo, la programación en parejas y las revisiones de código promueven la colaboración y la detección temprana de errores. Las pruebas unitarias automatizadas y la integración continua garantizan la estabilidad y la funcionalidad del software en todo momento.  
+\\
+\\
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{3pt} 
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{| m{2.5cm} | m{2.8cm} | m{2.8cm} | m{2.8cm} | m{2.8cm} |}
+        \hline
+        \textbf{Característica} & \textbf{Scrum} & \textbf{Kanban} & \textbf{Extreme Programming} & \textbf{Scrumban} \\
+        \hline
+        \textbf{Enfoque} & Iterativo con sprints fijos & Continuo & Iterativo e incremental & Híbrido entre Scrum y Kanban \\
+        \hline
+        \textbf{Roles definidos} & Product Owner, Scrum Master, Equipo & No hay roles predefinidos & cliente, programador, tester, tracker, entrenador, y consultor. & Puede incluir roles de Scrum o no \\
+        \hline
+        \textbf{Ceremonias} & Reuniones diarias, Sprint Planning, Sprint Review, Sprint Retrospective & No hay ceremonias predefinidas & Pair programming, integración continua, pruebas unitarias & Puede incluir ceremonias de Scrum o no \\
+        \hline
+        \textbf{Duración de iteraciones} & Sprints de duración fija (usualmente 1-4 semanas) & Continuo sin duración fija de iteraciones & Iteraciones cortas (1-3 semanas) & Iteraciones si se usan, no son fijas \\
+        \hline
+        \textbf{Tablero de trabajo} & Tablero Scrum (pendiente, en progreso, completado) & Tablero Kanban (Columnas personalizadas) & No tiene un tablero específico & Puede utilizar un tablero Kanban o Scrum \\
+        \hline
+        \textbf{Mejora continua} & Retrospectivas al final de cada sprint & Mejora continua sin restricciones de tiempo & Mejora continua, con énfasis en la calidad del código y feedback del cliente & Retrospectivas y mejora continua de Kanban \\
+        \hline
+        \textbf{Adaptabilidad} & Media (cambios tras cada sprint) & Alta (cambios en cualquier momento) & Altamente adaptable (ajustes en tiempo real) & Muy alta (combinación de Scrum y Kanban) \\
+        \hline
+        \textbf{Indicado para} & Proyectos con requisitos cambiantes y entrega incremental & Proyectos con demandas variadas y prioridades cambiantes & Proyectos donde la calidad y pruebas son críticas & Entornos que buscan estructura de Scrum con flexibilidad de Kanban \\
+        \hline
+        \textbf{Tamaño del equipo} & Idealmente de 3 a 9 personas & No hay restricciones específicas & No hay restricciones específicas & Puede variar dependiendo de la implementación \\
+        \hline
+    \end{tabular}
+    \caption{Comparación de metodologías ágiles}
+    \label{tab:metodologias-agiles}
+\end{table}
+Tras describir las tres mencionadas metodologías ágiles y considerando las particularidades del proyecto, Scrum fue descartado ya que resultó demasiado rígido para un proyecto individual, con sprints fijos y la necesidad de roles múltiples que no se alinearon bien con la naturaleza fluida de un proyecto gestionado por una sola persona. Tampoco se consideró Kanban debido a su falta de estructura periódica que garantizara la continuidad y el seguimiento del progreso en un proyecto individual. Por último, Extreme Programming (XP) no se contempló como una opción viable debido a la poca aplicabilidad de sus prácticas en un escenario individual de desarrollo.
+\\
+\\
+Finalmente, emergió Scrumban como la opción más adecuada por diversas razones clave. En primer lugar, integró la flexibilidad de Kanban, lo cual fue ideal para adaptarse a la variabilidad en la carga de trabajo y a las prioridades cambiantes sin la necesidad de adherirse a los sprints fijos de Scrum. Además, ofreció un marco que ayudó a mantener el enfoque y la organización, facilitando la gestión del tiempo y del proyecto en solitario, asegurando que se mantuviera el progreso hacia los objetivos establecidos. Esto fue fundamental para un proyecto individual donde las necesidades evolucionaron rápidamente, como fue el caso del desarrollo de módulos educativos que requirieron revisiones frecuentes basadas en retroalimentación o nuevos hallazgos.
